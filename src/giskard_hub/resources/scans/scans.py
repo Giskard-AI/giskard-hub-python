@@ -283,7 +283,7 @@ class ScansResource(SyncAPIResource):
             cast_to=ScanListCategoriesResponse,
         )
 
-    def list_attempts(
+    def list_probe_attempts(
         self,
         scan_result_id: str,
         *,
@@ -588,7 +588,7 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=ScanListCategoriesResponse,
         )
 
-    async def list_attempts(
+    async def list_probe_attempts(
         self,
         scan_result_id: str,
         *,
@@ -677,8 +677,8 @@ class ScansResourceWithRawResponse:
         self.list_categories = to_raw_response_wrapper(
             scans.list_categories,
         )
-        self.list_attempts = to_raw_response_wrapper(
-            scans.list_attempts,
+        self.list_probe_attempts = to_raw_response_wrapper(
+            scans.list_probe_attempts,
         )
         self.list_probes = to_raw_response_wrapper(
             scans.list_probes,
@@ -715,8 +715,8 @@ class AsyncScansResourceWithRawResponse:
         self.list_categories = async_to_raw_response_wrapper(
             scans.list_categories,
         )
-        self.list_attempts = async_to_raw_response_wrapper(
-            scans.list_attempts,
+        self.list_probe_attempts = async_to_raw_response_wrapper(
+            scans.list_probe_attempts,
         )
         self.list_probes = async_to_raw_response_wrapper(
             scans.list_probes,
@@ -753,8 +753,8 @@ class ScansResourceWithStreamingResponse:
         self.list_categories = to_streamed_response_wrapper(
             scans.list_categories,
         )
-        self.list_attempts = to_streamed_response_wrapper(
-            scans.list_attempts,
+        self.list_probe_attempts = to_streamed_response_wrapper(
+            scans.list_probe_attempts,
         )
         self.list_probes = to_streamed_response_wrapper(
             scans.list_probes,
@@ -791,8 +791,8 @@ class AsyncScansResourceWithStreamingResponse:
         self.list_categories = async_to_streamed_response_wrapper(
             scans.list_categories,
         )
-        self.list_attempts = async_to_streamed_response_wrapper(
-            scans.list_attempts,
+        self.list_probe_attempts = async_to_streamed_response_wrapper(
+            scans.list_probe_attempts,
         )
         self.list_probes = async_to_streamed_response_wrapper(
             scans.list_probes,
