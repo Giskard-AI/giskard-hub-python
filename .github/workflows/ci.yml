@@ -1,0 +1,75 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    timeout-minutes: 10
+    name: lint
+    runs-on: "ubuntu-latest"
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24 # v7.1.1
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Run lints
+        run: uv run ruff check . && uv run pyright && uv run mypy . && uv run python -c 'import giskard_hub'
+
+  build:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
+    timeout-minutes: 10
+    name: build
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24 # v7.1.1
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Run build
+        run: uv build
+
+  test:
+    timeout-minutes: 10
+    name: test
+    runs-on: "ubuntu-latest"
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24 # v7.1.1
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Run tests
+        run: uv run pytest
