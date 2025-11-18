@@ -1,0 +1,709 @@
+
+from __future__ import annotations
+
+from typing import Mapping, Optional, cast
+
+import httpx
+
+from ..types import (
+    knowledge_base_list_params,
+    knowledge_base_create_params,
+    knowledge_base_update_params,
+    knowledge_base_bulk_delete_params,
+)
+from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
+from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
+from .._compat import cached_property
+from .._resource import SyncAPIResource, AsyncAPIResource
+from .._response import (
+    to_raw_response_wrapper,
+    to_streamed_response_wrapper,
+    async_to_raw_response_wrapper,
+    async_to_streamed_response_wrapper,
+)
+from .._base_client import make_request_options
+from ..types.api_response_none import APIResponseNone
+from ..types.task_progress_param import TaskProgressParam
+from ..types.api_response_knowledge_base import APIResponseKnowledgeBase
+from ..types.knowledge_base_list_response import KnowledgeBaseListResponse
+from ..types.knowledge_base_list_documents_response import KnowledgeBaseListDocumentsResponse
+
+__all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
+
+
+class KnowledgeBasesResource(SyncAPIResource):
+    @cached_property
+    def with_raw_response(self) -> KnowledgeBasesResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
+        """
+        return KnowledgeBasesResourceWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> KnowledgeBasesResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
+        """
+        return KnowledgeBasesResourceWithStreamingResponse(self)
+
+    def create(
+        self,
+        *,
+        data: knowledge_base_create_params.Data,
+        file: FileTypes,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseKnowledgeBase:
+        """
+        Create Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        body = deepcopy_minimal(
+            {
+                "data": data,
+                "file": file,
+            }
+        )
+        files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
+        return self._post(
+            "/v2/knowledge-bases",
+            body=maybe_transform(body, knowledge_base_create_params.KnowledgeBaseCreateParams),
+            files=files,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseKnowledgeBase,
+        )
+
+    def retrieve(
+        self,
+        knowledge_base_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseKnowledgeBase:
+        """
+        Retrieve Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return self._get(
+            f"/v2/knowledge-bases/{knowledge_base_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseKnowledgeBase,
+        )
+
+    def update(
+        self,
+        knowledge_base_id: str,
+        *,
+        description: Optional[str] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        project_id: Optional[str] | Omit = omit,
+        status: Optional[TaskProgressParam] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseKnowledgeBase:
+        """
+        Update Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return self._patch(
+            f"/v2/knowledge-bases/{knowledge_base_id}",
+            body=maybe_transform(
+                {
+                    "description": description,
+                    "name": name,
+                    "project_id": project_id,
+                    "status": status,
+                },
+                knowledge_base_update_params.KnowledgeBaseUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseKnowledgeBase,
+        )
+
+    def list(
+        self,
+        *,
+        project_id: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> KnowledgeBaseListResponse:
+        """
+        List Knowledge Bases
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._get(
+            "/v2/knowledge-bases",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams),
+            ),
+            cast_to=KnowledgeBaseListResponse,
+        )
+
+    def delete(
+        self,
+        knowledge_base_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Delete Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return self._delete(
+            f"/v2/knowledge-bases/{knowledge_base_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    def bulk_delete(
+        self,
+        *,
+        knowledge_base_ids: SequenceNotStr[str],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Bulk Delete Knowledge Bases
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._delete(
+            "/v2/knowledge-bases",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"knowledge_base_ids": knowledge_base_ids},
+                    knowledge_base_bulk_delete_params.KnowledgeBaseBulkDeleteParams,
+                ),
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    def list_documents(
+        self,
+        knowledge_base_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> KnowledgeBaseListDocumentsResponse:
+        """
+        List Knowledge Base Documents
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return self._get(
+            f"/v2/knowledge-bases/{knowledge_base_id}/documents",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=KnowledgeBaseListDocumentsResponse,
+        )
+
+
+class AsyncKnowledgeBasesResource(AsyncAPIResource):
+    @cached_property
+    def with_raw_response(self) -> AsyncKnowledgeBasesResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
+        """
+        return AsyncKnowledgeBasesResourceWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> AsyncKnowledgeBasesResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
+        """
+        return AsyncKnowledgeBasesResourceWithStreamingResponse(self)
+
+    async def create(
+        self,
+        *,
+        data: knowledge_base_create_params.Data,
+        file: FileTypes,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseKnowledgeBase:
+        """
+        Create Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        body = deepcopy_minimal(
+            {
+                "data": data,
+                "file": file,
+            }
+        )
+        files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
+        return await self._post(
+            "/v2/knowledge-bases",
+            body=await async_maybe_transform(body, knowledge_base_create_params.KnowledgeBaseCreateParams),
+            files=files,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseKnowledgeBase,
+        )
+
+    async def retrieve(
+        self,
+        knowledge_base_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseKnowledgeBase:
+        """
+        Retrieve Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return await self._get(
+            f"/v2/knowledge-bases/{knowledge_base_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseKnowledgeBase,
+        )
+
+    async def update(
+        self,
+        knowledge_base_id: str,
+        *,
+        description: Optional[str] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        project_id: Optional[str] | Omit = omit,
+        status: Optional[TaskProgressParam] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseKnowledgeBase:
+        """
+        Update Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return await self._patch(
+            f"/v2/knowledge-bases/{knowledge_base_id}",
+            body=await async_maybe_transform(
+                {
+                    "description": description,
+                    "name": name,
+                    "project_id": project_id,
+                    "status": status,
+                },
+                knowledge_base_update_params.KnowledgeBaseUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseKnowledgeBase,
+        )
+
+    async def list(
+        self,
+        *,
+        project_id: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> KnowledgeBaseListResponse:
+        """
+        List Knowledge Bases
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._get(
+            "/v2/knowledge-bases",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams
+                ),
+            ),
+            cast_to=KnowledgeBaseListResponse,
+        )
+
+    async def delete(
+        self,
+        knowledge_base_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Delete Knowledge Base
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return await self._delete(
+            f"/v2/knowledge-bases/{knowledge_base_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    async def bulk_delete(
+        self,
+        *,
+        knowledge_base_ids: SequenceNotStr[str],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Bulk Delete Knowledge Bases
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._delete(
+            "/v2/knowledge-bases",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"knowledge_base_ids": knowledge_base_ids},
+                    knowledge_base_bulk_delete_params.KnowledgeBaseBulkDeleteParams,
+                ),
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    async def list_documents(
+        self,
+        knowledge_base_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> KnowledgeBaseListDocumentsResponse:
+        """
+        List Knowledge Base Documents
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not knowledge_base_id:
+            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
+        return await self._get(
+            f"/v2/knowledge-bases/{knowledge_base_id}/documents",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=KnowledgeBaseListDocumentsResponse,
+        )
+
+
+class KnowledgeBasesResourceWithRawResponse:
+    def __init__(self, knowledge_bases: KnowledgeBasesResource) -> None:
+        self._knowledge_bases = knowledge_bases
+
+        self.create = to_raw_response_wrapper(
+            knowledge_bases.create,
+        )
+        self.retrieve = to_raw_response_wrapper(
+            knowledge_bases.retrieve,
+        )
+        self.update = to_raw_response_wrapper(
+            knowledge_bases.update,
+        )
+        self.list = to_raw_response_wrapper(
+            knowledge_bases.list,
+        )
+        self.delete = to_raw_response_wrapper(
+            knowledge_bases.delete,
+        )
+        self.bulk_delete = to_raw_response_wrapper(
+            knowledge_bases.bulk_delete,
+        )
+        self.list_documents = to_raw_response_wrapper(
+            knowledge_bases.list_documents,
+        )
+
+
+class AsyncKnowledgeBasesResourceWithRawResponse:
+    def __init__(self, knowledge_bases: AsyncKnowledgeBasesResource) -> None:
+        self._knowledge_bases = knowledge_bases
+
+        self.create = async_to_raw_response_wrapper(
+            knowledge_bases.create,
+        )
+        self.retrieve = async_to_raw_response_wrapper(
+            knowledge_bases.retrieve,
+        )
+        self.update = async_to_raw_response_wrapper(
+            knowledge_bases.update,
+        )
+        self.list = async_to_raw_response_wrapper(
+            knowledge_bases.list,
+        )
+        self.delete = async_to_raw_response_wrapper(
+            knowledge_bases.delete,
+        )
+        self.bulk_delete = async_to_raw_response_wrapper(
+            knowledge_bases.bulk_delete,
+        )
+        self.list_documents = async_to_raw_response_wrapper(
+            knowledge_bases.list_documents,
+        )
+
+
+class KnowledgeBasesResourceWithStreamingResponse:
+    def __init__(self, knowledge_bases: KnowledgeBasesResource) -> None:
+        self._knowledge_bases = knowledge_bases
+
+        self.create = to_streamed_response_wrapper(
+            knowledge_bases.create,
+        )
+        self.retrieve = to_streamed_response_wrapper(
+            knowledge_bases.retrieve,
+        )
+        self.update = to_streamed_response_wrapper(
+            knowledge_bases.update,
+        )
+        self.list = to_streamed_response_wrapper(
+            knowledge_bases.list,
+        )
+        self.delete = to_streamed_response_wrapper(
+            knowledge_bases.delete,
+        )
+        self.bulk_delete = to_streamed_response_wrapper(
+            knowledge_bases.bulk_delete,
+        )
+        self.list_documents = to_streamed_response_wrapper(
+            knowledge_bases.list_documents,
+        )
+
+
+class AsyncKnowledgeBasesResourceWithStreamingResponse:
+    def __init__(self, knowledge_bases: AsyncKnowledgeBasesResource) -> None:
+        self._knowledge_bases = knowledge_bases
+
+        self.create = async_to_streamed_response_wrapper(
+            knowledge_bases.create,
+        )
+        self.retrieve = async_to_streamed_response_wrapper(
+            knowledge_bases.retrieve,
+        )
+        self.update = async_to_streamed_response_wrapper(
+            knowledge_bases.update,
+        )
+        self.list = async_to_streamed_response_wrapper(
+            knowledge_bases.list,
+        )
+        self.delete = async_to_streamed_response_wrapper(
+            knowledge_bases.delete,
+        )
+        self.bulk_delete = async_to_streamed_response_wrapper(
+            knowledge_bases.bulk_delete,
+        )
+        self.list_documents = async_to_streamed_response_wrapper(
+            knowledge_bases.list_documents,
+        )

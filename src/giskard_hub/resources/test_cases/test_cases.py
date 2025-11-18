@@ -1,0 +1,694 @@
+
+from __future__ import annotations
+
+from typing import Iterable, Optional
+
+import httpx
+
+from ...types import (
+    test_case_create_params,
+    test_case_update_params,
+    test_case_bulk_delete_params,
+    test_case_bulk_update_params,
+)
+from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._utils import maybe_transform, async_maybe_transform
+from .comments import (
+    CommentsResource,
+    AsyncCommentsResource,
+    CommentsResourceWithRawResponse,
+    AsyncCommentsResourceWithRawResponse,
+    CommentsResourceWithStreamingResponse,
+    AsyncCommentsResourceWithStreamingResponse,
+)
+from ..._compat import cached_property
+from ..._resource import SyncAPIResource, AsyncAPIResource
+from ..._response import (
+    to_raw_response_wrapper,
+    to_streamed_response_wrapper,
+    async_to_raw_response_wrapper,
+    async_to_streamed_response_wrapper,
+)
+from ..._base_client import make_request_options
+from ...types.api_response_none import APIResponseNone
+from ...types.chat_message_param import ChatMessageParam
+from ...types.api_response_test_case import APIResponseTestCase
+from ...types.api_response_list_test_case import APIResponseListTestCase
+from ...types.test_case_check_config_param import TestCaseCheckConfigParam
+from ...types.chat_message_with_metadata_param import ChatMessageWithMetadataParam
+
+__all__ = ["TestCasesResource", "AsyncTestCasesResource"]
+
+
+class TestCasesResource(SyncAPIResource):
+    __test__ = False
+
+    @cached_property
+    def comments(self) -> CommentsResource:
+        return CommentsResource(self._client)
+
+    @cached_property
+    def with_raw_response(self) -> TestCasesResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
+        """
+        return TestCasesResourceWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> TestCasesResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
+        """
+        return TestCasesResourceWithStreamingResponse(self)
+
+    def create(
+        self,
+        *,
+        dataset_id: str,
+        messages: Iterable[ChatMessageParam],
+        checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
+        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCase:
+        """
+        Create Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._post(
+            "/v2/test-cases",
+            body=maybe_transform(
+                {
+                    "dataset_id": dataset_id,
+                    "messages": messages,
+                    "checks": checks,
+                    "demo_output": demo_output,
+                    "tags": tags,
+                },
+                test_case_create_params.TestCaseCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCase,
+        )
+
+    def retrieve(
+        self,
+        test_case_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCase:
+        """
+        Retrieve Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        return self._get(
+            f"/v2/test-cases/{test_case_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCase,
+        )
+
+    def update(
+        self,
+        test_case_id: str,
+        *,
+        checks: Optional[Iterable[TestCaseCheckConfigParam]] | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCase:
+        """
+        Update Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        return self._patch(
+            f"/v2/test-cases/{test_case_id}",
+            body=maybe_transform(
+                {
+                    "checks": checks,
+                    "dataset_id": dataset_id,
+                    "demo_output": demo_output,
+                    "messages": messages,
+                    "tags": tags,
+                },
+                test_case_update_params.TestCaseUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCase,
+        )
+
+    def delete(
+        self,
+        test_case_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Delete Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        return self._delete(
+            f"/v2/test-cases/{test_case_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    def bulk_delete(
+        self,
+        *,
+        test_case_ids: SequenceNotStr[str],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Bulk Delete Test Cases
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._delete(
+            "/v2/test-cases",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"test_case_ids": test_case_ids}, test_case_bulk_delete_params.TestCaseBulkDeleteParams
+                ),
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    def bulk_update(
+        self,
+        *,
+        ids: SequenceNotStr[str],
+        disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
+        enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseListTestCase:
+        """
+        Bulk Update Test Cases
+
+        Args:
+          ids: IDs of the objects to be patched
+
+          disabled_checks: Partial list of checks to be disabled
+
+          enabled_checks: Partial list of checks to be enabled
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._patch(
+            "/v2/test-cases",
+            body=maybe_transform(
+                {
+                    "ids": ids,
+                    "disabled_checks": disabled_checks,
+                    "enabled_checks": enabled_checks,
+                },
+                test_case_bulk_update_params.TestCaseBulkUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseListTestCase,
+        )
+
+
+class AsyncTestCasesResource(AsyncAPIResource):
+    @cached_property
+    def comments(self) -> AsyncCommentsResource:
+        return AsyncCommentsResource(self._client)
+
+    @cached_property
+    def with_raw_response(self) -> AsyncTestCasesResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
+        """
+        return AsyncTestCasesResourceWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> AsyncTestCasesResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
+        """
+        return AsyncTestCasesResourceWithStreamingResponse(self)
+
+    async def create(
+        self,
+        *,
+        dataset_id: str,
+        messages: Iterable[ChatMessageParam],
+        checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
+        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCase:
+        """
+        Create Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._post(
+            "/v2/test-cases",
+            body=await async_maybe_transform(
+                {
+                    "dataset_id": dataset_id,
+                    "messages": messages,
+                    "checks": checks,
+                    "demo_output": demo_output,
+                    "tags": tags,
+                },
+                test_case_create_params.TestCaseCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCase,
+        )
+
+    async def retrieve(
+        self,
+        test_case_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCase:
+        """
+        Retrieve Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        return await self._get(
+            f"/v2/test-cases/{test_case_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCase,
+        )
+
+    async def update(
+        self,
+        test_case_id: str,
+        *,
+        checks: Optional[Iterable[TestCaseCheckConfigParam]] | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCase:
+        """
+        Update Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        return await self._patch(
+            f"/v2/test-cases/{test_case_id}",
+            body=await async_maybe_transform(
+                {
+                    "checks": checks,
+                    "dataset_id": dataset_id,
+                    "demo_output": demo_output,
+                    "messages": messages,
+                    "tags": tags,
+                },
+                test_case_update_params.TestCaseUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCase,
+        )
+
+    async def delete(
+        self,
+        test_case_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Delete Test Case
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        return await self._delete(
+            f"/v2/test-cases/{test_case_id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    async def bulk_delete(
+        self,
+        *,
+        test_case_ids: SequenceNotStr[str],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNone:
+        """
+        Bulk Delete Test Cases
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._delete(
+            "/v2/test-cases",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"test_case_ids": test_case_ids}, test_case_bulk_delete_params.TestCaseBulkDeleteParams
+                ),
+            ),
+            cast_to=APIResponseNone,
+        )
+
+    async def bulk_update(
+        self,
+        *,
+        ids: SequenceNotStr[str],
+        disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
+        enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseListTestCase:
+        """
+        Bulk Update Test Cases
+
+        Args:
+          ids: IDs of the objects to be patched
+
+          disabled_checks: Partial list of checks to be disabled
+
+          enabled_checks: Partial list of checks to be enabled
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._patch(
+            "/v2/test-cases",
+            body=await async_maybe_transform(
+                {
+                    "ids": ids,
+                    "disabled_checks": disabled_checks,
+                    "enabled_checks": enabled_checks,
+                },
+                test_case_bulk_update_params.TestCaseBulkUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseListTestCase,
+        )
+
+
+class TestCasesResourceWithRawResponse:
+    __test__ = False
+
+    def __init__(self, test_cases: TestCasesResource) -> None:
+        self._test_cases = test_cases
+
+        self.create = to_raw_response_wrapper(
+            test_cases.create,
+        )
+        self.retrieve = to_raw_response_wrapper(
+            test_cases.retrieve,
+        )
+        self.update = to_raw_response_wrapper(
+            test_cases.update,
+        )
+        self.delete = to_raw_response_wrapper(
+            test_cases.delete,
+        )
+        self.bulk_delete = to_raw_response_wrapper(
+            test_cases.bulk_delete,
+        )
+        self.bulk_update = to_raw_response_wrapper(
+            test_cases.bulk_update,
+        )
+
+    @cached_property
+    def comments(self) -> CommentsResourceWithRawResponse:
+        return CommentsResourceWithRawResponse(self._test_cases.comments)
+
+
+class AsyncTestCasesResourceWithRawResponse:
+    def __init__(self, test_cases: AsyncTestCasesResource) -> None:
+        self._test_cases = test_cases
+
+        self.create = async_to_raw_response_wrapper(
+            test_cases.create,
+        )
+        self.retrieve = async_to_raw_response_wrapper(
+            test_cases.retrieve,
+        )
+        self.update = async_to_raw_response_wrapper(
+            test_cases.update,
+        )
+        self.delete = async_to_raw_response_wrapper(
+            test_cases.delete,
+        )
+        self.bulk_delete = async_to_raw_response_wrapper(
+            test_cases.bulk_delete,
+        )
+        self.bulk_update = async_to_raw_response_wrapper(
+            test_cases.bulk_update,
+        )
+
+    @cached_property
+    def comments(self) -> AsyncCommentsResourceWithRawResponse:
+        return AsyncCommentsResourceWithRawResponse(self._test_cases.comments)
+
+
+class TestCasesResourceWithStreamingResponse:
+    __test__ = False
+
+    def __init__(self, test_cases: TestCasesResource) -> None:
+        self._test_cases = test_cases
+
+        self.create = to_streamed_response_wrapper(
+            test_cases.create,
+        )
+        self.retrieve = to_streamed_response_wrapper(
+            test_cases.retrieve,
+        )
+        self.update = to_streamed_response_wrapper(
+            test_cases.update,
+        )
+        self.delete = to_streamed_response_wrapper(
+            test_cases.delete,
+        )
+        self.bulk_delete = to_streamed_response_wrapper(
+            test_cases.bulk_delete,
+        )
+        self.bulk_update = to_streamed_response_wrapper(
+            test_cases.bulk_update,
+        )
+
+    @cached_property
+    def comments(self) -> CommentsResourceWithStreamingResponse:
+        return CommentsResourceWithStreamingResponse(self._test_cases.comments)
+
+
+class AsyncTestCasesResourceWithStreamingResponse:
+    def __init__(self, test_cases: AsyncTestCasesResource) -> None:
+        self._test_cases = test_cases
+
+        self.create = async_to_streamed_response_wrapper(
+            test_cases.create,
+        )
+        self.retrieve = async_to_streamed_response_wrapper(
+            test_cases.retrieve,
+        )
+        self.update = async_to_streamed_response_wrapper(
+            test_cases.update,
+        )
+        self.delete = async_to_streamed_response_wrapper(
+            test_cases.delete,
+        )
+        self.bulk_delete = async_to_streamed_response_wrapper(
+            test_cases.bulk_delete,
+        )
+        self.bulk_update = async_to_streamed_response_wrapper(
+            test_cases.bulk_update,
+        )
+
+    @cached_property
+    def comments(self) -> AsyncCommentsResourceWithStreamingResponse:
+        return AsyncCommentsResourceWithStreamingResponse(self._test_cases.comments)

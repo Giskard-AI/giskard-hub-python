@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -eux
+mkdir -p dist
+uv build --clean
+uv publish --token=$PYPI_TOKEN

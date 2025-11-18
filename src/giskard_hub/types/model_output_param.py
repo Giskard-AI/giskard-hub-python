@@ -1,0 +1,18 @@
+
+from __future__ import annotations
+
+from typing import Dict, Optional
+from typing_extensions import Required, TypedDict
+
+from .chat_message_param import ChatMessageParam
+from .execution_error_param import ExecutionErrorParam
+
+__all__ = ["ModelOutputParam"]
+
+
+class ModelOutputParam(TypedDict, total=False):
+    response: Required[Optional[ChatMessageParam]]
+
+    error: Optional[ExecutionErrorParam]
+
+    metadata: Dict[str, object]
