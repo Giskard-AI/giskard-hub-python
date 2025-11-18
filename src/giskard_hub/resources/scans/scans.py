@@ -39,6 +39,7 @@ from ...types.scan_list_response import ScanListResponse
 from ...types.scan_create_response import ScanCreateResponse
 from ...types.scan_retrieve_response import ScanRetrieveResponse
 from ...types.scan_list_probes_response import ScanListProbesResponse
+from ...types.scan_list_attempts_response import ScanListAttemptsResponse
 from ...types.scan_list_categories_response import ScanListCategoriesResponse
 
 __all__ = ["ScansResource", "AsyncScansResource"]
@@ -280,6 +281,39 @@ class ScansResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ScanListCategoriesResponse,
+        )
+
+    def list_attempts(
+        self,
+        scan_result_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ScanListAttemptsResponse:
+        """
+        List Scan Attempts
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not scan_result_id:
+            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        return self._get(
+            f"/v2/scans/{scan_result_id}/attempts",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ScanListAttemptsResponse,
         )
 
     def list_probes(
@@ -554,6 +588,39 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=ScanListCategoriesResponse,
         )
 
+    async def list_attempts(
+        self,
+        scan_result_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ScanListAttemptsResponse:
+        """
+        List Scan Attempts
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not scan_result_id:
+            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        return await self._get(
+            f"/v2/scans/{scan_result_id}/attempts",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ScanListAttemptsResponse,
+        )
+
     async def list_probes(
         self,
         scan_result_id: str,
@@ -610,6 +677,9 @@ class ScansResourceWithRawResponse:
         self.list_categories = to_raw_response_wrapper(
             scans.list_categories,
         )
+        self.list_attempts = to_raw_response_wrapper(
+            scans.list_attempts,
+        )
         self.list_probes = to_raw_response_wrapper(
             scans.list_probes,
         )
@@ -644,6 +714,9 @@ class AsyncScansResourceWithRawResponse:
         )
         self.list_categories = async_to_raw_response_wrapper(
             scans.list_categories,
+        )
+        self.list_attempts = async_to_raw_response_wrapper(
+            scans.list_attempts,
         )
         self.list_probes = async_to_raw_response_wrapper(
             scans.list_probes,
@@ -680,6 +753,9 @@ class ScansResourceWithStreamingResponse:
         self.list_categories = to_streamed_response_wrapper(
             scans.list_categories,
         )
+        self.list_attempts = to_streamed_response_wrapper(
+            scans.list_attempts,
+        )
         self.list_probes = to_streamed_response_wrapper(
             scans.list_probes,
         )
@@ -714,6 +790,9 @@ class AsyncScansResourceWithStreamingResponse:
         )
         self.list_categories = async_to_streamed_response_wrapper(
             scans.list_categories,
+        )
+        self.list_attempts = async_to_streamed_response_wrapper(
+            scans.list_attempts,
         )
         self.list_probes = async_to_streamed_response_wrapper(
             scans.list_probes,

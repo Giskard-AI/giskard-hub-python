@@ -77,6 +77,7 @@ from .success_execution_status import SuccessExecutionStatus as SuccessExecution
 from .api_response_agent_output import APIResponseAgentOutput as APIResponseAgentOutput
 from .groundedness_params_param import GroundednessParamsParam as GroundednessParamsParam
 from .scan_list_probes_response import ScanListProbesResponse as ScanListProbesResponse
+from .scan_list_attempts_response import ScanListAttemptsResponse as ScanListAttemptsResponse
 from .string_match_params_param import StringMatchParamsParam as StringMatchParamsParam
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams

@@ -185,6 +185,7 @@ from giskard_hub.types import (
     ScanRetrieveResponse,
     ScanListResponse,
     ScanListCategoriesResponse,
+    ScanListAttemptsResponse,
     ScanListProbesResponse,
 )
 ```
@@ -197,6 +198,7 @@ Methods:
 - <code title="delete /v2/scans/{scan_result_id}">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">delete</a>(scan_result_id) -> <a href="./src/giskard_hub/types/api_response_none.py">APIResponseNone</a></code>
 - <code title="delete /v2/scans">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/scan_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/api_response_none.py">APIResponseNone</a></code>
 - <code title="get /v2/scan-categories">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_categories</a>() -> <a href="./src/giskard_hub/types/scan_list_categories_response.py">ScanListCategoriesResponse</a></code>
+- <code title="get /v2/scans/{scan_result_id}/attempts">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_attempts</a>(scan_result_id) -> <a href="./src/giskard_hub/types/scan_list_attempts_response.py">ScanListAttemptsResponse</a></code>
 - <code title="get /v2/scans/{scan_result_id}/probes">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_probes</a>(scan_result_id) -> <a href="./src/giskard_hub/types/scan_list_probes_response.py">ScanListProbesResponse</a></code>
 
 ## Probes
