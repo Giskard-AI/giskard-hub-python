@@ -275,16 +275,16 @@ class TestScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_list_attempts(self, client: HubClient) -> None:
-        scan = client.scans.list_attempts(
+    def test_method_list_probe_attempts(self, client: HubClient) -> None:
+        scan = client.scans.list_probe_attempts(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(ScanListAttemptsResponse, scan, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_raw_response_list_attempts(self, client: HubClient) -> None:
-        response = client.scans.with_raw_response.list_attempts(
+    def test_raw_response_list_probe_attempts(self, client: HubClient) -> None:
+        response = client.scans.with_raw_response.list_probe_attempts(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
@@ -295,8 +295,8 @@ class TestScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_streaming_response_list_attempts(self, client: HubClient) -> None:
-        with client.scans.with_streaming_response.list_attempts(
+    def test_streaming_response_list_probe_attempts(self, client: HubClient) -> None:
+        with client.scans.with_streaming_response.list_probe_attempts(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
@@ -309,12 +309,12 @@ class TestScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_path_params_list_attempts(self, client: HubClient) -> None:
+    def test_path_params_list_probe_attempts(self, client: HubClient) -> None:
         with pytest.raises(
             ValueError,
             match=r"Expected a non-empty value for `scan_result_id` but received ''",
         ):
-            client.scans.with_raw_response.list_attempts(
+            client.scans.with_raw_response.list_probe_attempts(
                 "",
             )
 
@@ -640,16 +640,16 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_list_attempts(self, async_client: AsyncHubClient) -> None:
-        scan = await async_client.scans.list_attempts(
+    async def test_method_list_probe_attempts(self, async_client: AsyncHubClient) -> None:
+        scan = await async_client.scans.list_probe_attempts(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(ScanListAttemptsResponse, scan, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_list_attempts(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.scans.with_raw_response.list_attempts(
+    async def test_raw_response_list_probe_attempts(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.scans.with_raw_response.list_probe_attempts(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
@@ -660,10 +660,10 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_list_attempts(
+    async def test_streaming_response_list_probe_attempts(
         self, async_client: AsyncHubClient
     ) -> None:
-        async with async_client.scans.with_streaming_response.list_attempts(
+        async with async_client.scans.with_streaming_response.list_probe_attempts(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
@@ -676,14 +676,14 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_path_params_list_attempts(
+    async def test_path_params_list_probe_attempts(
         self, async_client: AsyncHubClient
     ) -> None:
         with pytest.raises(
             ValueError,
             match=r"Expected a non-empty value for `scan_result_id` but received ''",
         ):
-            await async_client.scans.with_raw_response.list_attempts(
+            await async_client.scans.with_raw_response.list_probe_attempts(
                 "",
             )
 
