@@ -5,7 +5,12 @@ from typing import Iterable, Optional
 
 import httpx
 
-from ..types import project_create_params, project_update_params, project_bulk_delete_params
+from ..types import (
+    project_create_params,
+    project_update_params,
+    project_bulk_delete_params,
+    project_preview_scenario_params,
+)
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -21,6 +26,8 @@ from ..types.api_response_none import APIResponseNone
 from ..types.project_list_response import ProjectListResponse
 from ..types.api_response_project_api_resource import APIResponseProjectAPIResource
 from ..types.evaluations.failure_category_param import FailureCategoryParam
+from ..types.scenario_preview_api_request import ScenarioPreviewAPIRequest
+from ..types.api_response_scenario_preview_api_response import APIResponseScenarioPreviewAPIResponse
 
 __all__ = ["ProjectsResource", "AsyncProjectsResource"]
 
@@ -246,6 +253,46 @@ class ProjectsResource(SyncAPIResource):
                 query=maybe_transform({"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams),
             ),
             cast_to=APIResponseNone,
+        )
+
+    def preview_scenario(
+        self,
+        project_id: str,
+        *,
+        agent_id: str,
+        body: ScenarioPreviewAPIRequest,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseScenarioPreviewAPIResponse:
+        """
+        Preview Scenario
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        return self._post(
+            f"/v2/projects/{project_id}/scenarios/preview",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"agent_id": agent_id}, project_preview_scenario_params.ProjectPreviewScenarioParams),
+            ),
+            cast_to=APIResponseScenarioPreviewAPIResponse,
         )
 
 
@@ -474,6 +521,48 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponseNone,
         )
 
+    async def preview_scenario(
+        self,
+        project_id: str,
+        *,
+        agent_id: str,
+        body: ScenarioPreviewAPIRequest,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseScenarioPreviewAPIResponse:
+        """
+        Preview Scenario
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        return await self._post(
+            f"/v2/projects/{project_id}/scenarios/preview",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"agent_id": agent_id}, project_preview_scenario_params.ProjectPreviewScenarioParams
+                ),
+            ),
+            cast_to=APIResponseScenarioPreviewAPIResponse,
+        )
+
 
 class ProjectsResourceWithRawResponse:
     def __init__(self, projects: ProjectsResource) -> None:
@@ -496,6 +585,9 @@ class ProjectsResourceWithRawResponse:
         )
         self.bulk_delete = to_raw_response_wrapper(
             projects.bulk_delete,
+        )
+        self.preview_scenario = to_raw_response_wrapper(
+            projects.preview_scenario,
         )
 
 
@@ -521,6 +613,9 @@ class AsyncProjectsResourceWithRawResponse:
         self.bulk_delete = async_to_raw_response_wrapper(
             projects.bulk_delete,
         )
+        self.preview_scenario = async_to_raw_response_wrapper(
+            projects.preview_scenario,
+        )
 
 
 class ProjectsResourceWithStreamingResponse:
@@ -545,6 +640,9 @@ class ProjectsResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             projects.bulk_delete,
         )
+        self.preview_scenario = to_streamed_response_wrapper(
+            projects.preview_scenario,
+        )
 
 
 class AsyncProjectsResourceWithStreamingResponse:
@@ -568,4 +666,7 @@ class AsyncProjectsResourceWithStreamingResponse:
         )
         self.bulk_delete = async_to_streamed_response_wrapper(
             projects.bulk_delete,
+        )
+        self.preview_scenario = async_to_streamed_response_wrapper(
+            projects.preview_scenario,
         )
