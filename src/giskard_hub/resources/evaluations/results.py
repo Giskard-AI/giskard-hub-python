@@ -20,11 +20,25 @@ from ..._base_client import make_request_options
 from ...types.evaluations import (
     result_list_params,
     result_update_params,
+    result_search_params,
+    result_retrieve_params,
     result_submit_local_output_params,
 )
 from ...types.model_output_param import ModelOutputParam
 from ...types.evaluations.result_list_response import ResultListResponse
+from ...types.evaluations.result_retrieve_response import ResultRetrieveResponse
 from ...types.evaluations.failure_category_param import FailureCategoryParam
+from ...types.search_evaluation_results_api_request import SearchEvaluationResultsAPIRequest
+from ...types.api_response_navigation_info_api_resource import APIResponseNavigationInfoAPIResource
+from ...types.api_response_list_simple_test_case_evaluation_api_resource import (
+    APIResponseListSimpleTestCaseEvaluationAPIResource,
+)
+from ...types.paginated_api_response_test_case_evaluation_api_resource import (
+    PaginatedAPIResponseTestCaseEvaluationAPIResource,
+)
+from ...types.evaluations.update_evaluation_result_visibility_api_request import (
+    UpdateEvaluationResultVisibilityAPIRequest,
+)
 from ...types.evaluations.api_response_test_case_evaluation_api_resource import APIResponseTestCaseEvaluationAPIResource
 
 __all__ = ["ResultsResource", "AsyncResultsResource"]
@@ -49,6 +63,47 @@ class ResultsResource(SyncAPIResource):
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
         return ResultsResourceWithStreamingResponse(self)
+
+    def retrieve(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ResultRetrieveResponse:
+        """
+        Retrieve Evaluation Result
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        return self._get(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
+            ),
+            cast_to=ResultRetrieveResponse,
+        )
 
     def update(
         self,
@@ -207,6 +262,168 @@ class ResultsResource(SyncAPIResource):
             cast_to=APIResponseTestCaseEvaluationAPIResource,
         )
 
+    def search(
+        self,
+        evaluation_id: str,
+        *,
+        body: SearchEvaluationResultsAPIRequest,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PaginatedAPIResponseTestCaseEvaluationAPIResource:
+        """
+        Search Evaluation Results By Filters
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        return self._post(
+            f"/v2/evaluations/{evaluation_id}/results/search",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "include": include,
+                        "limit": limit,
+                        "offset": offset,
+                    },
+                    result_search_params.ResultSearchParams,
+                ),
+            ),
+            cast_to=PaginatedAPIResponseTestCaseEvaluationAPIResource,
+        )
+
+    def simple_search(
+        self,
+        evaluation_id: str,
+        *,
+        body: SearchEvaluationResultsAPIRequest,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseListSimpleTestCaseEvaluationAPIResource:
+        """
+        Search Simple Evaluation Results By Filters
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        return self._post(
+            f"/v2/evaluations/{evaluation_id}/results/simple-search",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseListSimpleTestCaseEvaluationAPIResource,
+        )
+
+    def get_navigation_info(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        body: SearchEvaluationResultsAPIRequest,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNavigationInfoAPIResource:
+        """
+        Get Evaluation Result Navigation Info By Filters
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        return self._post(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/navigation-info",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseNavigationInfoAPIResource,
+        )
+
+    def update_visibility(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        hidden: bool,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCaseEvaluationAPIResource:
+        """
+        Update Evaluation Result Visibility
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        return self._patch(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
+            body=maybe_transform(
+                {"hidden": hidden}, UpdateEvaluationResultVisibilityAPIRequest
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCaseEvaluationAPIResource,
+        )
+
 
 class AsyncResultsResource(AsyncAPIResource):
     @cached_property
@@ -227,6 +444,47 @@ class AsyncResultsResource(AsyncAPIResource):
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
         return AsyncResultsResourceWithStreamingResponse(self)
+
+    async def retrieve(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ResultRetrieveResponse:
+        """
+        Retrieve Evaluation Result
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        return await self._get(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
+            ),
+            cast_to=ResultRetrieveResponse,
+        )
 
     async def update(
         self,
@@ -387,11 +645,176 @@ class AsyncResultsResource(AsyncAPIResource):
             cast_to=APIResponseTestCaseEvaluationAPIResource,
         )
 
+    async def search(
+        self,
+        evaluation_id: str,
+        *,
+        body: SearchEvaluationResultsAPIRequest,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PaginatedAPIResponseTestCaseEvaluationAPIResource:
+        """
+        Search Evaluation Results By Filters
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        return await self._post(
+            f"/v2/evaluations/{evaluation_id}/results/search",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {
+                        "include": include,
+                        "limit": limit,
+                        "offset": offset,
+                    },
+                    result_search_params.ResultSearchParams,
+                ),
+            ),
+            cast_to=PaginatedAPIResponseTestCaseEvaluationAPIResource,
+        )
+
+    async def simple_search(
+        self,
+        evaluation_id: str,
+        *,
+        body: SearchEvaluationResultsAPIRequest,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseListSimpleTestCaseEvaluationAPIResource:
+        """
+        Search Simple Evaluation Results By Filters
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        return await self._post(
+            f"/v2/evaluations/{evaluation_id}/results/simple-search",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseListSimpleTestCaseEvaluationAPIResource,
+        )
+
+    async def get_navigation_info(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        body: SearchEvaluationResultsAPIRequest,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseNavigationInfoAPIResource:
+        """
+        Get Evaluation Result Navigation Info By Filters
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        return await self._post(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/navigation-info",
+            body=body,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseNavigationInfoAPIResource,
+        )
+
+    async def update_visibility(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        hidden: bool,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseTestCaseEvaluationAPIResource:
+        """
+        Update Evaluation Result Visibility
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        return await self._patch(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
+            body=await async_maybe_transform(
+                {"hidden": hidden}, UpdateEvaluationResultVisibilityAPIRequest
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseTestCaseEvaluationAPIResource,
+        )
+
 
 class ResultsResourceWithRawResponse:
     def __init__(self, results: ResultsResource) -> None:
         self._results = results
 
+        self.retrieve = to_raw_response_wrapper(
+            results.retrieve,
+        )
         self.update = to_raw_response_wrapper(
             results.update,
         )
@@ -404,12 +827,27 @@ class ResultsResourceWithRawResponse:
         self.submit_local_output = to_raw_response_wrapper(
             results.submit_local_output,
         )
+        self.search = to_raw_response_wrapper(
+            results.search,
+        )
+        self.simple_search = to_raw_response_wrapper(
+            results.simple_search,
+        )
+        self.get_navigation_info = to_raw_response_wrapper(
+            results.get_navigation_info,
+        )
+        self.update_visibility = to_raw_response_wrapper(
+            results.update_visibility,
+        )
 
 
 class AsyncResultsResourceWithRawResponse:
     def __init__(self, results: AsyncResultsResource) -> None:
         self._results = results
 
+        self.retrieve = async_to_raw_response_wrapper(
+            results.retrieve,
+        )
         self.update = async_to_raw_response_wrapper(
             results.update,
         )
@@ -422,12 +860,27 @@ class AsyncResultsResourceWithRawResponse:
         self.submit_local_output = async_to_raw_response_wrapper(
             results.submit_local_output,
         )
+        self.search = async_to_raw_response_wrapper(
+            results.search,
+        )
+        self.simple_search = async_to_raw_response_wrapper(
+            results.simple_search,
+        )
+        self.get_navigation_info = async_to_raw_response_wrapper(
+            results.get_navigation_info,
+        )
+        self.update_visibility = async_to_raw_response_wrapper(
+            results.update_visibility,
+        )
 
 
 class ResultsResourceWithStreamingResponse:
     def __init__(self, results: ResultsResource) -> None:
         self._results = results
 
+        self.retrieve = to_streamed_response_wrapper(
+            results.retrieve,
+        )
         self.update = to_streamed_response_wrapper(
             results.update,
         )
@@ -440,12 +893,27 @@ class ResultsResourceWithStreamingResponse:
         self.submit_local_output = to_streamed_response_wrapper(
             results.submit_local_output,
         )
+        self.search = to_streamed_response_wrapper(
+            results.search,
+        )
+        self.simple_search = to_streamed_response_wrapper(
+            results.simple_search,
+        )
+        self.get_navigation_info = to_streamed_response_wrapper(
+            results.get_navigation_info,
+        )
+        self.update_visibility = to_streamed_response_wrapper(
+            results.update_visibility,
+        )
 
 
 class AsyncResultsResourceWithStreamingResponse:
     def __init__(self, results: AsyncResultsResource) -> None:
         self._results = results
 
+        self.retrieve = async_to_streamed_response_wrapper(
+            results.retrieve,
+        )
         self.update = async_to_streamed_response_wrapper(
             results.update,
         )
@@ -457,4 +925,16 @@ class AsyncResultsResourceWithStreamingResponse:
         )
         self.submit_local_output = async_to_streamed_response_wrapper(
             results.submit_local_output,
+        )
+        self.search = async_to_streamed_response_wrapper(
+            results.search,
+        )
+        self.simple_search = async_to_streamed_response_wrapper(
+            results.simple_search,
+        )
+        self.get_navigation_info = async_to_streamed_response_wrapper(
+            results.get_navigation_info,
+        )
+        self.update_visibility = async_to_streamed_response_wrapper(
+            results.update_visibility,
         )
