@@ -1,4 +1,12 @@
 
+from .audit import (
+    AuditResource,
+    AsyncAuditResource,
+    AuditResourceWithRawResponse,
+    AsyncAuditResourceWithRawResponse,
+    AuditResourceWithStreamingResponse,
+    AsyncAuditResourceWithStreamingResponse,
+)
 from .scans import (
     ScansResource,
     AsyncScansResource,
@@ -79,6 +87,12 @@ __all__ = [
     "AsyncAgentsResourceWithRawResponse",
     "AgentsResourceWithStreamingResponse",
     "AsyncAgentsResourceWithStreamingResponse",
+    "AuditResource",
+    "AsyncAuditResource",
+    "AuditResourceWithRawResponse",
+    "AsyncAuditResourceWithRawResponse",
+    "AuditResourceWithStreamingResponse",
+    "AsyncAuditResourceWithStreamingResponse",
     "ChecksResource",
     "AsyncChecksResource",
     "ChecksResourceWithRawResponse",
