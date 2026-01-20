@@ -140,6 +140,9 @@ from .api_response_evaluation_api_resource import APIResponseEvaluationAPIResour
 from .dataset_generate_document_based_params import (
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
 )
+from .dataset_generate_scenario_based_params import (
+    DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
+)
 from .knowledge_base_list_documents_response import (
     KnowledgeBaseListDocumentsResponse as KnowledgeBaseListDocumentsResponse,
 )

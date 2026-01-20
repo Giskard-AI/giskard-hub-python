@@ -12,6 +12,7 @@ from ..types import (
     dataset_bulk_delete_params,
     dataset_generate_adversarial_params,
     dataset_generate_document_based_params,
+    dataset_generate_scenario_based_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -368,6 +369,55 @@ class DatasetsResource(SyncAPIResource):
                     "topic_ids": topic_ids,
                 },
                 dataset_generate_document_based_params.DatasetGenerateDocumentBasedParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseDataset,
+        )
+
+    def generate_scenario_based(
+        self,
+        *,
+        agent_id: str,
+        project_id: str,
+        scenarios: Iterable[dataset_generate_scenario_based_params.Scenario],
+        dataset_name: str | Omit = omit,
+        description: Optional[str] | Omit = omit,
+        n_examples_per_scenario: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseDataset:
+        """
+        Generate Scenario Based Dataset
+
+        Args:
+          n_examples_per_scenario: Number of examples to generate for each scenario
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._post(
+            "/v2/datasets/generate-scenario-based",
+            body=maybe_transform(
+                {
+                    "agent_id": agent_id,
+                    "project_id": project_id,
+                    "scenarios": scenarios,
+                    "dataset_name": dataset_name,
+                    "description": description,
+                    "n_examples_per_scenario": n_examples_per_scenario,
+                },
+                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -785,6 +835,55 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponseDataset,
         )
 
+    async def generate_scenario_based(
+        self,
+        *,
+        agent_id: str,
+        project_id: str,
+        scenarios: Iterable[dataset_generate_scenario_based_params.Scenario],
+        dataset_name: str | Omit = omit,
+        description: Optional[str] | Omit = omit,
+        n_examples_per_scenario: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseDataset:
+        """
+        Generate Scenario Based Dataset
+
+        Args:
+          n_examples_per_scenario: Number of examples to generate for each scenario
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._post(
+            "/v2/datasets/generate-scenario-based",
+            body=await async_maybe_transform(
+                {
+                    "agent_id": agent_id,
+                    "project_id": project_id,
+                    "scenarios": scenarios,
+                    "dataset_name": dataset_name,
+                    "description": description,
+                    "n_examples_per_scenario": n_examples_per_scenario,
+                },
+                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseDataset,
+        )
+
     async def list_tags(
         self,
         dataset_id: str,
@@ -880,6 +979,9 @@ class DatasetsResourceWithRawResponse:
         self.generate_document_based = to_raw_response_wrapper(
             datasets.generate_document_based,
         )
+        self.generate_scenario_based = to_raw_response_wrapper(
+            datasets.generate_scenario_based,
+        )
         self.list_tags = to_raw_response_wrapper(
             datasets.list_tags,
         )
@@ -915,6 +1017,9 @@ class AsyncDatasetsResourceWithRawResponse:
         )
         self.generate_document_based = async_to_raw_response_wrapper(
             datasets.generate_document_based,
+        )
+        self.generate_scenario_based = async_to_raw_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.list_tags = async_to_raw_response_wrapper(
             datasets.list_tags,
@@ -952,6 +1057,9 @@ class DatasetsResourceWithStreamingResponse:
         self.generate_document_based = to_streamed_response_wrapper(
             datasets.generate_document_based,
         )
+        self.generate_scenario_based = to_streamed_response_wrapper(
+            datasets.generate_scenario_based,
+        )
         self.list_tags = to_streamed_response_wrapper(
             datasets.list_tags,
         )
@@ -987,6 +1095,9 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.generate_document_based = async_to_streamed_response_wrapper(
             datasets.generate_document_based,
+        )
+        self.generate_scenario_based = async_to_streamed_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.list_tags = async_to_streamed_response_wrapper(
             datasets.list_tags,
