@@ -6,10 +6,11 @@ dynamic = ["readme"]
 license = "Apache-2.0"
 authors = [
 { name = "Henrique Chaves", email = "henrique@giskard.ai" },
+{ name = "Etienne Duchesne", email = "etienne@giskard.ai" },
 ]
 dependencies = [
     "httpx>=0.23.0, <1",
-    "pydantic>=1.9.0, <3",
+    "pydantic>=2, <3",
     "typing-extensions>=4.10, <5",
     "anyio>=3.5.0, <5",
     "distro>=1.7.0, <2",

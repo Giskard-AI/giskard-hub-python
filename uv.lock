@@ -464,7 +464,7 @@ requires-dist = [
     { name = "httpx-aiohttp", marker = "extra == 'aiohttp'", specifier = ">=0.1.9" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "nox", marker = "extra == 'dev'", specifier = ">=2023.4.22" },
-    { name = "pydantic", specifier = ">=1.9.0,<3" },
+    { name = "pydantic", specifier = ">=2,<3" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.21.0" },

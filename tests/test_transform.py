@@ -26,7 +26,6 @@ from giskard_hub._utils import (
     parse_datetime,
     async_transform as _async_transform,
 )
-from giskard_hub._compat import PYDANTIC_V1
 from giskard_hub._models import BaseModel
 
 _T = TypeVar("_T")
@@ -200,9 +199,8 @@ class DateModel(BaseModel):
 @pytest.mark.asyncio
 async def test_iso8601_format(use_async: bool) -> None:
     dt = datetime.fromisoformat("2023-02-23T14:16:36.337692+00:00")
-    tz = "+00:00" if PYDANTIC_V1 else "Z"
     assert await transform({"foo": dt}, DatetimeDict, use_async) == {"foo": "2023-02-23T14:16:36.337692+00:00"}  # type: ignore[comparison-overlap]
-    assert await transform(DatetimeModel(foo=dt), Any, use_async) == {"foo": "2023-02-23T14:16:36.337692" + tz}  # type: ignore[comparison-overlap]
+    assert await transform(DatetimeModel(foo=dt), Any, use_async) == {"foo": "2023-02-23T14:16:36.337692Z"}  # type: ignore[comparison-overlap]
 
     dt = dt.replace(tzinfo=None)
     assert await transform({"foo": dt}, DatetimeDict, use_async) == {"foo": "2023-02-23T14:16:36.337692"}  # type: ignore[comparison-overlap]
@@ -314,11 +312,8 @@ async def test_pydantic_unknown_field(use_async: bool) -> None:
 @pytest.mark.asyncio
 async def test_pydantic_mismatched_types(use_async: bool) -> None:
     model = MyModel.construct(foo=True)
-    if PYDANTIC_V1:
+    with pytest.warns(UserWarning):
         params = await transform(model, Any, use_async)
-    else:
-        with pytest.warns(UserWarning):
-            params = await transform(model, Any, use_async)
     assert cast(Any, params) == {"foo": True}
 
 
@@ -326,11 +321,8 @@ async def test_pydantic_mismatched_types(use_async: bool) -> None:
 @pytest.mark.asyncio
 async def test_pydantic_mismatched_object_type(use_async: bool) -> None:
     model = MyModel.construct(foo=MyModel.construct(hello="world"))
-    if PYDANTIC_V1:
+    with pytest.warns(UserWarning):
         params = await transform(model, Any, use_async)
-    else:
-        with pytest.warns(UserWarning):
-            params = await transform(model, Any, use_async)
     assert cast(Any, params) == {"foo": {"hello": "world"}}
 
 
