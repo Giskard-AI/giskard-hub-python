@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Union, Mapping, TypeVar, Literal, get_args
+from typing import Any, Union, Literal, Mapping, TypeVar, get_args
 from urllib.parse import parse_qs, urlencode
 
 from ._types import NotGiven, not_given

@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 import typing
 import typing_extensions
-from typing import Any, TypeVar, Iterable, cast, Annotated, get_args, get_origin
+from typing import Any, TypeVar, Iterable, Annotated, cast, get_args, get_origin
 from collections import abc as _c_abc
 from typing_extensions import TypeIs, Required
 

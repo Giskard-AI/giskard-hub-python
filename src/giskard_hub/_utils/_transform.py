@@ -3,9 +3,8 @@ from __future__ import annotations
 import io
 import base64
 import pathlib
-from typing import Any, Mapping, TypeVar, cast
+from typing import Any, Literal, Mapping, TypeVar, cast, get_args, get_type_hints as _get_type_hints
 from datetime import date, datetime
-from typing import Literal, get_args, get_type_hints as _get_type_hints
 from typing_extensions import override
 
 import anyio

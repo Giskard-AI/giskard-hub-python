@@ -4,7 +4,7 @@ import os
 import inspect
 import traceback
 import contextlib
-from typing import Any, TypeVar, Iterator, Sequence, cast, Literal, get_args, get_origin
+from typing import Any, Literal, TypeVar, Iterator, Sequence, cast, get_args, get_origin
 from datetime import date, datetime
 from typing_extensions import assert_type
 

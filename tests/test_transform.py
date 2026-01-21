@@ -10,9 +10,9 @@ from typing import (
     TypeVar,
     Iterable,
     Optional,
-    cast,
     Annotated,
     TypedDict,
+    cast,
 )
 from datetime import date, datetime
 from typing_extensions import Required

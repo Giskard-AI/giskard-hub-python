@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Iterable, Optional, Literal
+from typing import Dict, List, Literal, Iterable, Optional
 
 import httpx
 

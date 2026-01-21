@@ -7,16 +7,15 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Type,
-    Generic,
+    Literal,
     TypeVar,
     Callable,
-    cast,
-    Literal,
     ClassVar,
     Protocol,
     ParamSpec,
     TypedDict,
     TypeGuard,
+    cast,
     final,
     runtime_checkable,
 )
@@ -28,7 +27,6 @@ from pydantic.fields import FieldInfo
 
 from ._types import (
     Body,
-    IncEx,
     Query,
     ModelT,
     Headers,

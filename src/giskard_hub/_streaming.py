@@ -10,10 +10,10 @@ from typing import (
     Generic,
     TypeVar,
     Iterator,
-    AsyncIterator,
-    cast,
     Protocol,
     TypeGuard,
+    AsyncIterator,
+    cast,
     get_origin,
     runtime_checkable,
 )

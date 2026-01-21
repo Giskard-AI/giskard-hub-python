@@ -18,6 +18,7 @@ from typing import (
     Type,
     Union,
     Generic,
+    Literal,
     Mapping,
     TypeVar,
     Iterable,
@@ -26,8 +27,8 @@ from typing import (
     AsyncIterator,
     cast,
     overload,
+    get_origin,
 )
-from typing import Literal, get_origin
 from typing_extensions import override
 
 import anyio

@@ -1,5 +1,5 @@
 import json
-from typing import Any, List, Union, cast, Annotated
+from typing import Any, List, Union, Annotated, cast
 
 import httpx
 import pytest

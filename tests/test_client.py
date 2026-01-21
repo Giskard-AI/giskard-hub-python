@@ -9,7 +9,7 @@ import json
 import asyncio
 import inspect
 import tracemalloc
-from typing import Any, Union, cast, Literal
+from typing import Any, Union, Literal, cast
 from unittest import mock
 
 import httpx

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union, Iterable, Optional, Literal, TypeAlias, TypedDict
+from typing import Union, Literal, Iterable, Optional, TypeAlias, TypedDict
 from typing_extensions import Required
 
 from .minimal_model_param import MinimalModelParam

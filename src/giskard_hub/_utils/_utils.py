@@ -12,9 +12,9 @@ from typing import (
     Callable,
     Iterable,
     Sequence,
+    TypeGuard,
     cast,
     overload,
-    TypeGuard,
 )
 from pathlib import Path
 from datetime import date, datetime

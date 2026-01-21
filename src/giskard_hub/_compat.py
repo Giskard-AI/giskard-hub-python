@@ -4,11 +4,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    Literal,
     TypeVar,
     Callable,
-    cast,
     overload,
-    Literal,
 )
 from datetime import date, datetime
 from typing_extensions import Self

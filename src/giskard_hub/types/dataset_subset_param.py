@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Literal, TypedDict
+from typing import Literal, Optional, TypedDict
 from typing_extensions import Required
 
 from .._types import SequenceNotStr

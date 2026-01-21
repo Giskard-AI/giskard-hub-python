@@ -5,10 +5,10 @@ from typing import (
     Dict,
     List,
     Union,
-    Optional,
-    cast,
     Literal,
+    Optional,
     Annotated,
+    cast,
 )
 from datetime import datetime, timezone
 from typing_extensions import TypeAliasType

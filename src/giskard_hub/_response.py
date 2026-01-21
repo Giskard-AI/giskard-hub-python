@@ -14,11 +14,13 @@ from typing import (
     TypeVar,
     Callable,
     Iterator,
+    Awaitable,
+    ParamSpec,
     AsyncIterator,
     cast,
     overload,
+    get_origin,
 )
-from typing import Awaitable, ParamSpec, get_origin
 from typing_extensions import override
 
 import anyio

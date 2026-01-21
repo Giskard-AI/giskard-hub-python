@@ -1,4 +1,4 @@
-from typing import Optional, Literal
+from typing import Literal, Optional
 from datetime import datetime
 
 from .._models import BaseModel
