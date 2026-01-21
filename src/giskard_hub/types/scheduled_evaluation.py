@@ -1,7 +1,5 @@
-
-from typing import List, Union, Optional
+from typing import List, Union, Optional, TypeAlias
 from datetime import datetime
-from typing_extensions import TypeAlias
 
 from .._models import BaseModel
 from .frequency_option import FrequencyOption

@@ -1,4 +1,3 @@
-
 from .scans import (
     ScansResource,
     AsyncScansResource,

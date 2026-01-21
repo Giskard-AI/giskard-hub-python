@@ -29,9 +29,7 @@ MS_WATERSHED = int(2e10)
 MAX_NUMBER = int(3e20)
 
 
-def _get_numeric(
-    value: StrBytesIntFloat, native_expected_type: str
-) -> None | int | float:
+def _get_numeric(value: StrBytesIntFloat, native_expected_type: str) -> None | int | float:
     if isinstance(value, (int, float)):
         return value
     try:
@@ -39,9 +37,7 @@ def _get_numeric(
     except ValueError:
         return None
     except TypeError:
-        raise TypeError(
-            f"invalid type; expected {native_expected_type}, string, bytes, int or float"
-        ) from None
+        raise TypeError(f"invalid type; expected {native_expected_type}, string, bytes, int or float") from None
 
 
 def _from_unix_seconds(seconds: int | float) -> datetime:
@@ -100,9 +96,7 @@ def parse_datetime(value: datetime | StrBytesIntFloat) -> datetime:
         kw["microsecond"] = kw["microsecond"].ljust(6, "0")
 
     tzinfo = _parse_timezone(kw.pop("tzinfo"))
-    kw_: dict[str, None | int | timezone] = {
-        k: int(v) for k, v in kw.items() if v is not None
-    }
+    kw_: dict[str, None | int | timezone] = {k: int(v) for k, v in kw.items() if v is not None}
     kw_["tzinfo"] = tzinfo
 
     return datetime(**kw_)  # type: ignore

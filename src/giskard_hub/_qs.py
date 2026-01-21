@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Union, Mapping, TypeVar
+from typing import Any, Union, Mapping, TypeVar, Literal, get_args
 from urllib.parse import parse_qs, urlencode
-from typing_extensions import Literal, get_args
 
 from ._types import NotGiven, not_given
 from ._utils import flatten
@@ -64,9 +63,7 @@ class Querystring:
             array_format=array_format,
             nested_format=nested_format,
         )
-        return flatten(
-            [self._stringify_item(key, value, opts) for key, value in params.items()]
-        )
+        return flatten([self._stringify_item(key, value, opts) for key, value in params.items()])
 
     def _stringify_item(
         self,
@@ -81,11 +78,7 @@ class Querystring:
                 items.extend(
                     self._stringify_item(
                         # TODO: error if unknown format
-                        (
-                            f"{key}.{subkey}"
-                            if nested_format == "dots"
-                            else f"{key}[{subkey}]"
-                        ),
+                        (f"{key}.{subkey}" if nested_format == "dots" else f"{key}[{subkey}]"),
                         subvalue,
                         opts,
                     )
@@ -98,11 +91,7 @@ class Querystring:
                 return [
                     (
                         key,
-                        ",".join(
-                            self._primitive_value_to_str(item)
-                            for item in value
-                            if item is not None
-                        ),
+                        ",".join(self._primitive_value_to_str(item) for item in value if item is not None),
                     ),
                 ]
             elif array_format == "repeat":
@@ -111,9 +100,7 @@ class Querystring:
                     items.extend(self._stringify_item(key, item, opts))
                 return items
             elif array_format == "indices":
-                raise NotImplementedError(
-                    "The array indices format is not supported yet"
-                )
+                raise NotImplementedError("The array indices format is not supported yet")
             elif array_format == "brackets":
                 items = []
                 key = key + "[]"
@@ -158,9 +145,5 @@ class Options:
         array_format: ArrayFormat | NotGiven = not_given,
         nested_format: NestedFormat | NotGiven = not_given,
     ) -> None:
-        self.array_format = (
-            qs.array_format if isinstance(array_format, NotGiven) else array_format
-        )
-        self.nested_format = (
-            qs.nested_format if isinstance(nested_format, NotGiven) else nested_format
-        )
+        self.array_format = qs.array_format if isinstance(array_format, NotGiven) else array_format
+        self.nested_format = qs.nested_format if isinstance(nested_format, NotGiven) else nested_format

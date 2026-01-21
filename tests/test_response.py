@@ -1,6 +1,5 @@
 import json
-from typing import Any, List, Union, cast
-from typing_extensions import Annotated
+from typing import Any, List, Union, cast, Annotated
 
 import httpx
 import pytest
@@ -230,9 +229,7 @@ def test_response_parse_bool(client: HubClient, content: str, expected: bool) ->
         ("FalSe", False),
     ],
 )
-async def test_async_response_parse_bool(
-    client: AsyncHubClient, content: str, expected: bool
-) -> None:
+async def test_async_response_parse_bool(client: AsyncHubClient, content: str, expected: bool) -> None:
     response = AsyncAPIResponse(
         raw=httpx.Response(200, content=content),
         client=client,
@@ -253,9 +250,7 @@ class OtherModel(BaseModel):
 @pytest.mark.parametrize("client", [False], indirect=True)  # loose validation
 def test_response_parse_expect_model_union_non_json_content(client: HubClient) -> None:
     response = APIResponse(
-        raw=httpx.Response(
-            200, content=b"foo", headers={"Content-Type": "application/text"}
-        ),
+        raw=httpx.Response(200, content=b"foo", headers={"Content-Type": "application/text"}),
         client=client,
         stream=False,
         stream_cls=None,
@@ -274,9 +269,7 @@ async def test_async_response_parse_expect_model_union_non_json_content(
     async_client: AsyncHubClient,
 ) -> None:
     response = AsyncAPIResponse(
-        raw=httpx.Response(
-            200, content=b"foo", headers={"Content-Type": "application/text"}
-        ),
+        raw=httpx.Response(200, content=b"foo", headers={"Content-Type": "application/text"}),
         client=async_client,
         stream=False,
         stream_cls=None,

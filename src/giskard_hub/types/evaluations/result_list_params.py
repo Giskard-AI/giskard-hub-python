@@ -1,8 +1,6 @@
-
 from __future__ import annotations
 
-from typing import List, Optional
-from typing_extensions import Literal, TypedDict
+from typing import List, Optional, Literal, TypedDict
 
 __all__ = ["ResultListParams"]
 

@@ -1,7 +1,7 @@
-
 from __future__ import annotations
 
-from typing_extensions import Required, TypedDict
+from typing import TypedDict
+from typing_extensions import Required
 
 __all__ = ["FailureCategoryParam"]
 

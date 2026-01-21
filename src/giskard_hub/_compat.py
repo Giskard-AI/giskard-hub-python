@@ -1,8 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, Callable, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    TypeVar,
+    Callable,
+    cast,
+    overload,
+    Literal,
+)
 from datetime import date, datetime
-from typing_extensions import Self, Literal
+from typing_extensions import Self
 
 import pydantic
 from pydantic.fields import FieldInfo
@@ -52,7 +61,10 @@ else:
             is_typeddict as is_typeddict,
             is_literal_type as is_literal_type,
         )
-        from pydantic.datetime_parse import parse_date as parse_date, parse_datetime as parse_datetime
+        from pydantic.datetime_parse import (
+            parse_date as parse_date,
+            parse_datetime as parse_datetime,
+        )
     else:
         from ._utils import (
             get_args as get_args,
@@ -175,6 +187,7 @@ else:
         import pydantic.generics
 
         class GenericModel(pydantic.generics.GenericModel, pydantic.BaseModel): ...
+
     else:
         # there no longer needs to be a distinction in v2 but
         # we still have to create our own subclass to avoid
@@ -213,6 +226,7 @@ if TYPE_CHECKING:
 
         # __set__ is not defined at runtime, but @cached_property is designed to be settable
         def __set__(self, instance: object, value: _T) -> None: ...
+
 else:
     from functools import cached_property as cached_property
 

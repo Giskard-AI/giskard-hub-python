@@ -1,7 +1,5 @@
-
-from typing import Dict, List, Union, Optional
+from typing import Dict, List, Union, Optional, TypeAlias
 from datetime import datetime
-from typing_extensions import TypeAlias
 
 from .metric import Metric
 from .._models import BaseModel

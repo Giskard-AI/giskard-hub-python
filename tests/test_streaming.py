@@ -106,9 +106,7 @@ async def test_multiple_events_with_data(sync: bool, client: HubClient, async_cl
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("sync", [True, False], ids=["sync", "async"])
-async def test_multiple_data_lines_with_empty_line(
-    sync: bool, client: HubClient, async_client: AsyncHubClient
-) -> None:
+async def test_multiple_data_lines_with_empty_line(sync: bool, client: HubClient, async_client: AsyncHubClient) -> None:
     def body() -> Iterator[bytes]:
         yield b"event: ping\n"
         yield b"data: {\n"

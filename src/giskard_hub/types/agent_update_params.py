@@ -1,8 +1,6 @@
-
 from __future__ import annotations
 
-from typing import Iterable, Optional
-from typing_extensions import TypedDict
+from typing import Iterable, Optional, TypedDict
 
 from .._types import SequenceNotStr
 from .header_param import HeaderParam

@@ -1,4 +1,3 @@
-
 from .comments import (
     CommentsResource,
     AsyncCommentsResource,

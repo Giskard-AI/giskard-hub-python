@@ -16,9 +16,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
 class TestComments:
-    parametrize = pytest.mark.parametrize(
-        "client", [False, True], indirect=True, ids=["loose", "strict"]
-    )
+    parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -223,9 +221,7 @@ class TestAsyncComments:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.test_cases.comments.with_streaming_response.delete(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",

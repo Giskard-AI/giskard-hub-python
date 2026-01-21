@@ -124,9 +124,7 @@ class HubClient(SyncAPIClient):
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResource(self)
         self.projects = projects.ProjectsResource(self)
         self.scans = scans.ScansResource(self)
-        self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(
-            self
-        )
+        self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(self)
         self.test_cases = test_cases.TestCasesResource(self)
         self.with_raw_response = HubClientWithRawResponse(self)
         self.with_streaming_response = HubClientWithStreamedResponse(self)
@@ -169,14 +167,10 @@ class HubClient(SyncAPIClient):
         Create a new client instance re-using the same options given to the current client with optional overriding.
         """
         if default_headers is not None and set_default_headers is not None:
-            raise ValueError(
-                "The `default_headers` and `set_default_headers` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_headers` and `set_default_headers` arguments are mutually exclusive")
 
         if default_query is not None and set_default_query is not None:
-            raise ValueError(
-                "The `default_query` and `set_default_query` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_query` and `set_default_query` arguments are mutually exclusive")
 
         headers = self._custom_headers
         if default_headers is not None:
@@ -218,14 +212,10 @@ class HubClient(SyncAPIClient):
             return _exceptions.BadRequestError(err_msg, response=response, body=body)
 
         if response.status_code == 401:
-            return _exceptions.AuthenticationError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.AuthenticationError(err_msg, response=response, body=body)
 
         if response.status_code == 403:
-            return _exceptions.PermissionDeniedError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.PermissionDeniedError(err_msg, response=response, body=body)
 
         if response.status_code == 404:
             return _exceptions.NotFoundError(err_msg, response=response, body=body)
@@ -234,17 +224,13 @@ class HubClient(SyncAPIClient):
             return _exceptions.ConflictError(err_msg, response=response, body=body)
 
         if response.status_code == 422:
-            return _exceptions.UnprocessableEntityError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.UnprocessableEntityError(err_msg, response=response, body=body)
 
         if response.status_code == 429:
             return _exceptions.RateLimitError(err_msg, response=response, body=body)
 
         if response.status_code >= 500:
-            return _exceptions.InternalServerError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.InternalServerError(err_msg, response=response, body=body)
         return APIStatusError(err_msg, response=response, body=body)
 
 
@@ -322,9 +308,7 @@ class AsyncHubClient(AsyncAPIClient):
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResource(self)
         self.projects = projects.AsyncProjectsResource(self)
         self.scans = scans.AsyncScansResource(self)
-        self.scheduled_evaluations = (
-            scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
-        )
+        self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
         self.test_cases = test_cases.AsyncTestCasesResource(self)
         self.with_raw_response = AsyncHubClientWithRawResponse(self)
         self.with_streaming_response = AsyncHubClientWithStreamedResponse(self)
@@ -367,14 +351,10 @@ class AsyncHubClient(AsyncAPIClient):
         Create a new client instance re-using the same options given to the current client with optional overriding.
         """
         if default_headers is not None and set_default_headers is not None:
-            raise ValueError(
-                "The `default_headers` and `set_default_headers` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_headers` and `set_default_headers` arguments are mutually exclusive")
 
         if default_query is not None and set_default_query is not None:
-            raise ValueError(
-                "The `default_query` and `set_default_query` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_query` and `set_default_query` arguments are mutually exclusive")
 
         headers = self._custom_headers
         if default_headers is not None:
@@ -416,14 +396,10 @@ class AsyncHubClient(AsyncAPIClient):
             return _exceptions.BadRequestError(err_msg, response=response, body=body)
 
         if response.status_code == 401:
-            return _exceptions.AuthenticationError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.AuthenticationError(err_msg, response=response, body=body)
 
         if response.status_code == 403:
-            return _exceptions.PermissionDeniedError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.PermissionDeniedError(err_msg, response=response, body=body)
 
         if response.status_code == 404:
             return _exceptions.NotFoundError(err_msg, response=response, body=body)
@@ -432,17 +408,13 @@ class AsyncHubClient(AsyncAPIClient):
             return _exceptions.ConflictError(err_msg, response=response, body=body)
 
         if response.status_code == 422:
-            return _exceptions.UnprocessableEntityError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.UnprocessableEntityError(err_msg, response=response, body=body)
 
         if response.status_code == 429:
             return _exceptions.RateLimitError(err_msg, response=response, body=body)
 
         if response.status_code >= 500:
-            return _exceptions.InternalServerError(
-                err_msg, response=response, body=body
-            )
+            return _exceptions.InternalServerError(err_msg, response=response, body=body)
         return APIStatusError(err_msg, response=response, body=body)
 
 
@@ -451,18 +423,12 @@ class HubClientWithRawResponse:
         self.agents = agents.AgentsResourceWithRawResponse(client.agents)
         self.checks = checks.ChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithRawResponse(client.datasets)
-        self.evaluations = evaluations.EvaluationsResourceWithRawResponse(
-            client.evaluations
-        )
-        self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithRawResponse(
-            client.knowledge_bases
-        )
+        self.evaluations = evaluations.EvaluationsResourceWithRawResponse(client.evaluations)
+        self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
         self.projects = projects.ProjectsResourceWithRawResponse(client.projects)
         self.scans = scans.ScansResourceWithRawResponse(client.scans)
-        self.scheduled_evaluations = (
-            scheduled_evaluations.ScheduledEvaluationsResourceWithRawResponse(
-                client.scheduled_evaluations
-            )
+        self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithRawResponse(
+            client.scheduled_evaluations
         )
         self.test_cases = test_cases.TestCasesResourceWithRawResponse(client.test_cases)
 
@@ -472,24 +438,14 @@ class AsyncHubClientWithRawResponse:
         self.agents = agents.AsyncAgentsResourceWithRawResponse(client.agents)
         self.checks = checks.AsyncChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithRawResponse(client.datasets)
-        self.evaluations = evaluations.AsyncEvaluationsResourceWithRawResponse(
-            client.evaluations
-        )
-        self.knowledge_bases = (
-            knowledge_bases.AsyncKnowledgeBasesResourceWithRawResponse(
-                client.knowledge_bases
-            )
-        )
+        self.evaluations = evaluations.AsyncEvaluationsResourceWithRawResponse(client.evaluations)
+        self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
         self.projects = projects.AsyncProjectsResourceWithRawResponse(client.projects)
         self.scans = scans.AsyncScansResourceWithRawResponse(client.scans)
-        self.scheduled_evaluations = (
-            scheduled_evaluations.AsyncScheduledEvaluationsResourceWithRawResponse(
-                client.scheduled_evaluations
-            )
+        self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithRawResponse(
+            client.scheduled_evaluations
         )
-        self.test_cases = test_cases.AsyncTestCasesResourceWithRawResponse(
-            client.test_cases
-        )
+        self.test_cases = test_cases.AsyncTestCasesResourceWithRawResponse(client.test_cases)
 
 
 class HubClientWithStreamedResponse:
@@ -497,51 +453,29 @@ class HubClientWithStreamedResponse:
         self.agents = agents.AgentsResourceWithStreamingResponse(client.agents)
         self.checks = checks.ChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithStreamingResponse(client.datasets)
-        self.evaluations = evaluations.EvaluationsResourceWithStreamingResponse(
-            client.evaluations
-        )
-        self.knowledge_bases = (
-            knowledge_bases.KnowledgeBasesResourceWithStreamingResponse(
-                client.knowledge_bases
-            )
-        )
+        self.evaluations = evaluations.EvaluationsResourceWithStreamingResponse(client.evaluations)
+        self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
         self.projects = projects.ProjectsResourceWithStreamingResponse(client.projects)
         self.scans = scans.ScansResourceWithStreamingResponse(client.scans)
-        self.scheduled_evaluations = (
-            scheduled_evaluations.ScheduledEvaluationsResourceWithStreamingResponse(
-                client.scheduled_evaluations
-            )
+        self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithStreamingResponse(
+            client.scheduled_evaluations
         )
-        self.test_cases = test_cases.TestCasesResourceWithStreamingResponse(
-            client.test_cases
-        )
+        self.test_cases = test_cases.TestCasesResourceWithStreamingResponse(client.test_cases)
 
 
 class AsyncHubClientWithStreamedResponse:
     def __init__(self, client: AsyncHubClient) -> None:
         self.agents = agents.AsyncAgentsResourceWithStreamingResponse(client.agents)
         self.checks = checks.AsyncChecksResourceWithStreamingResponse(client.checks)
-        self.datasets = datasets.AsyncDatasetsResourceWithStreamingResponse(
-            client.datasets
-        )
-        self.evaluations = evaluations.AsyncEvaluationsResourceWithStreamingResponse(
-            client.evaluations
-        )
-        self.knowledge_bases = (
-            knowledge_bases.AsyncKnowledgeBasesResourceWithStreamingResponse(
-                client.knowledge_bases
-            )
-        )
-        self.projects = projects.AsyncProjectsResourceWithStreamingResponse(
-            client.projects
-        )
+        self.datasets = datasets.AsyncDatasetsResourceWithStreamingResponse(client.datasets)
+        self.evaluations = evaluations.AsyncEvaluationsResourceWithStreamingResponse(client.evaluations)
+        self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
+        self.projects = projects.AsyncProjectsResourceWithStreamingResponse(client.projects)
         self.scans = scans.AsyncScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithStreamingResponse(
             client.scheduled_evaluations
         )
-        self.test_cases = test_cases.AsyncTestCasesResourceWithStreamingResponse(
-            client.test_cases
-        )
+        self.test_cases = test_cases.AsyncTestCasesResourceWithStreamingResponse(client.test_cases)
 
 
 Client = HubClient

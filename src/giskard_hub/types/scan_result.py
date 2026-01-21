@@ -1,7 +1,5 @@
-
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
-from typing_extensions import Literal
 
 from .._models import BaseModel
 from .task_progress import TaskProgress

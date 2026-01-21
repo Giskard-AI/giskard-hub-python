@@ -22,9 +22,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
 class TestScans:
-    parametrize = pytest.mark.parametrize(
-        "client", [False, True], indirect=True, ids=["loose", "strict"]
-    )
+    parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -337,9 +335,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_create_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_create_with_all_params(self, async_client: AsyncHubClient) -> None:
         scan = await async_client.scans.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -363,9 +359,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_create(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.scans.with_streaming_response.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -388,9 +382,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_retrieve_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_retrieve_with_all_params(self, async_client: AsyncHubClient) -> None:
         scan = await async_client.scans.retrieve(
             scan_result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             include=["agent"],
@@ -411,9 +403,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_retrieve(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_retrieve(self, async_client: AsyncHubClient) -> None:
         async with async_client.scans.with_streaming_response.retrieve(
             scan_result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -444,9 +434,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_list_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_list_with_all_params(self, async_client: AsyncHubClient) -> None:
         scan = await async_client.scans.list(
             include=["agent"],
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -497,9 +485,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.scans.with_streaming_response.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -544,9 +530,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_bulk_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_bulk_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.scans.with_streaming_response.bulk_delete(
             scan_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         ) as response:
@@ -566,9 +550,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_list_categories(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_raw_response_list_categories(self, async_client: AsyncHubClient) -> None:
         response = await async_client.scans.with_raw_response.list_categories()
 
         assert response.is_closed is True
@@ -578,12 +560,8 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_list_categories(
-        self, async_client: AsyncHubClient
-    ) -> None:
-        async with (
-            async_client.scans.with_streaming_response.list_categories() as response
-        ):
+    async def test_streaming_response_list_categories(self, async_client: AsyncHubClient) -> None:
+        async with async_client.scans.with_streaming_response.list_categories() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
@@ -614,9 +592,7 @@ class TestAsyncScans:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_list_probes(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_list_probes(self, async_client: AsyncHubClient) -> None:
         async with async_client.scans.with_streaming_response.list_probes(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:

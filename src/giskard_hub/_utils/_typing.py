@@ -3,15 +3,9 @@ from __future__ import annotations
 import sys
 import typing
 import typing_extensions
-from typing import Any, TypeVar, Iterable, cast
+from typing import Any, TypeVar, Iterable, cast, Annotated, get_args, get_origin
 from collections import abc as _c_abc
-from typing_extensions import (
-    TypeIs,
-    Required,
-    Annotated,
-    get_args,
-    get_origin,
-)
+from typing_extensions import TypeIs, Required
 
 from ._utils import lru_cache
 from .._types import InheritsGeneric
@@ -53,7 +47,7 @@ def is_typevar(typ: type) -> bool:
 
 _TYPE_ALIAS_TYPES: tuple[type[typing_extensions.TypeAliasType], ...] = (typing_extensions.TypeAliasType,)
 if sys.version_info >= (3, 12):
-    _TYPE_ALIAS_TYPES = (*_TYPE_ALIAS_TYPES, typing.TypeAliasType)
+    _TYPE_ALIAS_TYPES = (*_TYPE_ALIAS_TYPES, typing.TypeAliasType)  # novermin
 
 
 def is_type_alias_type(tp: Any, /) -> TypeIs[typing_extensions.TypeAliasType]:

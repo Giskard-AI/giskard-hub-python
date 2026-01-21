@@ -12,17 +12,15 @@ from typing import (
     Callable,
     Iterator,
     Sequence,
-)
-from typing_extensions import (
     Literal,
     Protocol,
     TypeAlias,
     TypedDict,
     SupportsIndex,
     overload,
-    override,
     runtime_checkable,
 )
+from typing_extensions import override
 
 import httpx
 import pydantic

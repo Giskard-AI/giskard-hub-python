@@ -1,9 +1,7 @@
-
 from __future__ import annotations
 
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Literal
 from datetime import datetime
-from typing_extensions import Literal
 
 import httpx
 

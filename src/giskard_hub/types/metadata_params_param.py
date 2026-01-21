@@ -1,8 +1,7 @@
-
 from __future__ import annotations
 
-from typing import Union, Iterable
-from typing_extensions import Literal, Required, TypedDict
+from typing import Union, Iterable, Literal, TypedDict
+from typing_extensions import Required
 
 __all__ = ["MetadataParamsParam", "JsonPathRule"]
 

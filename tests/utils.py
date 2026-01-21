@@ -4,9 +4,9 @@ import os
 import inspect
 import traceback
 import contextlib
-from typing import Any, TypeVar, Iterator, Sequence, cast
+from typing import Any, TypeVar, Iterator, Sequence, cast, Literal, get_args, get_origin
 from datetime import date, datetime
-from typing_extensions import Literal, get_args, get_origin, assert_type
+from typing_extensions import assert_type
 
 from giskard_hub._types import Omit, NoneType
 from giskard_hub._utils import (

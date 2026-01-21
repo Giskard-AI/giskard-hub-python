@@ -1,5 +1,4 @@
-from typing import Any
-from typing_extensions import Iterator, AsyncIterator
+from typing import Any, Iterator, AsyncIterator
 
 
 def consume_sync_iterator(iterator: Iterator[Any]) -> None:

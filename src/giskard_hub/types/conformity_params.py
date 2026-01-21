@@ -1,6 +1,4 @@
-
-from typing import List, Optional
-from typing_extensions import Literal
+from typing import Literal, List, Optional
 
 from .._models import BaseModel
 
