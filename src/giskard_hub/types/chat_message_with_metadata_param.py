@@ -1,8 +1,7 @@
-
 from __future__ import annotations
 
-from typing import Dict, Optional
-from typing_extensions import Required, TypedDict
+from typing import Dict, Optional, TypedDict
+from typing_extensions import Required
 
 __all__ = ["ChatMessageWithMetadataParam"]
 

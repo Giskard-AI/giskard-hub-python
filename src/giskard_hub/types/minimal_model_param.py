@@ -1,8 +1,7 @@
-
 from __future__ import annotations
 
-from typing import Dict, Union, Optional
-from typing_extensions import Required, TypeAlias, TypedDict
+from typing import Dict, Union, Optional, TypeAlias, TypedDict
+from typing_extensions import Required
 
 __all__ = ["MinimalModelParam"]
 

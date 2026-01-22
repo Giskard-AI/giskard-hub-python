@@ -1,4 +1,3 @@
-
 from .results import (
     ResultsResource,
     AsyncResultsResource,

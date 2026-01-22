@@ -1,8 +1,7 @@
-
 from __future__ import annotations
 
-from typing import Optional
-from typing_extensions import Literal, Required, TypedDict
+from typing import Literal, Optional, TypedDict
+from typing_extensions import Required
 
 from .._types import SequenceNotStr
 

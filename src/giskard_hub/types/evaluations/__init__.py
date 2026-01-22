@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from .task_state import TaskState as TaskState

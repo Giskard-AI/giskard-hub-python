@@ -1,9 +1,7 @@
-
 from __future__ import annotations
 
-from typing import Union, Optional
+from typing import Union, Optional, Annotated, TypeAlias, TypedDict
 from datetime import datetime
-from typing_extensions import Annotated, TypeAlias, TypedDict
 
 from .._utils import PropertyInfo
 from .frequency_option import FrequencyOption

@@ -21,9 +21,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
 class TestDatasets:
-    parametrize = pytest.mark.parametrize(
-        "client", [False, True], indirect=True, ids=["loose", "strict"]
-    )
+    parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -304,9 +302,7 @@ class TestDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_generate_adversarial_with_all_params(
-        self, client: HubClient
-    ) -> None:
+    def test_method_generate_adversarial_with_all_params(self, client: HubClient) -> None:
         dataset = client.datasets.generate_adversarial(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -363,9 +359,7 @@ class TestDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_generate_document_based_with_all_params(
-        self, client: HubClient
-    ) -> None:
+    def test_method_generate_document_based_with_all_params(self, client: HubClient) -> None:
         dataset = client.datasets.generate_document_based(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -393,9 +387,7 @@ class TestDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_streaming_response_generate_document_based(
-        self, client: HubClient
-    ) -> None:
+    def test_streaming_response_generate_document_based(self, client: HubClient) -> None:
         with client.datasets.with_streaming_response.generate_document_based(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -519,9 +511,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_create_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_create_with_all_params(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -544,9 +534,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_create(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -581,9 +569,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_retrieve(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_retrieve(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -616,9 +602,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_update_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_update_with_all_params(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.update(
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
@@ -646,9 +630,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_update(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_update(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.update(
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -679,9 +661,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_list_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_list_with_all_params(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
@@ -731,9 +711,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -778,9 +756,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_bulk_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_bulk_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.bulk_delete(
             dataset_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         ) as response:
@@ -794,9 +770,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_generate_adversarial(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_generate_adversarial(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.generate_adversarial(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -805,9 +779,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_generate_adversarial_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_generate_adversarial_with_all_params(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.generate_adversarial(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -826,9 +798,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_generate_adversarial(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_raw_response_generate_adversarial(self, async_client: AsyncHubClient) -> None:
         response = await async_client.datasets.with_raw_response.generate_adversarial(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -841,9 +811,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_generate_adversarial(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_generate_adversarial(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.generate_adversarial(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -858,9 +826,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_generate_document_based(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_generate_document_based(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.generate_document_based(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -870,9 +836,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_generate_document_based_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_generate_document_based_with_all_params(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.generate_document_based(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -886,15 +850,11 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_generate_document_based(
-        self, async_client: AsyncHubClient
-    ) -> None:
-        response = (
-            await async_client.datasets.with_raw_response.generate_document_based(
-                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            )
+    async def test_raw_response_generate_document_based(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.datasets.with_raw_response.generate_document_based(
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -904,16 +864,12 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_generate_document_based(
-        self, async_client: AsyncHubClient
-    ) -> None:
-        async with (
-            async_client.datasets.with_streaming_response.generate_document_based(
-                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            ) as response
-        ):
+    async def test_streaming_response_generate_document_based(self, async_client: AsyncHubClient) -> None:
+        async with async_client.datasets.with_streaming_response.generate_document_based(
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
@@ -944,9 +900,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_list_tags(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_list_tags(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.list_tags(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -979,9 +933,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_list_test_cases(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_raw_response_list_test_cases(self, async_client: AsyncHubClient) -> None:
         response = await async_client.datasets.with_raw_response.list_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
@@ -993,9 +945,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_list_test_cases(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_list_test_cases(self, async_client: AsyncHubClient) -> None:
         async with async_client.datasets.with_streaming_response.list_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -1009,9 +959,7 @@ class TestAsyncDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_path_params_list_test_cases(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_path_params_list_test_cases(self, async_client: AsyncHubClient) -> None:
         with pytest.raises(
             ValueError,
             match=r"Expected a non-empty value for `dataset_id` but received ''",

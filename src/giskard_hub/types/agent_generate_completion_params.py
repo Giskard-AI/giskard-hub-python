@@ -1,8 +1,7 @@
-
 from __future__ import annotations
 
-from typing import Iterable
-from typing_extensions import Required, TypedDict
+from typing import Iterable, TypedDict
+from typing_extensions import Required
 
 from .chat_message_param import ChatMessageParam
 

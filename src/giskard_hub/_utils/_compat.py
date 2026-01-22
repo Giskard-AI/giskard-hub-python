@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import typing_extensions
-from typing import Any, Type, Union, Literal
+from typing import Any, Type, Union, Literal, get_args as _get_args, get_origin as _get_origin
 from datetime import date, datetime
-from typing_extensions import get_args as _get_args, get_origin as _get_origin
 
 from .._types import StrBytesIntFloat
 from ._datetime_parse import (

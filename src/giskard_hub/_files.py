@@ -3,8 +3,7 @@ from __future__ import annotations
 import io
 import os
 import pathlib
-from typing import overload
-from typing_extensions import TypeGuard
+from typing import TypeGuard, overload
 
 import anyio
 

@@ -1,4 +1,3 @@
-
 from typing import Optional
 
 from .._models import BaseModel

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import functools
-from typing import TypeVar, Callable, Awaitable
-from typing_extensions import ParamSpec
+from typing import TypeVar, Callable, Awaitable, ParamSpec
 
 import anyio
 import sniffio

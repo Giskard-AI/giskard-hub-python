@@ -19,9 +19,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
 class TestChecks:
-    parametrize = pytest.mark.parametrize(
-        "client", [False, True], indirect=True, ids=["loose", "strict"]
-    )
+    parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -337,9 +335,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_create(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.checks.with_streaming_response.create(
             assertions=[{"reference": "reference"}],
             description="description",
@@ -377,9 +373,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_retrieve(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_retrieve(self, async_client: AsyncHubClient) -> None:
         async with async_client.checks.with_streaming_response.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -412,9 +406,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_update_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_update_with_all_params(self, async_client: AsyncHubClient) -> None:
         check = await async_client.checks.update(
             check_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             assertions=[
@@ -443,9 +435,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_update(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_update(self, async_client: AsyncHubClient) -> None:
         async with async_client.checks.with_streaming_response.update(
             check_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -478,9 +468,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_list_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_list_with_all_params(self, async_client: AsyncHubClient) -> None:
         check = await async_client.checks.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             filter_builtin=True,
@@ -535,9 +523,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.checks.with_streaming_response.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
@@ -582,9 +568,7 @@ class TestAsyncChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_bulk_delete(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_bulk_delete(self, async_client: AsyncHubClient) -> None:
         async with async_client.checks.with_streaming_response.bulk_delete(
             check_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         ) as response:

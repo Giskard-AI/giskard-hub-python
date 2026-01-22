@@ -1,6 +1,4 @@
-
-from typing import List, Union, Optional
-from typing_extensions import TypeAlias
+from typing import List, Union, Optional, TypeAlias
 
 from .._models import BaseModel
 from .metadata_params import MetadataParams
@@ -13,7 +11,12 @@ from .semantic_similarity_params import SemanticSimilarityParams
 __all__ = ["TestCaseCheckConfig", "Assertion"]
 
 Assertion: TypeAlias = Union[
-    CorrectnessParams, ConformityParams, GroundednessParams, StringMatchParams, MetadataParams, SemanticSimilarityParams
+    CorrectnessParams,
+    ConformityParams,
+    GroundednessParams,
+    StringMatchParams,
+    MetadataParams,
+    SemanticSimilarityParams,
 ]
 
 

@@ -9,9 +9,8 @@ import json
 import asyncio
 import inspect
 import tracemalloc
-from typing import Any, Union, cast
+from typing import Any, Union, Literal, cast
 from unittest import mock
-from typing_extensions import Literal
 
 import httpx
 import pytest
@@ -57,9 +56,7 @@ def _low_retry_timeout(*_args: Any, **_kwargs: Any) -> float:
 
 def _get_open_connections(client: HubClient | AsyncHubClient) -> int:
     transport = client._client._transport
-    assert isinstance(transport, httpx.HTTPTransport) or isinstance(
-        transport, httpx.AsyncHTTPTransport
-    )
+    assert isinstance(transport, httpx.HTTPTransport) or isinstance(transport, httpx.AsyncHTTPTransport)
 
     pool = transport._pool
     return len(pool._requests)
@@ -68,9 +65,7 @@ def _get_open_connections(client: HubClient | AsyncHubClient) -> int:
 class TestHubClient:
     @pytest.mark.respx(base_url=base_url)
     def test_raw_response(self, respx_mock: MockRouter, client: HubClient) -> None:
-        respx_mock.post("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": "bar"})
-        )
+        respx_mock.post("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
 
         response = client.post("/foo", cast_to=httpx.Response)
         assert response.status_code == 200
@@ -78,9 +73,7 @@ class TestHubClient:
         assert response.json() == {"foo": "bar"}
 
     @pytest.mark.respx(base_url=base_url)
-    def test_raw_response_for_binary(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_raw_response_for_binary(self, respx_mock: MockRouter, client: HubClient) -> None:
         respx_mock.post("/foo").mock(
             return_value=httpx.Response(
                 200,
@@ -211,9 +204,7 @@ class TestHubClient:
                 continue
 
             copy_param = copy_signature.parameters.get(name)
-            assert (
-                copy_param is not None
-            ), f"copy() signature is missing the {name} param"
+            assert copy_param is not None, f"copy() signature is missing the {name} param"
 
     @pytest.mark.skipif(
         sys.version_info >= (3, 10),
@@ -243,9 +234,7 @@ class TestHubClient:
 
         tracemalloc.stop()
 
-        def add_leak(
-            leaks: list[tracemalloc.StatisticDiff], diff: tracemalloc.StatisticDiff
-        ) -> None:
+        def add_leak(leaks: list[tracemalloc.StatisticDiff], diff: tracemalloc.StatisticDiff) -> None:
             if diff.count == 0:
                 # Avoid false positives by considering only leaks (i.e. allocations that persist).
                 return
@@ -288,9 +277,7 @@ class TestHubClient:
         timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
         assert timeout == DEFAULT_TIMEOUT
 
-        request = client._build_request(
-            FinalRequestOptions(method="get", url="/foo", timeout=httpx.Timeout(100.0))
-        )
+        request = client._build_request(FinalRequestOptions(method="get", url="/foo", timeout=httpx.Timeout(100.0)))
         timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
         assert timeout == httpx.Timeout(100.0)
 
@@ -318,9 +305,7 @@ class TestHubClient:
                 http_client=http_client,
             )
 
-            request = client._build_request(
-                FinalRequestOptions(method="get", url="/foo")
-            )
+            request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
             assert timeout == httpx.Timeout(None)
 
@@ -335,9 +320,7 @@ class TestHubClient:
                 http_client=http_client,
             )
 
-            request = client._build_request(
-                FinalRequestOptions(method="get", url="/foo")
-            )
+            request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
             assert timeout == DEFAULT_TIMEOUT
 
@@ -352,9 +335,7 @@ class TestHubClient:
                 http_client=http_client,
             )
 
-            request = client._build_request(
-                FinalRequestOptions(method="get", url="/foo")
-            )
+            request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
             assert timeout == DEFAULT_TIMEOUT  # our default
 
@@ -377,9 +358,7 @@ class TestHubClient:
             _strict_response_validation=True,
             default_headers={"X-Foo": "bar"},
         )
-        request = test_client._build_request(
-            FinalRequestOptions(method="get", url="/foo")
-        )
+        request = test_client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
         assert request.headers.get("x-giskard-lang") == "python"
 
@@ -392,9 +371,7 @@ class TestHubClient:
                 "X-Giskard-Lang": "my-overriding-header",
             },
         )
-        request = test_client2._build_request(
-            FinalRequestOptions(method="get", url="/foo")
-        )
+        request = test_client2._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "stainless"
         assert request.headers.get("x-giskard-lang") == "my-overriding-header"
 
@@ -402,17 +379,13 @@ class TestHubClient:
         test_client2.close()
 
     def test_validate_headers(self) -> None:
-        client = HubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("X-API-Key") == api_key
 
         with pytest.raises(HubClientError):
             with update_env(**{"GISKARD_HUB_API_KEY": Omit()}):
-                client2 = HubClient(
-                    base_url=base_url, api_key=None, _strict_response_validation=True
-                )
+                client2 = HubClient(base_url=base_url, api_key=None, _strict_response_validation=True)
             _ = client2
 
     def test_default_query_option(self) -> None:
@@ -540,9 +513,7 @@ class TestHubClient:
             FinalRequestOptions.construct(
                 method="post",
                 url="/foo",
-                headers={
-                    "Content-Type": "multipart/form-data; boundary=6b7ba517decee4a450543ea6ae821c82"
-                },
+                headers={"Content-Type": "multipart/form-data; boundary=6b7ba517decee4a450543ea6ae821c82"},
                 json_data={"array": ["foo", "bar"]},
                 files=[("foo.txt", b"hello world")],
             )
@@ -567,27 +538,21 @@ class TestHubClient:
         ]
 
     @pytest.mark.respx(base_url=base_url)
-    def test_basic_union_response(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_basic_union_response(self, respx_mock: MockRouter, client: HubClient) -> None:
         class Model1(BaseModel):
             name: str
 
         class Model2(BaseModel):
             foo: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": "bar"})
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
 
         response = client.get("/foo", cast_to=cast(Any, Union[Model1, Model2]))
         assert isinstance(response, Model2)
         assert response.foo == "bar"
 
     @pytest.mark.respx(base_url=base_url)
-    def test_union_response_different_types(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_union_response_different_types(self, respx_mock: MockRouter, client: HubClient) -> None:
         """Union of objects with the same field name using a different type"""
 
         class Model1(BaseModel):
@@ -596,9 +561,7 @@ class TestHubClient:
         class Model2(BaseModel):
             foo: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": "bar"})
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
 
         response = client.get("/foo", cast_to=cast(Any, Union[Model1, Model2]))
         assert isinstance(response, Model2)
@@ -611,9 +574,7 @@ class TestHubClient:
         assert response.foo == 1
 
     @pytest.mark.respx(base_url=base_url)
-    def test_non_application_json_content_type_for_json_data(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_non_application_json_content_type_for_json_data(self, respx_mock: MockRouter, client: HubClient) -> None:
         """
         Response that sets Content-Type to something other than application/json but returns json data
         """
@@ -737,9 +698,7 @@ class TestHubClient:
         client.close()
 
     def test_copied_client_does_not_close_http(self) -> None:
-        test_client = HubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        test_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not test_client.is_closed()
 
         copied = test_client.copy()
@@ -750,9 +709,7 @@ class TestHubClient:
         assert not test_client.is_closed()
 
     def test_client_context_manager(self) -> None:
-        test_client = HubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        test_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         with test_client as c2:
             assert c2 is test_client
             assert not c2.is_closed()
@@ -760,15 +717,11 @@ class TestHubClient:
         assert test_client.is_closed()
 
     @pytest.mark.respx(base_url=base_url)
-    def test_client_response_validation_error(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_client_response_validation_error(self, respx_mock: MockRouter, client: HubClient) -> None:
         class Model(BaseModel):
             foo: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": {"invalid": True}})
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": {"invalid": True}}))
 
         with pytest.raises(APIResponseValidationError) as exc:
             client.get("/foo", cast_to=Model)
@@ -789,20 +742,14 @@ class TestHubClient:
         class Model(BaseModel):
             name: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, text="my-custom-format")
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = HubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        strict_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             strict_client.get("/foo", cast_to=Model)
 
-        non_strict_client = HubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=False
-        )
+        non_strict_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = non_strict_client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -841,9 +788,7 @@ class TestHubClient:
     ) -> None:
         headers = httpx.Headers({"retry-after": retry_after})
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
-        calculated = client._calculate_retry_timeout(
-            remaining_retries, options, headers
-        )
+        calculated = client._calculate_retry_timeout(remaining_retries, options, headers)
         assert calculated == pytest.approx(  # pyright: ignore[reportUnknownMemberType]
             timeout, 0.5 * 0.875
         )
@@ -853,12 +798,8 @@ class TestHubClient:
         _low_retry_timeout,
     )
     @pytest.mark.respx(base_url=base_url)
-    def test_retrying_timeout_errors_doesnt_leak(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
-        respx_mock.get("/v2/agents").mock(
-            side_effect=httpx.TimeoutException("Test timeout error")
-        )
+    def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: HubClient) -> None:
+        respx_mock.get("/v2/agents").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
             client.agents.with_streaming_response.list().__enter__()
@@ -870,9 +811,7 @@ class TestHubClient:
         _low_retry_timeout,
     )
     @pytest.mark.respx(base_url=base_url)
-    def test_retrying_status_errors_doesnt_leak(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: HubClient) -> None:
         respx_mock.get("/v2/agents").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
@@ -911,10 +850,7 @@ class TestHubClient:
         response = client.agents.with_raw_response.list()
 
         assert response.retries_taken == failures_before_success
-        assert (
-            int(response.http_request.headers.get("x-giskard-retry-count"))
-            == failures_before_success
-        )
+        assert int(response.http_request.headers.get("x-giskard-retry-count")) == failures_before_success
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
     @mock.patch(
@@ -938,13 +874,9 @@ class TestHubClient:
 
         respx_mock.get("/v2/agents").mock(side_effect=retry_handler)
 
-        response = client.agents.with_raw_response.list(
-            extra_headers={"x-giskard-retry-count": Omit()}
-        )
+        response = client.agents.with_raw_response.list(extra_headers={"x-giskard-retry-count": Omit()})
 
-        assert (
-            len(response.http_request.headers.get_list("x-giskard-retry-count")) == 0
-        )
+        assert len(response.http_request.headers.get_list("x-giskard-retry-count")) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
     @mock.patch(
@@ -968,9 +900,7 @@ class TestHubClient:
 
         respx_mock.get("/v2/agents").mock(side_effect=retry_handler)
 
-        response = client.agents.with_raw_response.list(
-            extra_headers={"x-giskard-retry-count": "42"}
-        )
+        response = client.agents.with_raw_response.list(extra_headers={"x-giskard-retry-count": "42"})
 
         assert response.http_request.headers.get("x-giskard-retry-count") == "42"
 
@@ -1000,29 +930,19 @@ class TestHubClient:
     def test_follow_redirects(self, respx_mock: MockRouter, client: HubClient) -> None:
         # Test that the default follow_redirects=True allows following redirects
         respx_mock.post("/redirect").mock(
-            return_value=httpx.Response(
-                302, headers={"Location": f"{base_url}/redirected"}
-            )
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
         )
-        respx_mock.get("/redirected").mock(
-            return_value=httpx.Response(200, json={"status": "ok"})
-        )
+        respx_mock.get("/redirected").mock(return_value=httpx.Response(200, json={"status": "ok"}))
 
-        response = client.post(
-            "/redirect", body={"key": "value"}, cast_to=httpx.Response
-        )
+        response = client.post("/redirect", body={"key": "value"}, cast_to=httpx.Response)
         assert response.status_code == 200
         assert response.json() == {"status": "ok"}
 
     @pytest.mark.respx(base_url=base_url)
-    def test_follow_redirects_disabled(
-        self, respx_mock: MockRouter, client: HubClient
-    ) -> None:
+    def test_follow_redirects_disabled(self, respx_mock: MockRouter, client: HubClient) -> None:
         # Test that follow_redirects=False prevents following redirects
         respx_mock.post("/redirect").mock(
-            return_value=httpx.Response(
-                302, headers={"Location": f"{base_url}/redirected"}
-            )
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
         )
 
         with pytest.raises(APIStatusError) as exc_info:
@@ -1039,12 +959,8 @@ class TestHubClient:
 
 class TestAsyncHubClient:
     @pytest.mark.respx(base_url=base_url)
-    async def test_raw_response(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
-        respx_mock.post("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": "bar"})
-        )
+    async def test_raw_response(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
+        respx_mock.post("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
 
         response = await async_client.post("/foo", cast_to=httpx.Response)
         assert response.status_code == 200
@@ -1052,9 +968,7 @@ class TestAsyncHubClient:
         assert response.json() == {"foo": "bar"}
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_raw_response_for_binary(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
+    async def test_raw_response_for_binary(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
         respx_mock.post("/foo").mock(
             return_value=httpx.Response(
                 200,
@@ -1185,9 +1099,7 @@ class TestAsyncHubClient:
                 continue
 
             copy_param = copy_signature.parameters.get(name)
-            assert (
-                copy_param is not None
-            ), f"copy() signature is missing the {name} param"
+            assert copy_param is not None, f"copy() signature is missing the {name} param"
 
     @pytest.mark.skipif(
         sys.version_info >= (3, 10),
@@ -1217,9 +1129,7 @@ class TestAsyncHubClient:
 
         tracemalloc.stop()
 
-        def add_leak(
-            leaks: list[tracemalloc.StatisticDiff], diff: tracemalloc.StatisticDiff
-        ) -> None:
+        def add_leak(leaks: list[tracemalloc.StatisticDiff], diff: tracemalloc.StatisticDiff) -> None:
             if diff.count == 0:
                 # Avoid false positives by considering only leaks (i.e. allocations that persist).
                 return
@@ -1258,9 +1168,7 @@ class TestAsyncHubClient:
             raise AssertionError()
 
     async def test_request_timeout(self, async_client: AsyncHubClient) -> None:
-        request = async_client._build_request(
-            FinalRequestOptions(method="get", url="/foo")
-        )
+        request = async_client._build_request(FinalRequestOptions(method="get", url="/foo"))
         timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
         assert timeout == DEFAULT_TIMEOUT
 
@@ -1294,9 +1202,7 @@ class TestAsyncHubClient:
                 http_client=http_client,
             )
 
-            request = client._build_request(
-                FinalRequestOptions(method="get", url="/foo")
-            )
+            request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
             assert timeout == httpx.Timeout(None)
 
@@ -1311,9 +1217,7 @@ class TestAsyncHubClient:
                 http_client=http_client,
             )
 
-            request = client._build_request(
-                FinalRequestOptions(method="get", url="/foo")
-            )
+            request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
             assert timeout == DEFAULT_TIMEOUT
 
@@ -1328,9 +1232,7 @@ class TestAsyncHubClient:
                 http_client=http_client,
             )
 
-            request = client._build_request(
-                FinalRequestOptions(method="get", url="/foo")
-            )
+            request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
             assert timeout == DEFAULT_TIMEOUT  # our default
 
@@ -1353,9 +1255,7 @@ class TestAsyncHubClient:
             _strict_response_validation=True,
             default_headers={"X-Foo": "bar"},
         )
-        request = test_client._build_request(
-            FinalRequestOptions(method="get", url="/foo")
-        )
+        request = test_client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
         assert request.headers.get("x-giskard-lang") == "python"
 
@@ -1368,9 +1268,7 @@ class TestAsyncHubClient:
                 "X-Giskard-Lang": "my-overriding-header",
             },
         )
-        request = test_client2._build_request(
-            FinalRequestOptions(method="get", url="/foo")
-        )
+        request = test_client2._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "stainless"
         assert request.headers.get("x-giskard-lang") == "my-overriding-header"
 
@@ -1378,17 +1276,13 @@ class TestAsyncHubClient:
         await test_client2.close()
 
     def test_validate_headers(self) -> None:
-        client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("X-API-Key") == api_key
 
         with pytest.raises(HubClientError):
             with update_env(**{"GISKARD_HUB_API_KEY": Omit()}):
-                client2 = AsyncHubClient(
-                    base_url=base_url, api_key=None, _strict_response_validation=True
-                )
+                client2 = AsyncHubClient(base_url=base_url, api_key=None, _strict_response_validation=True)
             _ = client2
 
     async def test_default_query_option(self) -> None:
@@ -1516,9 +1410,7 @@ class TestAsyncHubClient:
             FinalRequestOptions.construct(
                 method="post",
                 url="/foo",
-                headers={
-                    "Content-Type": "multipart/form-data; boundary=6b7ba517decee4a450543ea6ae821c82"
-                },
+                headers={"Content-Type": "multipart/form-data; boundary=6b7ba517decee4a450543ea6ae821c82"},
                 json_data={"array": ["foo", "bar"]},
                 files=[("foo.txt", b"hello world")],
             )
@@ -1543,29 +1435,21 @@ class TestAsyncHubClient:
         ]
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_basic_union_response(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
+    async def test_basic_union_response(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
         class Model1(BaseModel):
             name: str
 
         class Model2(BaseModel):
             foo: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": "bar"})
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
 
-        response = await async_client.get(
-            "/foo", cast_to=cast(Any, Union[Model1, Model2])
-        )
+        response = await async_client.get("/foo", cast_to=cast(Any, Union[Model1, Model2]))
         assert isinstance(response, Model2)
         assert response.foo == "bar"
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_union_response_different_types(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
+    async def test_union_response_different_types(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
         """Union of objects with the same field name using a different type"""
 
         class Model1(BaseModel):
@@ -1574,21 +1458,15 @@ class TestAsyncHubClient:
         class Model2(BaseModel):
             foo: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": "bar"})
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
 
-        response = await async_client.get(
-            "/foo", cast_to=cast(Any, Union[Model1, Model2])
-        )
+        response = await async_client.get("/foo", cast_to=cast(Any, Union[Model1, Model2]))
         assert isinstance(response, Model2)
         assert response.foo == "bar"
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": 1}))
 
-        response = await async_client.get(
-            "/foo", cast_to=cast(Any, Union[Model1, Model2])
-        )
+        response = await async_client.get("/foo", cast_to=cast(Any, Union[Model1, Model2]))
         assert isinstance(response, Model1)
         assert response.foo == 1
 
@@ -1719,9 +1597,7 @@ class TestAsyncHubClient:
         await client.close()
 
     async def test_copied_client_does_not_close_http(self) -> None:
-        test_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        test_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not test_client.is_closed()
 
         copied = test_client.copy()
@@ -1733,9 +1609,7 @@ class TestAsyncHubClient:
         assert not test_client.is_closed()
 
     async def test_client_context_manager(self) -> None:
-        test_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        test_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         async with test_client as c2:
             assert c2 is test_client
             assert not c2.is_closed()
@@ -1743,15 +1617,11 @@ class TestAsyncHubClient:
         assert test_client.is_closed()
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_client_response_validation_error(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
+    async def test_client_response_validation_error(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
         class Model(BaseModel):
             foo: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, json={"foo": {"invalid": True}})
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, json={"foo": {"invalid": True}}))
 
         with pytest.raises(APIResponseValidationError) as exc:
             await async_client.get("/foo", cast_to=Model)
@@ -1768,26 +1638,18 @@ class TestAsyncHubClient:
             )
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_received_text_for_expected_json(
-        self, respx_mock: MockRouter
-    ) -> None:
+    async def test_received_text_for_expected_json(self, respx_mock: MockRouter) -> None:
         class Model(BaseModel):
             name: str
 
-        respx_mock.get("/foo").mock(
-            return_value=httpx.Response(200, text="my-custom-format")
-        )
+        respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=True
-        )
+        strict_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             await strict_client.get("/foo", cast_to=Model)
 
-        non_strict_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, _strict_response_validation=False
-        )
+        non_strict_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = await non_strict_client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -1826,9 +1688,7 @@ class TestAsyncHubClient:
     ) -> None:
         headers = httpx.Headers({"retry-after": retry_after})
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
-        calculated = async_client._calculate_retry_timeout(
-            remaining_retries, options, headers
-        )
+        calculated = async_client._calculate_retry_timeout(remaining_retries, options, headers)
         assert calculated == pytest.approx(  # pyright: ignore[reportUnknownMemberType]
             timeout, 0.5 * 0.875
         )
@@ -1841,9 +1701,7 @@ class TestAsyncHubClient:
     async def test_retrying_timeout_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncHubClient
     ) -> None:
-        respx_mock.get("/v2/agents").mock(
-            side_effect=httpx.TimeoutException("Test timeout error")
-        )
+        respx_mock.get("/v2/agents").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
             await async_client.agents.with_streaming_response.list().__aenter__()
@@ -1896,10 +1754,7 @@ class TestAsyncHubClient:
         response = await client.agents.with_raw_response.list()
 
         assert response.retries_taken == failures_before_success
-        assert (
-            int(response.http_request.headers.get("x-giskard-retry-count"))
-            == failures_before_success
-        )
+        assert int(response.http_request.headers.get("x-giskard-retry-count")) == failures_before_success
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
     @mock.patch(
@@ -1926,13 +1781,9 @@ class TestAsyncHubClient:
 
         respx_mock.get("/v2/agents").mock(side_effect=retry_handler)
 
-        response = await client.agents.with_raw_response.list(
-            extra_headers={"x-giskard-retry-count": Omit()}
-        )
+        response = await client.agents.with_raw_response.list(extra_headers={"x-giskard-retry-count": Omit()})
 
-        assert (
-            len(response.http_request.headers.get_list("x-giskard-retry-count")) == 0
-        )
+        assert len(response.http_request.headers.get_list("x-giskard-retry-count")) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
     @mock.patch(
@@ -1959,9 +1810,7 @@ class TestAsyncHubClient:
 
         respx_mock.get("/v2/agents").mock(side_effect=retry_handler)
 
-        response = await client.agents.with_raw_response.list(
-            extra_headers={"x-giskard-retry-count": "42"}
-        )
+        response = await client.agents.with_raw_response.list(extra_headers={"x-giskard-retry-count": "42"})
 
         assert response.http_request.headers.get("x-giskard-retry-count") == "42"
 
@@ -1969,9 +1818,7 @@ class TestAsyncHubClient:
         platform = await asyncify(get_platform)()
         assert isinstance(platform, (str, OtherPlatform))
 
-    async def test_proxy_environment_variables(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    async def test_proxy_environment_variables(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # Test that the proxy environment variables are set correctly
         monkeypatch.setenv("HTTPS_PROXY", "https://example.org")
 
@@ -1994,34 +1841,22 @@ class TestAsyncHubClient:
         )
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_follow_redirects(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
+    async def test_follow_redirects(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
         # Test that the default follow_redirects=True allows following redirects
         respx_mock.post("/redirect").mock(
-            return_value=httpx.Response(
-                302, headers={"Location": f"{base_url}/redirected"}
-            )
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
         )
-        respx_mock.get("/redirected").mock(
-            return_value=httpx.Response(200, json={"status": "ok"})
-        )
+        respx_mock.get("/redirected").mock(return_value=httpx.Response(200, json={"status": "ok"}))
 
-        response = await async_client.post(
-            "/redirect", body={"key": "value"}, cast_to=httpx.Response
-        )
+        response = await async_client.post("/redirect", body={"key": "value"}, cast_to=httpx.Response)
         assert response.status_code == 200
         assert response.json() == {"status": "ok"}
 
     @pytest.mark.respx(base_url=base_url)
-    async def test_follow_redirects_disabled(
-        self, respx_mock: MockRouter, async_client: AsyncHubClient
-    ) -> None:
+    async def test_follow_redirects_disabled(self, respx_mock: MockRouter, async_client: AsyncHubClient) -> None:
         # Test that follow_redirects=False prevents following redirects
         respx_mock.post("/redirect").mock(
-            return_value=httpx.Response(
-                302, headers={"Location": f"{base_url}/redirected"}
-            )
+            return_value=httpx.Response(302, headers={"Location": f"{base_url}/redirected"})
         )
 
         with pytest.raises(APIStatusError) as exc_info:

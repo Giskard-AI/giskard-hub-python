@@ -15,9 +15,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
 class TestAttempts:
-    parametrize = pytest.mark.parametrize(
-        "client", [False, True], indirect=True, ids=["loose", "strict"]
-    )
+    parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -94,9 +92,7 @@ class TestAsyncAttempts:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_update_with_all_params(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_method_update_with_all_params(self, async_client: AsyncHubClient) -> None:
         attempt = await async_client.scans.attempts.update(
             probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             review_status="pending",
@@ -119,9 +115,7 @@ class TestAsyncAttempts:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_update(
-        self, async_client: AsyncHubClient
-    ) -> None:
+    async def test_streaming_response_update(self, async_client: AsyncHubClient) -> None:
         async with async_client.scans.attempts.with_streaming_response.update(
             probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:

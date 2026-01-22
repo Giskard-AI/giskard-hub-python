@@ -1,8 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, Callable, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    Literal,
+    TypeVar,
+    Callable,
+    overload,
+)
 from datetime import date, datetime
-from typing_extensions import Self, Literal
+from typing_extensions import Self
 
 import pydantic
 from pydantic.fields import FieldInfo
@@ -16,8 +24,6 @@ _ModelT = TypeVar("_ModelT", bound=pydantic.BaseModel)
 
 # Pyright incorrectly reports some of our functions as overriding a method when they don't
 # pyright: reportIncompatibleMethodOverride=false
-
-PYDANTIC_V1 = pydantic.VERSION.startswith("1.")
 
 if TYPE_CHECKING:
 
@@ -43,57 +49,35 @@ if TYPE_CHECKING:
         ...
 
 else:
-    # v1 re-exports
-    if PYDANTIC_V1:
-        from pydantic.typing import (
-            get_args as get_args,
-            is_union as is_union,
-            get_origin as get_origin,
-            is_typeddict as is_typeddict,
-            is_literal_type as is_literal_type,
-        )
-        from pydantic.datetime_parse import parse_date as parse_date, parse_datetime as parse_datetime
-    else:
-        from ._utils import (
-            get_args as get_args,
-            is_union as is_union,
-            get_origin as get_origin,
-            parse_date as parse_date,
-            is_typeddict as is_typeddict,
-            parse_datetime as parse_datetime,
-            is_literal_type as is_literal_type,
-        )
+    from ._utils import (
+        get_args as get_args,
+        is_union as is_union,
+        get_origin as get_origin,
+        parse_date as parse_date,
+        is_typeddict as is_typeddict,
+        parse_datetime as parse_datetime,
+        is_literal_type as is_literal_type,
+    )
 
 
 # refactored config
 if TYPE_CHECKING:
     from pydantic import ConfigDict as ConfigDict
 else:
-    if PYDANTIC_V1:
-        # TODO: provide an error message here?
-        ConfigDict = None
-    else:
-        from pydantic import ConfigDict as ConfigDict
+    from pydantic import ConfigDict as ConfigDict
 
 
 # renamed methods / properties
 def parse_obj(model: type[_ModelT], value: object) -> _ModelT:
-    if PYDANTIC_V1:
-        return cast(_ModelT, model.parse_obj(value))  # pyright: ignore[reportDeprecated, reportUnnecessaryCast]
-    else:
-        return model.model_validate(value)
+    return model.model_validate(value)
 
 
 def field_is_required(field: FieldInfo) -> bool:
-    if PYDANTIC_V1:
-        return field.required  # type: ignore
     return field.is_required()
 
 
 def field_get_default(field: FieldInfo) -> Any:
     value = field.get_default()
-    if PYDANTIC_V1:
-        return value
     from pydantic_core import PydanticUndefined
 
     if value == PydanticUndefined:
@@ -102,32 +86,22 @@ def field_get_default(field: FieldInfo) -> Any:
 
 
 def field_outer_type(field: FieldInfo) -> Any:
-    if PYDANTIC_V1:
-        return field.outer_type_  # type: ignore
     return field.annotation
 
 
 def get_model_config(model: type[pydantic.BaseModel]) -> Any:
-    if PYDANTIC_V1:
-        return model.__config__  # type: ignore
     return model.model_config
 
 
 def get_model_fields(model: type[pydantic.BaseModel]) -> dict[str, FieldInfo]:
-    if PYDANTIC_V1:
-        return model.__fields__  # type: ignore
     return model.model_fields
 
 
 def model_copy(model: _ModelT, *, deep: bool = False) -> _ModelT:
-    if PYDANTIC_V1:
-        return model.copy(deep=deep)  # type: ignore
     return model.model_copy(deep=deep)
 
 
 def model_json(model: pydantic.BaseModel, *, indent: int | None = None) -> str:
-    if PYDANTIC_V1:
-        return model.json(indent=indent)  # type: ignore
     return model.model_dump_json(indent=indent)
 
 
@@ -140,28 +114,16 @@ def model_dump(
     warnings: bool = True,
     mode: Literal["json", "python"] = "python",
 ) -> dict[str, Any]:
-    if (not PYDANTIC_V1) or hasattr(model, "model_dump"):
-        return model.model_dump(
-            mode=mode,
-            exclude=exclude,
-            exclude_unset=exclude_unset,
-            exclude_defaults=exclude_defaults,
-            # warnings are not supported in Pydantic v1
-            warnings=True if PYDANTIC_V1 else warnings,
-        )
-    return cast(
-        "dict[str, Any]",
-        model.dict(  # pyright: ignore[reportDeprecated, reportUnnecessaryCast]
-            exclude=exclude,
-            exclude_unset=exclude_unset,
-            exclude_defaults=exclude_defaults,
-        ),
+    return model.model_dump(
+        mode=mode,
+        exclude=exclude,
+        exclude_unset=exclude_unset,
+        exclude_defaults=exclude_defaults,
+        warnings=warnings,
     )
 
 
 def model_parse(model: type[_ModelT], data: Any) -> _ModelT:
-    if PYDANTIC_V1:
-        return model.parse_obj(data)  # pyright: ignore[reportDeprecated]
     return model.model_validate(data)
 
 
@@ -171,15 +133,10 @@ if TYPE_CHECKING:
     class GenericModel(pydantic.BaseModel): ...
 
 else:
-    if PYDANTIC_V1:
-        import pydantic.generics
-
-        class GenericModel(pydantic.generics.GenericModel, pydantic.BaseModel): ...
-    else:
-        # there no longer needs to be a distinction in v2 but
-        # we still have to create our own subclass to avoid
-        # inconsistent MRO ordering errors
-        class GenericModel(pydantic.BaseModel): ...
+    # there no longer needs to be a distinction in v2 but
+    # we still have to create our own subclass to avoid
+    # inconsistent MRO ordering errors
+    class GenericModel(pydantic.BaseModel): ...
 
 
 # cached properties
@@ -213,6 +170,7 @@ if TYPE_CHECKING:
 
         # __set__ is not defined at runtime, but @cached_property is designed to be settable
         def __set__(self, instance: object, value: _T) -> None: ...
+
 else:
     from functools import cached_property as cached_property
 

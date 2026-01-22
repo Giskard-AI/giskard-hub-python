@@ -1,8 +1,6 @@
-
 from __future__ import annotations
 
-from typing import Optional
-from typing_extensions import TypedDict
+from typing import Optional, TypedDict
 
 from .task_progress_param import TaskProgressParam
 

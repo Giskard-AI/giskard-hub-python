@@ -4,9 +4,9 @@ import os
 import inspect
 import traceback
 import contextlib
-from typing import Any, TypeVar, Iterator, Sequence, cast
+from typing import Any, Literal, TypeVar, Iterator, Sequence, cast, get_args, get_origin
 from datetime import date, datetime
-from typing_extensions import Literal, get_args, get_origin, assert_type
+from typing_extensions import assert_type
 
 from giskard_hub._types import Omit, NoneType
 from giskard_hub._utils import (
@@ -19,7 +19,7 @@ from giskard_hub._utils import (
     is_annotated_type,
     is_type_alias_type,
 )
-from giskard_hub._compat import PYDANTIC_V1, field_outer_type, get_model_fields
+from giskard_hub._compat import field_outer_type, get_model_fields
 from giskard_hub._models import BaseModel
 
 BaseModelT = TypeVar("BaseModelT", bound=BaseModel)
@@ -28,18 +28,12 @@ BaseModelT = TypeVar("BaseModelT", bound=BaseModel)
 def assert_matches_model(model: type[BaseModelT], value: BaseModelT, *, path: list[str]) -> bool:
     for name, field in get_model_fields(model).items():
         field_value = getattr(value, name)
-        if PYDANTIC_V1:
-            # in v1 nullability was structured differently
-            # https://docs.pydantic.dev/2.0/migration/#required-optional-and-nullable-fields
-            allow_none = getattr(field, "allow_none", False)
-        else:
-            allow_none = False
 
         assert_matches_type(
             field_outer_type(field),
             field_value,
             path=[*path, name],
-            allow_none=allow_none,
+            allow_none=False,
         )
 
     return True

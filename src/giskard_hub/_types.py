@@ -7,22 +7,20 @@ from typing import (
     Any,
     Type,
     Union,
+    Literal,
     Mapping,
     TypeVar,
     Callable,
     Iterator,
-    Sequence,
-)
-from typing_extensions import (
-    Literal,
     Protocol,
+    Sequence,
     TypeAlias,
     TypedDict,
     SupportsIndex,
     overload,
-    override,
     runtime_checkable,
 )
+from typing_extensions import override
 
 import httpx
 import pydantic
