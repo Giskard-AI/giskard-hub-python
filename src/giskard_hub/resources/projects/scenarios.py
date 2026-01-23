@@ -1,77 +1,76 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Any, Dict, Optional
 
 import httpx
 
-from ..types import project_create_params, project_update_params, project_bulk_delete_params
-from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
-from .._utils import maybe_transform, async_maybe_transform
-from .._compat import cached_property
-from .._resource import SyncAPIResource, AsyncAPIResource
-from .._response import (
+from ...types import scenario_create_params, scenario_update_params, scenario_preview_params
+from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
+from ..._utils import maybe_transform, async_maybe_transform
+from ..._compat import cached_property
+from ..._resource import SyncAPIResource, AsyncAPIResource
+from ..._response import (
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from .._base_client import make_request_options
-from ..types.api_response_none import APIResponseNone
-from ..types.project_list_response import ProjectListResponse
-from ..types.api_response_project_api_resource import APIResponseProjectAPIResource
-from ..types.evaluations.failure_category_param import FailureCategoryParam
-from .projects import (
-    ScenariosResource,
-    AsyncScenariosResource,
-    ScenariosResourceWithRawResponse,
-    AsyncScenariosResourceWithRawResponse,
-    ScenariosResourceWithStreamingResponse,
-    AsyncScenariosResourceWithStreamingResponse,
-)
+from ..._base_client import make_request_options
+from ...types.api_response_none import APIResponseNone
+from ...types.api_response_scenario import APIResponseScenario
+from ...types.api_response_list_scenario import APIResponseListScenario
+from ...types.api_response_scenario_preview import APIResponseScenarioPreview
 
-__all__ = ["ProjectsResource", "AsyncProjectsResource"]
+__all__ = ["ScenariosResource", "AsyncScenariosResource"]
 
 
-class ProjectsResource(SyncAPIResource):
+class ScenariosResource(SyncAPIResource):
     @cached_property
-    def scenarios(self) -> ScenariosResource:
-        return ScenariosResource(self._client)
-
-    @cached_property
-    def with_raw_response(self) -> ProjectsResourceWithRawResponse:
+    def with_raw_response(self) -> ScenariosResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return ProjectsResourceWithRawResponse(self)
+        return ScenariosResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> ProjectsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> ScenariosResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return ProjectsResourceWithStreamingResponse(self)
+        return ScenariosResourceWithStreamingResponse(self)
 
     def create(
         self,
+        project_id: str,
         *,
         name: str,
         description: Optional[str] | Omit = omit,
+        config: Optional[Dict[str, Any]] | Omit = omit,
+        agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponseScenario:
         """
-        Create Project
+        Create Scenario
 
         Args:
+          name: Name of the scenario
+
+          description: Description of the scenario
+
+          config: Configuration for the scenario
+
+          agent_id: Associated agent ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -80,34 +79,39 @@ class ProjectsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         return self._post(
-            "/v2/projects",
+            f"/v2/projects/{project_id}/scenarios",
             body=maybe_transform(
                 {
                     "name": name,
                     "description": description,
+                    "config": config,
+                    "agent_id": agent_id,
                 },
-                project_create_params.ProjectCreateParams,
+                scenario_create_params.ScenarioCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponseScenario,
         )
 
     def retrieve(
         self,
-        project_id: str,
+        scenario_id: str,
         *,
+        project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponseScenario:
         """
-        Retrieve Project
+        Retrieve Scenario
 
         Args:
           extra_headers: Send extra headers
@@ -120,30 +124,86 @@ class ProjectsResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         return self._get(
-            f"/v2/projects/{project_id}",
+            f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponseScenario,
         )
 
     def update(
         self,
-        project_id: str,
+        scenario_id: str,
         *,
-        description: Optional[str] | Omit = omit,
-        failure_categories: Optional[Iterable[FailureCategoryParam]] | Omit = omit,
+        project_id: str,
         name: Optional[str] | Omit = omit,
+        description: Optional[str] | Omit = omit,
+        config: Optional[Dict[str, Any]] | Omit = omit,
+        agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponseScenario:
         """
-        Update Project
+        Update Scenario
+
+        Args:
+          name: Name of the scenario
+
+          description: Description of the scenario
+
+          config: Configuration for the scenario
+
+          agent_id: Associated agent ID
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        return self._patch(
+            f"/v2/projects/{project_id}/scenarios/{scenario_id}",
+            body=maybe_transform(
+                {
+                    "name": name,
+                    "description": description,
+                    "config": config,
+                    "agent_id": agent_id,
+                },
+                scenario_update_params.ScenarioUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseScenario,
+        )
+
+    def list(
+        self,
+        project_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseListScenario:
+        """
+        List Scenarios
 
         Args:
           extra_headers: Send extra headers
@@ -156,45 +216,19 @@ class ProjectsResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._patch(
-            f"/v2/projects/{project_id}",
-            body=maybe_transform(
-                {
-                    "description": description,
-                    "failure_categories": failure_categories,
-                    "name": name,
-                },
-                project_update_params.ProjectUpdateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseProjectAPIResource,
-        )
-
-    def list(
-        self,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProjectListResponse:
-        """List Projects"""
         return self._get(
-            "/v2/projects",
+            f"/v2/projects/{project_id}/scenarios",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProjectListResponse,
+            cast_to=APIResponseListScenario,
         )
 
     def delete(
         self,
-        project_id: str,
+        scenario_id: str,
         *,
+        project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -203,7 +237,7 @@ class ProjectsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponseNone:
         """
-        Delete Project
+        Delete Scenario
 
         Args:
           extra_headers: Send extra headers
@@ -216,29 +250,40 @@ class ProjectsResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         return self._delete(
-            f"/v2/projects/{project_id}",
+            f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponseNone,
         )
 
-    def bulk_delete(
+    def preview(
         self,
+        project_id: str,
         *,
-        project_ids: SequenceNotStr[str],
+        agent_id: str,
+        config: Dict[str, Any],
+        sample_size: Optional[int] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponseScenarioPreview:
         """
-        Bulk Delete Projects
+        Preview Scenario
 
         Args:
+          agent_id: Agent ID to use for preview
+
+          config: Configuration for the scenario
+
+          sample_size: Number of samples to preview
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -247,59 +292,75 @@ class ProjectsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
-            "/v2/projects",
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        return self._post(
+            f"/v2/projects/{project_id}/scenarios/preview",
+            body=maybe_transform(
+                {
+                    "config": config,
+                    "sample_size": sample_size,
+                },
+                scenario_preview_params.ScenarioPreviewParams,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams),
+                query=maybe_transform({"agent_id": agent_id}, scenario_preview_params.ScenarioPreviewParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponseScenarioPreview,
         )
 
 
-class AsyncProjectsResource(AsyncAPIResource):
+class AsyncScenariosResource(AsyncAPIResource):
     @cached_property
-    def scenarios(self) -> AsyncScenariosResource:
-        return AsyncScenariosResource(self._client)
-
-    @cached_property
-    def with_raw_response(self) -> AsyncProjectsResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncScenariosResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncProjectsResourceWithRawResponse(self)
+        return AsyncScenariosResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncProjectsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncScenariosResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AsyncProjectsResourceWithStreamingResponse(self)
+        return AsyncScenariosResourceWithStreamingResponse(self)
 
     async def create(
         self,
+        project_id: str,
         *,
         name: str,
         description: Optional[str] | Omit = omit,
+        config: Optional[Dict[str, Any]] | Omit = omit,
+        agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponseScenario:
         """
-        Create Project
+        Create Scenario
 
         Args:
+          name: Name of the scenario
+
+          description: Description of the scenario
+
+          config: Configuration for the scenario
+
+          agent_id: Associated agent ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -308,34 +369,39 @@ class AsyncProjectsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         return await self._post(
-            "/v2/projects",
+            f"/v2/projects/{project_id}/scenarios",
             body=await async_maybe_transform(
                 {
                     "name": name,
                     "description": description,
+                    "config": config,
+                    "agent_id": agent_id,
                 },
-                project_create_params.ProjectCreateParams,
+                scenario_create_params.ScenarioCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponseScenario,
         )
 
     async def retrieve(
         self,
-        project_id: str,
+        scenario_id: str,
         *,
+        project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponseScenario:
         """
-        Retrieve Project
+        Retrieve Scenario
 
         Args:
           extra_headers: Send extra headers
@@ -348,30 +414,86 @@ class AsyncProjectsResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         return await self._get(
-            f"/v2/projects/{project_id}",
+            f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponseScenario,
         )
 
     async def update(
         self,
-        project_id: str,
+        scenario_id: str,
         *,
-        description: Optional[str] | Omit = omit,
-        failure_categories: Optional[Iterable[FailureCategoryParam]] | Omit = omit,
+        project_id: str,
         name: Optional[str] | Omit = omit,
+        description: Optional[str] | Omit = omit,
+        config: Optional[Dict[str, Any]] | Omit = omit,
+        agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponseScenario:
         """
-        Update Project
+        Update Scenario
+
+        Args:
+          name: Name of the scenario
+
+          description: Description of the scenario
+
+          config: Configuration for the scenario
+
+          agent_id: Associated agent ID
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        return await self._patch(
+            f"/v2/projects/{project_id}/scenarios/{scenario_id}",
+            body=await async_maybe_transform(
+                {
+                    "name": name,
+                    "description": description,
+                    "config": config,
+                    "agent_id": agent_id,
+                },
+                scenario_update_params.ScenarioUpdateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseScenario,
+        )
+
+    async def list(
+        self,
+        project_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseListScenario:
+        """
+        List Scenarios
 
         Args:
           extra_headers: Send extra headers
@@ -384,45 +506,19 @@ class AsyncProjectsResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._patch(
-            f"/v2/projects/{project_id}",
-            body=await async_maybe_transform(
-                {
-                    "description": description,
-                    "failure_categories": failure_categories,
-                    "name": name,
-                },
-                project_update_params.ProjectUpdateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseProjectAPIResource,
-        )
-
-    async def list(
-        self,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProjectListResponse:
-        """List Projects"""
         return await self._get(
-            "/v2/projects",
+            f"/v2/projects/{project_id}/scenarios",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProjectListResponse,
+            cast_to=APIResponseListScenario,
         )
 
     async def delete(
         self,
-        project_id: str,
+        scenario_id: str,
         *,
+        project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -431,7 +527,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponseNone:
         """
-        Delete Project
+        Delete Scenario
 
         Args:
           extra_headers: Send extra headers
@@ -444,29 +540,40 @@ class AsyncProjectsResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         return await self._delete(
-            f"/v2/projects/{project_id}",
+            f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponseNone,
         )
 
-    async def bulk_delete(
+    async def preview(
         self,
+        project_id: str,
         *,
-        project_ids: SequenceNotStr[str],
+        agent_id: str,
+        config: Dict[str, Any],
+        sample_size: Optional[int] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponseScenarioPreview:
         """
-        Bulk Delete Projects
+        Preview Scenario
 
         Args:
+          agent_id: Agent ID to use for preview
+
+          config: Configuration for the scenario
+
+          sample_size: Number of samples to preview
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -475,116 +582,121 @@ class AsyncProjectsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
-            "/v2/projects",
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        return await self._post(
+            f"/v2/projects/{project_id}/scenarios/preview",
+            body=await async_maybe_transform(
+                {
+                    "config": config,
+                    "sample_size": sample_size,
+                },
+                scenario_preview_params.ScenarioPreviewParams,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
                 query=await async_maybe_transform(
-                    {"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams
+                    {"agent_id": agent_id}, scenario_preview_params.ScenarioPreviewParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponseScenarioPreview,
         )
 
 
-class ProjectsResourceWithRawResponse:
-    def __init__(self, projects: ProjectsResource) -> None:
-        self._projects = projects
+class ScenariosResourceWithRawResponse:
+    def __init__(self, scenarios: ScenariosResource) -> None:
+        self._scenarios = scenarios
 
-        self.scenarios = ScenariosResourceWithRawResponse(projects.scenarios)
         self.create = to_raw_response_wrapper(
-            projects.create,
+            scenarios.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            projects.retrieve,
+            scenarios.retrieve,
         )
         self.update = to_raw_response_wrapper(
-            projects.update,
+            scenarios.update,
         )
         self.list = to_raw_response_wrapper(
-            projects.list,
+            scenarios.list,
         )
         self.delete = to_raw_response_wrapper(
-            projects.delete,
+            scenarios.delete,
         )
-        self.bulk_delete = to_raw_response_wrapper(
-            projects.bulk_delete,
+        self.preview = to_raw_response_wrapper(
+            scenarios.preview,
         )
 
 
-class AsyncProjectsResourceWithRawResponse:
-    def __init__(self, projects: AsyncProjectsResource) -> None:
-        self._projects = projects
+class AsyncScenariosResourceWithRawResponse:
+    def __init__(self, scenarios: AsyncScenariosResource) -> None:
+        self._scenarios = scenarios
 
-        self.scenarios = AsyncScenariosResourceWithRawResponse(projects.scenarios)
         self.create = async_to_raw_response_wrapper(
-            projects.create,
+            scenarios.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            projects.retrieve,
+            scenarios.retrieve,
         )
         self.update = async_to_raw_response_wrapper(
-            projects.update,
+            scenarios.update,
         )
         self.list = async_to_raw_response_wrapper(
-            projects.list,
+            scenarios.list,
         )
         self.delete = async_to_raw_response_wrapper(
-            projects.delete,
+            scenarios.delete,
         )
-        self.bulk_delete = async_to_raw_response_wrapper(
-            projects.bulk_delete,
+        self.preview = async_to_raw_response_wrapper(
+            scenarios.preview,
         )
 
 
-class ProjectsResourceWithStreamingResponse:
-    def __init__(self, projects: ProjectsResource) -> None:
-        self._projects = projects
+class ScenariosResourceWithStreamingResponse:
+    def __init__(self, scenarios: ScenariosResource) -> None:
+        self._scenarios = scenarios
 
-        self.scenarios = ScenariosResourceWithStreamingResponse(projects.scenarios)
         self.create = to_streamed_response_wrapper(
-            projects.create,
+            scenarios.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            projects.retrieve,
+            scenarios.retrieve,
         )
         self.update = to_streamed_response_wrapper(
-            projects.update,
+            scenarios.update,
         )
         self.list = to_streamed_response_wrapper(
-            projects.list,
+            scenarios.list,
         )
         self.delete = to_streamed_response_wrapper(
-            projects.delete,
+            scenarios.delete,
         )
-        self.bulk_delete = to_streamed_response_wrapper(
-            projects.bulk_delete,
+        self.preview = to_streamed_response_wrapper(
+            scenarios.preview,
         )
 
 
-class AsyncProjectsResourceWithStreamingResponse:
-    def __init__(self, projects: AsyncProjectsResource) -> None:
-        self._projects = projects
+class AsyncScenariosResourceWithStreamingResponse:
+    def __init__(self, scenarios: AsyncScenariosResource) -> None:
+        self._scenarios = scenarios
 
-        self.scenarios = AsyncScenariosResourceWithStreamingResponse(projects.scenarios)
         self.create = async_to_streamed_response_wrapper(
-            projects.create,
+            scenarios.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            projects.retrieve,
+            scenarios.retrieve,
         )
         self.update = async_to_streamed_response_wrapper(
-            projects.update,
+            scenarios.update,
         )
         self.list = async_to_streamed_response_wrapper(
-            projects.list,
+            scenarios.list,
         )
         self.delete = async_to_streamed_response_wrapper(
-            projects.delete,
+            scenarios.delete,
         )
-        self.bulk_delete = async_to_streamed_response_wrapper(
-            projects.bulk_delete,
+        self.preview = async_to_streamed_response_wrapper(
+            scenarios.preview,
         )
