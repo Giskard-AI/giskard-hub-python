@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 
 import httpx
 
@@ -9,8 +9,8 @@ from ..types import (
     dataset_create_params,
     dataset_update_params,
     dataset_bulk_delete_params,
-    dataset_generate_adversarial_params,
     dataset_generate_document_based_params,
+    dataset_generate_scenario_based_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -274,15 +274,16 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponseNone,
         )
 
-    def generate_adversarial(
+    def generate_scenario_based(
         self,
         *,
         agent_id: str,
         project_id: str,
-        categories: Iterable[dataset_generate_adversarial_params.Category] | Omit = omit,
+        scenario_id: str,
         dataset_name: str | Omit = omit,
         description: Optional[str] | Omit = omit,
-        n_examples_per_category: int | Omit = omit,
+        n_examples: int | Omit = omit,
+        scenario_config: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -291,10 +292,22 @@ class DatasetsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponseDataset:
         """
-        Generate Adversarial Dataset
+        Generate Scenario Based Dataset
 
         Args:
-          n_examples_per_category: Number of examples to generate for each category
+          agent_id: The ID of the agent to use for generation
+
+          project_id: The ID of the project
+
+          scenario_id: The ID of the scenario to use
+
+          dataset_name: Name for the generated dataset
+
+          description: Description of the dataset
+
+          n_examples: Total number of examples to generate
+
+          scenario_config: Optional configuration for the scenario
 
           extra_headers: Send extra headers
 
@@ -305,17 +318,18 @@ class DatasetsResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._post(
-            "/v2/datasets/generate-adversarial",
+            "/v2/datasets/generate-scenario-based",
             body=maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "categories": categories,
+                    "scenario_id": scenario_id,
                     "dataset_name": dataset_name,
                     "description": description,
-                    "n_examples_per_category": n_examples_per_category,
+                    "n_examples": n_examples,
+                    "scenario_config": scenario_config,
                 },
-                dataset_generate_adversarial_params.DatasetGenerateAdversarialParams,
+                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -684,15 +698,16 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponseNone,
         )
 
-    async def generate_adversarial(
+    async def generate_scenario_based(
         self,
         *,
         agent_id: str,
         project_id: str,
-        categories: Iterable[dataset_generate_adversarial_params.Category] | Omit = omit,
+        scenario_id: str,
         dataset_name: str | Omit = omit,
         description: Optional[str] | Omit = omit,
-        n_examples_per_category: int | Omit = omit,
+        n_examples: int | Omit = omit,
+        scenario_config: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -701,10 +716,22 @@ class AsyncDatasetsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponseDataset:
         """
-        Generate Adversarial Dataset
+        Generate Scenario Based Dataset
 
         Args:
-          n_examples_per_category: Number of examples to generate for each category
+          agent_id: The ID of the agent to use for generation
+
+          project_id: The ID of the project
+
+          scenario_id: The ID of the scenario to use
+
+          dataset_name: Name for the generated dataset
+
+          description: Description of the dataset
+
+          n_examples: Total number of examples to generate
+
+          scenario_config: Optional configuration for the scenario
 
           extra_headers: Send extra headers
 
@@ -715,17 +742,18 @@ class AsyncDatasetsResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return await self._post(
-            "/v2/datasets/generate-adversarial",
+            "/v2/datasets/generate-scenario-based",
             body=await async_maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "categories": categories,
+                    "scenario_id": scenario_id,
                     "dataset_name": dataset_name,
                     "description": description,
-                    "n_examples_per_category": n_examples_per_category,
+                    "n_examples": n_examples,
+                    "scenario_config": scenario_config,
                 },
-                dataset_generate_adversarial_params.DatasetGenerateAdversarialParams,
+                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -873,8 +901,8 @@ class DatasetsResourceWithRawResponse:
         self.bulk_delete = to_raw_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = to_raw_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = to_raw_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = to_raw_response_wrapper(
             datasets.generate_document_based,
@@ -909,8 +937,8 @@ class AsyncDatasetsResourceWithRawResponse:
         self.bulk_delete = async_to_raw_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = async_to_raw_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = async_to_raw_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = async_to_raw_response_wrapper(
             datasets.generate_document_based,
@@ -945,8 +973,8 @@ class DatasetsResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = to_streamed_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = to_streamed_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = to_streamed_response_wrapper(
             datasets.generate_document_based,
@@ -981,8 +1009,8 @@ class AsyncDatasetsResourceWithStreamingResponse:
         self.bulk_delete = async_to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = async_to_streamed_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = async_to_streamed_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = async_to_streamed_response_wrapper(
             datasets.generate_document_based,
