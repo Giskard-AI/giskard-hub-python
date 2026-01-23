@@ -5,6 +5,7 @@ from .header import Header as Header
 from .metric import Metric as Metric
 from .dataset import Dataset as Dataset
 from .test_case import TestCase as TestCase
+from .action_type import ActionType as ActionType
 from .scan_result import ScanResult as ScanResult
 from .chat_message import ChatMessage as ChatMessage
 from .header_param import HeaderParam as HeaderParam
@@ -14,6 +15,8 @@ from .task_progress import TaskProgress as TaskProgress
 from .dataset_subset import DatasetSubset as DatasetSubset
 from .knowledge_base import KnowledgeBase as KnowledgeBase
 from .execution_error import ExecutionError as ExecutionError
+from .audit_diff_kind import AuditDiffKind as AuditDiffKind
+from .audit_diff_item import AuditDiffItem as AuditDiffItem
 from .metadata_params import MetadataParams as MetadataParams
 from .frequency_option import FrequencyOption as FrequencyOption
 from .scan_list_params import ScanListParams as ScanListParams
@@ -28,6 +31,21 @@ from .chat_message_param import ChatMessageParam as ChatMessageParam
 from .check_api_resource import CheckAPIResource as CheckAPIResource
 from .correctness_params import CorrectnessParams as CorrectnessParams
 from .model_output_param import ModelOutputParam as ModelOutputParam
+from .api_response_audit import APIResponseAudit as APIResponseAudit
+from .audit_api_resource import AuditAPIResource as AuditAPIResource
+from .audit_search_params import AuditSearchParams as AuditSearchParams
+from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
+from .scenario_api_resource import ScenarioAPIResource as ScenarioAPIResource
+from .scenario_create_params import ScenarioCreateParams as ScenarioCreateParams
+from .scenario_update_params import ScenarioUpdateParams as ScenarioUpdateParams
+from .scenario_preview_params import ScenarioPreviewParams as ScenarioPreviewParams
+from .api_response_scenario import APIResponseScenario as APIResponseScenario
+from .audit_list_entity_params import AuditListEntityParams as AuditListEntityParams
+from .api_response_audit_display import APIResponseAuditDisplay as APIResponseAuditDisplay
+from .api_response_list_scenario import APIResponseListScenario as APIResponseListScenario
+from .audit_display_api_resource import AuditDisplayAPIResponse as AuditDisplayAPIResponse
+from .scenario_preview_api_resource import ScenarioPreviewAPIResource as ScenarioPreviewAPIResource
+from .api_response_scenario_preview import APIResponseScenarioPreview as APIResponseScenarioPreview
 from .scan_create_params import ScanCreateParams as ScanCreateParams
 from .scan_list_response import ScanListResponse as ScanListResponse
 from .agent_api_reference import AgentAPIReference as AgentAPIReference
@@ -111,10 +129,12 @@ from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as 
 from .scheduled_evaluation_create_params import ScheduledEvaluationCreateParams as ScheduledEvaluationCreateParams
 from .scheduled_evaluation_list_response import ScheduledEvaluationListResponse as ScheduledEvaluationListResponse
 from .scheduled_evaluation_update_params import ScheduledEvaluationUpdateParams as ScheduledEvaluationUpdateParams
-from .dataset_generate_adversarial_params import DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams
 from .api_response_evaluation_api_resource import APIResponseEvaluationAPIResource as APIResponseEvaluationAPIResource
 from .dataset_generate_document_based_params import (
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
+)
+from .dataset_generate_scenario_based_params import (
+    DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
 )
 from .knowledge_base_list_documents_response import (
     KnowledgeBaseListDocumentsResponse as KnowledgeBaseListDocumentsResponse,
@@ -122,12 +142,6 @@ from .knowledge_base_list_documents_response import (
 from .scheduled_evaluation_bulk_delete_params import (
     ScheduledEvaluationBulkDeleteParams as ScheduledEvaluationBulkDeleteParams,
 )
-from .scheduled_evaluation_list_latest_runs_params import (
-    ScheduledEvaluationListLatestRunsParams as ScheduledEvaluationListLatestRunsParams,
-)
 from .scheduled_evaluation_list_evaluations_response import (
     ScheduledEvaluationListEvaluationsResponse as ScheduledEvaluationListEvaluationsResponse,
-)
-from .scheduled_evaluation_list_latest_runs_response import (
-    ScheduledEvaluationListLatestRunsResponse as ScheduledEvaluationListLatestRunsResponse,
 )
