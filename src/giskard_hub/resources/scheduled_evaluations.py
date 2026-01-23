@@ -11,7 +11,6 @@ from ..types import (
     scheduled_evaluation_create_params,
     scheduled_evaluation_update_params,
     scheduled_evaluation_bulk_delete_params,
-    scheduled_evaluation_list_latest_runs_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -29,7 +28,6 @@ from ..types.api_response_none import APIResponseNone
 from ..types.api_response_scheduled_evaluation import APIResponseScheduledEvaluation
 from ..types.scheduled_evaluation_list_response import ScheduledEvaluationListResponse
 from ..types.scheduled_evaluation_list_evaluations_response import ScheduledEvaluationListEvaluationsResponse
-from ..types.scheduled_evaluation_list_latest_runs_response import ScheduledEvaluationListLatestRunsResponse
 
 __all__ = ["ScheduledEvaluationsResource", "AsyncScheduledEvaluationsResource"]
 
@@ -351,54 +349,6 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             cast_to=ScheduledEvaluationListEvaluationsResponse,
         )
 
-    def list_latest_runs(
-        self,
-        *,
-        project_id: str,
-        include: Optional[List[Literal["scheduled_evaluation", "latest_runs"]]] | Omit = omit,
-        last_days: Optional[int] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListLatestRunsResponse:
-        """
-        List all evaluation runs triggered by a schedule for a project, grouped by
-        scheduled evaluation.
-
-        Optional `last_days` filters by creation date.
-
-        Args:
-          last_days: If provided, only include evaluation runs created in the last N days.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        return self._get(
-            "/v2/scheduled-evaluation-runs",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "project_id": project_id,
-                        "include": include,
-                        "last_days": last_days,
-                    },
-                    scheduled_evaluation_list_latest_runs_params.ScheduledEvaluationListLatestRunsParams,
-                ),
-            ),
-            cast_to=ScheduledEvaluationListLatestRunsResponse,
-        )
 
 
 class AsyncScheduledEvaluationsResource(AsyncAPIResource):
@@ -718,54 +668,6 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             cast_to=ScheduledEvaluationListEvaluationsResponse,
         )
 
-    async def list_latest_runs(
-        self,
-        *,
-        project_id: str,
-        include: Optional[List[Literal["scheduled_evaluation", "latest_runs"]]] | Omit = omit,
-        last_days: Optional[int] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListLatestRunsResponse:
-        """
-        List all evaluation runs triggered by a schedule for a project, grouped by
-        scheduled evaluation.
-
-        Optional `last_days` filters by creation date.
-
-        Args:
-          last_days: If provided, only include evaluation runs created in the last N days.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        return await self._get(
-            "/v2/scheduled-evaluation-runs",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {
-                        "project_id": project_id,
-                        "include": include,
-                        "last_days": last_days,
-                    },
-                    scheduled_evaluation_list_latest_runs_params.ScheduledEvaluationListLatestRunsParams,
-                ),
-            ),
-            cast_to=ScheduledEvaluationListLatestRunsResponse,
-        )
 
 
 class ScheduledEvaluationsResourceWithRawResponse:
@@ -792,9 +694,6 @@ class ScheduledEvaluationsResourceWithRawResponse:
         )
         self.list_evaluations = to_raw_response_wrapper(
             scheduled_evaluations.list_evaluations,
-        )
-        self.list_latest_runs = to_raw_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
         )
 
 
@@ -823,9 +722,6 @@ class AsyncScheduledEvaluationsResourceWithRawResponse:
         self.list_evaluations = async_to_raw_response_wrapper(
             scheduled_evaluations.list_evaluations,
         )
-        self.list_latest_runs = async_to_raw_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
-        )
 
 
 class ScheduledEvaluationsResourceWithStreamingResponse:
@@ -853,9 +749,6 @@ class ScheduledEvaluationsResourceWithStreamingResponse:
         self.list_evaluations = to_streamed_response_wrapper(
             scheduled_evaluations.list_evaluations,
         )
-        self.list_latest_runs = to_streamed_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
-        )
 
 
 class AsyncScheduledEvaluationsResourceWithStreamingResponse:
@@ -882,7 +775,4 @@ class AsyncScheduledEvaluationsResourceWithStreamingResponse:
         )
         self.list_evaluations = async_to_streamed_response_wrapper(
             scheduled_evaluations.list_evaluations,
-        )
-        self.list_latest_runs = async_to_streamed_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
         )
