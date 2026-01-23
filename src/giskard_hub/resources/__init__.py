@@ -1,3 +1,11 @@
+from .audit import (
+    AuditResource,
+    AsyncAuditResource,
+    AuditResourceWithRawResponse,
+    AsyncAuditResourceWithRawResponse,
+    AuditResourceWithStreamingResponse,
+    AsyncAuditResourceWithStreamingResponse,
+)
 from .scans import (
     ScansResource,
     AsyncScansResource,
@@ -72,6 +80,12 @@ from .scheduled_evaluations import (
 )
 
 __all__ = [
+    "AuditResource",
+    "AsyncAuditResource",
+    "AuditResourceWithRawResponse",
+    "AsyncAuditResourceWithRawResponse",
+    "AuditResourceWithStreamingResponse",
+    "AsyncAuditResourceWithStreamingResponse",
     "AgentsResource",
     "AsyncAgentsResource",
     "AgentsResourceWithRawResponse",
