@@ -4,23 +4,23 @@ from typing import Iterable, Optional
 
 import httpx
 
-from ..types import project_create_params, project_update_params, project_bulk_delete_params
-from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
-from .._utils import maybe_transform, async_maybe_transform
-from .._compat import cached_property
-from .._resource import SyncAPIResource, AsyncAPIResource
-from .._response import (
+from ...types import project_create_params, project_update_params, project_bulk_delete_params
+from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._utils import maybe_transform, async_maybe_transform
+from ..._compat import cached_property
+from ..._resource import SyncAPIResource, AsyncAPIResource
+from ..._response import (
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from .._base_client import make_request_options
-from ..types.api_response_none import APIResponseNone
-from ..types.project_list_response import ProjectListResponse
-from ..types.api_response_project_api_resource import APIResponseProjectAPIResource
-from ..types.evaluations.failure_category_param import FailureCategoryParam
-from .projects import (
+from ..._base_client import make_request_options
+from ...types.api_response_none import APIResponseNone
+from ...types.project_list_response import ProjectListResponse
+from ...types.api_response_project_api_resource import APIResponseProjectAPIResource
+from ...types.evaluations.failure_category_param import FailureCategoryParam
+from .scenarios import (
     ScenariosResource,
     AsyncScenariosResource,
     ScenariosResourceWithRawResponse,

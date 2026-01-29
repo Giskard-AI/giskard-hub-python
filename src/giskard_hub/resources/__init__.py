@@ -38,14 +38,7 @@ from .datasets import (
     DatasetsResourceWithStreamingResponse,
     AsyncDatasetsResourceWithStreamingResponse,
 )
-from .projects import (
-    ProjectsResource,
-    AsyncProjectsResource,
-    ProjectsResourceWithRawResponse,
-    AsyncProjectsResourceWithRawResponse,
-    ProjectsResourceWithStreamingResponse,
-    AsyncProjectsResourceWithStreamingResponse,
-)
+
 from .test_cases import (
     TestCasesResource,
     AsyncTestCasesResource,
@@ -116,12 +109,6 @@ __all__ = [
     "AsyncKnowledgeBasesResourceWithRawResponse",
     "KnowledgeBasesResourceWithStreamingResponse",
     "AsyncKnowledgeBasesResourceWithStreamingResponse",
-    "ProjectsResource",
-    "AsyncProjectsResource",
-    "ProjectsResourceWithRawResponse",
-    "AsyncProjectsResourceWithRawResponse",
-    "ProjectsResourceWithStreamingResponse",
-    "AsyncProjectsResourceWithStreamingResponse",
     "ScansResource",
     "AsyncScansResource",
     "ScansResourceWithRawResponse",

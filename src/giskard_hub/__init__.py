@@ -17,7 +17,6 @@ from ._client import (
     Stream,
     Timeout,
     HubClient,
-    Transport,
     AsyncClient,
     AsyncStream,
     AsyncHubClient,

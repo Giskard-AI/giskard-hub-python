@@ -350,7 +350,6 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         )
 
 
-
 class AsyncScheduledEvaluationsResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncScheduledEvaluationsResourceWithRawResponse:
@@ -667,7 +666,6 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=ScheduledEvaluationListEvaluationsResponse,
         )
-
 
 
 class ScheduledEvaluationsResourceWithRawResponse:

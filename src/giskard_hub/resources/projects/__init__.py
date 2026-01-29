@@ -1,3 +1,12 @@
+from .projects import (
+    ProjectsResource,
+    AsyncProjectsResource,
+    ProjectsResourceWithRawResponse,
+    AsyncProjectsResourceWithRawResponse,
+    ProjectsResourceWithStreamingResponse,
+    AsyncProjectsResourceWithStreamingResponse,
+)
+
 from .scenarios import (
     ScenariosResource,
     AsyncScenariosResource,
@@ -7,7 +16,14 @@ from .scenarios import (
     AsyncScenariosResourceWithStreamingResponse,
 )
 
+
 __all__ = [
+    "ProjectsResource",
+    "AsyncProjectsResource",
+    "ProjectsResourceWithRawResponse",
+    "AsyncProjectsResourceWithRawResponse",
+    "ProjectsResourceWithStreamingResponse",
+    "AsyncProjectsResourceWithStreamingResponse",
     "ScenariosResource",
     "AsyncScenariosResource",
     "ScenariosResourceWithRawResponse",

@@ -43,7 +43,7 @@ from .api_response_scenario import APIResponseScenario as APIResponseScenario
 from .audit_list_entity_params import AuditListEntityParams as AuditListEntityParams
 from .api_response_audit_display import APIResponseAuditDisplay as APIResponseAuditDisplay
 from .api_response_list_scenario import APIResponseListScenario as APIResponseListScenario
-from .audit_display_api_resource import AuditDisplayAPIResponse as AuditDisplayAPIResponse
+from .audit_display_api_response import AuditDisplayAPIResponse as AuditDisplayAPIResponse
 from .scenario_preview_api_resource import ScenarioPreviewAPIResource as ScenarioPreviewAPIResource
 from .api_response_scenario_preview import APIResponseScenarioPreview as APIResponseScenarioPreview
 from .scan_create_params import ScanCreateParams as ScanCreateParams
