@@ -1,10 +1,10 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from .._models import BaseModel
 from .output_annotation import OutputAnnotation
 from .evaluations.task_state import TaskState
 
-__all__ = ["EvaluationRunSingleResponse", "Data", "IncludedIncludedItem"]
+__all__ = ["EvaluationRunSingleResponse", "Data"]
 
 
 class Data(BaseModel):
@@ -23,11 +23,5 @@ class Data(BaseModel):
     status: TaskState
 
 
-class IncludedIncludedItem(BaseModel):
-    data: object
-
-
 class EvaluationRunSingleResponse(BaseModel):
     data: List[Data]
-
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None

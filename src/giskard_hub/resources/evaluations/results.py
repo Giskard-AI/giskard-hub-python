@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 import httpx
-
-from typing import Any, Dict
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
@@ -19,17 +17,17 @@ from ..._response import (
 from ..._base_client import make_request_options
 from ...types.evaluations import (
     result_list_params,
-    result_update_params,
     result_search_params,
+    result_update_params,
     result_retrieve_params,
-    result_submit_local_output_params,
     result_update_visibility_params,
+    result_submit_local_output_params,
 )
 from ...types.model_output_param import ModelOutputParam
 from ...types.evaluations.result_list_response import ResultListResponse
+from ...types.evaluations.failure_category_param import FailureCategoryParam
 from ...types.evaluations.result_search_response import ResultSearchResponse
 from ...types.evaluations.result_retrieve_response import ResultRetrieveResponse
-from ...types.evaluations.failure_category_param import FailureCategoryParam
 from ...types.evaluations.api_response_navigation_info import APIResponseNavigationInfo
 from ...types.evaluations.api_response_simple_test_case_evaluation import APIResponseSimpleTestCaseEvaluation
 from ...types.evaluations.api_response_test_case_evaluation_api_resource import APIResponseTestCaseEvaluationAPIResource

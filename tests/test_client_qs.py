@@ -21,4 +21,3 @@ async def test_asynchubclient_uses_repeat_array_query_params() -> None:
         assert unquote(client.qs.stringify({"include": ["dataset", "agent"]})) == "include=dataset&include=agent"
     finally:
         await client.close()
-

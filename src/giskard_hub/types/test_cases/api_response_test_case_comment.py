@@ -1,9 +1,8 @@
-from typing import Dict, Optional
 from datetime import datetime
 
 from ..._models import BaseModel
 
-__all__ = ["APIResponseTestCaseComment", "Data", "DataUser", "IncludedIncludedItem"]
+__all__ = ["APIResponseTestCaseComment", "Data", "DataUser"]
 
 
 class DataUser(BaseModel):
@@ -24,11 +23,5 @@ class Data(BaseModel):
     user: DataUser
 
 
-class IncludedIncludedItem(BaseModel):
-    data: object
-
-
 class APIResponseTestCaseComment(BaseModel):
     data: Data
-
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None

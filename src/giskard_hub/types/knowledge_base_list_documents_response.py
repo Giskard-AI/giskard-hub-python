@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
 from datetime import datetime
 
 from .._models import BaseModel
 
-__all__ = ["KnowledgeBaseListDocumentsResponse", "Data", "IncludedIncludedItem"]
+__all__ = ["KnowledgeBaseListDocumentsResponse", "Data"]
 
 
 class Data(BaseModel):
@@ -22,11 +22,5 @@ class Data(BaseModel):
     updated_at: datetime
 
 
-class IncludedIncludedItem(BaseModel):
-    data: object
-
-
 class KnowledgeBaseListDocumentsResponse(BaseModel):
     data: List[Data]
-
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None

@@ -13,7 +13,6 @@ from giskard_hub.types import (
     APIResponseNone,
     APIResponseScheduledEvaluation,
     ScheduledEvaluationListResponse,
-    ScheduledEvaluationListLatestRunsResponse,
     ScheduledEvaluationListEvaluationsResponse,
 )
 from giskard_hub._utils import parse_datetime
@@ -370,66 +369,6 @@ class TestScheduledEvaluations:
                 "",
             )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_list_latest_runs(self, client: HubClient) -> None:
-        scheduled_evaluation = client.scheduled_evaluations.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-        assert_matches_type(
-            ScheduledEvaluationListLatestRunsResponse,
-            scheduled_evaluation,
-            path=["response"],
-        )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_list_latest_runs_with_all_params(self, client: HubClient) -> None:
-        scheduled_evaluation = client.scheduled_evaluations.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            include=["scheduled_evaluation"],
-            last_days=1,
-        )
-        assert_matches_type(
-            ScheduledEvaluationListLatestRunsResponse,
-            scheduled_evaluation,
-            path=["response"],
-        )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_raw_response_list_latest_runs(self, client: HubClient) -> None:
-        response = client.scheduled_evaluations.with_raw_response.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-        scheduled_evaluation = response.parse()
-        assert_matches_type(
-            ScheduledEvaluationListLatestRunsResponse,
-            scheduled_evaluation,
-            path=["response"],
-        )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_streaming_response_list_latest_runs(self, client: HubClient) -> None:
-        with client.scheduled_evaluations.with_streaming_response.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        ) as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            scheduled_evaluation = response.parse()
-            assert_matches_type(
-                ScheduledEvaluationListLatestRunsResponse,
-                scheduled_evaluation,
-                path=["response"],
-            )
-
-        assert cast(Any, response.is_closed) is True
-
 
 class TestAsyncScheduledEvaluations:
     parametrize = pytest.mark.parametrize(
@@ -784,63 +723,3 @@ class TestAsyncScheduledEvaluations:
             await async_client.scheduled_evaluations.with_raw_response.list_evaluations(
                 "",
             )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_list_latest_runs(self, async_client: AsyncHubClient) -> None:
-        scheduled_evaluation = await async_client.scheduled_evaluations.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-        assert_matches_type(
-            ScheduledEvaluationListLatestRunsResponse,
-            scheduled_evaluation,
-            path=["response"],
-        )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_list_latest_runs_with_all_params(self, async_client: AsyncHubClient) -> None:
-        scheduled_evaluation = await async_client.scheduled_evaluations.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            include=["scheduled_evaluation"],
-            last_days=1,
-        )
-        assert_matches_type(
-            ScheduledEvaluationListLatestRunsResponse,
-            scheduled_evaluation,
-            path=["response"],
-        )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_raw_response_list_latest_runs(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.scheduled_evaluations.with_raw_response.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-        scheduled_evaluation = await response.parse()
-        assert_matches_type(
-            ScheduledEvaluationListLatestRunsResponse,
-            scheduled_evaluation,
-            path=["response"],
-        )
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_streaming_response_list_latest_runs(self, async_client: AsyncHubClient) -> None:
-        async with async_client.scheduled_evaluations.with_streaming_response.list_latest_runs(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        ) as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            scheduled_evaluation = await response.parse()
-            assert_matches_type(
-                ScheduledEvaluationListLatestRunsResponse,
-                scheduled_evaluation,
-                path=["response"],
-            )
-
-        assert cast(Any, response.is_closed) is True

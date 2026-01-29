@@ -6,7 +6,6 @@ from .projects import (
     ProjectsResourceWithStreamingResponse,
     AsyncProjectsResourceWithStreamingResponse,
 )
-
 from .scenarios import (
     ScenariosResource,
     AsyncScenariosResource,
@@ -15,7 +14,6 @@ from .scenarios import (
     ScenariosResourceWithStreamingResponse,
     AsyncScenariosResourceWithStreamingResponse,
 )
-
 
 __all__ = [
     "ProjectsResource",

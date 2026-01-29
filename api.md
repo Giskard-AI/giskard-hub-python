@@ -241,7 +241,6 @@ from giskard_hub.types import (
     SuccessExecutionStatus,
     ScheduledEvaluationListResponse,
     ScheduledEvaluationListEvaluationsResponse,
-    ScheduledEvaluationListLatestRunsResponse,
 )
 ```
 
@@ -254,7 +253,6 @@ Methods:
 - <code title="delete /v2/scheduled-evaluations/{scheduled_evaluation_id}">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">delete</a>(scheduled_evaluation_id) -> <a href="./src/giskard_hub/types/api_response_none.py">APIResponseNone</a></code>
 - <code title="delete /v2/scheduled-evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/api_response_none.py">APIResponseNone</a></code>
 - <code title="get /v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list_evaluations</a>(scheduled_evaluation_id) -> <a href="./src/giskard_hub/types/scheduled_evaluation_list_evaluations_response.py">ScheduledEvaluationListEvaluationsResponse</a></code>
-- <code title="get /v2/scheduled-evaluation-runs">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list_latest_runs</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation_list_latest_runs_params.py">params</a>) -> <a href="./src/giskard_hub/types/scheduled_evaluation_list_latest_runs_response.py">ScheduledEvaluationListLatestRunsResponse</a></code>
 
 # TestCases
 

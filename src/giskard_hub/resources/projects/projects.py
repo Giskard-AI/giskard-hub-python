@@ -8,6 +8,14 @@ from ...types import project_create_params, project_update_params, project_bulk_
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
+from .scenarios import (
+    ScenariosResource,
+    AsyncScenariosResource,
+    ScenariosResourceWithRawResponse,
+    AsyncScenariosResourceWithRawResponse,
+    ScenariosResourceWithStreamingResponse,
+    AsyncScenariosResourceWithStreamingResponse,
+)
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -20,14 +28,6 @@ from ...types.api_response_none import APIResponseNone
 from ...types.project_list_response import ProjectListResponse
 from ...types.api_response_project_api_resource import APIResponseProjectAPIResource
 from ...types.evaluations.failure_category_param import FailureCategoryParam
-from .scenarios import (
-    ScenariosResource,
-    AsyncScenariosResource,
-    ScenariosResourceWithRawResponse,
-    AsyncScenariosResourceWithRawResponse,
-    ScenariosResourceWithStreamingResponse,
-    AsyncScenariosResourceWithStreamingResponse,
-)
 
 __all__ = ["ProjectsResource", "AsyncProjectsResource"]
 
