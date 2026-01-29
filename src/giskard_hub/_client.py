@@ -135,7 +135,7 @@ class HubClient(SyncAPIClient):
     @property
     @override
     def qs(self) -> Querystring:
-        return Querystring(array_format="comma")
+        return Querystring(array_format="repeat")
 
     @property
     @override
@@ -321,7 +321,9 @@ class AsyncHubClient(AsyncAPIClient):
     @property
     @override
     def qs(self) -> Querystring:
-        return Querystring(array_format="comma")
+        # Use repeated query params for arrays, e.g. `include=agent&include=dataset`.
+        # This is what FastAPI expects for query params typed as `List[...]`.
+        return Querystring(array_format="repeat")
 
     @property
     @override
