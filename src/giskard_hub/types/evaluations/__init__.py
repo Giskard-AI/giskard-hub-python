@@ -10,17 +10,9 @@ from .failure_category_param import FailureCategoryParam as FailureCategoryParam
 from .result_retrieve_params import ResultRetrieveParams as ResultRetrieveParams
 from .result_search_response import ResultSearchResponse as ResultSearchResponse
 from .result_retrieve_response import ResultRetrieveResponse as ResultRetrieveResponse
-from .api_response_navigation_info import APIResponseNavigationInfo as APIResponseNavigationInfo
-from .navigation_info_api_resource import NavigationInfoAPIResource as NavigationInfoAPIResource
 from .result_update_visibility_params import ResultUpdateVisibilityParams as ResultUpdateVisibilityParams
 from .result_submit_local_output_params import ResultSubmitLocalOutputParams as ResultSubmitLocalOutputParams
 from .test_case_evaluation_api_resource import TestCaseEvaluationAPIResource as TestCaseEvaluationAPIResource
-from .api_response_simple_test_case_evaluation import (
-    APIResponseSimpleTestCaseEvaluation as APIResponseSimpleTestCaseEvaluation,
-)
-from .simple_test_case_evaluation_api_resource import (
-    SimpleTestCaseEvaluationAPIResource as SimpleTestCaseEvaluationAPIResource,
-)
 from .api_response_test_case_evaluation_api_resource import (
     APIResponseTestCaseEvaluationAPIResource as APIResponseTestCaseEvaluationAPIResource,
 )
