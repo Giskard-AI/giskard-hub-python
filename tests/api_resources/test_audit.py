@@ -60,8 +60,8 @@ class TestAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_list_entity_audit(self, client: HubClient) -> None:
-        audit = client.audit.list_entity_audit(
+    def test_method_list_entities(self, client: HubClient) -> None:
+        audit = client.audit.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -69,8 +69,8 @@ class TestAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_list_entity_audit_with_all_params(self, client: HubClient) -> None:
-        audit = client.audit.list_entity_audit(
+    def test_method_list_entities_with_all_params(self, client: HubClient) -> None:
+        audit = client.audit.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
             limit=10,
@@ -80,8 +80,8 @@ class TestAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_raw_response_list_entity_audit(self, client: HubClient) -> None:
-        response = client.audit.with_raw_response.list_entity_audit(
+    def test_raw_response_list_entities(self, client: HubClient) -> None:
+        response = client.audit.with_raw_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -93,8 +93,8 @@ class TestAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_streaming_response_list_entity_audit(self, client: HubClient) -> None:
-        with client.audit.with_streaming_response.list_entity_audit(
+    def test_streaming_response_list_entities(self, client: HubClient) -> None:
+        with client.audit.with_streaming_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         ) as response:
@@ -150,8 +150,8 @@ class TestAsyncAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_list_entity_audit(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.list_entity_audit(
+    async def test_method_list_entities(self, async_client: AsyncHubClient) -> None:
+        audit = await async_client.audit.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -159,8 +159,8 @@ class TestAsyncAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_list_entity_audit_with_all_params(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.list_entity_audit(
+    async def test_method_list_entities_with_all_params(self, async_client: AsyncHubClient) -> None:
+        audit = await async_client.audit.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
             limit=10,
@@ -170,8 +170,8 @@ class TestAsyncAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_list_entity_audit(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.audit.with_raw_response.list_entity_audit(
+    async def test_raw_response_list_entities(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.audit.with_raw_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -183,8 +183,8 @@ class TestAsyncAudit:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_list_entity_audit(self, async_client: AsyncHubClient) -> None:
-        async with async_client.audit.with_streaming_response.list_entity_audit(
+    async def test_streaming_response_list_entities(self, async_client: AsyncHubClient) -> None:
+        async with async_client.audit.with_streaming_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         ) as response:

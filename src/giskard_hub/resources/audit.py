@@ -97,7 +97,7 @@ class AuditResource(SyncAPIResource):
             cast_to=APIResponseAudit,
         )
 
-    def list_entity_audit(
+    def list_entities(
         self,
         entity_id: str,
         entity_type: str,
@@ -229,7 +229,7 @@ class AsyncAuditResource(AsyncAPIResource):
             cast_to=APIResponseAudit,
         )
 
-    async def list_entity_audit(
+    async def list_entities(
         self,
         entity_id: str,
         entity_type: str,
@@ -293,8 +293,8 @@ class AuditResourceWithRawResponse:
         self.search = to_raw_response_wrapper(
             audit.search,
         )
-        self.list_entity_audit = to_raw_response_wrapper(
-            audit.list_entity_audit,
+        self.list_entities = to_raw_response_wrapper(
+            audit.list_entities,
         )
 
 
@@ -305,8 +305,8 @@ class AsyncAuditResourceWithRawResponse:
         self.search = async_to_raw_response_wrapper(
             audit.search,
         )
-        self.list_entity_audit = async_to_raw_response_wrapper(
-            audit.list_entity_audit,
+        self.list_entities = async_to_raw_response_wrapper(
+            audit.list_entities,
         )
 
 
@@ -317,8 +317,8 @@ class AuditResourceWithStreamingResponse:
         self.search = to_streamed_response_wrapper(
             audit.search,
         )
-        self.list_entity_audit = to_streamed_response_wrapper(
-            audit.list_entity_audit,
+        self.list_entities = to_streamed_response_wrapper(
+            audit.list_entities,
         )
 
 
@@ -329,6 +329,6 @@ class AsyncAuditResourceWithStreamingResponse:
         self.search = async_to_streamed_response_wrapper(
             audit.search,
         )
-        self.list_entity_audit = async_to_streamed_response_wrapper(
-            audit.list_entity_audit,
+        self.list_entities = async_to_streamed_response_wrapper(
+            audit.list_entities,
         )
