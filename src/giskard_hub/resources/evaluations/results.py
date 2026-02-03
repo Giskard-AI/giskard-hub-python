@@ -28,8 +28,6 @@ from ...types.evaluations.result_list_response import ResultListResponse
 from ...types.evaluations.failure_category_param import FailureCategoryParam
 from ...types.evaluations.result_search_response import ResultSearchResponse
 from ...types.evaluations.result_retrieve_response import ResultRetrieveResponse
-from ...types.evaluations.api_response_navigation_info import APIResponseNavigationInfo
-from ...types.evaluations.api_response_simple_test_case_evaluation import APIResponseSimpleTestCaseEvaluation
 from ...types.evaluations.api_response_test_case_evaluation_api_resource import APIResponseTestCaseEvaluationAPIResource
 
 __all__ = ["ResultsResource", "AsyncResultsResource"]
@@ -310,83 +308,6 @@ class ResultsResource(SyncAPIResource):
                 ),
             ),
             cast_to=ResultSearchResponse,
-        )
-
-    def simple_search(
-        self,
-        evaluation_id: str,
-        *,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseSimpleTestCaseEvaluation:
-        """
-        Search Simple Evaluation Results By Filters
-
-        Args:
-          filters: Filter criteria for evaluation results
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._post(
-            f"/v2/evaluations/{evaluation_id}/results/simple-search",
-            body=maybe_transform({"filters": filters}, result_search_params.ResultSearchParams),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseSimpleTestCaseEvaluation,
-        )
-
-    def navigation_info(
-        self,
-        result_id: str,
-        *,
-        evaluation_id: str,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNavigationInfo:
-        """
-        Get Evaluation Result Navigation Info By Filters
-
-        Args:
-          filters: Filter criteria for evaluation results
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        if not result_id:
-            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return self._post(
-            f"/v2/evaluations/{evaluation_id}/results/{result_id}/navigation-info",
-            body=maybe_transform({"filters": filters}, result_search_params.ResultSearchParams),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseNavigationInfo,
         )
 
     def update_visibility(
@@ -709,83 +630,6 @@ class AsyncResultsResource(AsyncAPIResource):
             cast_to=ResultSearchResponse,
         )
 
-    async def simple_search(
-        self,
-        evaluation_id: str,
-        *,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseSimpleTestCaseEvaluation:
-        """
-        Search Simple Evaluation Results By Filters
-
-        Args:
-          filters: Filter criteria for evaluation results
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._post(
-            f"/v2/evaluations/{evaluation_id}/results/simple-search",
-            body=await async_maybe_transform({"filters": filters}, result_search_params.ResultSearchParams),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseSimpleTestCaseEvaluation,
-        )
-
-    async def navigation_info(
-        self,
-        result_id: str,
-        *,
-        evaluation_id: str,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNavigationInfo:
-        """
-        Get Evaluation Result Navigation Info By Filters
-
-        Args:
-          filters: Filter criteria for evaluation results
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        if not result_id:
-            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return await self._post(
-            f"/v2/evaluations/{evaluation_id}/results/{result_id}/navigation-info",
-            body=await async_maybe_transform({"filters": filters}, result_search_params.ResultSearchParams),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseNavigationInfo,
-        )
-
     async def update_visibility(
         self,
         result_id: str,
@@ -851,12 +695,6 @@ class ResultsResourceWithRawResponse:
         self.search = to_raw_response_wrapper(
             results.search,
         )
-        self.simple_search = to_raw_response_wrapper(
-            results.simple_search,
-        )
-        self.navigation_info = to_raw_response_wrapper(
-            results.navigation_info,
-        )
         self.update_visibility = to_raw_response_wrapper(
             results.update_visibility,
         )
@@ -883,12 +721,6 @@ class AsyncResultsResourceWithRawResponse:
         )
         self.search = async_to_raw_response_wrapper(
             results.search,
-        )
-        self.simple_search = async_to_raw_response_wrapper(
-            results.simple_search,
-        )
-        self.navigation_info = async_to_raw_response_wrapper(
-            results.navigation_info,
         )
         self.update_visibility = async_to_raw_response_wrapper(
             results.update_visibility,
@@ -917,12 +749,6 @@ class ResultsResourceWithStreamingResponse:
         self.search = to_streamed_response_wrapper(
             results.search,
         )
-        self.simple_search = to_streamed_response_wrapper(
-            results.simple_search,
-        )
-        self.navigation_info = to_streamed_response_wrapper(
-            results.navigation_info,
-        )
         self.update_visibility = to_streamed_response_wrapper(
             results.update_visibility,
         )
@@ -949,12 +775,6 @@ class AsyncResultsResourceWithStreamingResponse:
         )
         self.search = async_to_streamed_response_wrapper(
             results.search,
-        )
-        self.simple_search = async_to_streamed_response_wrapper(
-            results.simple_search,
-        )
-        self.navigation_info = async_to_streamed_response_wrapper(
-            results.navigation_info,
         )
         self.update_visibility = async_to_streamed_response_wrapper(
             results.update_visibility,
