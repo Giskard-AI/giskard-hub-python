@@ -5,10 +5,10 @@ from .._models import BaseModel
 from .task_progress import TaskProgress
 from .agent_api_reference import AgentAPIReference
 
-__all__ = ["ScanResult", "KnowledgeBase"]
+__all__ = ["ScanResult", "KnowledgeBaseAPIReference"]
 
 
-class KnowledgeBase(BaseModel):
+class KnowledgeBaseAPIReference(BaseModel):
     id: str
 
     name: str
@@ -23,7 +23,7 @@ class ScanResult(BaseModel):
 
     grade: Optional[Literal["A", "B", "C", "D"]] = None
 
-    knowledge_base: Optional[KnowledgeBase] = None
+    knowledge_base: Optional[KnowledgeBaseAPIReference] = None
 
     project_id: str
 
