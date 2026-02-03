@@ -64,7 +64,7 @@ jobs:
           git config --global user.name 'BotReleaser'
           git config --global user.email 'bot.releaser@users.noreply.github.com'
 
-      - name: Adding file
+      - name: Commit and tag
         run: |
           git add pyproject.toml uv.lock
           git fetch --quiet --tags
