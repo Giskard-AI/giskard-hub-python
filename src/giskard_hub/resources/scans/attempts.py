@@ -16,8 +16,6 @@ from ..._response import (
 )
 from ...types.scans import Severity, ReviewStatus, attempt_update_params
 from ..._base_client import make_request_options
-from ...types.scans.severity import Severity
-from ...types.scans.review_status import ReviewStatus
 from ...types.scans.attempt_update_response import AttemptUpdateResponse
 
 __all__ = ["AttemptsResource", "AsyncAttemptsResource"]
