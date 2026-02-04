@@ -62,6 +62,16 @@ class ChecksResource(SyncAPIResource):
         Create Check
 
         Args:
+          assertions: Assertions of the check
+
+          identifier: Identifier of the check
+
+          name: Name of the check to create
+
+          project_id: Project ID to create the check in
+
+          description: Description of the check to create
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -103,6 +113,8 @@ class ChecksResource(SyncAPIResource):
         Retrieve Check
 
         Args:
+          check_id: ID of the check to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -140,6 +152,16 @@ class ChecksResource(SyncAPIResource):
         Update Check
 
         Args:
+          check_id: ID of the check to update
+
+          assertions: Assertions of the check
+
+          description: Description of the check
+
+          identifier: Identifier of the check
+
+          name: Name of the check
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -183,6 +205,10 @@ class ChecksResource(SyncAPIResource):
         List Checks
 
         Args:
+          project_id: Project ID to list checks for
+
+          filter_builtin: Whether to filter builtin checks
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -224,6 +250,8 @@ class ChecksResource(SyncAPIResource):
         Delete Check
 
         Args:
+          check_id: ID of the check to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -257,6 +285,8 @@ class ChecksResource(SyncAPIResource):
         Bulk Delete Checks
 
         Args:
+          check_ids: IDs of the checks to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -317,6 +347,16 @@ class AsyncChecksResource(AsyncAPIResource):
         Create Check
 
         Args:
+          assertions: Assertions of the check
+
+          identifier: Identifier of the check
+
+          name: Name of the check to create
+
+          project_id: Project ID to create the check in
+
+          description: Description of the check to create
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -358,6 +398,8 @@ class AsyncChecksResource(AsyncAPIResource):
         Retrieve Check
 
         Args:
+          check_id: ID of the check to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -395,6 +437,16 @@ class AsyncChecksResource(AsyncAPIResource):
         Update Check
 
         Args:
+          check_id: ID of the check to update
+
+          assertions: Assertions of the check
+
+          description: Description of the check
+
+          identifier: Identifier of the check
+
+          name: Name of the check
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -438,6 +490,10 @@ class AsyncChecksResource(AsyncAPIResource):
         List Checks
 
         Args:
+          project_id: Project ID to list checks for
+
+          filter_builtin: Whether to filter builtin checks
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -479,6 +535,8 @@ class AsyncChecksResource(AsyncAPIResource):
         Delete Check
 
         Args:
+          check_id: ID of the check to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -512,6 +570,8 @@ class AsyncChecksResource(AsyncAPIResource):
         Bulk Delete Checks
 
         Args:
+          check_ids: IDs of the checks to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
