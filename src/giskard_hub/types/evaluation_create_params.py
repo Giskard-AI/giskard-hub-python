@@ -19,7 +19,7 @@ class EvaluationCreateParams(TypedDict, total=False):
 
     old_evaluation_id: Optional[str]
 
-    run_count: int
+    run_count: Optional[int]
     """
     The number of times to run each test case. This is useful to get a more accurate
     result when the chatbot's generation is not deterministic. Testing stops at the

@@ -34,8 +34,8 @@ from ..._response import (
 from ..._base_client import make_request_options
 from ...types.api_response_none import APIResponseNone
 from ...types.chat_message_param import ChatMessageParam
-from ...types.model_output_param import ModelOutputParam
-from ...types.minimal_model_param import MinimalModelParam
+from ...types.model_output_param import AgentOutputParam
+from ...types.minimal_model_param import MinimalAgentParam
 from ...types.dataset_subset_param import DatasetSubsetParam
 from ...types.evaluation_list_response import EvaluationListResponse
 from ...types.evaluation_retrieve_response import EvaluationRetrieveResponse
@@ -89,11 +89,17 @@ class EvaluationsResource(SyncAPIResource):
         """Create Evaluation
 
         Args:
-          run_count: The number of times to run each test case.
+          agent_id: The ID of the agent to create the evaluation for
 
-        This is useful to get a more accurate
-              result when the chatbot's generation is not deterministic. Testing stops at the
-              first failure. If all runs pass, the test case is considered successful.
+          project_id: The ID of the project to create the evaluation for
+
+          criteria: The criteria to use for the evaluation
+
+          name: The name of the evaluation
+
+          old_evaluation_id: The ID of the old evaluation to create the evaluation for
+
+          run_count: The number of times to run each test case
 
           extra_headers: Send extra headers
 
@@ -139,6 +145,10 @@ class EvaluationsResource(SyncAPIResource):
         Retrieve Evaluation
 
         Args:
+          evaluation_id: The ID of the evaluation to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -177,6 +187,10 @@ class EvaluationsResource(SyncAPIResource):
         Update Evaluation
 
         Args:
+          evaluation_id: The ID of the evaluation to update
+
+          name: The name of the evaluation
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -212,6 +226,10 @@ class EvaluationsResource(SyncAPIResource):
         List Evaluations
 
         Args:
+          project_id: The ID of the project to list evaluations for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -253,6 +271,8 @@ class EvaluationsResource(SyncAPIResource):
         Delete Evaluation
 
         Args:
+          evaluation_id: The ID of the evaluation to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -286,6 +306,8 @@ class EvaluationsResource(SyncAPIResource):
         Bulk Delete Evaluations
 
         Args:
+          evaluation_ids: The IDs of the evaluations to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -312,7 +334,7 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         criteria: Iterable[evaluation_create_local_params.Criterion],
-        model: MinimalModelParam,
+        agent: MinimalAgentParam,
         name: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -325,6 +347,12 @@ class EvaluationsResource(SyncAPIResource):
         Create Local Evaluation
 
         Args:
+          criteria: The criteria to use for the evaluation
+
+          agent: The agent information to use for the evaluation
+
+          name: The name of the evaluation
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -338,7 +366,7 @@ class EvaluationsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "criteria": criteria,
-                    "model": model,
+                    "model": agent,
                     "name": name,
                 },
                 evaluation_create_local_params.EvaluationCreateLocalParams,
@@ -364,6 +392,8 @@ class EvaluationsResource(SyncAPIResource):
         Rerun Errored Evaluation Results
 
         Args:
+          evaluation_id: The ID of the evaluation to rerun errored results for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -387,8 +417,8 @@ class EvaluationsResource(SyncAPIResource):
         *,
         checks: Iterable[Dict[str, object]],
         messages: Iterable[ChatMessageParam],
-        model_output: ModelOutputParam,
-        model_description: str | Omit = omit,
+        agent_output: AgentOutputParam,
+        agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -401,6 +431,16 @@ class EvaluationsResource(SyncAPIResource):
         Run Single Evaluation
 
         Args:
+          checks: The checks to run for the evaluation
+
+          messages: The messages to send to the agent
+
+          agent_output: The output from the agent
+
+          agent_description: The description of the agent
+
+          project_id: The ID of the project to run the evaluation for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -415,8 +455,8 @@ class EvaluationsResource(SyncAPIResource):
                 {
                     "checks": checks,
                     "messages": messages,
-                    "model_output": model_output,
-                    "model_description": model_description,
+                    "model_output": agent_output,
+                    "model_description": agent_description,
                     "project_id": project_id,
                 },
                 evaluation_run_single_params.EvaluationRunSingleParams,
@@ -472,11 +512,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """Create Evaluation
 
         Args:
-          run_count: The number of times to run each test case.
+          agent_id: The ID of the agent to create the evaluation for
 
-        This is useful to get a more accurate
-              result when the chatbot's generation is not deterministic. Testing stops at the
-              first failure. If all runs pass, the test case is considered successful.
+          project_id: The ID of the project to create the evaluation for
+
+          criteria: The criteria to use for the evaluation
+
+          name: The name of the evaluation
+
+          old_evaluation_id: The ID of the old evaluation to create the evaluation for
+
+          run_count: The number of times to run each test case
 
           extra_headers: Send extra headers
 
@@ -522,6 +568,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Retrieve Evaluation
 
         Args:
+          evaluation_id: The ID of the evaluation to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -562,6 +612,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Update Evaluation
 
         Args:
+          evaluation_id: The ID of the evaluation to update
+
+          name: The name of the evaluation
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -597,6 +651,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         List Evaluations
 
         Args:
+          project_id: The ID of the project to list evaluations for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -638,6 +696,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Delete Evaluation
 
         Args:
+          evaluation_id: The ID of the evaluation to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -671,6 +731,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Bulk Delete Evaluations
 
         Args:
+          evaluation_ids: The IDs of the evaluations to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -697,7 +759,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         criteria: Iterable[evaluation_create_local_params.Criterion],
-        model: MinimalModelParam,
+        agent: MinimalAgentParam,
         name: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -710,6 +772,12 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Create Local Evaluation
 
         Args:
+          criteria: The criteria to use for the evaluation
+
+          agent: The agent information to use for the evaluation
+
+          name: The name of the evaluation
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -723,7 +791,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "criteria": criteria,
-                    "model": model,
+                    "model": agent,
                     "name": name,
                 },
                 evaluation_create_local_params.EvaluationCreateLocalParams,
@@ -749,6 +817,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Rerun Errored Evaluation Results
 
         Args:
+          evaluation_id: The ID of the evaluation to rerun errored results for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -772,8 +842,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         *,
         checks: Iterable[Dict[str, object]],
         messages: Iterable[ChatMessageParam],
-        model_output: ModelOutputParam,
-        model_description: str | Omit = omit,
+        agent_output: AgentOutputParam,
+        agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -786,6 +856,16 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Run Single Evaluation
 
         Args:
+          checks: The checks to run for the evaluation
+
+          messages: The messages to send to the agent
+
+          agent_output: The output from the agent
+
+          agent_description: The description of the agent
+
+          project_id: The ID of the project to run the evaluation for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -800,8 +880,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 {
                     "checks": checks,
                     "messages": messages,
-                    "model_output": model_output,
-                    "model_description": model_description,
+                    "model_output": agent_output,
+                    "model_description": agent_description,
                     "project_id": project_id,
                 },
                 evaluation_run_single_params.EvaluationRunSingleParams,

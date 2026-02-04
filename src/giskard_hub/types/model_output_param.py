@@ -6,7 +6,7 @@ from typing_extensions import Required
 from .chat_message_param import ChatMessageParam
 from .execution_error_param import ExecutionErrorParam
 
-__all__ = ["ModelOutputParam"]
+__all__ = ["ModelOutputParam", "AgentOutputParam"]
 
 
 class ModelOutputParam(TypedDict, total=False):
@@ -15,3 +15,6 @@ class ModelOutputParam(TypedDict, total=False):
     error: Optional[ExecutionErrorParam]
 
     metadata: Dict[str, object]
+
+
+AgentOutputParam = ModelOutputParam
