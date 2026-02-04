@@ -15,8 +15,8 @@ class KnowledgeBaseCreateParams(TypedDict, total=False):
 
     description: Optional[str]
 
-    document_column: Optional[str]
+    document_column: str
 
-    topic_column: Optional[str]
+    topic_column: str
 
     file: Required[FileTypes]

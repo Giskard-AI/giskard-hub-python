@@ -54,10 +54,10 @@ class KnowledgeBasesResource(SyncAPIResource):
         *,
         name: str,
         project_id: str,
-        description: Optional[str] | Omit = omit,
-        document_column: Optional[str] | Omit = omit,
-        topic_column: Optional[str] | Omit = omit,
         file: FileTypes,
+        description: Optional[str] | Omit = omit,
+        document_column: str | Omit = omit,
+        topic_column: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -69,6 +69,18 @@ class KnowledgeBasesResource(SyncAPIResource):
         Create Knowledge Base
 
         Args:
+          name: Name of the knowledge base
+
+          project_id: Project ID to create the knowledge base in
+
+          file: File to upload for the knowledge base
+
+          description: Description of the knowledge base
+
+          document_column: Column name for the document column
+
+          topic_column: Column name for the topic column
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -117,6 +129,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         Retrieve Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -154,6 +168,14 @@ class KnowledgeBasesResource(SyncAPIResource):
         Update Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to update
+
+          description: Description of the knowledge base
+
+          name: Name of the knowledge base
+
+          project_id: Project ID to update the knowledge base in
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -196,6 +218,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         List Knowledge Bases
 
         Args:
+          project_id: Project ID to list knowledge bases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -231,6 +255,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         Delete Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -264,6 +290,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         Bulk Delete Knowledge Bases
 
         Args:
+          knowledge_base_ids: IDs of the knowledge bases to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -313,10 +341,10 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         *,
         name: str,
         project_id: str,
-        description: Optional[str] | Omit = omit,
-        document_column: Optional[str] | Omit = omit,
-        topic_column: Optional[str] | Omit = omit,
         file: FileTypes,
+        description: Optional[str] | Omit = omit,
+        document_column: str | Omit = omit,
+        topic_column: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -328,6 +356,18 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Create Knowledge Base
 
         Args:
+          name: Name of the knowledge base
+
+          project_id: Project ID to create the knowledge base in
+
+          file: File to upload for the knowledge base
+
+          description: Description of the knowledge base
+
+          document_column: Column name for the document column
+
+          topic_column: Column name for the topic column
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -376,6 +416,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Retrieve Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -413,6 +455,14 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Update Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to update
+
+          description: Description of the knowledge base
+
+          name: Name of the knowledge base
+
+          project_id: Project ID to update the knowledge base in
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -455,6 +505,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         List Knowledge Bases
 
         Args:
+          project_id: Project ID to list knowledge bases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -492,6 +544,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Delete Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -525,6 +579,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Bulk Delete Knowledge Bases
 
         Args:
+          knowledge_base_ids: IDs of the knowledge bases to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
