@@ -14,4 +14,4 @@ class MinimalModelParamTyped(TypedDict, total=False):
 
 MinimalModelParam: TypeAlias = Union[MinimalModelParamTyped, Dict[str, object]]
 
-MinimalAgentParam = MinimalModelParam
+MinimalAgentParam: TypeAlias = MinimalModelParam
