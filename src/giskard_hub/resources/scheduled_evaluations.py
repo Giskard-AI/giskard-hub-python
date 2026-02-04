@@ -56,16 +56,16 @@ class ScheduledEvaluationsResource(SyncAPIResource):
     def create(
         self,
         *,
+        project_id: str,
+        name: str,
         agent_id: str,
         dataset_id: str,
+        tags: SequenceNotStr[str] | Omit = omit,
+        run_count: int | Omit = omit,
         frequency: FrequencyOption,
-        name: str,
-        project_id: str,
         time: str,
         day_of_month: Optional[int] | Omit = omit,
         day_of_week: Optional[int] | Omit = omit,
-        run_count: int | Omit = omit,
-        tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -77,9 +77,27 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Create Scheduled Evaluation
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          name: Name of the scheduled evaluation
+
+          agent_id: Agent ID to use for the scheduled evaluation
+
+          dataset_id: Dataset ID to use for the scheduled evaluation
+
+          tags: List of tags to apply to the scheduled evaluation
+
           run_count: The number of times to run each test case. This is useful to get a more accurate
               result when the chatbot's generation is not deterministic. Testing stops at the
               first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
 
           extra_headers: Send extra headers
 
@@ -128,6 +146,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Retrieve Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -158,15 +180,15 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         self,
         scheduled_evaluation_id: str,
         *,
-        day_of_month: Optional[int] | Omit = omit,
-        day_of_week: Optional[int] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        run_count: Optional[int] | Omit = omit,
         frequency: Optional[FrequencyOption] | Omit = omit,
+        time: Optional[str] | Omit = omit,
+        day_of_week: Optional[int] | Omit = omit,
+        day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
         last_execution_status: Optional[scheduled_evaluation_update_params.LastExecutionStatus] | Omit = omit,
-        name: Optional[str] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
-        run_count: Optional[int] | Omit = omit,
-        time: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -178,6 +200,28 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Update Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to update
+
+          name: Name of the scheduled evaluation
+
+          run_count: The number of times to run each test case. This is useful to get a more accurate
+              result when the chatbot's generation is not deterministic. Testing stops at the
+              first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
+
+          last_execution_at: The date and time of the last execution of the scheduled evaluation
+
+          last_execution_status: The status of the last execution of the scheduled evaluation
+
+          paused: Whether the scheduled evaluation is paused
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -229,6 +273,12 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         List Scheduled Evaluations
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          include: Related resources to include in response
+
+          last_days: Number of days to include in the response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -267,6 +317,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Delete Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -302,6 +354,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Bulk Delete Scheduled Evaluations
 
         Args:
+          scheduled_evaluation_ids: IDs of the scheduled evaluations to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -341,6 +395,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         List Scheduled Evaluation Evaluations
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to list evaluations for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -392,16 +450,16 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
     async def create(
         self,
         *,
+        project_id: str,
+        name: str,
         agent_id: str,
         dataset_id: str,
+        tags: SequenceNotStr[str] | Omit = omit,
+        run_count: int | Omit = omit,
         frequency: FrequencyOption,
-        name: str,
-        project_id: str,
         time: str,
         day_of_month: Optional[int] | Omit = omit,
         day_of_week: Optional[int] | Omit = omit,
-        run_count: int | Omit = omit,
-        tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -413,9 +471,27 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Create Scheduled Evaluation
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          name: Name of the scheduled evaluation
+
+          agent_id: Agent ID to use for the scheduled evaluation
+
+          dataset_id: Dataset ID to use for the scheduled evaluation
+
+          tags: List of tags to apply to the scheduled evaluation
+
           run_count: The number of times to run each test case. This is useful to get a more accurate
               result when the chatbot's generation is not deterministic. Testing stops at the
               first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
 
           extra_headers: Send extra headers
 
@@ -464,6 +540,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Retrieve Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -494,15 +574,15 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         self,
         scheduled_evaluation_id: str,
         *,
-        day_of_month: Optional[int] | Omit = omit,
-        day_of_week: Optional[int] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        run_count: Optional[int] | Omit = omit,
         frequency: Optional[FrequencyOption] | Omit = omit,
+        time: Optional[str] | Omit = omit,
+        day_of_week: Optional[int] | Omit = omit,
+        day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
         last_execution_status: Optional[scheduled_evaluation_update_params.LastExecutionStatus] | Omit = omit,
-        name: Optional[str] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
-        run_count: Optional[int] | Omit = omit,
-        time: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -514,6 +594,28 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Update Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to update
+
+          name: Name of the scheduled evaluation
+
+          run_count: The number of times to run each test case. This is useful to get a more accurate
+              result when the chatbot's generation is not deterministic. Testing stops at the
+              first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
+
+          last_execution_at: The date and time of the last execution of the scheduled evaluation
+
+          last_execution_status: The status of the last execution of the scheduled evaluation
+
+          paused: Whether the scheduled evaluation is paused
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -565,6 +667,12 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         List Scheduled Evaluations
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          include: Related resources to include in response
+
+          last_days: Number of days to include in the response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -603,6 +711,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Delete Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -638,6 +748,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Bulk Delete Scheduled Evaluations
 
         Args:
+          scheduled_evaluation_ids: IDs of the scheduled evaluations to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -677,6 +789,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         List Scheduled Evaluation Evaluations
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to list evaluations for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request

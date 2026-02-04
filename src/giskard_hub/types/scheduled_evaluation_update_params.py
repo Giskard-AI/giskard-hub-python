@@ -12,23 +12,23 @@ __all__ = ["ScheduledEvaluationUpdateParams", "LastExecutionStatus"]
 
 
 class ScheduledEvaluationUpdateParams(TypedDict, total=False):
-    day_of_month: Optional[int]
-
-    day_of_week: Optional[int]
-
-    frequency: Optional[FrequencyOption]
-
-    last_execution_at: Annotated[Union[str, datetime, None], PropertyInfo(format="iso8601")]
-
-    last_execution_status: Optional[LastExecutionStatus]
-
     name: Optional[str]
-
-    paused: Optional[bool]
 
     run_count: Optional[int]
 
+    frequency: Optional[FrequencyOption]
+
     time: Optional[str]
+
+    day_of_week: Optional[int]
+
+    day_of_month: Optional[int]
+
+    last_execution_at: Optional[Annotated[Union[str, datetime, None], PropertyInfo(format="iso8601")]]
+
+    last_execution_status: Optional[LastExecutionStatus]
+
+    paused: Optional[bool]
 
 
 LastExecutionStatus: TypeAlias = Union[SuccessExecutionStatusParam, ErrorExecutionStatusParam]
