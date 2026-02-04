@@ -16,7 +16,7 @@ __all__ = ["CheckCreateParams", "Assertion"]
 class CheckCreateParams(TypedDict, total=False):
     assertions: Required[Iterable[Assertion]]
 
-    description: Required[Optional[str]]
+    description: Optional[str]
 
     identifier: Required[str]
 
