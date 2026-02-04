@@ -46,10 +46,10 @@ class AuditResource(SyncAPIResource):
         self,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
-        limit: Optional[int] | Omit = omit,
-        offset: Optional[int] | Omit = omit,
+        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
+        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -110,8 +110,8 @@ class AuditResource(SyncAPIResource):
         entity_id: str,
         entity_type: str,
         *,
-        limit: Optional[int] | Omit = omit,
-        offset: Optional[int] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -186,10 +186,10 @@ class AsyncAuditResource(AsyncAPIResource):
         self,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
-        limit: Optional[int] | Omit = omit,
-        offset: Optional[int] | Omit = omit,
+        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
+        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -250,8 +250,8 @@ class AsyncAuditResource(AsyncAPIResource):
         entity_id: str,
         entity_type: str,
         *,
-        limit: Optional[int] | Omit = omit,
-        offset: Optional[int] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,

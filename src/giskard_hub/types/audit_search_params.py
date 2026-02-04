@@ -10,10 +10,10 @@ __all__ = ["AuditSearchParams"]
 class AuditSearchParams(TypedDict, total=False):
     search: Optional[str]
 
-    order_by: Optional[SequenceNotStr[Dict[str, Any]]]
+    order_by: SequenceNotStr[Dict[str, Any]]
 
-    filters: Optional[Dict[str, Dict[str, Any]]]
+    filters: Dict[str, Dict[str, Any]]
 
-    limit: Optional[int]
+    limit: int
 
-    offset: Optional[int]
+    offset: int
