@@ -8,8 +8,5 @@ __all__ = ["ScenarioPreviewAPIResource"]
 
 
 class ScenarioPreviewAPIResource(BaseModel):
-    preview_data: List[Dict[str, Any]]
-
-    sample_count: int
-
-    error: Optional[str] = None
+    conversation: List[Dict[str, Any]]
+    generated_rules: Optional[List[str]]

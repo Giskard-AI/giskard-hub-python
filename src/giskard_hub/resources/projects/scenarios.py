@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 import httpx
 
 from ...types import scenario_create_params, scenario_update_params, scenario_preview_params
-from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
+from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
@@ -265,8 +265,8 @@ class ScenariosResource(SyncAPIResource):
         project_id: str,
         *,
         agent_id: str,
-        config: Dict[str, Any],
-        sample_size: Optional[int] | Omit = omit,
+        description: str,
+        rules: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -278,11 +278,13 @@ class ScenariosResource(SyncAPIResource):
         Preview Scenario
 
         Args:
+          project_id: Project ID
+
           agent_id: Agent ID to use for preview
 
-          config: Configuration for the scenario
+          description: Description of the scenario
 
-          sample_size: Number of samples to preview
+          rules: Rules to use for preview
 
           extra_headers: Send extra headers
 
@@ -298,8 +300,8 @@ class ScenariosResource(SyncAPIResource):
             f"/v2/projects/{project_id}/scenarios/preview",
             body=maybe_transform(
                 {
-                    "config": config,
-                    "sample_size": sample_size,
+                    "description": description,
+                    "rules": rules,
                 },
                 scenario_preview_params.ScenarioPreviewParams,
             ),
@@ -555,8 +557,8 @@ class AsyncScenariosResource(AsyncAPIResource):
         project_id: str,
         *,
         agent_id: str,
-        config: Dict[str, Any],
-        sample_size: Optional[int] | Omit = omit,
+        description: str,
+        rules: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -568,11 +570,13 @@ class AsyncScenariosResource(AsyncAPIResource):
         Preview Scenario
 
         Args:
+          project_id: Project ID
+
           agent_id: Agent ID to use for preview
 
-          config: Configuration for the scenario
+          description: Description of the scenario
 
-          sample_size: Number of samples to preview
+          rules: Rules to use for preview
 
           extra_headers: Send extra headers
 
@@ -588,8 +592,8 @@ class AsyncScenariosResource(AsyncAPIResource):
             f"/v2/projects/{project_id}/scenarios/preview",
             body=await async_maybe_transform(
                 {
-                    "config": config,
-                    "sample_size": sample_size,
+                    "description": description,
+                    "rules": rules,
                 },
                 scenario_preview_params.ScenarioPreviewParams,
             ),

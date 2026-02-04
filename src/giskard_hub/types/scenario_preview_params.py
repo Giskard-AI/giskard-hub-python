@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, TypedDict
+from typing import Optional, TypedDict
 from typing_extensions import Required
+
+from .._types import SequenceNotStr
 
 __all__ = ["ScenarioPreviewParams"]
 
 
 class ScenarioPreviewParams(TypedDict, total=False):
-    config: Required[Dict[str, Any]]
+    description: Required[str]
 
-    sample_size: Optional[int]
+    rules: Optional[SequenceNotStr[str]]
