@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 import httpx
 
 from ..types import audit_search_params, audit_list_entity_params
-from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
+from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -45,7 +45,9 @@ class AuditResource(SyncAPIResource):
     def search(
         self,
         *,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
+        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -59,6 +61,10 @@ class AuditResource(SyncAPIResource):
         Search Audit Logs By Filters
 
         Args:
+          search: Search query for audit logs
+
+          order_by: Order by criteria for audit logs
+
           filters: Filter criteria for audit logs
 
           limit: Maximum number of results to return
@@ -78,6 +84,8 @@ class AuditResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "filters": filters,
+                    "order_by": order_by,
+                    "search": search,
                 },
                 audit_search_params.AuditSearchParams,
             ),
@@ -177,7 +185,9 @@ class AsyncAuditResource(AsyncAPIResource):
     async def search(
         self,
         *,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
+        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -191,6 +201,10 @@ class AsyncAuditResource(AsyncAPIResource):
         Search Audit Logs By Filters
 
         Args:
+          search: Search query for audit logs
+
+          order_by: Order by criteria for audit logs
+
           filters: Filter criteria for audit logs
 
           limit: Maximum number of results to return
@@ -210,6 +224,8 @@ class AsyncAuditResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "filters": filters,
+                    "order_by": order_by,
+                    "search": search,
                 },
                 audit_search_params.AuditSearchParams,
             ),
