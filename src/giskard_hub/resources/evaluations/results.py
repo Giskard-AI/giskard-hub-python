@@ -23,7 +23,7 @@ from ...types.evaluations import (
     result_update_visibility_params,
     result_submit_local_output_params,
 )
-from ...types.model_output_param import ModelOutputParam
+from ...types.model_output_param import AgentOutputParam
 from ...types.evaluations.result_list_response import ResultListResponse
 from ...types.evaluations.failure_category_param import FailureCategoryParam
 from ...types.evaluations.result_search_response import ResultSearchResponse
@@ -70,6 +70,10 @@ class ResultsResource(SyncAPIResource):
         Retrieve Evaluation Result
 
         Args:
+          result_id: The ID of the result to retrieve
+
+          evaluation_id: The ID of the evaluation to retrieve the result for
+
           include: Related resources to include in response
 
           extra_headers: Send extra headers
@@ -113,6 +117,12 @@ class ResultsResource(SyncAPIResource):
         Update Evaluation Result
 
         Args:
+          result_id: The ID of the result to update
+
+          evaluation_id: The ID of the evaluation to update the result for
+
+          failure_category: The failure category to update the result for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -150,6 +160,10 @@ class ResultsResource(SyncAPIResource):
         List Evaluation Results
 
         Args:
+          evaluation_id: The ID of the evaluation to list the results for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -188,6 +202,10 @@ class ResultsResource(SyncAPIResource):
         Rerun Test Case Evaluation
 
         Args:
+          result_id: The ID of the result to rerun the test case for
+
+          evaluation_id: The ID of the evaluation to rerun the test case for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -214,7 +232,7 @@ class ResultsResource(SyncAPIResource):
         *,
         evaluation_id: str,
         error: Optional[str] | Omit = omit,
-        output: Optional[ModelOutputParam] | Omit = omit,
+        output: Optional[AgentOutputParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -226,6 +244,14 @@ class ResultsResource(SyncAPIResource):
         Submit Local Evaluation Result Output
 
         Args:
+          result_id: The ID of the result to submit the local output for
+
+          evaluation_id: The ID of the evaluation to submit the local output for
+
+          error: The error to submit the local output for
+
+          output: The output to submit the local output for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -274,6 +300,8 @@ class ResultsResource(SyncAPIResource):
         Search Evaluation Results By Filters
 
         Args:
+          evaluation_id: The ID of the evaluation to search the results for
+
           search: Search query for evaluation results
 
           order_by: Order by criteria for evaluation results
@@ -324,6 +352,7 @@ class ResultsResource(SyncAPIResource):
         *,
         evaluation_id: str,
         hidden: bool,
+        set_test_case_draft: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -335,7 +364,13 @@ class ResultsResource(SyncAPIResource):
         Update Evaluation Result Visibility
 
         Args:
+          result_id: The ID of the result to update the visibility for
+
+          evaluation_id: The ID of the evaluation to update the visibility for
+
           hidden: Whether the result should be hidden
+
+          set_test_case_draft: Whether the test case should be set to draft
 
           extra_headers: Send extra headers
 
@@ -351,7 +386,10 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
         return self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
-            body=maybe_transform({"hidden": hidden}, result_update_visibility_params.ResultUpdateVisibilityParams),
+            body=maybe_transform(
+                {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
+                result_update_visibility_params.ResultUpdateVisibilityParams,
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -396,6 +434,10 @@ class AsyncResultsResource(AsyncAPIResource):
         Retrieve Evaluation Result
 
         Args:
+          result_id: The ID of the result to retrieve
+
+          evaluation_id: The ID of the evaluation to retrieve the result for
+
           include: Related resources to include in response
 
           extra_headers: Send extra headers
@@ -439,6 +481,12 @@ class AsyncResultsResource(AsyncAPIResource):
         Update Evaluation Result
 
         Args:
+          result_id: The ID of the result to update
+
+          evaluation_id: The ID of the evaluation to update the result for
+
+          failure_category: The failure category to update the result for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -478,6 +526,10 @@ class AsyncResultsResource(AsyncAPIResource):
         List Evaluation Results
 
         Args:
+          evaluation_id: The ID of the evaluation to list the results for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -516,6 +568,10 @@ class AsyncResultsResource(AsyncAPIResource):
         Rerun Test Case Evaluation
 
         Args:
+          result_id: The ID of the result to rerun the test case for
+
+          evaluation_id: The ID of the evaluation to rerun the test case for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -542,7 +598,7 @@ class AsyncResultsResource(AsyncAPIResource):
         *,
         evaluation_id: str,
         error: Optional[str] | Omit = omit,
-        output: Optional[ModelOutputParam] | Omit = omit,
+        output: Optional[AgentOutputParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -554,6 +610,14 @@ class AsyncResultsResource(AsyncAPIResource):
         Submit Local Evaluation Result Output
 
         Args:
+          result_id: The ID of the result to submit the local output for
+
+          evaluation_id: The ID of the evaluation to submit the local output for
+
+          error: The error to submit the local output for
+
+          output: The output to submit the local output for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -602,6 +666,8 @@ class AsyncResultsResource(AsyncAPIResource):
         Search Evaluation Results By Filters
 
         Args:
+          evaluation_id: The ID of the evaluation to search the results for
+
           search: Search query for evaluation results
 
           order_by: Order by criteria for evaluation results
@@ -652,6 +718,7 @@ class AsyncResultsResource(AsyncAPIResource):
         *,
         evaluation_id: str,
         hidden: bool,
+        set_test_case_draft: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -663,7 +730,13 @@ class AsyncResultsResource(AsyncAPIResource):
         Update Evaluation Result Visibility
 
         Args:
+          result_id: The ID of the result to update the visibility for
+
+          evaluation_id: The ID of the evaluation to update the visibility for
+
           hidden: Whether the result should be hidden
+
+          set_test_case_draft: Whether the test case should be set to draft
 
           extra_headers: Send extra headers
 
@@ -680,7 +753,8 @@ class AsyncResultsResource(AsyncAPIResource):
         return await self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=await async_maybe_transform(
-                {"hidden": hidden}, result_update_visibility_params.ResultUpdateVisibilityParams
+                {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
+                result_update_visibility_params.ResultUpdateVisibilityParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout

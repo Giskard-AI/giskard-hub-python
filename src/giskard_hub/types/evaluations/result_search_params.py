@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict, List, Literal, Optional, TypedDict
 
 from giskard_hub._types import SequenceNotStr
 
@@ -10,10 +10,12 @@ __all__ = ["ResultSearchParams"]
 class ResultSearchParams(TypedDict, total=False):
     search: Optional[str]
 
-    order_by: Optional[SequenceNotStr[Dict[str, Any]]]
+    order_by: SequenceNotStr[Dict[str, Any]]
 
-    filters: Optional[Dict[str, Dict[str, Any]]]
+    filters: Dict[str, Dict[str, Any]]
 
-    limit: Optional[int]
+    limit: int
 
-    offset: Optional[int]
+    offset: int
+
+    include: Optional[List[Literal["test_case"]]]
