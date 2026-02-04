@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import httpx
 
@@ -280,10 +280,10 @@ class DatasetsResource(SyncAPIResource):
         agent_id: str,
         project_id: str,
         scenario_id: str,
+        dataset_id: str | Omit = omit,
         dataset_name: str | Omit = omit,
         description: Optional[str] | Omit = omit,
         n_examples: int | Omit = omit,
-        scenario_config: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -301,13 +301,13 @@ class DatasetsResource(SyncAPIResource):
 
           scenario_id: The ID of the scenario to use
 
+          dataset_id: The ID of the dataset to use (required when dataset_name is not provided)
+
           dataset_name: Name for the generated dataset
 
           description: Description of the dataset
 
           n_examples: Total number of examples to generate
-
-          scenario_config: Optional configuration for the scenario
 
           extra_headers: Send extra headers
 
@@ -317,6 +317,10 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+
+        if dataset_id is omit and dataset_name is omit:
+            raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
+
         return self._post(
             "/v2/datasets/generate-scenario-based",
             body=maybe_transform(
@@ -326,8 +330,8 @@ class DatasetsResource(SyncAPIResource):
                     "scenario_id": scenario_id,
                     "dataset_name": dataset_name,
                     "description": description,
-                    "n_examples": n_examples,
-                    "scenario_config": scenario_config,
+                    "num_examples": n_examples,
+                    "dataset_id": dataset_id,
                 },
                 dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
@@ -704,10 +708,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
         agent_id: str,
         project_id: str,
         scenario_id: str,
+        dataset_id: str | Omit = omit,
         dataset_name: str | Omit = omit,
         description: Optional[str] | Omit = omit,
         n_examples: int | Omit = omit,
-        scenario_config: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -725,13 +729,13 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           scenario_id: The ID of the scenario to use
 
-          dataset_name: Name for the generated dataset
+          dataset_id: The ID of the dataset to use
+
+          dataset_name: Name for the generated dataset (required when dataset_id is not provided)
 
           description: Description of the dataset
 
           n_examples: Total number of examples to generate
-
-          scenario_config: Optional configuration for the scenario
 
           extra_headers: Send extra headers
 
@@ -741,6 +745,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+
+        if dataset_id is omit and dataset_name is omit:
+            raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
+
         return await self._post(
             "/v2/datasets/generate-scenario-based",
             body=await async_maybe_transform(
@@ -750,8 +758,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "scenario_id": scenario_id,
                     "dataset_name": dataset_name,
                     "description": description,
-                    "n_examples": n_examples,
-                    "scenario_config": scenario_config,
+                    "num_examples": n_examples,
+                    "dataset_id": dataset_id,
                 },
                 dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
