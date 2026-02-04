@@ -56,6 +56,10 @@ class CommentsResource(SyncAPIResource):
         Delete Test Case Comment
 
         Args:
+          comment_id: Comment ID to delete
+
+          test_case_id: Test Case ID to delete the comment from
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -92,6 +96,10 @@ class CommentsResource(SyncAPIResource):
         Add Test Case Comment
 
         Args:
+          test_case_id: Test Case ID to add the comment to
+
+          comment: Comment to add
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -128,6 +136,12 @@ class CommentsResource(SyncAPIResource):
         Edit Test Case Comment
 
         Args:
+          comment_id: Comment ID to edit
+
+          test_case_id: Test Case ID to edit the comment from
+
+          comment: Comment to edit
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -186,6 +200,10 @@ class AsyncCommentsResource(AsyncAPIResource):
         Delete Test Case Comment
 
         Args:
+          comment_id: Comment ID to delete
+
+          test_case_id: Test Case ID to delete the comment from
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -222,6 +240,10 @@ class AsyncCommentsResource(AsyncAPIResource):
         Add Test Case Comment
 
         Args:
+          test_case_id: Test Case ID to add the comment to
+
+          comment: Comment to add
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -258,6 +280,12 @@ class AsyncCommentsResource(AsyncAPIResource):
         Edit Test Case Comment
 
         Args:
+          comment_id: Comment ID to edit
+
+          test_case_id: Test Case ID to edit the comment from
+
+          comment: Comment to edit
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
