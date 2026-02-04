@@ -73,6 +73,18 @@ class AgentsResource(SyncAPIResource):
         Create Agent
 
         Args:
+          headers: Headers to use for the agent
+
+          name: Name of the agent
+
+          project_id: Project ID to use for the agent
+
+          supported_languages: Supported languages for the agent
+
+          url: URL of the agent
+
+          description: Description of the agent
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -115,6 +127,8 @@ class AgentsResource(SyncAPIResource):
         Retrieve Agent
 
         Args:
+          agent_id: Agent ID to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -153,6 +167,18 @@ class AgentsResource(SyncAPIResource):
         Update Agent
 
         Args:
+          agent_id: Agent ID to update
+
+          description: Description of the agent
+
+          headers: Headers to use for the agent
+
+          name: Name of the agent
+
+          supported_languages: Supported languages for the agent
+
+          url: URL of the agent
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -196,6 +222,8 @@ class AgentsResource(SyncAPIResource):
         List Agents
 
         Args:
+          project_id: Project ID to list agents for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -231,6 +259,8 @@ class AgentsResource(SyncAPIResource):
         Delete Agent
 
         Args:
+          agent_id: Agent ID to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -264,6 +294,8 @@ class AgentsResource(SyncAPIResource):
         Bulk Delete Agents
 
         Args:
+          agent_ids: Agent IDs to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -300,6 +332,10 @@ class AgentsResource(SyncAPIResource):
         Generate Agent Completion
 
         Args:
+          agent_id: Agent ID to generate completion for
+
+          messages: Messages to generate completion for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -337,6 +373,10 @@ class AgentsResource(SyncAPIResource):
         Test Agent Connection
 
         Args:
+          url: URL to test the connection for
+
+          headers: Headers to use for the connection test
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -401,6 +441,18 @@ class AsyncAgentsResource(AsyncAPIResource):
         Create Agent
 
         Args:
+          headers: Headers to use for the agent
+
+          name: Name of the agent
+
+          project_id: Project ID to use for the agent
+
+          supported_languages: Supported languages for the agent
+
+          url: URL of the agent
+
+          description: Description of the agent
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -443,6 +495,8 @@ class AsyncAgentsResource(AsyncAPIResource):
         Retrieve Agent
 
         Args:
+          agent_id: Agent ID to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -481,6 +535,18 @@ class AsyncAgentsResource(AsyncAPIResource):
         Update Agent
 
         Args:
+          agent_id: Agent ID to update
+
+          description: Description of the agent
+
+          headers: Headers to use for the agent
+
+          name: Name of the agent
+
+          supported_languages: Supported languages for the agent
+
+          url: URL of the agent
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -524,6 +590,8 @@ class AsyncAgentsResource(AsyncAPIResource):
         List Agents
 
         Args:
+          project_id: Project ID to list agents for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -559,6 +627,8 @@ class AsyncAgentsResource(AsyncAPIResource):
         Delete Agent
 
         Args:
+          agent_id: Agent ID to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -592,6 +662,8 @@ class AsyncAgentsResource(AsyncAPIResource):
         Bulk Delete Agents
 
         Args:
+          agent_ids: Agent IDs to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -630,6 +702,10 @@ class AsyncAgentsResource(AsyncAPIResource):
         Generate Agent Completion
 
         Args:
+          agent_id: Agent ID to generate completion for
+
+          messages: Messages to generate completion for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -667,6 +743,10 @@ class AsyncAgentsResource(AsyncAPIResource):
         Test Agent Connection
 
         Args:
+          url: URL to test the connection for
+
+          headers: Headers to use for the connection test
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
