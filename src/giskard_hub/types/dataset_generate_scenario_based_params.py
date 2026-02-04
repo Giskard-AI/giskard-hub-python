@@ -15,8 +15,6 @@ class DatasetGenerateScenarioBasedParams(TypedDict, total=False):
 
     dataset_name: Optional[str]
 
-    description: Optional[str]
-
-    n_examples: Optional[int]
+    n_examples: int
 
     scenario_config: Optional[Dict[str, Any]]
