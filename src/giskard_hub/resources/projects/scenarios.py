@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import httpx
 
@@ -49,9 +49,8 @@ class ScenariosResource(SyncAPIResource):
         project_id: str,
         *,
         name: str,
-        description: Optional[str] | Omit = omit,
-        config: Optional[Dict[str, Any]] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
+        description: str,
+        rules: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -63,13 +62,13 @@ class ScenariosResource(SyncAPIResource):
         Create Scenario
 
         Args:
-          name: Name of the scenario
+          project_id: Project ID
 
-          description: Description of the scenario
+          name: The name of the scenario
 
-          config: Configuration for the scenario
+          description: The description of the scenario
 
-          agent_id: Associated agent ID
+          rules: The rules of the scenario
 
           extra_headers: Send extra headers
 
@@ -87,8 +86,7 @@ class ScenariosResource(SyncAPIResource):
                 {
                     "name": name,
                     "description": description,
-                    "config": config,
-                    "agent_id": agent_id,
+                    "rules": rules,
                 },
                 scenario_create_params.ScenarioCreateParams,
             ),
@@ -114,6 +112,10 @@ class ScenariosResource(SyncAPIResource):
         Retrieve Scenario
 
         Args:
+          scenario_id: Scenario ID
+
+          project_id: Project ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -141,8 +143,7 @@ class ScenariosResource(SyncAPIResource):
         project_id: str,
         name: Optional[str] | Omit = omit,
         description: Optional[str] | Omit = omit,
-        config: Optional[Dict[str, Any]] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
+        rules: Optional[SequenceNotStr[str]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -154,13 +155,15 @@ class ScenariosResource(SyncAPIResource):
         Update Scenario
 
         Args:
+          scenario_id: Scenario ID
+
+          project_id: Project ID
+
           name: Name of the scenario
 
           description: Description of the scenario
 
-          config: Configuration for the scenario
-
-          agent_id: Associated agent ID
+          rules: The rules of the scenario
 
           extra_headers: Send extra headers
 
@@ -180,8 +183,7 @@ class ScenariosResource(SyncAPIResource):
                 {
                     "name": name,
                     "description": description,
-                    "config": config,
-                    "agent_id": agent_id,
+                    "rules": rules,
                 },
                 scenario_update_params.ScenarioUpdateParams,
             ),
@@ -206,6 +208,8 @@ class ScenariosResource(SyncAPIResource):
         List Scenarios
 
         Args:
+          project_id: Project ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -240,6 +244,10 @@ class ScenariosResource(SyncAPIResource):
         Delete Scenario
 
         Args:
+          scenario_id: Scenario ID
+
+          project_id: Project ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -341,9 +349,8 @@ class AsyncScenariosResource(AsyncAPIResource):
         project_id: str,
         *,
         name: str,
-        description: Optional[str] | Omit = omit,
-        config: Optional[Dict[str, Any]] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
+        description: str,
+        rules: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -355,13 +362,13 @@ class AsyncScenariosResource(AsyncAPIResource):
         Create Scenario
 
         Args:
-          name: Name of the scenario
+          project_id: Project ID
 
-          description: Description of the scenario
+          name: The name of the scenario
 
-          config: Configuration for the scenario
+          description: The description of the scenario
 
-          agent_id: Associated agent ID
+          rules: The rules of the scenario
 
           extra_headers: Send extra headers
 
@@ -379,8 +386,7 @@ class AsyncScenariosResource(AsyncAPIResource):
                 {
                     "name": name,
                     "description": description,
-                    "config": config,
-                    "agent_id": agent_id,
+                    "rules": rules,
                 },
                 scenario_create_params.ScenarioCreateParams,
             ),
@@ -406,6 +412,10 @@ class AsyncScenariosResource(AsyncAPIResource):
         Retrieve Scenario
 
         Args:
+          scenario_id: Scenario ID
+
+          project_id: Project ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -433,8 +443,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         project_id: str,
         name: Optional[str] | Omit = omit,
         description: Optional[str] | Omit = omit,
-        config: Optional[Dict[str, Any]] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
+        rules: Optional[SequenceNotStr[str]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -446,13 +455,15 @@ class AsyncScenariosResource(AsyncAPIResource):
         Update Scenario
 
         Args:
+          scenario_id: Scenario ID
+
+          project_id: Project ID
+
           name: Name of the scenario
 
           description: Description of the scenario
 
-          config: Configuration for the scenario
-
-          agent_id: Associated agent ID
+          rules: The rules of the scenario
 
           extra_headers: Send extra headers
 
@@ -472,8 +483,7 @@ class AsyncScenariosResource(AsyncAPIResource):
                 {
                     "name": name,
                     "description": description,
-                    "config": config,
-                    "agent_id": agent_id,
+                    "rules": rules,
                 },
                 scenario_update_params.ScenarioUpdateParams,
             ),
@@ -498,6 +508,8 @@ class AsyncScenariosResource(AsyncAPIResource):
         List Scenarios
 
         Args:
+          project_id: Project ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -532,6 +544,10 @@ class AsyncScenariosResource(AsyncAPIResource):
         Delete Scenario
 
         Args:
+          scenario_id: Scenario ID
+
+          project_id: Project ID
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
