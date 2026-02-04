@@ -53,7 +53,11 @@ class KnowledgeBasesResource(SyncAPIResource):
     def create(
         self,
         *,
-        data: knowledge_base_create_params.Data,
+        name: str,
+        project_id: str,
+        description: Optional[str] | Omit = omit,
+        document_column: Optional[str] | Omit = omit,
+        topic_column: Optional[str] | Omit = omit,
         file: FileTypes,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -76,7 +80,11 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         body = deepcopy_minimal(
             {
-                "data": data,
+                "project_id": project_id,
+                "name": name,
+                "description": description,
+                "document_column": document_column,
+                "topic_column": topic_column,
                 "file": file,
             }
         )
@@ -337,7 +345,11 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        data: knowledge_base_create_params.Data,
+        name: str,
+        project_id: str,
+        description: Optional[str] | Omit = omit,
+        document_column: Optional[str] | Omit = omit,
+        topic_column: Optional[str] | Omit = omit,
         file: FileTypes,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -360,7 +372,11 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         body = deepcopy_minimal(
             {
-                "data": data,
+                "project_id": project_id,
+                "name": name,
+                "description": description,
+                "document_column": document_column,
+                "topic_column": topic_column,
                 "file": file,
             }
         )

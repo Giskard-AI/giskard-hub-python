@@ -5,24 +5,18 @@ from typing_extensions import Required
 
 from .._types import FileTypes
 
-__all__ = ["KnowledgeBaseCreateParams", "Data"]
+__all__ = ["KnowledgeBaseCreateParams"]
 
 
 class KnowledgeBaseCreateParams(TypedDict, total=False):
-    data: Required[Data]
-
-    file: Required[FileTypes]
-
-
-class Data(TypedDict, total=False):
-    name: Required[str]
-
     project_id: Required[str]
+
+    name: Required[str]
 
     description: Optional[str]
 
-    document_column: str
-    """Column name for document content"""
+    document_column: Optional[str]
 
-    topic_column: str
-    """Column name for topic classification"""
+    topic_column: Optional[str]
+
+    file: Required[FileTypes]
