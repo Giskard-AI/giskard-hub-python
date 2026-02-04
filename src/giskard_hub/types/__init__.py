@@ -137,9 +137,6 @@ from .dataset_generate_document_based_params import (
 from .dataset_generate_scenario_based_params import (
     DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
 )
-from .knowledge_base_list_documents_response import (
-    KnowledgeBaseListDocumentsResponse as KnowledgeBaseListDocumentsResponse,
-)
 from .scheduled_evaluation_bulk_delete_params import (
     ScheduledEvaluationBulkDeleteParams as ScheduledEvaluationBulkDeleteParams,
 )

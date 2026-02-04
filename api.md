@@ -142,7 +142,6 @@ from giskard_hub.types import (
     APIResponseKnowledgeBase,
     KnowledgeBase,
     KnowledgeBaseListResponse,
-    KnowledgeBaseListDocumentsResponse,
 )
 ```
 
@@ -154,7 +153,6 @@ Methods:
 - <code title="get /v2/knowledge-bases">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">list</a>(\*\*<a href="src/giskard_hub/types/knowledge_base_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/knowledge_base_list_response.py">KnowledgeBaseListResponse</a></code>
 - <code title="delete /v2/knowledge-bases/{knowledge_base_id}">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">delete</a>(knowledge_base_id) -> <a href="./src/giskard_hub/types/api_response_none.py">APIResponseNone</a></code>
 - <code title="delete /v2/knowledge-bases">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/knowledge_base_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/api_response_none.py">APIResponseNone</a></code>
-- <code title="get /v2/knowledge-bases/{knowledge_base_id}/documents">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">list_documents</a>(knowledge_base_id) -> <a href="./src/giskard_hub/types/knowledge_base_list_documents_response.py">KnowledgeBaseListDocumentsResponse</a></code>
 
 # Projects
 

@@ -25,7 +25,6 @@ from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
 from ..types.api_response_knowledge_base import APIResponseKnowledgeBase
 from ..types.knowledge_base_list_response import KnowledgeBaseListResponse
-from ..types.knowledge_base_list_documents_response import KnowledgeBaseListDocumentsResponse
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
 
@@ -286,39 +285,6 @@ class KnowledgeBasesResource(SyncAPIResource):
                 ),
             ),
             cast_to=APIResponseNone,
-        )
-
-    def list_documents(
-        self,
-        knowledge_base_id: str,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> KnowledgeBaseListDocumentsResponse:
-        """
-        List Knowledge Base Documents
-
-        Args:
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._get(
-            f"/v2/knowledge-bases/{knowledge_base_id}/documents",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=KnowledgeBaseListDocumentsResponse,
         )
 
 
@@ -582,39 +548,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponseNone,
         )
 
-    async def list_documents(
-        self,
-        knowledge_base_id: str,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> KnowledgeBaseListDocumentsResponse:
-        """
-        List Knowledge Base Documents
-
-        Args:
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._get(
-            f"/v2/knowledge-bases/{knowledge_base_id}/documents",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=KnowledgeBaseListDocumentsResponse,
-        )
-
 
 class KnowledgeBasesResourceWithRawResponse:
     def __init__(self, knowledge_bases: KnowledgeBasesResource) -> None:
@@ -637,9 +570,6 @@ class KnowledgeBasesResourceWithRawResponse:
         )
         self.bulk_delete = to_raw_response_wrapper(
             knowledge_bases.bulk_delete,
-        )
-        self.list_documents = to_raw_response_wrapper(
-            knowledge_bases.list_documents,
         )
 
 
@@ -665,9 +595,6 @@ class AsyncKnowledgeBasesResourceWithRawResponse:
         self.bulk_delete = async_to_raw_response_wrapper(
             knowledge_bases.bulk_delete,
         )
-        self.list_documents = async_to_raw_response_wrapper(
-            knowledge_bases.list_documents,
-        )
 
 
 class KnowledgeBasesResourceWithStreamingResponse:
@@ -692,9 +619,6 @@ class KnowledgeBasesResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             knowledge_bases.bulk_delete,
         )
-        self.list_documents = to_streamed_response_wrapper(
-            knowledge_bases.list_documents,
-        )
 
 
 class AsyncKnowledgeBasesResourceWithStreamingResponse:
@@ -718,7 +642,4 @@ class AsyncKnowledgeBasesResourceWithStreamingResponse:
         )
         self.bulk_delete = async_to_streamed_response_wrapper(
             knowledge_bases.bulk_delete,
-        )
-        self.list_documents = async_to_streamed_response_wrapper(
-            knowledge_bases.list_documents,
         )
