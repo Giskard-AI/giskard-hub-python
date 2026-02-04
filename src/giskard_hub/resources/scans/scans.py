@@ -73,8 +73,8 @@ class ScansResource(SyncAPIResource):
     def create(
         self,
         *,
-        agent_id: str,
         project_id: str,
+        agent_id: str,
         knowledge_base_id: Optional[str] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -88,6 +88,14 @@ class ScansResource(SyncAPIResource):
         Create Scan
 
         Args:
+          project_id: Project ID to use for the scan
+
+          agent_id: Agent ID to use for the scan
+
+          knowledge_base_id: Knowledge Base ID to use for the scan
+
+          tags: List of tags to apply to the scan
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -129,6 +137,10 @@ class ScansResource(SyncAPIResource):
         Retrieve Scan
 
         Args:
+          scan_result_id: Scan Result ID
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -154,8 +166,8 @@ class ScansResource(SyncAPIResource):
     def list(
         self,
         *,
-        include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         project_id: Optional[str] | Omit = omit,
+        include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -167,6 +179,10 @@ class ScansResource(SyncAPIResource):
         List Scans
 
         Args:
+          project_id: Project ID to use for the scan
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -208,6 +224,8 @@ class ScansResource(SyncAPIResource):
         Delete Scan
 
         Args:
+          scan_result_id: Scan Result ID to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -241,6 +259,8 @@ class ScansResource(SyncAPIResource):
         Bulk Delete Scans
 
         Args:
+          scan_ids: List of scan IDs to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -271,7 +291,18 @@ class ScansResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScanListCategoriesResponse:
-        """List Scan Categories"""
+        """
+        List Scan Categories
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return self._get(
             "/v2/scan-categories",
             options=make_request_options(
@@ -295,6 +326,8 @@ class ScansResource(SyncAPIResource):
         List Scan Probes
 
         Args:
+          scan_result_id: Scan Result ID to list probes
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -345,8 +378,8 @@ class AsyncScansResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        agent_id: str,
         project_id: str,
+        agent_id: str,
         knowledge_base_id: Optional[str] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -360,6 +393,14 @@ class AsyncScansResource(AsyncAPIResource):
         Create Scan
 
         Args:
+          project_id: Project ID to use for the scan
+
+          agent_id: Agent ID to use for the scan
+
+          knowledge_base_id: Knowledge Base ID to use for the scan
+
+          tags: List of tags to apply to the scan
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -401,6 +442,10 @@ class AsyncScansResource(AsyncAPIResource):
         Retrieve Scan
 
         Args:
+          scan_result_id: Scan Result ID to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -426,8 +471,8 @@ class AsyncScansResource(AsyncAPIResource):
     async def list(
         self,
         *,
-        include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         project_id: Optional[str] | Omit = omit,
+        include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -439,6 +484,10 @@ class AsyncScansResource(AsyncAPIResource):
         List Scans
 
         Args:
+          project_id: Project ID to use for the scan
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -480,6 +529,8 @@ class AsyncScansResource(AsyncAPIResource):
         Delete Scan
 
         Args:
+          scan_result_id: Scan Result ID to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -513,6 +564,8 @@ class AsyncScansResource(AsyncAPIResource):
         Bulk Delete Scans
 
         Args:
+          scan_result_id: Scan Result ID to list categories
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -543,7 +596,18 @@ class AsyncScansResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScanListCategoriesResponse:
-        """List Scan Categories"""
+        """
+        List Scan Categories
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._get(
             "/v2/scan-categories",
             options=make_request_options(
@@ -567,6 +631,8 @@ class AsyncScansResource(AsyncAPIResource):
         List Scan Probes
 
         Args:
+          scan_result_id: Scan Result ID to list probes
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request

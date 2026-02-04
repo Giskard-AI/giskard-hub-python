@@ -2,10 +2,10 @@ from typing import List, Optional
 
 from .._models import BaseModel
 
-__all__ = ["ScanListCategoriesResponse", "Data"]
+__all__ = ["ScanListCategoriesResponse", "ScanCategory"]
 
 
-class Data(BaseModel):
+class ScanCategory(BaseModel):
     id: str
 
     description: str
@@ -16,4 +16,4 @@ class Data(BaseModel):
 
 
 class ScanListCategoriesResponse(BaseModel):
-    data: List[Data]
+    data: List[ScanCategory]
