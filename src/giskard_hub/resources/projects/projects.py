@@ -72,6 +72,10 @@ class ProjectsResource(SyncAPIResource):
         Create Project
 
         Args:
+          name: The name of the project
+
+          description: The description of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -110,6 +114,8 @@ class ProjectsResource(SyncAPIResource):
         Retrieve Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -146,6 +152,14 @@ class ProjectsResource(SyncAPIResource):
         Update Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
+          description: The description of the project
+
+          failure_categories: The failure categories of the project
+
+          name: The name of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -182,7 +196,18 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ProjectListResponse:
-        """List Projects"""
+        """
+        List Projects
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return self._get(
             "/v2/projects",
             options=make_request_options(
@@ -206,6 +231,8 @@ class ProjectsResource(SyncAPIResource):
         Delete Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -239,6 +266,8 @@ class ProjectsResource(SyncAPIResource):
         Bulk Delete Projects
 
         Args:
+          project_ids: The IDs of the projects to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -300,6 +329,10 @@ class AsyncProjectsResource(AsyncAPIResource):
         Create Project
 
         Args:
+          name: The name of the project
+
+          description: The description of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -338,6 +371,8 @@ class AsyncProjectsResource(AsyncAPIResource):
         Retrieve Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -374,6 +409,14 @@ class AsyncProjectsResource(AsyncAPIResource):
         Update Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
+          description: The description of the project
+
+          failure_categories: The failure categories of the project
+
+          name: The name of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -410,7 +453,18 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ProjectListResponse:
-        """List Projects"""
+        """
+        List Projects
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._get(
             "/v2/projects",
             options=make_request_options(
@@ -434,6 +488,8 @@ class AsyncProjectsResource(AsyncAPIResource):
         Delete Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -467,6 +523,8 @@ class AsyncProjectsResource(AsyncAPIResource):
         Bulk Delete Projects
 
         Args:
+          project_ids: The IDs of the projects to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
