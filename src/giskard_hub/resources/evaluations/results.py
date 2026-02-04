@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Literal, Optional
 
 import httpx
 
-from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
+from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
@@ -257,7 +257,9 @@ class ResultsResource(SyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
+        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         include: Optional[List[Literal["test_case"]]] | Omit = omit,
@@ -272,6 +274,10 @@ class ResultsResource(SyncAPIResource):
         Search Evaluation Results By Filters
 
         Args:
+          search: Search query for evaluation results
+
+          order_by: Order by criteria for evaluation results
+
           filters: Filter criteria for evaluation results
 
           limit: Maximum number of results to return
@@ -292,7 +298,9 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         return self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
-            body=maybe_transform({"filters": filters}, result_search_params.ResultSearchParams),
+            body=maybe_transform(
+                {"filters": filters, "order_by": order_by, "search": search}, result_search_params.ResultSearchParams
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -577,7 +585,9 @@ class AsyncResultsResource(AsyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        filters: Optional[Dict[str, Any]] | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
+        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         include: Optional[List[Literal["test_case"]]] | Omit = omit,
@@ -592,6 +602,10 @@ class AsyncResultsResource(AsyncAPIResource):
         Search Evaluation Results By Filters
 
         Args:
+          search: Search query for evaluation results
+
+          order_by: Order by criteria for evaluation results
+
           filters: Filter criteria for evaluation results
 
           limit: Maximum number of results to return
@@ -612,7 +626,9 @@ class AsyncResultsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         return await self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
-            body=await async_maybe_transform({"filters": filters}, result_search_params.ResultSearchParams),
+            body=await async_maybe_transform(
+                {"filters": filters, "order_by": order_by, "search": search}, result_search_params.ResultSearchParams
+            ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
