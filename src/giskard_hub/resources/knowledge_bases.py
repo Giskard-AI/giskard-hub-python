@@ -25,7 +25,6 @@ from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
 from ..types.api_response_knowledge_base import APIResponseKnowledgeBase
 from ..types.knowledge_base_list_response import KnowledgeBaseListResponse
-from ..types.knowledge_base_list_documents_response import KnowledgeBaseListDocumentsResponse
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
 
@@ -53,8 +52,12 @@ class KnowledgeBasesResource(SyncAPIResource):
     def create(
         self,
         *,
-        data: knowledge_base_create_params.Data,
+        name: str,
+        project_id: str,
         file: FileTypes,
+        description: Optional[str] | Omit = omit,
+        document_column: str | Omit = omit,
+        topic_column: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -66,6 +69,18 @@ class KnowledgeBasesResource(SyncAPIResource):
         Create Knowledge Base
 
         Args:
+          name: Name of the knowledge base
+
+          project_id: Project ID to create the knowledge base in
+
+          file: File to upload for the knowledge base
+
+          description: Description of the knowledge base
+
+          document_column: Column name for the document column
+
+          topic_column: Column name for the topic column
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -76,7 +91,11 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         body = deepcopy_minimal(
             {
-                "data": data,
+                "project_id": project_id,
+                "name": name,
+                "description": description,
+                "document_column": document_column,
+                "topic_column": topic_column,
                 "file": file,
             }
         )
@@ -110,6 +129,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         Retrieve Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -147,6 +168,14 @@ class KnowledgeBasesResource(SyncAPIResource):
         Update Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to update
+
+          description: Description of the knowledge base
+
+          name: Name of the knowledge base
+
+          project_id: Project ID to update the knowledge base in
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -189,6 +218,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         List Knowledge Bases
 
         Args:
+          project_id: Project ID to list knowledge bases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -224,6 +255,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         Delete Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -257,6 +290,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         Bulk Delete Knowledge Bases
 
         Args:
+          knowledge_base_ids: IDs of the knowledge bases to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -278,39 +313,6 @@ class KnowledgeBasesResource(SyncAPIResource):
                 ),
             ),
             cast_to=APIResponseNone,
-        )
-
-    def list_documents(
-        self,
-        knowledge_base_id: str,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> KnowledgeBaseListDocumentsResponse:
-        """
-        List Knowledge Base Documents
-
-        Args:
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._get(
-            f"/v2/knowledge-bases/{knowledge_base_id}/documents",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=KnowledgeBaseListDocumentsResponse,
         )
 
 
@@ -337,8 +339,12 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        data: knowledge_base_create_params.Data,
+        name: str,
+        project_id: str,
         file: FileTypes,
+        description: Optional[str] | Omit = omit,
+        document_column: str | Omit = omit,
+        topic_column: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -350,6 +356,18 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Create Knowledge Base
 
         Args:
+          name: Name of the knowledge base
+
+          project_id: Project ID to create the knowledge base in
+
+          file: File to upload for the knowledge base
+
+          description: Description of the knowledge base
+
+          document_column: Column name for the document column
+
+          topic_column: Column name for the topic column
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -360,7 +378,11 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         body = deepcopy_minimal(
             {
-                "data": data,
+                "project_id": project_id,
+                "name": name,
+                "description": description,
+                "document_column": document_column,
+                "topic_column": topic_column,
                 "file": file,
             }
         )
@@ -394,6 +416,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Retrieve Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -431,6 +455,14 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Update Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to update
+
+          description: Description of the knowledge base
+
+          name: Name of the knowledge base
+
+          project_id: Project ID to update the knowledge base in
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -473,6 +505,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         List Knowledge Bases
 
         Args:
+          project_id: Project ID to list knowledge bases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -510,6 +544,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Delete Knowledge Base
 
         Args:
+          knowledge_base_id: ID of the knowledge base to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -543,6 +579,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Bulk Delete Knowledge Bases
 
         Args:
+          knowledge_base_ids: IDs of the knowledge bases to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -564,39 +602,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                 ),
             ),
             cast_to=APIResponseNone,
-        )
-
-    async def list_documents(
-        self,
-        knowledge_base_id: str,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> KnowledgeBaseListDocumentsResponse:
-        """
-        List Knowledge Base Documents
-
-        Args:
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._get(
-            f"/v2/knowledge-bases/{knowledge_base_id}/documents",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=KnowledgeBaseListDocumentsResponse,
         )
 
 
@@ -622,9 +627,6 @@ class KnowledgeBasesResourceWithRawResponse:
         self.bulk_delete = to_raw_response_wrapper(
             knowledge_bases.bulk_delete,
         )
-        self.list_documents = to_raw_response_wrapper(
-            knowledge_bases.list_documents,
-        )
 
 
 class AsyncKnowledgeBasesResourceWithRawResponse:
@@ -648,9 +650,6 @@ class AsyncKnowledgeBasesResourceWithRawResponse:
         )
         self.bulk_delete = async_to_raw_response_wrapper(
             knowledge_bases.bulk_delete,
-        )
-        self.list_documents = async_to_raw_response_wrapper(
-            knowledge_bases.list_documents,
         )
 
 
@@ -676,9 +675,6 @@ class KnowledgeBasesResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             knowledge_bases.bulk_delete,
         )
-        self.list_documents = to_streamed_response_wrapper(
-            knowledge_bases.list_documents,
-        )
 
 
 class AsyncKnowledgeBasesResourceWithStreamingResponse:
@@ -702,7 +698,4 @@ class AsyncKnowledgeBasesResourceWithStreamingResponse:
         )
         self.bulk_delete = async_to_streamed_response_wrapper(
             knowledge_bases.bulk_delete,
-        )
-        self.list_documents = async_to_streamed_response_wrapper(
-            knowledge_bases.list_documents,
         )

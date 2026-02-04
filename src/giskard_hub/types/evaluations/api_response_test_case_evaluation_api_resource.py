@@ -1,16 +1,17 @@
 from typing import Dict, Optional
 
 from ..._models import BaseModel
+from ...types.test_case import TestCase
 from .test_case_evaluation_api_resource import TestCaseEvaluationAPIResource
 
-__all__ = ["APIResponseTestCaseEvaluationAPIResource", "IncludedIncludedItem"]
+__all__ = ["APIResponseTestCaseEvaluationAPIResource", "IncludedItem"]
 
 
-class IncludedIncludedItem(BaseModel):
-    data: object
+class IncludedItem(BaseModel):
+    data: TestCase
 
 
 class APIResponseTestCaseEvaluationAPIResource(BaseModel):
     data: TestCaseEvaluationAPIResource
 
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None
+    included: Optional[Dict[str, Dict[str, IncludedItem]]] = None

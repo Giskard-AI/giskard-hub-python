@@ -1,16 +1,10 @@
-from typing import Dict, List, Optional
+from typing import List
 
 from .._models import BaseModel
 from .scans.scan_probe_result import ScanProbeResult
 
-__all__ = ["ScanListProbesResponse", "IncludedIncludedItem"]
-
-
-class IncludedIncludedItem(BaseModel):
-    data: object
+__all__ = ["ScanListProbesResponse"]
 
 
 class ScanListProbesResponse(BaseModel):
     data: List[ScanProbeResult]
-
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None

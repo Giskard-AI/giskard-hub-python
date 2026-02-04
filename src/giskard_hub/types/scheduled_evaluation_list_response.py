@@ -1,16 +1,17 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 
+from ..types import EvaluationAPIResource
 from .._models import BaseModel
 from .scheduled_evaluation import ScheduledEvaluation
 
-__all__ = ["ScheduledEvaluationListResponse", "IncludedIncludedItem"]
+__all__ = ["ScheduledEvaluationListResponse", "IncludedItem"]
 
 
-class IncludedIncludedItem(BaseModel):
-    data: object
+class IncludedItem(BaseModel):
+    data: EvaluationAPIResource
 
 
 class ScheduledEvaluationListResponse(BaseModel):
     data: List[ScheduledEvaluation]
 
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None
+    included: Optional[Dict[str, Dict[Literal["evaluations"], List[IncludedItem]]]] = None

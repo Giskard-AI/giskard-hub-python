@@ -1,3 +1,11 @@
+from .audit import (
+    AuditResource,
+    AsyncAuditResource,
+    AuditResourceWithRawResponse,
+    AsyncAuditResourceWithRawResponse,
+    AuditResourceWithStreamingResponse,
+    AsyncAuditResourceWithStreamingResponse,
+)
 from .scans import (
     ScansResource,
     AsyncScansResource,
@@ -29,14 +37,6 @@ from .datasets import (
     AsyncDatasetsResourceWithRawResponse,
     DatasetsResourceWithStreamingResponse,
     AsyncDatasetsResourceWithStreamingResponse,
-)
-from .projects import (
-    ProjectsResource,
-    AsyncProjectsResource,
-    ProjectsResourceWithRawResponse,
-    AsyncProjectsResourceWithRawResponse,
-    ProjectsResourceWithStreamingResponse,
-    AsyncProjectsResourceWithStreamingResponse,
 )
 from .test_cases import (
     TestCasesResource,
@@ -72,6 +72,12 @@ from .scheduled_evaluations import (
 )
 
 __all__ = [
+    "AuditResource",
+    "AsyncAuditResource",
+    "AuditResourceWithRawResponse",
+    "AsyncAuditResourceWithRawResponse",
+    "AuditResourceWithStreamingResponse",
+    "AsyncAuditResourceWithStreamingResponse",
     "AgentsResource",
     "AsyncAgentsResource",
     "AgentsResourceWithRawResponse",
@@ -102,12 +108,6 @@ __all__ = [
     "AsyncKnowledgeBasesResourceWithRawResponse",
     "KnowledgeBasesResourceWithStreamingResponse",
     "AsyncKnowledgeBasesResourceWithStreamingResponse",
-    "ProjectsResource",
-    "AsyncProjectsResource",
-    "ProjectsResourceWithRawResponse",
-    "AsyncProjectsResourceWithRawResponse",
-    "ProjectsResourceWithStreamingResponse",
-    "AsyncProjectsResourceWithStreamingResponse",
     "ScansResource",
     "AsyncScansResource",
     "ScansResourceWithRawResponse",

@@ -1,16 +1,10 @@
-from typing import Dict, List, Optional
+from typing import List
 
 from .._models import BaseModel
 from .check_api_resource import CheckAPIResource
 
-__all__ = ["CheckListResponse", "IncludedIncludedItem"]
-
-
-class IncludedIncludedItem(BaseModel):
-    data: object
+__all__ = ["CheckListResponse"]
 
 
 class CheckListResponse(BaseModel):
     data: List[CheckAPIResource]
-
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None

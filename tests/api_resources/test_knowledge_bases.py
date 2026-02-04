@@ -13,7 +13,6 @@ from giskard_hub.types import (
     APIResponseNone,
     APIResponseKnowledgeBase,
     KnowledgeBaseListResponse,
-    KnowledgeBaseListDocumentsResponse,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -304,51 +303,6 @@ class TestKnowledgeBases:
             assert_matches_type(APIResponseNone, knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_list_documents(self, client: HubClient) -> None:
-        knowledge_base = client.knowledge_bases.list_documents(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-        assert_matches_type(KnowledgeBaseListDocumentsResponse, knowledge_base, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_raw_response_list_documents(self, client: HubClient) -> None:
-        response = client.knowledge_bases.with_raw_response.list_documents(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-        knowledge_base = response.parse()
-        assert_matches_type(KnowledgeBaseListDocumentsResponse, knowledge_base, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_streaming_response_list_documents(self, client: HubClient) -> None:
-        with client.knowledge_bases.with_streaming_response.list_documents(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        ) as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            knowledge_base = response.parse()
-            assert_matches_type(KnowledgeBaseListDocumentsResponse, knowledge_base, path=["response"])
-
-        assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_path_params_list_documents(self, client: HubClient) -> None:
-        with pytest.raises(
-            ValueError,
-            match=r"Expected a non-empty value for `knowledge_base_id` but received ''",
-        ):
-            client.knowledge_bases.with_raw_response.list_documents(
-                "",
-            )
 
 
 class TestAsyncKnowledgeBases:
@@ -641,48 +595,3 @@ class TestAsyncKnowledgeBases:
             assert_matches_type(APIResponseNone, knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_list_documents(self, async_client: AsyncHubClient) -> None:
-        knowledge_base = await async_client.knowledge_bases.list_documents(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-        assert_matches_type(KnowledgeBaseListDocumentsResponse, knowledge_base, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_raw_response_list_documents(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.knowledge_bases.with_raw_response.list_documents(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-        knowledge_base = await response.parse()
-        assert_matches_type(KnowledgeBaseListDocumentsResponse, knowledge_base, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_streaming_response_list_documents(self, async_client: AsyncHubClient) -> None:
-        async with async_client.knowledge_bases.with_streaming_response.list_documents(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        ) as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            knowledge_base = await response.parse()
-            assert_matches_type(KnowledgeBaseListDocumentsResponse, knowledge_base, path=["response"])
-
-        assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_path_params_list_documents(self, async_client: AsyncHubClient) -> None:
-        with pytest.raises(
-            ValueError,
-            match=r"Expected a non-empty value for `knowledge_base_id` but received ''",
-        ):
-            await async_client.knowledge_bases.with_raw_response.list_documents(
-                "",
-            )

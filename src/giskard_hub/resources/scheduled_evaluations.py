@@ -10,8 +10,9 @@ from ..types import (
     scheduled_evaluation_list_params,
     scheduled_evaluation_create_params,
     scheduled_evaluation_update_params,
+    scheduled_evaluation_retrieve_params,
     scheduled_evaluation_bulk_delete_params,
-    scheduled_evaluation_list_latest_runs_params,
+    scheduled_evaluation_list_evaluations_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -24,12 +25,10 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.frequency_option import FrequencyOption
 from ..types.api_response_none import APIResponseNone
 from ..types.api_response_scheduled_evaluation import APIResponseScheduledEvaluation
 from ..types.scheduled_evaluation_list_response import ScheduledEvaluationListResponse
 from ..types.scheduled_evaluation_list_evaluations_response import ScheduledEvaluationListEvaluationsResponse
-from ..types.scheduled_evaluation_list_latest_runs_response import ScheduledEvaluationListLatestRunsResponse
 
 __all__ = ["ScheduledEvaluationsResource", "AsyncScheduledEvaluationsResource"]
 
@@ -57,16 +56,16 @@ class ScheduledEvaluationsResource(SyncAPIResource):
     def create(
         self,
         *,
+        project_id: str,
+        name: str,
         agent_id: str,
         dataset_id: str,
+        tags: SequenceNotStr[str] | Omit = omit,
+        run_count: int | Omit = omit,
         frequency: FrequencyOption,
-        name: str,
-        project_id: str,
         time: str,
         day_of_month: Optional[int] | Omit = omit,
         day_of_week: Optional[int] | Omit = omit,
-        run_count: int | Omit = omit,
-        tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -78,9 +77,27 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Create Scheduled Evaluation
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          name: Name of the scheduled evaluation
+
+          agent_id: Agent ID to use for the scheduled evaluation
+
+          dataset_id: Dataset ID to use for the scheduled evaluation
+
+          tags: List of tags to apply to the scheduled evaluation
+
           run_count: The number of times to run each test case. This is useful to get a more accurate
               result when the chatbot's generation is not deterministic. Testing stops at the
               first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
 
           extra_headers: Send extra headers
 
@@ -116,6 +133,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
     def retrieve(
         self,
         scheduled_evaluation_id: str,
+        include: Optional[List[Literal["evaluations"]]] | Omit = omit,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -128,6 +146,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Retrieve Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -143,7 +165,13 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         return self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                query=maybe_transform(
+                    {"include": include}, scheduled_evaluation_retrieve_params.ScheduledEvaluationRetrieveParams
+                ),
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponseScheduledEvaluation,
         )
@@ -152,15 +180,15 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         self,
         scheduled_evaluation_id: str,
         *,
-        day_of_month: Optional[int] | Omit = omit,
-        day_of_week: Optional[int] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        run_count: Optional[int] | Omit = omit,
         frequency: Optional[FrequencyOption] | Omit = omit,
+        time: Optional[str] | Omit = omit,
+        day_of_week: Optional[int] | Omit = omit,
+        day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
         last_execution_status: Optional[scheduled_evaluation_update_params.LastExecutionStatus] | Omit = omit,
-        name: Optional[str] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
-        run_count: Optional[int] | Omit = omit,
-        time: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -172,6 +200,28 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Update Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to update
+
+          name: Name of the scheduled evaluation
+
+          run_count: The number of times to run each test case. This is useful to get a more accurate
+              result when the chatbot's generation is not deterministic. Testing stops at the
+              first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
+
+          last_execution_at: The date and time of the last execution of the scheduled evaluation
+
+          last_execution_status: The status of the last execution of the scheduled evaluation
+
+          paused: Whether the scheduled evaluation is paused
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -210,6 +260,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
+        include: Optional[List[Literal["evaluations"]]] | Omit = omit,
+        last_days: Optional[int] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -221,6 +273,12 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         List Scheduled Evaluations
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          include: Related resources to include in response
+
+          last_days: Number of days to include in the response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -237,7 +295,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
                 query=maybe_transform(
-                    {"project_id": project_id}, scheduled_evaluation_list_params.ScheduledEvaluationListParams
+                    {"project_id": project_id, "include": include, "last_days": last_days},
+                    scheduled_evaluation_list_params.ScheduledEvaluationListParams,
                 ),
             ),
             cast_to=ScheduledEvaluationListResponse,
@@ -258,6 +317,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Delete Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -293,6 +354,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Bulk Delete Scheduled Evaluations
 
         Args:
+          scheduled_evaluation_ids: IDs of the scheduled evaluations to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -319,6 +382,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
     def list_evaluations(
         self,
         scheduled_evaluation_id: str,
+        include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -331,6 +395,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         List Scheduled Evaluation Evaluations
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to list evaluations for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -346,58 +414,16 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         return self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=ScheduledEvaluationListEvaluationsResponse,
-        )
-
-    def list_latest_runs(
-        self,
-        *,
-        project_id: str,
-        include: Optional[List[Literal["scheduled_evaluation", "latest_runs"]]] | Omit = omit,
-        last_days: Optional[int] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListLatestRunsResponse:
-        """
-        List all evaluation runs triggered by a schedule for a project, grouped by
-        scheduled evaluation.
-
-        Optional `last_days` filters by creation date.
-
-        Args:
-          last_days: If provided, only include evaluation runs created in the last N days.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        return self._get(
-            "/v2/scheduled-evaluation-runs",
-            options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
                 query=maybe_transform(
-                    {
-                        "project_id": project_id,
-                        "include": include,
-                        "last_days": last_days,
-                    },
-                    scheduled_evaluation_list_latest_runs_params.ScheduledEvaluationListLatestRunsParams,
+                    {"include": include},
+                    scheduled_evaluation_list_evaluations_params.ScheduledEvaluationListEvaluationsParams,
                 ),
             ),
-            cast_to=ScheduledEvaluationListLatestRunsResponse,
+            cast_to=ScheduledEvaluationListEvaluationsResponse,
         )
 
 
@@ -424,16 +450,16 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
     async def create(
         self,
         *,
+        project_id: str,
+        name: str,
         agent_id: str,
         dataset_id: str,
+        tags: SequenceNotStr[str] | Omit = omit,
+        run_count: int | Omit = omit,
         frequency: FrequencyOption,
-        name: str,
-        project_id: str,
         time: str,
         day_of_month: Optional[int] | Omit = omit,
         day_of_week: Optional[int] | Omit = omit,
-        run_count: int | Omit = omit,
-        tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -445,9 +471,27 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Create Scheduled Evaluation
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          name: Name of the scheduled evaluation
+
+          agent_id: Agent ID to use for the scheduled evaluation
+
+          dataset_id: Dataset ID to use for the scheduled evaluation
+
+          tags: List of tags to apply to the scheduled evaluation
+
           run_count: The number of times to run each test case. This is useful to get a more accurate
               result when the chatbot's generation is not deterministic. Testing stops at the
               first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
 
           extra_headers: Send extra headers
 
@@ -483,6 +527,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
     async def retrieve(
         self,
         scheduled_evaluation_id: str,
+        include: Optional[List[Literal["evaluations"]]] | Omit = omit,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -495,6 +540,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Retrieve Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to retrieve
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -510,7 +559,13 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         return await self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                query=maybe_transform(
+                    {"include": include}, scheduled_evaluation_retrieve_params.ScheduledEvaluationRetrieveParams
+                ),
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponseScheduledEvaluation,
         )
@@ -519,15 +574,15 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         self,
         scheduled_evaluation_id: str,
         *,
-        day_of_month: Optional[int] | Omit = omit,
-        day_of_week: Optional[int] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        run_count: Optional[int] | Omit = omit,
         frequency: Optional[FrequencyOption] | Omit = omit,
+        time: Optional[str] | Omit = omit,
+        day_of_week: Optional[int] | Omit = omit,
+        day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
         last_execution_status: Optional[scheduled_evaluation_update_params.LastExecutionStatus] | Omit = omit,
-        name: Optional[str] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
-        run_count: Optional[int] | Omit = omit,
-        time: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -539,6 +594,28 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Update Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to update
+
+          name: Name of the scheduled evaluation
+
+          run_count: The number of times to run each test case. This is useful to get a more accurate
+              result when the chatbot's generation is not deterministic. Testing stops at the
+              first failure. If all runs pass, the test case is considered successful.
+
+          frequency: Frequency of the scheduled evaluation
+
+          time: Time of the scheduled evaluation
+
+          day_of_month: Day of the month to run the scheduled evaluation
+
+          day_of_week: Day of the week to run the scheduled evaluation
+
+          last_execution_at: The date and time of the last execution of the scheduled evaluation
+
+          last_execution_status: The status of the last execution of the scheduled evaluation
+
+          paused: Whether the scheduled evaluation is paused
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -577,6 +654,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
+        include: Optional[List[Literal["evaluations"]]] | Omit = omit,
+        last_days: Optional[int] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -588,6 +667,12 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         List Scheduled Evaluations
 
         Args:
+          project_id: Project ID to use for the scheduled evaluation
+
+          include: Related resources to include in response
+
+          last_days: Number of days to include in the response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -604,7 +689,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
                 query=await async_maybe_transform(
-                    {"project_id": project_id}, scheduled_evaluation_list_params.ScheduledEvaluationListParams
+                    {"project_id": project_id, "include": include, "last_days": last_days},
+                    scheduled_evaluation_list_params.ScheduledEvaluationListParams,
                 ),
             ),
             cast_to=ScheduledEvaluationListResponse,
@@ -625,6 +711,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Delete Scheduled Evaluation
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -660,6 +748,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Bulk Delete Scheduled Evaluations
 
         Args:
+          scheduled_evaluation_ids: IDs of the scheduled evaluations to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -686,6 +776,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
     async def list_evaluations(
         self,
         scheduled_evaluation_id: str,
+        include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -698,6 +789,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         List Scheduled Evaluation Evaluations
 
         Args:
+          scheduled_evaluation_id: ID of the scheduled evaluation to list evaluations for
+
+          include: Related resources to include in response
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -713,58 +808,16 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         return await self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=ScheduledEvaluationListEvaluationsResponse,
-        )
-
-    async def list_latest_runs(
-        self,
-        *,
-        project_id: str,
-        include: Optional[List[Literal["scheduled_evaluation", "latest_runs"]]] | Omit = omit,
-        last_days: Optional[int] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListLatestRunsResponse:
-        """
-        List all evaluation runs triggered by a schedule for a project, grouped by
-        scheduled evaluation.
-
-        Optional `last_days` filters by creation date.
-
-        Args:
-          last_days: If provided, only include evaluation runs created in the last N days.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        return await self._get(
-            "/v2/scheduled-evaluation-runs",
-            options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
                 query=await async_maybe_transform(
-                    {
-                        "project_id": project_id,
-                        "include": include,
-                        "last_days": last_days,
-                    },
-                    scheduled_evaluation_list_latest_runs_params.ScheduledEvaluationListLatestRunsParams,
+                    {"include": include},
+                    scheduled_evaluation_list_evaluations_params.ScheduledEvaluationListEvaluationsParams,
                 ),
             ),
-            cast_to=ScheduledEvaluationListLatestRunsResponse,
+            cast_to=ScheduledEvaluationListEvaluationsResponse,
         )
 
 
@@ -793,9 +846,6 @@ class ScheduledEvaluationsResourceWithRawResponse:
         self.list_evaluations = to_raw_response_wrapper(
             scheduled_evaluations.list_evaluations,
         )
-        self.list_latest_runs = to_raw_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
-        )
 
 
 class AsyncScheduledEvaluationsResourceWithRawResponse:
@@ -822,9 +872,6 @@ class AsyncScheduledEvaluationsResourceWithRawResponse:
         )
         self.list_evaluations = async_to_raw_response_wrapper(
             scheduled_evaluations.list_evaluations,
-        )
-        self.list_latest_runs = async_to_raw_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
         )
 
 
@@ -853,9 +900,6 @@ class ScheduledEvaluationsResourceWithStreamingResponse:
         self.list_evaluations = to_streamed_response_wrapper(
             scheduled_evaluations.list_evaluations,
         )
-        self.list_latest_runs = to_streamed_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
-        )
 
 
 class AsyncScheduledEvaluationsResourceWithStreamingResponse:
@@ -882,7 +926,4 @@ class AsyncScheduledEvaluationsResourceWithStreamingResponse:
         )
         self.list_evaluations = async_to_streamed_response_wrapper(
             scheduled_evaluations.list_evaluations,
-        )
-        self.list_latest_runs = async_to_streamed_response_wrapper(
-            scheduled_evaluations.list_latest_runs,
         )

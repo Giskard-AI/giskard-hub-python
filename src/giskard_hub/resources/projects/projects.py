@@ -4,27 +4,39 @@ from typing import Iterable, Optional
 
 import httpx
 
-from ..types import project_create_params, project_update_params, project_bulk_delete_params
-from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
-from .._utils import maybe_transform, async_maybe_transform
-from .._compat import cached_property
-from .._resource import SyncAPIResource, AsyncAPIResource
-from .._response import (
+from ...types import project_create_params, project_update_params, project_bulk_delete_params
+from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._utils import maybe_transform, async_maybe_transform
+from ..._compat import cached_property
+from .scenarios import (
+    ScenariosResource,
+    AsyncScenariosResource,
+    ScenariosResourceWithRawResponse,
+    AsyncScenariosResourceWithRawResponse,
+    ScenariosResourceWithStreamingResponse,
+    AsyncScenariosResourceWithStreamingResponse,
+)
+from ..._resource import SyncAPIResource, AsyncAPIResource
+from ..._response import (
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from .._base_client import make_request_options
-from ..types.api_response_none import APIResponseNone
-from ..types.project_list_response import ProjectListResponse
-from ..types.api_response_project_api_resource import APIResponseProjectAPIResource
-from ..types.evaluations.failure_category_param import FailureCategoryParam
+from ..._base_client import make_request_options
+from ...types.api_response_none import APIResponseNone
+from ...types.project_list_response import ProjectListResponse
+from ...types.api_response_project_api_resource import APIResponseProjectAPIResource
+from ...types.evaluations.failure_category_param import FailureCategoryParam
 
 __all__ = ["ProjectsResource", "AsyncProjectsResource"]
 
 
 class ProjectsResource(SyncAPIResource):
+    @cached_property
+    def scenarios(self) -> ScenariosResource:
+        return ScenariosResource(self._client)
+
     @cached_property
     def with_raw_response(self) -> ProjectsResourceWithRawResponse:
         """
@@ -60,6 +72,10 @@ class ProjectsResource(SyncAPIResource):
         Create Project
 
         Args:
+          name: The name of the project
+
+          description: The description of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -98,6 +114,8 @@ class ProjectsResource(SyncAPIResource):
         Retrieve Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -134,6 +152,14 @@ class ProjectsResource(SyncAPIResource):
         Update Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
+          description: The description of the project
+
+          failure_categories: The failure categories of the project
+
+          name: The name of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -170,7 +196,18 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ProjectListResponse:
-        """List Projects"""
+        """
+        List Projects
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return self._get(
             "/v2/projects",
             options=make_request_options(
@@ -194,6 +231,8 @@ class ProjectsResource(SyncAPIResource):
         Delete Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -227,6 +266,8 @@ class ProjectsResource(SyncAPIResource):
         Bulk Delete Projects
 
         Args:
+          project_ids: The IDs of the projects to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -249,6 +290,10 @@ class ProjectsResource(SyncAPIResource):
 
 
 class AsyncProjectsResource(AsyncAPIResource):
+    @cached_property
+    def scenarios(self) -> AsyncScenariosResource:
+        return AsyncScenariosResource(self._client)
+
     @cached_property
     def with_raw_response(self) -> AsyncProjectsResourceWithRawResponse:
         """
@@ -284,6 +329,10 @@ class AsyncProjectsResource(AsyncAPIResource):
         Create Project
 
         Args:
+          name: The name of the project
+
+          description: The description of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -322,6 +371,8 @@ class AsyncProjectsResource(AsyncAPIResource):
         Retrieve Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -358,6 +409,14 @@ class AsyncProjectsResource(AsyncAPIResource):
         Update Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
+          description: The description of the project
+
+          failure_categories: The failure categories of the project
+
+          name: The name of the project
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -394,7 +453,18 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ProjectListResponse:
-        """List Projects"""
+        """
+        List Projects
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._get(
             "/v2/projects",
             options=make_request_options(
@@ -418,6 +488,8 @@ class AsyncProjectsResource(AsyncAPIResource):
         Delete Project
 
         Args:
+          project_id: The ID of the project to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -451,6 +523,8 @@ class AsyncProjectsResource(AsyncAPIResource):
         Bulk Delete Projects
 
         Args:
+          project_ids: The IDs of the projects to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -478,6 +552,7 @@ class ProjectsResourceWithRawResponse:
     def __init__(self, projects: ProjectsResource) -> None:
         self._projects = projects
 
+        self.scenarios = ScenariosResourceWithRawResponse(projects.scenarios)
         self.create = to_raw_response_wrapper(
             projects.create,
         )
@@ -502,6 +577,7 @@ class AsyncProjectsResourceWithRawResponse:
     def __init__(self, projects: AsyncProjectsResource) -> None:
         self._projects = projects
 
+        self.scenarios = AsyncScenariosResourceWithRawResponse(projects.scenarios)
         self.create = async_to_raw_response_wrapper(
             projects.create,
         )
@@ -526,6 +602,7 @@ class ProjectsResourceWithStreamingResponse:
     def __init__(self, projects: ProjectsResource) -> None:
         self._projects = projects
 
+        self.scenarios = ScenariosResourceWithStreamingResponse(projects.scenarios)
         self.create = to_streamed_response_wrapper(
             projects.create,
         )
@@ -550,6 +627,7 @@ class AsyncProjectsResourceWithStreamingResponse:
     def __init__(self, projects: AsyncProjectsResource) -> None:
         self._projects = projects
 
+        self.scenarios = AsyncScenariosResourceWithStreamingResponse(projects.scenarios)
         self.create = async_to_streamed_response_wrapper(
             projects.create,
         )

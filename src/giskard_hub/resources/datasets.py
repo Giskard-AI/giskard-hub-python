@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Optional
 
 import httpx
 
@@ -9,8 +9,8 @@ from ..types import (
     dataset_create_params,
     dataset_update_params,
     dataset_bulk_delete_params,
-    dataset_generate_adversarial_params,
     dataset_generate_document_based_params,
+    dataset_generate_scenario_based_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -70,6 +70,12 @@ class DatasetsResource(SyncAPIResource):
         Create Dataset
 
         Args:
+          name: Name of the dataset to create
+
+          project_id: Project ID to create the dataset in
+
+          description: Description of the dataset to create
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -109,6 +115,8 @@ class DatasetsResource(SyncAPIResource):
         Retrieve Dataset
 
         Args:
+          dataset_id: ID of the dataset to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -145,6 +153,14 @@ class DatasetsResource(SyncAPIResource):
         Update Dataset
 
         Args:
+          dataset_id: ID of the dataset to update
+
+          description: Description of the dataset to update
+
+          name: Name of the dataset to update
+
+          status: Status of the dataset to update
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -186,6 +202,8 @@ class DatasetsResource(SyncAPIResource):
         List Datasets
 
         Args:
+          project_id: Project ID to list datasets for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -221,6 +239,8 @@ class DatasetsResource(SyncAPIResource):
         Delete Dataset
 
         Args:
+          dataset_id: ID of the dataset to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -254,6 +274,8 @@ class DatasetsResource(SyncAPIResource):
         Bulk Delete Datasets
 
         Args:
+          dataset_ids: IDs of the datasets to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -274,15 +296,15 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponseNone,
         )
 
-    def generate_adversarial(
+    def generate_scenario_based(
         self,
         *,
-        agent_id: str,
         project_id: str,
-        categories: Iterable[dataset_generate_adversarial_params.Category] | Omit = omit,
-        dataset_name: str | Omit = omit,
-        description: Optional[str] | Omit = omit,
-        n_examples_per_category: int | Omit = omit,
+        agent_id: str,
+        scenario_id: str,
+        n_examples: int | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        dataset_name: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -291,10 +313,20 @@ class DatasetsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponseDataset:
         """
-        Generate Adversarial Dataset
+        Generate Scenario Based Dataset
 
         Args:
-          n_examples_per_category: Number of examples to generate for each category
+          project_id: The ID of the project
+
+          agent_id: The ID of the agent to use for generation
+
+          scenario_id: The ID of the scenario to use
+
+          n_examples: Total number of examples to generate
+
+          dataset_id: The ID of the dataset to use (required when dataset_name is not provided)
+
+          dataset_name: Name for the generated dataset
 
           extra_headers: Send extra headers
 
@@ -304,18 +336,22 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+
+        if dataset_id is omit and dataset_name is omit:
+            raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
+
         return self._post(
-            "/v2/datasets/generate-adversarial",
+            "/v2/datasets/generate-scenario-based",
             body=maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "categories": categories,
+                    "scenario_id": scenario_id,
                     "dataset_name": dataset_name,
-                    "description": description,
-                    "n_examples_per_category": n_examples_per_category,
+                    "num_examples": n_examples,
+                    "dataset_id": dataset_id,
                 },
-                dataset_generate_adversarial_params.DatasetGenerateAdversarialParams,
+                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -344,7 +380,19 @@ class DatasetsResource(SyncAPIResource):
         Generate Document Based Dataset
 
         Args:
+          agent_id: The ID of the agent to use for generation
+
+          knowledge_base_id: The ID of the knowledge base to use for generation
+
+          project_id: The ID of the project to use for generation
+
+          dataset_name: Name for the generated dataset
+
+          description: Description of the generated dataset
+
           n_examples: Total number of examples to generate
+
+          topic_ids: IDs of the topics to use for generation
 
           extra_headers: Send extra headers
 
@@ -389,6 +437,8 @@ class DatasetsResource(SyncAPIResource):
         List Dataset Tags
 
         Args:
+          dataset_id: The ID of the dataset to list tags for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -422,6 +472,8 @@ class DatasetsResource(SyncAPIResource):
         List Dataset Test Cases
 
         Args:
+          dataset_id: The ID of the dataset to list test cases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -478,6 +530,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Create Dataset
 
         Args:
+          name: Name of the dataset to create
+
+          project_id: Project ID to create the dataset in
+
+          description: Description of the dataset to create
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -517,6 +575,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Retrieve Dataset
 
         Args:
+          dataset_id: ID of the dataset to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -553,6 +613,14 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Update Dataset
 
         Args:
+          dataset_id: ID of the dataset to update
+
+          description: Description of the dataset to update
+
+          name: Name of the dataset to update
+
+          status: Status of the dataset to update
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -594,6 +662,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         List Datasets
 
         Args:
+          project_id: Project ID to list datasets for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -629,6 +699,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Delete Dataset
 
         Args:
+          dataset_id: ID of the dataset to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -662,6 +734,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Bulk Delete Datasets
 
         Args:
+          dataset_ids: IDs of the datasets to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -684,15 +758,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponseNone,
         )
 
-    async def generate_adversarial(
+    async def generate_scenario_based(
         self,
         *,
-        agent_id: str,
         project_id: str,
-        categories: Iterable[dataset_generate_adversarial_params.Category] | Omit = omit,
-        dataset_name: str | Omit = omit,
-        description: Optional[str] | Omit = omit,
-        n_examples_per_category: int | Omit = omit,
+        agent_id: str,
+        scenario_id: str,
+        n_examples: int | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        dataset_name: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -701,10 +775,20 @@ class AsyncDatasetsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponseDataset:
         """
-        Generate Adversarial Dataset
+        Generate Scenario Based Dataset
 
         Args:
-          n_examples_per_category: Number of examples to generate for each category
+          project_id: The ID of the project
+
+          agent_id: The ID of the agent to use for generation
+
+          scenario_id: The ID of the scenario to use
+
+          n_examples: Total number of examples to generate
+
+          dataset_id: The ID of the dataset to use
+
+          dataset_name: Name for the generated dataset (required when dataset_id is not provided)
 
           extra_headers: Send extra headers
 
@@ -714,18 +798,22 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+
+        if dataset_id is omit and dataset_name is omit:
+            raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
+
         return await self._post(
-            "/v2/datasets/generate-adversarial",
+            "/v2/datasets/generate-scenario-based",
             body=await async_maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "categories": categories,
+                    "scenario_id": scenario_id,
                     "dataset_name": dataset_name,
-                    "description": description,
-                    "n_examples_per_category": n_examples_per_category,
+                    "num_examples": n_examples,
+                    "dataset_id": dataset_id,
                 },
-                dataset_generate_adversarial_params.DatasetGenerateAdversarialParams,
+                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -754,7 +842,19 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Generate Document Based Dataset
 
         Args:
+          agent_id: The ID of the agent to use for generation
+
+          knowledge_base_id: The ID of the knowledge base to use for generation
+
+          project_id: The ID of the project to use for generation
+
+          dataset_name: Name for the generated dataset
+
+          description: Description of the generated dataset
+
           n_examples: Total number of examples to generate
+
+          topic_ids: IDs of the topics to use for generation
 
           extra_headers: Send extra headers
 
@@ -799,6 +899,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         List Dataset Tags
 
         Args:
+          dataset_id: The ID of the dataset to list test cases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -832,6 +934,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         List Dataset Test Cases
 
         Args:
+          dataset_id: The ID of the dataset to list test cases for
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -873,8 +977,8 @@ class DatasetsResourceWithRawResponse:
         self.bulk_delete = to_raw_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = to_raw_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = to_raw_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = to_raw_response_wrapper(
             datasets.generate_document_based,
@@ -909,8 +1013,8 @@ class AsyncDatasetsResourceWithRawResponse:
         self.bulk_delete = async_to_raw_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = async_to_raw_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = async_to_raw_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = async_to_raw_response_wrapper(
             datasets.generate_document_based,
@@ -945,8 +1049,8 @@ class DatasetsResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = to_streamed_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = to_streamed_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = to_streamed_response_wrapper(
             datasets.generate_document_based,
@@ -981,8 +1085,8 @@ class AsyncDatasetsResourceWithStreamingResponse:
         self.bulk_delete = async_to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
-        self.generate_adversarial = async_to_streamed_response_wrapper(
-            datasets.generate_adversarial,
+        self.generate_scenario_based = async_to_streamed_response_wrapper(
+            datasets.generate_scenario_based,
         )
         self.generate_document_based = async_to_streamed_response_wrapper(
             datasets.generate_document_based,

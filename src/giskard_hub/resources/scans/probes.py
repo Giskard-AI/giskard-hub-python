@@ -53,6 +53,8 @@ class ProbesResource(SyncAPIResource):
         Retrieve Scan Probe
 
         Args:
+          probe_result_id: Scan Probe Result ID to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -86,6 +88,8 @@ class ProbesResource(SyncAPIResource):
         List Scan Probe Attempts
 
         Args:
+          probe_result_id: Scan Probe Result ID to list attempts
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -140,6 +144,8 @@ class AsyncProbesResource(AsyncAPIResource):
         Retrieve Scan Probe
 
         Args:
+          probe_result_id: Scan Probe Result ID to list attempts
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -173,6 +179,8 @@ class AsyncProbesResource(AsyncAPIResource):
         List Scan Probe Attempts
 
         Args:
+          probe_result_id: Scan Probe Result ID to list attempts
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request

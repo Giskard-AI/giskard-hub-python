@@ -16,8 +16,6 @@ from ..._response import (
 )
 from ...types.scans import Severity, ReviewStatus, attempt_update_params
 from ..._base_client import make_request_options
-from ...types.scans.severity import Severity
-from ...types.scans.review_status import ReviewStatus
 from ...types.scans.attempt_update_response import AttemptUpdateResponse
 
 __all__ = ["AttemptsResource", "AsyncAttemptsResource"]
@@ -61,6 +59,14 @@ class AttemptsResource(SyncAPIResource):
         Update Scan Probe Attempt
 
         Args:
+          probe_attempt_id: Scan Probe Attempt ID to update
+
+          review_status: Review status of the attempt
+
+          severity: Severity of the attempt
+
+          successful: Whether the attempt was successful
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -126,6 +132,14 @@ class AsyncAttemptsResource(AsyncAPIResource):
         Update Scan Probe Attempt
 
         Args:
+          probe_attempt_id: Scan Probe Attempt ID to update
+
+          review_status: Review status of the attempt
+
+          severity: Severity of the attempt
+
+          successful: Whether the attempt was successful
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request

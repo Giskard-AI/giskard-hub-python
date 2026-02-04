@@ -1,11 +1,11 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from .._models import BaseModel
 
-__all__ = ["ScanListCategoriesResponse", "Data", "IncludedIncludedItem"]
+__all__ = ["ScanListCategoriesResponse", "ScanCategory"]
 
 
-class Data(BaseModel):
+class ScanCategory(BaseModel):
     id: str
 
     description: str
@@ -15,11 +15,5 @@ class Data(BaseModel):
     title: str
 
 
-class IncludedIncludedItem(BaseModel):
-    data: object
-
-
 class ScanListCategoriesResponse(BaseModel):
-    data: List[Data]
-
-    included: Optional[Dict[str, Dict[str, IncludedIncludedItem]]] = None
+    data: List[ScanCategory]

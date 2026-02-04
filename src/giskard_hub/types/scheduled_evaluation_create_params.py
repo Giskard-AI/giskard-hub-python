@@ -10,27 +10,22 @@ __all__ = ["ScheduledEvaluationCreateParams"]
 
 
 class ScheduledEvaluationCreateParams(TypedDict, total=False):
+    project_id: Required[str]
+
+    name: Required[str]
+
     agent_id: Required[str]
 
     dataset_id: Required[str]
 
+    tags: SequenceNotStr[str]
+
+    run_count: int
+
     frequency: Required[FrequencyOption]
-
-    name: Required[str]
-
-    project_id: Required[str]
 
     time: Required[str]
 
-    day_of_month: Optional[int]
-
     day_of_week: Optional[int]
 
-    run_count: int
-    """
-    The number of times to run each test case. This is useful to get a more accurate
-    result when the chatbot's generation is not deterministic. Testing stops at the
-    first failure. If all runs pass, the test case is considered successful.
-    """
-
-    tags: SequenceNotStr[str]
+    day_of_month: Optional[int]

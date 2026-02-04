@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Literal, Iterable, Optional
 
 import httpx
 
@@ -84,6 +84,16 @@ class TestCasesResource(SyncAPIResource):
         Create Test Case
 
         Args:
+          dataset_id: Dataset ID to create the test case from
+
+          messages: Messages to add to the test case
+
+          checks: Checks to add to the test case
+
+          demo_output: Agent output
+
+          tags: Tags to apply to the test case
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -125,6 +135,8 @@ class TestCasesResource(SyncAPIResource):
         Retrieve Test Case
 
         Args:
+          test_case_id: Test Case ID to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -163,6 +175,18 @@ class TestCasesResource(SyncAPIResource):
         Update Test Case
 
         Args:
+          test_case_id: Test Case ID to update
+
+          checks: Checks to update the test case
+
+          dataset_id: Dataset ID to update the test case
+
+          demo_output: Agent output
+
+          messages: Messages to update the test case
+
+          tags: Tags to update the test case
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -206,6 +230,8 @@ class TestCasesResource(SyncAPIResource):
         Delete Test Case
 
         Args:
+          test_case_id: Test Case ID to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -239,6 +265,8 @@ class TestCasesResource(SyncAPIResource):
         Bulk Delete Test Cases
 
         Args:
+          test_case_ids: Test Case IDs to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -264,9 +292,12 @@ class TestCasesResource(SyncAPIResource):
     def bulk_update(
         self,
         *,
-        ids: SequenceNotStr[str],
+        test_case_ids: SequenceNotStr[str],
         disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
+        added_tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        removed_tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -278,11 +309,17 @@ class TestCasesResource(SyncAPIResource):
         Bulk Update Test Cases
 
         Args:
-          ids: IDs of the objects to be patched
+          test_case_ids: Test Case IDs to update
 
           disabled_checks: Partial list of checks to be disabled
 
           enabled_checks: Partial list of checks to be enabled
+
+          added_tags: Tags to be added to the test cases
+
+          removed_tags: Tags to be removed from the test cases
+
+          status: Status of the test cases
 
           extra_headers: Send extra headers
 
@@ -296,9 +333,12 @@ class TestCasesResource(SyncAPIResource):
             "/v2/test-cases",
             body=maybe_transform(
                 {
-                    "ids": ids,
+                    "ids": test_case_ids,
                     "disabled_checks": disabled_checks,
                     "enabled_checks": enabled_checks,
+                    "added_tags": added_tags,
+                    "removed_tags": removed_tags,
+                    "status": status,
                 },
                 test_case_bulk_update_params.TestCaseBulkUpdateParams,
             ),
@@ -352,6 +392,16 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Create Test Case
 
         Args:
+          dataset_id: Dataset ID to create the test case for
+
+          messages: Messages to add to the test case
+
+          checks: Checks to add to the test case
+
+          demo_output: Agent output
+
+          tags: Tags to apply to the test case
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -393,6 +443,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Retrieve Test Case
 
         Args:
+          test_case_id: Test Case ID to retrieve
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -431,6 +483,18 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Update Test Case
 
         Args:
+          test_case_id: Test Case ID to update
+
+          checks: Checks to update the test case
+
+          dataset_id: Dataset ID to update the test case
+
+          demo_output: Agent output
+
+          messages: Messages to update the test case
+
+          tags: Tags to update the test case
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -474,6 +538,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Delete Test Case
 
         Args:
+          test_case_id: Test Case ID to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -507,6 +573,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Bulk Delete Test Cases
 
         Args:
+          test_case_ids: Test Case IDs to delete
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -535,6 +603,9 @@ class AsyncTestCasesResource(AsyncAPIResource):
         ids: SequenceNotStr[str],
         disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
+        added_tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        removed_tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -546,11 +617,17 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Bulk Update Test Cases
 
         Args:
-          ids: IDs of the objects to be patched
+          test_case_ids: Test Case IDs to update
 
           disabled_checks: Partial list of checks to be disabled
 
           enabled_checks: Partial list of checks to be enabled
+
+          added_tags: Tags to be added to the test cases
+
+          removed_tags: Tags to be removed from the test cases
+
+          status: Status of the test cases
 
           extra_headers: Send extra headers
 
@@ -567,6 +644,9 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "ids": ids,
                     "disabled_checks": disabled_checks,
                     "enabled_checks": enabled_checks,
+                    "added_tags": added_tags,
+                    "removed_tags": removed_tags,
+                    "status": status,
                 },
                 test_case_bulk_update_params.TestCaseBulkUpdateParams,
             ),
