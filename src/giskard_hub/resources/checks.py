@@ -17,7 +17,6 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
-from ..types.api_response_none import APIResponseNone
 from ..types.check_api_resource import CheckAPIResource
 
 __all__ = ["ChecksResource", "AsyncChecksResource"]
@@ -245,7 +244,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Check
 
@@ -267,7 +266,7 @@ class ChecksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -280,7 +279,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Checks
 
@@ -304,7 +303,7 @@ class ChecksResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"check_ids": check_ids}, check_bulk_delete_params.CheckBulkDeleteParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
 
@@ -530,7 +529,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Check
 
@@ -552,7 +551,7 @@ class AsyncChecksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -565,7 +564,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Checks
 
@@ -591,7 +590,7 @@ class AsyncChecksResource(AsyncAPIResource):
                     {"check_ids": check_ids}, check_bulk_delete_params.CheckBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
 
