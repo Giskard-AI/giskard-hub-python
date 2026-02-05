@@ -6,7 +6,7 @@ These generic types can replace many resource-specific API response classes.
 
 from __future__ import annotations
 
-from typing import Dict, List, Generic, TypeVar, Optional
+from typing import Dict, List, Generic, Literal, TypeVar, Optional
 
 from ..._models import BaseModel
 
@@ -36,7 +36,7 @@ class APIResponseWithIncluded(BaseModel, Generic[T, TIncluded]):
 
     data: T
 
-    included: Optional[Dict[str, Dict[str, TIncluded]]] = None
+    included: Optional[Dict[str, Dict[str, Dict[Literal["data"], TIncluded]]]] = None
 
 
 class APIPaginatedMetadata(BaseModel):
@@ -59,6 +59,6 @@ class APIPaginatedResponse(BaseModel, Generic[T, TIncluded]):
 
     data: List[T]
 
-    included: Optional[Dict[str, Dict[str, TIncluded]]] = None
+    included: Optional[Dict[str, Dict[str, Dict[Literal["data"], TIncluded]]]] = None
 
     metadata: APIPaginatedMetadata
