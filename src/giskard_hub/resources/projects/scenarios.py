@@ -17,7 +17,6 @@ from ..._response import (
 )
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.api_response_none import APIResponseNone
 from ...types.scenario_api_resource import ScenarioAPIResource
 from ...types.scenario_preview_api_resource import ScenarioPreviewAPIResource
 
@@ -239,7 +238,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Scenario
 
@@ -265,7 +264,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def preview(
@@ -539,7 +538,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Scenario
 
@@ -565,7 +564,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def preview(
