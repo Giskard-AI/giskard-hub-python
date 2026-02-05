@@ -327,7 +327,7 @@ class TestEvaluations:
     def test_method_create_local(self, client: HubClient) -> None:
         evaluation = client.evaluations.create_local(
             criteria=[{"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}],
-            model={"name": "name"},
+            agent={"name": "name"},
         )
         assert_matches_type(APIResponse[EvaluationAPIResource], evaluation, path=["response"])
 
@@ -342,7 +342,7 @@ class TestEvaluations:
                     "target_type": "dataset",
                 }
             ],
-            model={
+            agent={
                 "name": "name",
                 "description": "description",
             },
@@ -355,7 +355,7 @@ class TestEvaluations:
     def test_raw_response_create_local(self, client: HubClient) -> None:
         response = client.evaluations.with_raw_response.create_local(
             criteria=[{"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}],
-            model={"name": "name"},
+            agent={"name": "name"},
         )
 
         assert response.is_closed is True
@@ -368,7 +368,7 @@ class TestEvaluations:
     def test_streaming_response_create_local(self, client: HubClient) -> None:
         with client.evaluations.with_streaming_response.create_local(
             criteria=[{"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}],
-            model={"name": "name"},
+            agent={"name": "name"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -434,7 +434,7 @@ class TestEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -454,7 +454,7 @@ class TestEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -465,7 +465,7 @@ class TestEvaluations:
                 },
                 "metadata": {"foo": "bar"},
             },
-            model_description="model_description",
+            agent_description="agent_description",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(APIResponse[List[CheckAPIResource]], evaluation, path=["response"])
@@ -481,7 +481,7 @@ class TestEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -505,7 +505,7 @@ class TestEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -832,7 +832,7 @@ class TestAsyncEvaluations:
     async def test_method_create_local(self, async_client: AsyncHubClient) -> None:
         evaluation = await async_client.evaluations.create_local(
             criteria=[{"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}],
-            model={"name": "name"},
+            agent={"name": "name"},
         )
         assert_matches_type(APIResponse[EvaluationAPIResource], evaluation, path=["response"])
 
@@ -847,7 +847,7 @@ class TestAsyncEvaluations:
                     "target_type": "dataset",
                 }
             ],
-            model={
+            agent={
                 "name": "name",
                 "description": "description",
             },
@@ -860,7 +860,7 @@ class TestAsyncEvaluations:
     async def test_raw_response_create_local(self, async_client: AsyncHubClient) -> None:
         response = await async_client.evaluations.with_raw_response.create_local(
             criteria=[{"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}],
-            model={"name": "name"},
+            agent={"name": "name"},
         )
 
         assert response.is_closed is True
@@ -873,7 +873,7 @@ class TestAsyncEvaluations:
     async def test_streaming_response_create_local(self, async_client: AsyncHubClient) -> None:
         async with async_client.evaluations.with_streaming_response.create_local(
             criteria=[{"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"}],
-            model={"name": "name"},
+            agent={"name": "name"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -939,7 +939,7 @@ class TestAsyncEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -959,7 +959,7 @@ class TestAsyncEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -970,7 +970,7 @@ class TestAsyncEvaluations:
                 },
                 "metadata": {"foo": "bar"},
             },
-            model_description="model_description",
+            agent_description="agent_description",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(APIResponse[List[CheckAPIResource]], evaluation, path=["response"])
@@ -986,7 +986,7 @@ class TestAsyncEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -1010,7 +1010,7 @@ class TestAsyncEvaluations:
                     "role": "role",
                 }
             ],
-            model_output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",

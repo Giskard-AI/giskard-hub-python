@@ -313,10 +313,10 @@ class TestKnowledgeBases:
     def test_method_search_documents_with_all_params(self, client: HubClient) -> None:
         knowledge_base = client.knowledge_bases.search_documents(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            page=1,
-            per_page=20,
-            query="query",
-            topic_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            search="query",
+            filters={},
+            limit=20,
+            offset=0,
         )
         assert_matches_type(
             APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None], knowledge_base, path=["response"]
@@ -720,11 +720,7 @@ class TestAsyncKnowledgeBases:
     async def test_method_search_documents_with_all_params(self, async_client: AsyncHubClient) -> None:
         knowledge_base = await async_client.knowledge_bases.search_documents(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            filters={
-                "ascending": True,
-                "sort_by": "created_at",
-                "topic_ids": ["string", "string", "string"],
-            },
+            filters={},
             limit=0,
             offset=0,
         )
@@ -757,7 +753,7 @@ class TestAsyncKnowledgeBases:
 
             knowledge_base = await response.parse()
             assert_matches_type(
-                PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource, knowledge_base, path=["response"]
+                APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None], knowledge_base, path=["response"]
             )
 
         assert cast(Any, response.is_closed) is True

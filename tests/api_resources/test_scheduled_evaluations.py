@@ -10,6 +10,8 @@ import pytest
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
+    Agent,
+    Dataset,
     APIResponse,
     ScheduledEvaluation,
     EvaluationAPIResource,
@@ -331,7 +333,7 @@ class TestScheduledEvaluations:
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            ScheduledEvaluationListEvaluationsResponse,
+            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
             scheduled_evaluation,
             path=["response"],
         )
@@ -347,7 +349,7 @@ class TestScheduledEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scheduled_evaluation = response.parse()
         assert_matches_type(
-            ScheduledEvaluationListEvaluationsResponse,
+            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
             scheduled_evaluation,
             path=["response"],
         )
@@ -363,7 +365,7 @@ class TestScheduledEvaluations:
 
             scheduled_evaluation = response.parse()
             assert_matches_type(
-                ScheduledEvaluationListEvaluationsResponse,
+                APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
                 scheduled_evaluation,
                 path=["response"],
             )
@@ -698,7 +700,7 @@ class TestAsyncScheduledEvaluations:
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            ScheduledEvaluationListEvaluationsResponse,
+            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
             scheduled_evaluation,
             path=["response"],
         )
@@ -714,7 +716,7 @@ class TestAsyncScheduledEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scheduled_evaluation = await response.parse()
         assert_matches_type(
-            ScheduledEvaluationListEvaluationsResponse,
+            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
             scheduled_evaluation,
             path=["response"],
         )
@@ -730,7 +732,7 @@ class TestAsyncScheduledEvaluations:
 
             scheduled_evaluation = await response.parse()
             assert_matches_type(
-                ScheduledEvaluationListEvaluationsResponse,
+                APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
                 scheduled_evaluation,
                 path=["response"],
             )
