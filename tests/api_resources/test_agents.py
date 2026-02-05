@@ -10,6 +10,7 @@ import pytest
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
+    APIResponseStr,
     APIResponseNone,
     APIResponseAgent,
     AgentListResponse,
@@ -858,3 +859,48 @@ class TestAsyncAgents:
             assert_matches_type(APIResponseAgentOutput, agent, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_autofill_description(self, async_client: AsyncHubClient) -> None:
+        agent = await async_client.agents.autofill_description(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(APIResponseStr, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_autofill_description(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.agents.with_raw_response.autofill_description(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(APIResponseStr, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_autofill_description(self, async_client: AsyncHubClient) -> None:
+        async with async_client.agents.with_streaming_response.autofill_description(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(APIResponseStr, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_autofill_description(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `agent_id` but received ''",
+        ):
+            await async_client.agents.with_raw_response.autofill_description(
+                "",
+            )

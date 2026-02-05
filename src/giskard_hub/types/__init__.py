@@ -18,6 +18,7 @@ from .audit_diff_item import AuditDiffItem as AuditDiffItem
 from .audit_diff_kind import AuditDiffKind as AuditDiffKind
 from .execution_error import ExecutionError as ExecutionError
 from .metadata_params import MetadataParams as MetadataParams
+from .api_response_str import APIResponseStr as APIResponseStr
 from .frequency_option import FrequencyOption as FrequencyOption
 from .scan_list_params import ScanListParams as ScanListParams
 from .agent_list_params import AgentListParams as AgentListParams
@@ -123,6 +124,7 @@ from .agent_generate_completion_params import AgentGenerateCompletionParams as A
 from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
+from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
 from .api_response_project_api_resource import APIResponseProjectAPIResource as APIResponseProjectAPIResource
 from .api_response_scheduled_evaluation import APIResponseScheduledEvaluation as APIResponseScheduledEvaluation
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
@@ -137,9 +139,24 @@ from .dataset_generate_document_based_params import (
 from .dataset_generate_scenario_based_params import (
     DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
 )
+from .knowledge_base_search_documents_params import (
+    KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
+)
 from .scheduled_evaluation_bulk_delete_params import (
     ScheduledEvaluationBulkDeleteParams as ScheduledEvaluationBulkDeleteParams,
 )
+from .knowledge_base_document_row_api_resource import (
+    KnowledgeBaseDocumentRowAPIResource as KnowledgeBaseDocumentRowAPIResource,
+)
+from .knowledge_base_document_detail_api_resource import (
+    KnowledgeBaseDocumentDetailAPIResource as KnowledgeBaseDocumentDetailAPIResource,
+)
 from .scheduled_evaluation_list_evaluations_response import (
     ScheduledEvaluationListEvaluationsResponse as ScheduledEvaluationListEvaluationsResponse,
+)
+from .api_response_knowledge_base_document_detail_api_resource import (
+    APIResponseKnowledgeBaseDocumentDetailAPIResource as APIResponseKnowledgeBaseDocumentDetailAPIResource,
+)
+from .paginated_api_response_knowledge_base_document_row_api_resource import (
+    PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource as PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
 )

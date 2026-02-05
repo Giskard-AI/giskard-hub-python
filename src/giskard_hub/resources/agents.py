@@ -11,6 +11,7 @@ from ..types import (
     agent_bulk_delete_params,
     agent_test_connection_params,
     agent_generate_completion_params,
+    agent_autofill_description_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -24,6 +25,7 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.header_param import HeaderParam
+from ..types.api_response_str import APIResponseStr
 from ..types.api_response_none import APIResponseNone
 from ..types.api_response_agent import APIResponseAgent
 from ..types.chat_message_param import ChatMessageParam
@@ -400,6 +402,42 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponseAgentOutput,
         )
 
+    def autofill_description(
+        self,
+        agent_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseStr:
+        """
+        Autofill Agent Description
+
+        Args:
+          agent_id: Agent ID to autofill description for
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        return self._post(
+            f"/v2/agents/{agent_id}/autofill-description",
+            body=maybe_transform({}, agent_autofill_description_params.AgentAutofillDescriptionParams),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseStr,
+        )
+
 
 class AsyncAgentsResource(AsyncAPIResource):
     @cached_property
@@ -770,6 +808,42 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponseAgentOutput,
         )
 
+    async def autofill_description(
+        self,
+        agent_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponseStr:
+        """
+        Autofill Agent Description
+
+        Args:
+          agent_id: Agent ID to autofill description for
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        return await self._post(
+            f"/v2/agents/{agent_id}/autofill-description",
+            body=await async_maybe_transform({}, agent_autofill_description_params.AgentAutofillDescriptionParams),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponseStr,
+        )
+
 
 class AgentsResourceWithRawResponse:
     def __init__(self, agents: AgentsResource) -> None:
@@ -798,6 +872,9 @@ class AgentsResourceWithRawResponse:
         )
         self.test_connection = to_raw_response_wrapper(
             agents.test_connection,
+        )
+        self.autofill_description = to_raw_response_wrapper(
+            agents.autofill_description,
         )
 
 
@@ -829,6 +906,9 @@ class AsyncAgentsResourceWithRawResponse:
         self.test_connection = async_to_raw_response_wrapper(
             agents.test_connection,
         )
+        self.autofill_description = async_to_raw_response_wrapper(
+            agents.autofill_description,
+        )
 
 
 class AgentsResourceWithStreamingResponse:
@@ -859,6 +939,9 @@ class AgentsResourceWithStreamingResponse:
         self.test_connection = to_streamed_response_wrapper(
             agents.test_connection,
         )
+        self.autofill_description = to_streamed_response_wrapper(
+            agents.autofill_description,
+        )
 
 
 class AsyncAgentsResourceWithStreamingResponse:
@@ -888,4 +971,7 @@ class AsyncAgentsResourceWithStreamingResponse:
         )
         self.test_connection = async_to_streamed_response_wrapper(
             agents.test_connection,
+        )
+        self.autofill_description = async_to_streamed_response_wrapper(
+            agents.autofill_description,
         )
