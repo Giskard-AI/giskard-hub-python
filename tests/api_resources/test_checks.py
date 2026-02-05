@@ -11,7 +11,6 @@ from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
     APIResponse,
-    APIResponseNone,
     CheckAPIResource,
 )
 
@@ -223,7 +222,7 @@ class TestChecks:
         check = client.checks.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -235,7 +234,7 @@ class TestChecks:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         check = response.parse()
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -247,7 +246,7 @@ class TestChecks:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             check = response.parse()
-            assert_matches_type(APIResponseNone, check, path=["response"])
+            assert_matches_type(APIResponse[None], check, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -268,7 +267,7 @@ class TestChecks:
         check = client.checks.bulk_delete(
             check_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -280,7 +279,7 @@ class TestChecks:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         check = response.parse()
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -292,7 +291,7 @@ class TestChecks:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             check = response.parse()
-            assert_matches_type(APIResponseNone, check, path=["response"])
+            assert_matches_type(APIResponse[None], check, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -507,7 +506,7 @@ class TestAsyncChecks:
         check = await async_client.checks.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -519,7 +518,7 @@ class TestAsyncChecks:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         check = await response.parse()
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -531,7 +530,7 @@ class TestAsyncChecks:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             check = await response.parse()
-            assert_matches_type(APIResponseNone, check, path=["response"])
+            assert_matches_type(APIResponse[None], check, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -552,7 +551,7 @@ class TestAsyncChecks:
         check = await async_client.checks.bulk_delete(
             check_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -564,7 +563,7 @@ class TestAsyncChecks:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         check = await response.parse()
-        assert_matches_type(APIResponseNone, check, path=["response"])
+        assert_matches_type(APIResponse[None], check, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -576,6 +575,6 @@ class TestAsyncChecks:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             check = await response.parse()
-            assert_matches_type(APIResponseNone, check, path=["response"])
+            assert_matches_type(APIResponse[None], check, path=["response"])
 
         assert cast(Any, response.is_closed) is True

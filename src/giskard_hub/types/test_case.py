@@ -53,6 +53,7 @@ class TestCaseCommentUser(BaseModel):
 
 
 class TestCaseComment(BaseModel):
+    __test__ = False
     id: str
 
     comment: str
