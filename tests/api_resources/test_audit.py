@@ -31,7 +31,7 @@ class TestAudit:
     @parametrize
     def test_method_search_with_all_params(self, client: HubClient) -> None:
         audit = client.audit.search(
-            filters={"action": "created"},
+            filters={"action": {"eq": "created"}},
             limit=10,
             offset=0,
         )
@@ -121,7 +121,7 @@ class TestAsyncAudit:
     @parametrize
     async def test_method_search_with_all_params(self, async_client: AsyncHubClient) -> None:
         audit = await async_client.audit.search(
-            filters={"action": "created"},
+            filters={"action": {"eq": "created"}},
             limit=10,
             offset=0,
         )

@@ -24,9 +24,8 @@ class TestScenarios:
     def test_method_create(self, client: HubClient) -> None:
         scenario = client.projects.scenarios.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            description="description",
         )
         assert_matches_type(APIResponse[ScenarioAPIResource], scenario, path=["response"])
 
@@ -35,10 +34,9 @@ class TestScenarios:
     def test_method_create_with_all_params(self, client: HubClient) -> None:
         scenario = client.projects.scenarios.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
             description="description",
+            rules=["rule1", "rule2"],
         )
         assert_matches_type(APIResponse[ScenarioAPIResource], scenario, path=["response"])
 
@@ -47,9 +45,8 @@ class TestScenarios:
     def test_raw_response_create(self, client: HubClient) -> None:
         response = client.projects.scenarios.with_raw_response.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            description="description",
         )
 
         assert response.is_closed is True
@@ -62,9 +59,8 @@ class TestScenarios:
     def test_streaming_response_create(self, client: HubClient) -> None:
         with client.projects.scenarios.with_streaming_response.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            description="description",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -83,9 +79,8 @@ class TestScenarios:
         ):
             client.projects.scenarios.with_raw_response.create(
                 project_id="",
-                identifier="identifier",
                 name="name",
-                prompt_template="prompt_template",
+                description="description",
             )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -162,9 +157,8 @@ class TestScenarios:
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            rules=["rule1", "rule2"],
         )
         assert_matches_type(APIResponse[ScenarioAPIResource], scenario, path=["response"])
 
@@ -325,7 +319,8 @@ class TestScenarios:
     def test_method_preview(self, client: HubClient) -> None:
         scenario = client.projects.scenarios.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            prompt_template="prompt_template",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
         assert_matches_type(APIResponse[ScenarioPreviewAPIResource], scenario, path=["response"])
 
@@ -334,7 +329,8 @@ class TestScenarios:
     def test_raw_response_preview(self, client: HubClient) -> None:
         response = client.projects.scenarios.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            prompt_template="prompt_template",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
 
         assert response.is_closed is True
@@ -347,7 +343,8 @@ class TestScenarios:
     def test_streaming_response_preview(self, client: HubClient) -> None:
         with client.projects.scenarios.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            prompt_template="prompt_template",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -366,7 +363,8 @@ class TestScenarios:
         ):
             client.projects.scenarios.with_raw_response.preview(
                 project_id="",
-                prompt_template="prompt_template",
+                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                description="description",
             )
 
 
@@ -383,9 +381,8 @@ class TestAsyncScenarios:
     async def test_method_create(self, async_client: AsyncHubClient) -> None:
         scenario = await async_client.projects.scenarios.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            description="description",
         )
         assert_matches_type(APIResponse[ScenarioAPIResource], scenario, path=["response"])
 
@@ -394,10 +391,9 @@ class TestAsyncScenarios:
     async def test_method_create_with_all_params(self, async_client: AsyncHubClient) -> None:
         scenario = await async_client.projects.scenarios.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
             description="description",
+            rules=["rule1", "rule2"],
         )
         assert_matches_type(APIResponse[ScenarioAPIResource], scenario, path=["response"])
 
@@ -406,9 +402,8 @@ class TestAsyncScenarios:
     async def test_raw_response_create(self, async_client: AsyncHubClient) -> None:
         response = await async_client.projects.scenarios.with_raw_response.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            description="description",
         )
 
         assert response.is_closed is True
@@ -421,9 +416,8 @@ class TestAsyncScenarios:
     async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.projects.scenarios.with_streaming_response.create(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            description="description",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -442,9 +436,8 @@ class TestAsyncScenarios:
         ):
             await async_client.projects.scenarios.with_raw_response.create(
                 project_id="",
-                identifier="identifier",
                 name="name",
-                prompt_template="prompt_template",
+                description="description",
             )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -521,9 +514,8 @@ class TestAsyncScenarios:
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
-            identifier="identifier",
             name="name",
-            prompt_template="prompt_template",
+            rules=["rule1", "rule2"],
         )
         assert_matches_type(APIResponse[ScenarioAPIResource], scenario, path=["response"])
 
@@ -684,7 +676,8 @@ class TestAsyncScenarios:
     async def test_method_preview(self, async_client: AsyncHubClient) -> None:
         scenario = await async_client.projects.scenarios.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            prompt_template="prompt_template",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
         assert_matches_type(APIResponse[ScenarioPreviewAPIResource], scenario, path=["response"])
 
@@ -693,7 +686,8 @@ class TestAsyncScenarios:
     async def test_raw_response_preview(self, async_client: AsyncHubClient) -> None:
         response = await async_client.projects.scenarios.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            prompt_template="prompt_template",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
 
         assert response.is_closed is True
@@ -706,7 +700,8 @@ class TestAsyncScenarios:
     async def test_streaming_response_preview(self, async_client: AsyncHubClient) -> None:
         async with async_client.projects.scenarios.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            prompt_template="prompt_template",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -725,5 +720,6 @@ class TestAsyncScenarios:
         ):
             await async_client.projects.scenarios.with_raw_response.preview(
                 project_id="",
-                prompt_template="prompt_template",
+                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                description="description",
             )

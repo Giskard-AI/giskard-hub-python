@@ -372,11 +372,10 @@ class TestResults:
     def test_method_search_with_all_params(self, client: HubClient) -> None:
         result = client.evaluations.results.search(
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            page=1,
-            per_page=20,
-            query="query",
-            tags=["tag1", "tag2"],
-            failure_category_identifiers=["identifier1"],
+            search="query",
+            filters={},
+            limit=20,
+            offset=0,
             include=["test_case"],
         )
         assert_matches_type(APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase], result, path=["response"])
@@ -426,7 +425,7 @@ class TestResults:
         result = client.evaluations.results.update_visibility(
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            visible=True,
+            hidden=False,
         )
         assert_matches_type(APIResponse[TestCaseEvaluationAPIResource], result, path=["response"])
 
@@ -436,7 +435,7 @@ class TestResults:
         response = client.evaluations.results.with_raw_response.update_visibility(
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            visible=True,
+            hidden=False,
         )
 
         assert response.is_closed is True
@@ -450,7 +449,7 @@ class TestResults:
         with client.evaluations.results.with_streaming_response.update_visibility(
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            visible=True,
+            hidden=False,
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -470,7 +469,7 @@ class TestResults:
             client.evaluations.results.with_raw_response.update_visibility(
                 result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 evaluation_id="",
-                visible=True,
+                hidden=False,
             )
 
         with pytest.raises(
@@ -480,7 +479,7 @@ class TestResults:
             client.evaluations.results.with_raw_response.update_visibility(
                 result_id="",
                 evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                visible=True,
+                hidden=False,
             )
 
 
@@ -846,11 +845,10 @@ class TestAsyncResults:
     async def test_method_search_with_all_params(self, async_client: AsyncHubClient) -> None:
         result = await async_client.evaluations.results.search(
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            page=1,
-            per_page=20,
-            query="query",
-            tags=["tag1", "tag2"],
-            failure_category_identifiers=["identifier1"],
+            search="query",
+            filters={},
+            limit=20,
+            offset=0,
             include=["test_case"],
         )
         assert_matches_type(APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase], result, path=["response"])
@@ -900,7 +898,7 @@ class TestAsyncResults:
         result = await async_client.evaluations.results.update_visibility(
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            visible=True,
+            hidden=False,
         )
         assert_matches_type(APIResponse[TestCaseEvaluationAPIResource], result, path=["response"])
 
@@ -910,7 +908,7 @@ class TestAsyncResults:
         response = await async_client.evaluations.results.with_raw_response.update_visibility(
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            visible=True,
+            hidden=False,
         )
 
         assert response.is_closed is True
@@ -924,7 +922,7 @@ class TestAsyncResults:
         async with async_client.evaluations.results.with_streaming_response.update_visibility(
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            visible=True,
+            hidden=False,
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -944,7 +942,7 @@ class TestAsyncResults:
             await async_client.evaluations.results.with_raw_response.update_visibility(
                 result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 evaluation_id="",
-                visible=True,
+                hidden=False,
             )
 
         with pytest.raises(
@@ -954,5 +952,5 @@ class TestAsyncResults:
             await async_client.evaluations.results.with_raw_response.update_visibility(
                 result_id="",
                 evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                visible=True,
+                hidden=False,
             )

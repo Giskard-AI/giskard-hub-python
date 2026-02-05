@@ -310,7 +310,7 @@ class TestTestCases:
     @parametrize
     def test_method_bulk_update(self, client: HubClient) -> None:
         test_case = client.test_cases.bulk_update(
-            ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
         assert_matches_type(APIResponse[List[TestCase]], test_case, path=["response"])
 
@@ -318,7 +318,7 @@ class TestTestCases:
     @parametrize
     def test_method_bulk_update_with_all_params(self, client: HubClient) -> None:
         test_case = client.test_cases.bulk_update(
-            ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
             disabled_checks=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
             enabled_checks=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
@@ -328,7 +328,7 @@ class TestTestCases:
     @parametrize
     def test_raw_response_bulk_update(self, client: HubClient) -> None:
         response = client.test_cases.with_raw_response.bulk_update(
-            ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
 
         assert response.is_closed is True
@@ -340,7 +340,7 @@ class TestTestCases:
     @parametrize
     def test_streaming_response_bulk_update(self, client: HubClient) -> None:
         with client.test_cases.with_streaming_response.bulk_update(
-            ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
