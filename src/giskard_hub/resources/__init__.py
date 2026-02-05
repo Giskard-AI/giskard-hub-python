@@ -14,6 +14,14 @@ from .scans import (
     ScansResourceWithStreamingResponse,
     AsyncScansResourceWithStreamingResponse,
 )
+from .tasks import (
+    TasksResource,
+    AsyncTasksResource,
+    TasksResourceWithRawResponse,
+    AsyncTasksResourceWithRawResponse,
+    TasksResourceWithStreamingResponse,
+    AsyncTasksResourceWithStreamingResponse,
+)
 from .agents import (
     AgentsResource,
     AsyncAgentsResource,
@@ -37,14 +45,6 @@ from .datasets import (
     AsyncDatasetsResourceWithRawResponse,
     DatasetsResourceWithStreamingResponse,
     AsyncDatasetsResourceWithStreamingResponse,
-)
-from .tasks import (
-    TasksResource,
-    AsyncTasksResource,
-    TasksResourceWithRawResponse,
-    AsyncTasksResourceWithRawResponse,
-    TasksResourceWithStreamingResponse,
-    AsyncTasksResourceWithStreamingResponse,
 )
 from .test_cases import (
     TestCasesResource,

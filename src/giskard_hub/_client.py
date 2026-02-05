@@ -21,11 +21,11 @@ from ._utils import is_given, get_async_library
 from ._version import __version__
 from .resources import (
     audit,
+    tasks,
     agents,
     checks,
     datasets,
     projects,
-    tasks,
     knowledge_bases,
     scheduled_evaluations,
 )

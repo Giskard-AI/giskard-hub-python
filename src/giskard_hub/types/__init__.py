@@ -11,6 +11,8 @@ This module provides all type definitions used throughout the SDK, organized by 
 
 from __future__ import annotations
 
+from .user import User as User
+
 # ==============================================================================
 # Core Models - Main domain objects
 # ==============================================================================
@@ -42,7 +44,6 @@ from .header import Header as Header
 from .metric import Metric as Metric
 from .dataset import Dataset as Dataset
 from .test_case import TestCase as TestCase, TestCaseComment as TestCaseComment
-from .user import User as User
 
 # ==============================================================================
 # Test Case Comment Types (from test_cases/ subdirectory)
@@ -56,8 +57,6 @@ from .test_cases import (
 # Enums and Literals
 # ==============================================================================
 from .action_type import ActionType as ActionType
-from .task_status import TaskStatus as TaskStatus
-from .task_priority import TaskPriority as TaskPriority
 
 # ==============================================================================
 # Evaluation Results Types (from evaluations/ subdirectory)
@@ -77,6 +76,7 @@ from .evaluations import (
 
 # Scan types and responses
 from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
+from .task_status import TaskStatus as TaskStatus
 
 # ==============================================================================
 # Shared Component Types - Used across multiple resources
@@ -88,22 +88,13 @@ from .model_output import ModelOutput as ModelOutput
 
 # Models and outputs
 from .minimal_model import MinimalModel as MinimalModel
+from .task_priority import TaskPriority as TaskPriority
 
 # Task progress
 from .task_progress import TaskProgress as TaskProgress
 from .dataset_subset import DatasetSubset as DatasetSubset
 from .knowledge_base import KnowledgeBase as KnowledgeBase
 from .audit_diff_item import AuditDiffItem as AuditDiffItem
-
-# Reference types
-from .project_reference import ProjectReference as ProjectReference
-from .dataset_reference import DatasetReference as DatasetReference
-from .evaluation_reference import EvaluationReference as EvaluationReference
-from .scan_reference import ScanReference as ScanReference
-from .probe_result_reference import ProbeResultReference as ProbeResultReference
-from .probe_attempt_reference import ProbeAttemptReference as ProbeAttemptReference
-from .chat_test_case_reference import ChatTestCaseReference as ChatTestCaseReference
-from .chat_test_case_evaluation_reference import ChatTestCaseEvaluationReference as ChatTestCaseEvaluationReference
 
 # Audit types and responses
 from .audit_diff_kind import AuditDiffKind as AuditDiffKind
@@ -115,6 +106,7 @@ from .execution_error import ExecutionError as ExecutionError
 from .metadata_params import MetadataParams as MetadataParams
 from .frequency_option import FrequencyOption as FrequencyOption
 from .scan_list_params import ScanListParams as ScanListParams
+from .task_list_params import TaskListParams as TaskListParams
 from .agent_list_params import AgentListParams as AgentListParams
 
 # ==============================================================================
@@ -128,6 +120,9 @@ from .check_list_params import CheckListParams as CheckListParams
 from .conformity_params import ConformityParams as ConformityParams
 from .output_annotation import OutputAnnotation as OutputAnnotation
 
+# Reference types
+from .task_api_resource import TaskAPIResource as TaskAPIResource
+
 # ==============================================================================
 # API Resources - API-specific resource representations
 # ==============================================================================
@@ -137,7 +132,6 @@ from .check_api_resource import CheckAPIResource as CheckAPIResource
 from .correctness_params import CorrectnessParams as CorrectnessParams
 from .model_output_param import ModelOutputParam as ModelOutputParam
 from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
-from .task_api_resource import TaskAPIResource as TaskAPIResource
 
 # Project responses
 # (Project responses now use generic APIResponse[ProjectAPIResource] and APIResponse[List[ProjectAPIResource])
@@ -146,6 +140,13 @@ from .task_api_resource import TaskAPIResource as TaskAPIResource
 # ==============================================================================
 # Scan parameters
 from .scan_create_params import ScanCreateParams as ScanCreateParams
+
+# ==============================================================================
+# Task Types
+# ==============================================================================
+# Task parameters
+from .task_create_params import TaskCreateParams as TaskCreateParams
+from .task_update_params import TaskUpdateParams as TaskUpdateParams
 
 # ==============================================================================
 # Agent Types
@@ -167,6 +168,7 @@ from .groundedness_params import GroundednessParams as GroundednessParams
 from .minimal_model_param import MinimalModelParam as MinimalModelParam
 from .string_match_params import StringMatchParams as StringMatchParams
 from .task_progress_param import TaskProgressParam as TaskProgressParam
+from .test_case_reference import TestCaseReferencence as TestCaseReferencence
 from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
 from .project_api_resource import ProjectAPIResource as ProjectAPIResource
 from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
@@ -202,8 +204,10 @@ from .scenario_update_params import ScenarioUpdateParams as ScenarioUpdateParams
 from .test_case_check_config import TestCaseCheckConfig as TestCaseCheckConfig
 from .conformity_params_param import ConformityParamsParam as ConformityParamsParam
 from .evaluation_api_resource import EvaluationAPIResource as EvaluationAPIResource
+from .probe_attempt_reference import ProbeAttemptReference as ProbeAttemptReference
 from .scan_bulk_delete_params import ScanBulkDeleteParams as ScanBulkDeleteParams
 from .scenario_preview_params import ScenarioPreviewParams as ScenarioPreviewParams
+from .task_bulk_delete_params import TaskBulkDeleteParams as TaskBulkDeleteParams
 
 # ==============================================================================
 # Test Case Types
@@ -264,21 +268,13 @@ from .evaluation_bulk_delete_params import EvaluationBulkDeleteParams as Evaluat
 from .scenario_preview_api_resource import ScenarioPreviewAPIResource as ScenarioPreviewAPIResource
 from .evaluation_create_local_params import EvaluationCreateLocalParams as EvaluationCreateLocalParams
 from .success_execution_status_param import SuccessExecutionStatusParam as SuccessExecutionStatusParam
+from .test_case_evaluation_reference import TestCaseEvaluationReference as TestCaseEvaluationReference
 from .agent_generate_completion_params import AgentGenerateCompletionParams as AgentGenerateCompletionParams
 from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
-
-# ==============================================================================
-# Task Types
-# ==============================================================================
-# Task parameters
-from .task_create_params import TaskCreateParams as TaskCreateParams
-from .task_update_params import TaskUpdateParams as TaskUpdateParams
-from .task_list_params import TaskListParams as TaskListParams
-from .task_bulk_delete_params import TaskBulkDeleteParams as TaskBulkDeleteParams
 
 # ==============================================================================
 # Scheduled Evaluation Types
@@ -340,14 +336,9 @@ __all__ = [
     "KnowledgeBaseDocumentRowAPIResource",
     "KnowledgeBaseDocumentDetailAPIResource",
     # Reference types
-    "ProjectReference",
-    "DatasetReference",
-    "EvaluationReference",
-    "ScanReference",
-    "ProbeResultReference",
     "ProbeAttemptReference",
-    "ChatTestCaseReference",
-    "ChatTestCaseEvaluationReference",
+    "TestCaseReferencence",
+    "TestCaseEvaluationReference",
     # Agent types
     "AgentAPIReference",
     "AgentCreateParams",

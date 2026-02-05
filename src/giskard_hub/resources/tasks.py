@@ -17,9 +17,9 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
-from ..types.task_api_resource import TaskAPIResource
 from ..types.task_status import TaskStatus
 from ..types.task_priority import TaskPriority
+from ..types.task_api_resource import TaskAPIResource
 
 __all__ = ["TasksResource", "AsyncTasksResource"]
 
@@ -47,13 +47,16 @@ class TasksResource(SyncAPIResource):
     def create(
         self,
         *,
-        name: str,
         project_id: str,
-        assignee_id: Optional[str] | Omit = omit,
-        description: Optional[str] | Omit = omit,
         priority: Optional[TaskPriority] | Omit = omit,
-        related_entity: Optional[task_create_params.RelatedEntityParam] | Omit = omit,
-        status: Optional[TaskStatus] | Omit = omit,
+        status: TaskStatus | Omit = omit,
+        description: str,
+        assignee_ids: SequenceNotStr[str] | Omit = omit,
+        evaluation_result_id: Optional[str] | Omit = omit,
+        dataset_test_case_id: Optional[str] | Omit = omit,
+        probe_attempt_id: Optional[str] | Omit = omit,
+        disable_test: bool | Omit = omit,
+        hide_result: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -65,19 +68,25 @@ class TasksResource(SyncAPIResource):
         Create Task
 
         Args:
-          name: Name of the task to create
-
           project_id: Project ID to create the task in
-
-          assignee_id: ID of the user to assign the task to
-
-          description: Description of the task to create
 
           priority: Priority of the task
 
-          related_entity: Related entity reference
-
           status: Status of the task
+
+          description: Description of the task to create
+
+          assignee_ids: IDs of the users to assign the task to
+
+          evaluation_result_id: ID of the evaluation result to assign the task to
+
+          dataset_test_case_id: ID of the dataset test case to assign the task to
+
+          probe_attempt_id: ID of the probe attempt to assign the task to
+
+          disable_test: Whether to disable the test
+
+          hide_result: Whether to hide the result
 
           extra_headers: Send extra headers
 
@@ -91,13 +100,16 @@ class TasksResource(SyncAPIResource):
             "/v2/tasks",
             body=maybe_transform(
                 {
-                    "name": name,
                     "project_id": project_id,
-                    "assignee_id": assignee_id,
-                    "description": description,
                     "priority": priority,
-                    "related_entity": related_entity,
                     "status": status,
+                    "description": description,
+                    "assignee_ids": assignee_ids,
+                    "evaluation_result_id": evaluation_result_id,
+                    "dataset_test_case_id": dataset_test_case_id,
+                    "probe_attempt_id": probe_attempt_id,
+                    "disable_test": disable_test,
+                    "hide_result": hide_result,
                 },
                 task_create_params.TaskCreateParams,
             ),
@@ -146,12 +158,11 @@ class TasksResource(SyncAPIResource):
         self,
         task_id: str,
         *,
-        assignee_id: Optional[str] | Omit = omit,
-        description: Optional[str] | Omit = omit,
-        name: Optional[str] | Omit = omit,
-        priority: Optional[TaskPriority] | Omit = omit,
-        related_entity: Optional[task_update_params.RelatedEntityParam] | Omit = omit,
         status: Optional[TaskStatus] | Omit = omit,
+        description: Optional[str] | Omit = omit,
+        priority: Optional[TaskPriority] | Omit = omit,
+        assignee_ids: Optional[SequenceNotStr[str]] | Omit = omit,
+        set_test_case_status: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -165,17 +176,15 @@ class TasksResource(SyncAPIResource):
         Args:
           task_id: ID of the task to update
 
-          assignee_id: ID of the user to assign the task to
+          status: Status of the task
 
           description: Description of the task
 
-          name: Name of the task
-
           priority: Priority of the task
 
-          related_entity: Related entity reference
+          assignee_ids: IDs of the users to assign the task to
 
-          status: Status of the task
+          set_test_case_status: Status of the test case to set
 
           extra_headers: Send extra headers
 
@@ -191,12 +200,11 @@ class TasksResource(SyncAPIResource):
             f"/v2/tasks/{task_id}",
             body=maybe_transform(
                 {
-                    "assignee_id": assignee_id,
-                    "description": description,
-                    "name": name,
-                    "priority": priority,
-                    "related_entity": related_entity,
                     "status": status,
+                    "description": description,
+                    "priority": priority,
+                    "assignee_ids": assignee_ids,
+                    "set_test_case_status": set_test_case_status,
                 },
                 task_update_params.TaskUpdateParams,
             ),
@@ -344,13 +352,16 @@ class AsyncTasksResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        name: str,
         project_id: str,
-        assignee_id: Optional[str] | Omit = omit,
-        description: Optional[str] | Omit = omit,
         priority: Optional[TaskPriority] | Omit = omit,
-        related_entity: Optional[task_create_params.RelatedEntityParam] | Omit = omit,
-        status: Optional[TaskStatus] | Omit = omit,
+        status: TaskStatus | Omit = omit,
+        description: str,
+        assignee_ids: SequenceNotStr[str] | Omit = omit,
+        evaluation_result_id: Optional[str] | Omit = omit,
+        dataset_test_case_id: Optional[str] | Omit = omit,
+        probe_attempt_id: Optional[str] | Omit = omit,
+        disable_test: bool | Omit = omit,
+        hide_result: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -362,19 +373,25 @@ class AsyncTasksResource(AsyncAPIResource):
         Create Task
 
         Args:
-          name: Name of the task to create
-
           project_id: Project ID to create the task in
-
-          assignee_id: ID of the user to assign the task to
-
-          description: Description of the task to create
 
           priority: Priority of the task
 
-          related_entity: Related entity reference
-
           status: Status of the task
+
+          description: Description of the task to create
+
+          assignee_ids: IDs of the users to assign the task to
+
+          evaluation_result_id: ID of the evaluation result to assign the task to
+
+          dataset_test_case_id: ID of the dataset test case to assign the task to
+
+          probe_attempt_id: ID of the probe attempt to assign the task to
+
+          disable_test: Whether to disable the test
+
+          hide_result: Whether to hide the result
 
           extra_headers: Send extra headers
 
@@ -388,13 +405,16 @@ class AsyncTasksResource(AsyncAPIResource):
             "/v2/tasks",
             body=await async_maybe_transform(
                 {
-                    "name": name,
                     "project_id": project_id,
-                    "assignee_id": assignee_id,
-                    "description": description,
                     "priority": priority,
-                    "related_entity": related_entity,
                     "status": status,
+                    "description": description,
+                    "assignee_ids": assignee_ids,
+                    "evaluation_result_id": evaluation_result_id,
+                    "dataset_test_case_id": dataset_test_case_id,
+                    "probe_attempt_id": probe_attempt_id,
+                    "disable_test": disable_test,
+                    "hide_result": hide_result,
                 },
                 task_create_params.TaskCreateParams,
             ),
@@ -443,12 +463,11 @@ class AsyncTasksResource(AsyncAPIResource):
         self,
         task_id: str,
         *,
-        assignee_id: Optional[str] | Omit = omit,
-        description: Optional[str] | Omit = omit,
-        name: Optional[str] | Omit = omit,
-        priority: Optional[TaskPriority] | Omit = omit,
-        related_entity: Optional[task_update_params.RelatedEntityParam] | Omit = omit,
         status: Optional[TaskStatus] | Omit = omit,
+        description: Optional[str] | Omit = omit,
+        priority: Optional[TaskPriority] | Omit = omit,
+        assignee_ids: Optional[SequenceNotStr[str]] | Omit = omit,
+        set_test_case_status: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -462,17 +481,15 @@ class AsyncTasksResource(AsyncAPIResource):
         Args:
           task_id: ID of the task to update
 
-          assignee_id: ID of the user to assign the task to
+          status: Status of the task
 
           description: Description of the task
 
-          name: Name of the task
-
           priority: Priority of the task
 
-          related_entity: Related entity reference
+          assignee_ids: IDs of the users to assign the task to
 
-          status: Status of the task
+          set_test_case_status: Status of the test case to set
 
           extra_headers: Send extra headers
 
@@ -488,12 +505,11 @@ class AsyncTasksResource(AsyncAPIResource):
             f"/v2/tasks/{task_id}",
             body=await async_maybe_transform(
                 {
-                    "assignee_id": assignee_id,
-                    "description": description,
-                    "name": name,
-                    "priority": priority,
-                    "related_entity": related_entity,
                     "status": status,
+                    "description": description,
+                    "priority": priority,
+                    "assignee_ids": assignee_ids,
+                    "set_test_case_status": set_test_case_status,
                 },
                 task_update_params.TaskUpdateParams,
             ),
