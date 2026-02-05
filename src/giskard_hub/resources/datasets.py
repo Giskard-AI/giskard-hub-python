@@ -8,7 +8,9 @@ from ..types import (
     dataset_list_params,
     dataset_create_params,
     dataset_update_params,
+    dataset_export_params,
     dataset_bulk_delete_params,
+    dataset_export_selected_params,
     dataset_generate_document_based_params,
     dataset_generate_scenario_based_params,
 )
@@ -29,6 +31,7 @@ from ..types.api_response_dataset import APIResponseDataset
 from ..types.dataset_list_response import DatasetListResponse
 from ..types.dataset_list_tags_response import DatasetListTagsResponse
 from ..types.api_response_list_test_case import APIResponseListTestCase
+from ..types.export_chat_test_cases_request import ExportChatTestCasesRequest
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -490,6 +493,82 @@ class DatasetsResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponseListTestCase,
+        )
+
+    def export(
+        self,
+        dataset_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> object:
+        """
+        Export Dataset Chat Test Cases
+
+        Args:
+          dataset_id: The ID of the dataset to export
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        return self._get(
+            f"/v2/datasets/{dataset_id}/export",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=object,
+        )
+
+    def export_selected(
+        self,
+        dataset_id: str,
+        *,
+        test_case_ids: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> object:
+        """
+        Export Selected Dataset Chat Test Cases
+
+        Args:
+          dataset_id: The ID of the dataset to export
+
+          test_case_ids: IDs of the test cases to export
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        return self._post(
+            f"/v2/datasets/{dataset_id}/export",
+            body=maybe_transform(
+                {"test_case_ids": test_case_ids}, dataset_export_selected_params.DatasetExportSelectedParams
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=object,
         )
 
 
@@ -954,6 +1033,82 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponseListTestCase,
         )
 
+    async def export(
+        self,
+        dataset_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> object:
+        """
+        Export Dataset Chat Test Cases
+
+        Args:
+          dataset_id: The ID of the dataset to export
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        return await self._get(
+            f"/v2/datasets/{dataset_id}/export",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=object,
+        )
+
+    async def export_selected(
+        self,
+        dataset_id: str,
+        *,
+        test_case_ids: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> object:
+        """
+        Export Selected Dataset Chat Test Cases
+
+        Args:
+          dataset_id: The ID of the dataset to export
+
+          test_case_ids: IDs of the test cases to export
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        return await self._post(
+            f"/v2/datasets/{dataset_id}/export",
+            body=await async_maybe_transform(
+                {"test_case_ids": test_case_ids}, dataset_export_selected_params.DatasetExportSelectedParams
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=object,
+        )
+
 
 class DatasetsResourceWithRawResponse:
     def __init__(self, datasets: DatasetsResource) -> None:
@@ -988,6 +1143,12 @@ class DatasetsResourceWithRawResponse:
         )
         self.list_test_cases = to_raw_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.export = to_raw_response_wrapper(
+            datasets.export,
+        )
+        self.export_selected = to_raw_response_wrapper(
+            datasets.export_selected,
         )
 
 
@@ -1025,6 +1186,12 @@ class AsyncDatasetsResourceWithRawResponse:
         self.list_test_cases = async_to_raw_response_wrapper(
             datasets.list_test_cases,
         )
+        self.export = async_to_raw_response_wrapper(
+            datasets.export,
+        )
+        self.export_selected = async_to_raw_response_wrapper(
+            datasets.export_selected,
+        )
 
 
 class DatasetsResourceWithStreamingResponse:
@@ -1061,6 +1228,12 @@ class DatasetsResourceWithStreamingResponse:
         self.list_test_cases = to_streamed_response_wrapper(
             datasets.list_test_cases,
         )
+        self.export = to_streamed_response_wrapper(
+            datasets.export,
+        )
+        self.export_selected = to_streamed_response_wrapper(
+            datasets.export_selected,
+        )
 
 
 class AsyncDatasetsResourceWithStreamingResponse:
@@ -1096,4 +1269,10 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.list_test_cases = async_to_streamed_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.export = async_to_streamed_response_wrapper(
+            datasets.export,
+        )
+        self.export_selected = async_to_streamed_response_wrapper(
+            datasets.export_selected,
         )

@@ -79,6 +79,7 @@ from .scenario_preview_params import ScenarioPreviewParams as ScenarioPreviewPar
 from .test_case_create_params import TestCaseCreateParams as TestCaseCreateParams
 from .test_case_update_params import TestCaseUpdateParams as TestCaseUpdateParams
 from .agent_bulk_delete_params import AgentBulkDeleteParams as AgentBulkDeleteParams
+from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
 from .audit_list_entity_params import AuditListEntityParams as AuditListEntityParams
 from .check_bulk_delete_params import CheckBulkDeleteParams as CheckBulkDeleteParams
 from .correctness_params_param import CorrectnessParamsParam as CorrectnessParamsParam
@@ -94,13 +95,43 @@ from .api_response_audit_display import APIResponseAuditDisplay as APIResponseAu
 from .api_response_list_scenario import APIResponseListScenario as APIResponseListScenario
 from .audit_display_api_response import AuditDisplayAPIResponse as AuditDisplayAPIResponse
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
+from .chat_test_case_status import ChatTestCaseStatus as ChatTestCaseStatus
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
+from .dataset_export_params import DatasetExportParams as DatasetExportParams
+from .dataset_export_selected_params import DatasetExportSelectedParams as DatasetExportSelectedParams
 from .dataset_list_tags_response import DatasetListTagsResponse as DatasetListTagsResponse
 from .evaluation_retrieve_params import EvaluationRetrieveParams as EvaluationRetrieveParams
+from .export_chat_test_cases_request import ExportChatTestCasesRequest as ExportChatTestCasesRequest
 from .knowledge_base_list_params import KnowledgeBaseListParams as KnowledgeBaseListParams
+from .knowledge_base_documents_search_filters import (
+    KnowledgeBaseDocumentsSearchFilters as KnowledgeBaseDocumentsSearchFilters,
+)
+from .knowledge_base_document_detail_api_resource import (
+    KnowledgeBaseDocumentDetailAPIResource as KnowledgeBaseDocumentDetailAPIResource,
+)
+from .knowledge_base_document_row_api_resource import (
+    KnowledgeBaseDocumentRowAPIResource as KnowledgeBaseDocumentRowAPIResource,
+)
+from .knowledge_base_export_params import KnowledgeBaseExportParams as KnowledgeBaseExportParams
+from .knowledge_base_get_document_navigation_info_params import (
+    KnowledgeBaseGetDocumentNavigationInfoParams as KnowledgeBaseGetDocumentNavigationInfoParams,
+)
+from .knowledge_base_retrieve_document_params import (
+    KnowledgeBaseRetrieveDocumentParams as KnowledgeBaseRetrieveDocumentParams,
+)
+from .knowledge_base_search_documents_params import (
+    KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
+)
 from .project_bulk_delete_params import ProjectBulkDeleteParams as ProjectBulkDeleteParams
 from .semantic_similarity_params import SemanticSimilarityParams as SemanticSimilarityParams
 from .api_response_knowledge_base import APIResponseKnowledgeBase as APIResponseKnowledgeBase
+from .api_response_knowledge_base_document_detail_api_resource import (
+    APIResponseKnowledgeBaseDocumentDetailAPIResource as APIResponseKnowledgeBaseDocumentDetailAPIResource,
+)
+from .api_response_navigation_info_api_resource import (
+    APIResponseNavigationInfoAPIResource as APIResponseNavigationInfoAPIResource,
+)
+from .api_response_str import APIResponseStr as APIResponseStr
 from .api_response_list_test_case import APIResponseListTestCase as APIResponseListTestCase
 from .agent_test_connection_params import AgentTestConnectionParams as AgentTestConnectionParams
 from .error_execution_status_param import ErrorExecutionStatusParam as ErrorExecutionStatusParam
@@ -126,6 +157,14 @@ from .semantic_similarity_params_param import SemanticSimilarityParamsParam as S
 from .api_response_project_api_resource import APIResponseProjectAPIResource as APIResponseProjectAPIResource
 from .api_response_scheduled_evaluation import APIResponseScheduledEvaluation as APIResponseScheduledEvaluation
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
+from .navigation_info_api_resource import NavigationInfoAPIResource as NavigationInfoAPIResource
+from .paginated_api_response_knowledge_base_document_row_api_resource import (
+    PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource as PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
+)
+from .search_knowledge_base_documents_api_request import (
+    SearchKnowledgeBaseDocumentsAPIRequest as SearchKnowledgeBaseDocumentsAPIRequest,
+)
+from .sort_by_literal import SortByLiteral as SortByLiteral
 from .scheduled_evaluation_create_params import ScheduledEvaluationCreateParams as ScheduledEvaluationCreateParams
 from .scheduled_evaluation_list_response import ScheduledEvaluationListResponse as ScheduledEvaluationListResponse
 from .scheduled_evaluation_update_params import ScheduledEvaluationUpdateParams as ScheduledEvaluationUpdateParams
