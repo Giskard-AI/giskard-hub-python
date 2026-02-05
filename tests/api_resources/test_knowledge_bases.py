@@ -644,7 +644,9 @@ class TestAsyncKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = await response.parse()
-            assert_matches_type(PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource, knowledge_base, path=["response"])
+            assert_matches_type(
+                PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource, knowledge_base, path=["response"]
+            )
 
         assert cast(Any, response.is_closed) is True
 

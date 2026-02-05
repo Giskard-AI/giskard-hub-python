@@ -6,12 +6,11 @@ import httpx
 
 from ..types import (
     knowledge_base_list_params,
-    knowledge_base_export_params,
     knowledge_base_create_params,
+    knowledge_base_export_params,
     knowledge_base_update_params,
     knowledge_base_bulk_delete_params,
     knowledge_base_search_documents_params,
-    knowledge_base_retrieve_document_params,
     knowledge_base_get_document_navigation_info_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
@@ -29,7 +28,6 @@ from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
 from ..types.api_response_knowledge_base import APIResponseKnowledgeBase
 from ..types.knowledge_base_list_response import KnowledgeBaseListResponse
-from ..types.search_knowledge_base_documents_api_request import SearchKnowledgeBaseDocumentsAPIRequest
 from ..types.knowledge_base_documents_search_filters import KnowledgeBaseDocumentsSearchFilters
 from ..types.api_response_navigation_info_api_resource import APIResponseNavigationInfoAPIResource
 from ..types.api_response_knowledge_base_document_detail_api_resource import (
