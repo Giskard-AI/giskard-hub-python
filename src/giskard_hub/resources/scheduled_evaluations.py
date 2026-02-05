@@ -6,7 +6,13 @@ from datetime import datetime
 import httpx
 
 from ..types import (
+    Agent,
+    Dataset,
+    APIResponse,
     FrequencyOption,
+    ScheduledEvaluation,
+    EvaluationAPIResource,
+    APIResponseWithIncluded,
     scheduled_evaluation_list_params,
     scheduled_evaluation_create_params,
     scheduled_evaluation_update_params,
@@ -25,10 +31,6 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.api_response_none import APIResponseNone
-from ..types.api_response_scheduled_evaluation import APIResponseScheduledEvaluation
-from ..types.scheduled_evaluation_list_response import ScheduledEvaluationListResponse
-from ..types.scheduled_evaluation_list_evaluations_response import ScheduledEvaluationListEvaluationsResponse
 
 __all__ = ["ScheduledEvaluationsResource", "AsyncScheduledEvaluationsResource"]
 
@@ -72,7 +74,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScheduledEvaluation:
+    ) -> APIResponse[ScheduledEvaluation]:
         """
         Create Scheduled Evaluation
 
@@ -127,7 +129,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScheduledEvaluation,
+            cast_to=APIResponse[ScheduledEvaluation],
         )
 
     def retrieve(
@@ -141,7 +143,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScheduledEvaluation:
+    ) -> APIResponseWithIncluded[ScheduledEvaluation, List[EvaluationAPIResource]]:
         """
         Retrieve Scheduled Evaluation
 
@@ -173,7 +175,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponseScheduledEvaluation,
+            cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[EvaluationAPIResource]],
         )
 
     def update(
@@ -195,7 +197,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScheduledEvaluation:
+    ) -> APIResponse[ScheduledEvaluation]:
         """
         Update Scheduled Evaluation
 
@@ -253,7 +255,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScheduledEvaluation,
+            cast_to=APIResponse[ScheduledEvaluation],
         )
 
     def list(
@@ -268,7 +270,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListResponse:
+    ) -> APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]]:
         """
         List Scheduled Evaluations
 
@@ -299,7 +301,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                     scheduled_evaluation_list_params.ScheduledEvaluationListParams,
                 ),
             ),
-            cast_to=ScheduledEvaluationListResponse,
+            cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
         )
 
     def delete(
@@ -312,7 +314,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Scheduled Evaluation
 
@@ -336,7 +338,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -349,7 +351,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Scheduled Evaluations
 
@@ -376,7 +378,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                     scheduled_evaluation_bulk_delete_params.ScheduledEvaluationBulkDeleteParams,
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def list_evaluations(
@@ -390,7 +392,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListEvaluationsResponse:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
         """
         List Scheduled Evaluation Evaluations
 
@@ -423,7 +425,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                     scheduled_evaluation_list_evaluations_params.ScheduledEvaluationListEvaluationsParams,
                 ),
             ),
-            cast_to=ScheduledEvaluationListEvaluationsResponse,
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
         )
 
 
@@ -466,7 +468,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScheduledEvaluation:
+    ) -> APIResponse[ScheduledEvaluation]:
         """
         Create Scheduled Evaluation
 
@@ -521,7 +523,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScheduledEvaluation,
+            cast_to=APIResponse[ScheduledEvaluation],
         )
 
     async def retrieve(
@@ -535,7 +537,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScheduledEvaluation:
+    ) -> APIResponseWithIncluded[ScheduledEvaluation, List[EvaluationAPIResource]]:
         """
         Retrieve Scheduled Evaluation
 
@@ -567,7 +569,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponseScheduledEvaluation,
+            cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[EvaluationAPIResource]],
         )
 
     async def update(
@@ -589,7 +591,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScheduledEvaluation:
+    ) -> APIResponse[ScheduledEvaluation]:
         """
         Update Scheduled Evaluation
 
@@ -647,7 +649,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScheduledEvaluation,
+            cast_to=APIResponse[ScheduledEvaluation],
         )
 
     async def list(
@@ -662,7 +664,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListResponse:
+    ) -> APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]]:
         """
         List Scheduled Evaluations
 
@@ -693,7 +695,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                     scheduled_evaluation_list_params.ScheduledEvaluationListParams,
                 ),
             ),
-            cast_to=ScheduledEvaluationListResponse,
+            cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
         )
 
     async def delete(
@@ -706,7 +708,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Scheduled Evaluation
 
@@ -730,7 +732,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -743,7 +745,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Scheduled Evaluations
 
@@ -770,7 +772,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                     scheduled_evaluation_bulk_delete_params.ScheduledEvaluationBulkDeleteParams,
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def list_evaluations(
@@ -784,7 +786,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScheduledEvaluationListEvaluationsResponse:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
         """
         List Scheduled Evaluation Evaluations
 
@@ -817,7 +819,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                     scheduled_evaluation_list_evaluations_params.ScheduledEvaluationListEvaluationsParams,
                 ),
             ),
-            cast_to=ScheduledEvaluationListEvaluationsResponse,
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
         )
 
 

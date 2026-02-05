@@ -258,7 +258,6 @@ from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as Ch
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
-from .api_response_scheduled_evaluation import APIResponseScheduledEvaluation as APIResponseScheduledEvaluation
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
 
 # ==============================================================================
@@ -268,7 +267,6 @@ from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as 
 from .scheduled_evaluation_create_params import ScheduledEvaluationCreateParams as ScheduledEvaluationCreateParams
 
 # Scheduled evaluation responses
-from .scheduled_evaluation_list_response import ScheduledEvaluationListResponse as ScheduledEvaluationListResponse
 from .scheduled_evaluation_update_params import ScheduledEvaluationUpdateParams as ScheduledEvaluationUpdateParams
 from .dataset_generate_adversarial_params import DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams
 from .scheduled_evaluation_retrieve_params import ScheduledEvaluationRetrieveParams as ScheduledEvaluationRetrieveParams
@@ -292,9 +290,6 @@ from .knowledge_base_document_detail_api_resource import (
 )
 from .scheduled_evaluation_list_evaluations_params import (
     ScheduledEvaluationListEvaluationsParams as ScheduledEvaluationListEvaluationsParams,
-)
-from .scheduled_evaluation_list_evaluations_response import (
-    ScheduledEvaluationListEvaluationsResponse as ScheduledEvaluationListEvaluationsResponse,
 )
 
 # Knowledge base responses
@@ -377,9 +372,6 @@ __all__ = [
     "ScheduledEvaluationRetrieveParams",
     "ScheduledEvaluationBulkDeleteParams",
     "ScheduledEvaluationListEvaluationsParams",
-    "ScheduledEvaluationListResponse",
-    "ScheduledEvaluationListEvaluationsResponse",
-    "APIResponseScheduledEvaluation",
     # Test case types
     "TestCaseCreateParams",
     "TestCaseUpdateParams",
