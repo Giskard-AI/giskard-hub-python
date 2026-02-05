@@ -6,7 +6,7 @@ from .chat_message import ChatMessage
 from .test_case_check_config import TestCaseCheckConfig
 from .chat_message_with_metadata import ChatMessageWithMetadata
 
-__all__ = ["TestCase", "Comment"]
+__all__ = ["TestCase", "Comment", "TestCaseComment", "TestCaseCommentUser"]
 
 
 class Comment(BaseModel):
@@ -44,3 +44,21 @@ class TestCase(BaseModel):
     tags: List[str]
 
     updated_at: datetime
+
+
+class TestCaseCommentUser(BaseModel):
+    id: str
+
+    name: str
+
+
+class TestCaseComment(BaseModel):
+    id: str
+
+    comment: str
+
+    created_at: datetime
+
+    updated_at: datetime
+
+    user: TestCaseCommentUser

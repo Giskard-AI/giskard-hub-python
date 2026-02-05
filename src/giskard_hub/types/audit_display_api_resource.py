@@ -6,10 +6,10 @@ from datetime import datetime
 from .._models import BaseModel
 from .action_type import ActionType
 
-__all__ = ["AuditDisplayAPIResponse"]
+__all__ = ["AuditDisplayAPIResource"]
 
 
-class AuditDisplayAPIResponse(BaseModel):
+class AuditDisplayAPIResource(BaseModel):
     id: str
 
     action: ActionType

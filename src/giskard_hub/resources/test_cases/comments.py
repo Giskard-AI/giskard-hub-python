@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import httpx
 
+from ...types import TestCaseComment
 from ..._types import Body, Query, Headers, NotGiven, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
@@ -13,9 +14,8 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
+from ...types.common import APIResponse
 from ...types.test_cases import comment_add_params, comment_edit_params
-from ...types.api_response_none import APIResponseNone
-from ...types.test_cases.api_response_test_case_comment import APIResponseTestCaseComment
 
 __all__ = ["CommentsResource", "AsyncCommentsResource"]
 
@@ -51,7 +51,7 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Test Case Comment
 
@@ -77,7 +77,7 @@ class CommentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def add(
@@ -91,7 +91,7 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCaseComment:
+    ) -> APIResponse[TestCaseComment]:
         """
         Add Test Case Comment
 
@@ -116,7 +116,7 @@ class CommentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCaseComment,
+            cast_to=APIResponse[TestCaseComment],
         )
 
     def edit(
@@ -131,7 +131,7 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCaseComment:
+    ) -> APIResponse[TestCaseComment]:
         """
         Edit Test Case Comment
 
@@ -160,7 +160,7 @@ class CommentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCaseComment,
+            cast_to=APIResponse[TestCaseComment],
         )
 
 
@@ -195,7 +195,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Test Case Comment
 
@@ -221,7 +221,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def add(
@@ -235,7 +235,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCaseComment:
+    ) -> APIResponse[TestCaseComment]:
         """
         Add Test Case Comment
 
@@ -260,7 +260,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCaseComment,
+            cast_to=APIResponse[TestCaseComment],
         )
 
     async def edit(
@@ -275,7 +275,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCaseComment:
+    ) -> APIResponse[TestCaseComment]:
         """
         Edit Test Case Comment
 
@@ -304,7 +304,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCaseComment,
+            cast_to=APIResponse[TestCaseComment],
         )
 
 

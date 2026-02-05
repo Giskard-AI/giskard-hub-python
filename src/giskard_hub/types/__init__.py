@@ -41,7 +41,7 @@ from .common import (
 from .header import Header as Header
 from .metric import Metric as Metric
 from .dataset import Dataset as Dataset
-from .test_case import TestCase as TestCase
+from .test_case import TestCase as TestCase, TestCaseComment as TestCaseComment
 
 # ==============================================================================
 # Test Case Comment Types (from test_cases/ subdirectory)
@@ -49,7 +49,6 @@ from .test_case import TestCase as TestCase
 from .test_cases import (
     CommentAddParams as CommentAddParams,
     CommentEditParams as CommentEditParams,
-    APIResponseTestCaseComment as APIResponseTestCaseComment,
 )
 
 # ==============================================================================
@@ -225,7 +224,7 @@ from .success_execution_status import SuccessExecutionStatus as SuccessExecution
 # Agent responses
 from .groundedness_params_param import GroundednessParamsParam as GroundednessParamsParam
 from .string_match_params_param import StringMatchParamsParam as StringMatchParamsParam
-from .audit_display_api_response import AuditDisplayAPIResponse as AuditDisplayAPIResponse
+from .audit_display_api_resource import AuditDisplayAPIResource as AuditDisplayAPIResource
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
 
@@ -305,6 +304,7 @@ __all__ = [
     "AgentOutput",
     "Dataset",
     "TestCase",
+    "TestCaseComment",
     "KnowledgeBase",
     "ScheduledEvaluation",
     # API resources
@@ -388,7 +388,7 @@ __all__ = [
     "AuditSearchParams",
     "AuditDiffKind",
     "AuditDiffItem",
-    "AuditDisplayAPIResponse",
+    "AuditDisplayAPIResource",
     # Shared component types
     "ChatMessage",
     "ChatMessageParam",
@@ -450,5 +450,4 @@ __all__ = [
     # Test case comment types
     "CommentAddParams",
     "CommentEditParams",
-    "APIResponseTestCaseComment",
 ]

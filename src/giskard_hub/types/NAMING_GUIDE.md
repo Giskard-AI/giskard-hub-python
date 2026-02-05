@@ -84,7 +84,7 @@ Status types follow a special pattern with both model and param versions:
 
 ### Audit Types
 - `AuditAPIResource` - The audit resource
-- `AuditDisplayAPIResponse` - Display-friendly audit response
+- `AuditDisplayAPIResource` - Display-friendly audit response
 - `AuditDiffItem` - Individual diff item
 - `AuditDiffKind` - Type of diff operation
 
