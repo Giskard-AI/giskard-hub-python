@@ -26,9 +26,7 @@ from .._base_client import make_request_options
 from ..types.common import APIResponse
 from ..types.dataset import Dataset
 from ..types.test_case import TestCase
-from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
-from ..types.dataset_list_tags_response import DatasetListTagsResponse
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -234,7 +232,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Dataset
 
@@ -256,7 +254,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -269,7 +267,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Datasets
 
@@ -293,7 +291,7 @@ class DatasetsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"dataset_ids": dataset_ids}, dataset_bulk_delete_params.DatasetBulkDeleteParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def generate_scenario_based(
@@ -432,7 +430,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DatasetListTagsResponse:
+    ) -> APIResponse[List[str]]:
         """
         List Dataset Tags
 
@@ -454,7 +452,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DatasetListTagsResponse,
+            cast_to=APIResponse[List[str]],
         )
 
     def list_test_cases(
@@ -694,7 +692,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Dataset
 
@@ -716,7 +714,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -729,7 +727,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Datasets
 
@@ -755,7 +753,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     {"dataset_ids": dataset_ids}, dataset_bulk_delete_params.DatasetBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def generate_scenario_based(
@@ -894,7 +892,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DatasetListTagsResponse:
+    ) -> APIResponse[List[str]]:
         """
         List Dataset Tags
 
@@ -916,7 +914,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=DatasetListTagsResponse,
+            cast_to=APIResponse[List[str]],
         )
 
     async def list_test_cases(

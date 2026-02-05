@@ -230,7 +230,6 @@ from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWi
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
 
 # Dataset responses
-from .dataset_list_tags_response import DatasetListTagsResponse as DatasetListTagsResponse
 from .evaluation_retrieve_params import EvaluationRetrieveParams as EvaluationRetrieveParams
 from .knowledge_base_list_params import KnowledgeBaseListParams as KnowledgeBaseListParams
 from .project_bulk_delete_params import ProjectBulkDeleteParams as ProjectBulkDeleteParams
@@ -344,7 +343,6 @@ __all__ = [
     "DatasetGenerateAdversarialParams",
     "DatasetSubset",
     "DatasetSubsetParam",
-    "DatasetListTagsResponse",
     # Evaluation types
     "EvaluationCreateParams",
     "EvaluationCreateLocalParams",
