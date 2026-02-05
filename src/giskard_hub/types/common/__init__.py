@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from .responses import (
     APIResponse as APIResponse,
-    APIListResponse as APIListResponse,
     APIPaginatedMetadata as APIPaginatedMetadata,
     APIPaginatedResponse as APIPaginatedResponse,
     APIResponseWithIncluded as APIResponseWithIncluded,
@@ -16,7 +15,6 @@ from .responses import (
 
 __all__ = [
     "APIResponse",
-    "APIListResponse",
     "APIPaginatedResponse",
     "APIPaginatedMetadata",
     "APIResponseWithIncluded",
