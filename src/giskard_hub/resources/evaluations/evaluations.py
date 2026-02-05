@@ -4,7 +4,11 @@ from typing import Dict, List, Literal, Iterable, Optional
 
 import httpx
 
+from giskard_hub.types.check_api_resource import CheckResultAPIResource
+
 from ...types import (
+    Agent,
+    Dataset,
     evaluation_list_params,
     evaluation_create_params,
     evaluation_update_params,
@@ -32,16 +36,12 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
-from ...types.common import APIResponse
-from ...types.api_response_none import APIResponseNone
+from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.chat_message_param import ChatMessageParam
 from ...types.model_output_param import AgentOutputParam
 from ...types.minimal_model_param import MinimalAgentParam
 from ...types.dataset_subset_param import DatasetSubsetParam
 from ...types.evaluation_api_resource import EvaluationAPIResource
-from ...types.evaluation_list_response import EvaluationListResponse
-from ...types.evaluation_retrieve_response import EvaluationRetrieveResponse
-from ...types.evaluation_run_single_response import EvaluationRunSingleResponse
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
 
@@ -141,7 +141,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EvaluationRetrieveResponse:
+    ) -> APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset]:
         """
         Retrieve Evaluation
 
@@ -169,7 +169,7 @@ class EvaluationsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, evaluation_retrieve_params.EvaluationRetrieveParams),
             ),
-            cast_to=EvaluationRetrieveResponse,
+            cast_to=APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset],
         )
 
     def update(
@@ -222,7 +222,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EvaluationListResponse:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
         """
         List Evaluations
 
@@ -254,7 +254,7 @@ class EvaluationsResource(SyncAPIResource):
                     evaluation_list_params.EvaluationListParams,
                 ),
             ),
-            cast_to=EvaluationListResponse,
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
         )
 
     def delete(
@@ -267,7 +267,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Evaluation
 
@@ -289,7 +289,7 @@ class EvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -302,7 +302,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Evaluations
 
@@ -328,7 +328,7 @@ class EvaluationsResource(SyncAPIResource):
                     {"evaluation_ids": evaluation_ids}, evaluation_bulk_delete_params.EvaluationBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def create_local(
@@ -427,7 +427,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EvaluationRunSingleResponse:
+    ) -> APIResponse[List[CheckResultAPIResource]]:
         """
         Run Single Evaluation
 
@@ -465,7 +465,7 @@ class EvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=EvaluationRunSingleResponse,
+            cast_to=APIResponse[List[CheckResultAPIResource]],
         )
 
 
@@ -564,7 +564,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EvaluationRetrieveResponse:
+    ) -> APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset]:
         """
         Retrieve Evaluation
 
@@ -594,7 +594,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     {"include": include}, evaluation_retrieve_params.EvaluationRetrieveParams
                 ),
             ),
-            cast_to=EvaluationRetrieveResponse,
+            cast_to=APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset],
         )
 
     async def update(
@@ -647,7 +647,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EvaluationListResponse:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
         """
         List Evaluations
 
@@ -679,7 +679,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     evaluation_list_params.EvaluationListParams,
                 ),
             ),
-            cast_to=EvaluationListResponse,
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
         )
 
     async def delete(
@@ -692,7 +692,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Evaluation
 
@@ -714,7 +714,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -727,7 +727,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Evaluations
 
@@ -753,7 +753,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     {"evaluation_ids": evaluation_ids}, evaluation_bulk_delete_params.EvaluationBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def create_local(
@@ -852,7 +852,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> EvaluationRunSingleResponse:
+    ) -> APIResponse[List[CheckResultAPIResource]]:
         """
         Run Single Evaluation
 
@@ -890,7 +890,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=EvaluationRunSingleResponse,
+            cast_to=APIResponse[List[CheckResultAPIResource]],
         )
 
 
