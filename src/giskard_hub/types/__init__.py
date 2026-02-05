@@ -42,6 +42,7 @@ from .header import Header as Header
 from .metric import Metric as Metric
 from .dataset import Dataset as Dataset
 from .test_case import TestCase as TestCase, TestCaseComment as TestCaseComment
+from .user import User as User
 
 # ==============================================================================
 # Test Case Comment Types (from test_cases/ subdirectory)
@@ -55,6 +56,8 @@ from .test_cases import (
 # Enums and Literals
 # ==============================================================================
 from .action_type import ActionType as ActionType
+from .task_status import TaskStatus as TaskStatus
+from .task_priority import TaskPriority as TaskPriority
 
 # ==============================================================================
 # Evaluation Results Types (from evaluations/ subdirectory)
@@ -92,6 +95,16 @@ from .dataset_subset import DatasetSubset as DatasetSubset
 from .knowledge_base import KnowledgeBase as KnowledgeBase
 from .audit_diff_item import AuditDiffItem as AuditDiffItem
 
+# Reference types
+from .project_reference import ProjectReference as ProjectReference
+from .dataset_reference import DatasetReference as DatasetReference
+from .evaluation_reference import EvaluationReference as EvaluationReference
+from .scan_reference import ScanReference as ScanReference
+from .probe_result_reference import ProbeResultReference as ProbeResultReference
+from .probe_attempt_reference import ProbeAttemptReference as ProbeAttemptReference
+from .chat_test_case_reference import ChatTestCaseReference as ChatTestCaseReference
+from .chat_test_case_evaluation_reference import ChatTestCaseEvaluationReference as ChatTestCaseEvaluationReference
+
 # Audit types and responses
 from .audit_diff_kind import AuditDiffKind as AuditDiffKind
 
@@ -124,6 +137,7 @@ from .check_api_resource import CheckAPIResource as CheckAPIResource
 from .correctness_params import CorrectnessParams as CorrectnessParams
 from .model_output_param import ModelOutputParam as ModelOutputParam
 from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
+from .task_api_resource import TaskAPIResource as TaskAPIResource
 
 # Project responses
 # (Project responses now use generic APIResponse[ProjectAPIResource] and APIResponse[List[ProjectAPIResource])
@@ -258,6 +272,15 @@ from .agent_autofill_description_params import AgentAutofillDescriptionParams as
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
 
 # ==============================================================================
+# Task Types
+# ==============================================================================
+# Task parameters
+from .task_create_params import TaskCreateParams as TaskCreateParams
+from .task_update_params import TaskUpdateParams as TaskUpdateParams
+from .task_list_params import TaskListParams as TaskListParams
+from .task_bulk_delete_params import TaskBulkDeleteParams as TaskBulkDeleteParams
+
+# ==============================================================================
 # Scheduled Evaluation Types
 # ==============================================================================
 # Scheduled evaluation parameters
@@ -305,6 +328,7 @@ __all__ = [
     "TestCaseComment",
     "KnowledgeBase",
     "ScheduledEvaluation",
+    "User",
     # API resources
     "AuditAPIResource",
     "CheckAPIResource",
@@ -312,8 +336,18 @@ __all__ = [
     "ProjectAPIResource",
     "ScenarioAPIResource",
     "ScenarioPreviewAPIResource",
+    "TaskAPIResource",
     "KnowledgeBaseDocumentRowAPIResource",
     "KnowledgeBaseDocumentDetailAPIResource",
+    # Reference types
+    "ProjectReference",
+    "DatasetReference",
+    "EvaluationReference",
+    "ScanReference",
+    "ProbeResultReference",
+    "ProbeAttemptReference",
+    "ChatTestCaseReference",
+    "ChatTestCaseEvaluationReference",
     # Agent types
     "AgentAPIReference",
     "AgentCreateParams",
@@ -357,6 +391,13 @@ __all__ = [
     "CheckUpdateParams",
     "CheckListParams",
     "CheckBulkDeleteParams",
+    # Task types
+    "TaskCreateParams",
+    "TaskUpdateParams",
+    "TaskListParams",
+    "TaskBulkDeleteParams",
+    "TaskStatus",
+    "TaskPriority",
     # Knowledge base types
     "KnowledgeBaseCreateParams",
     "KnowledgeBaseUpdateParams",

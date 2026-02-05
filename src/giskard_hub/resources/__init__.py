@@ -38,6 +38,14 @@ from .datasets import (
     DatasetsResourceWithStreamingResponse,
     AsyncDatasetsResourceWithStreamingResponse,
 )
+from .tasks import (
+    TasksResource,
+    AsyncTasksResource,
+    TasksResourceWithRawResponse,
+    AsyncTasksResourceWithRawResponse,
+    TasksResourceWithStreamingResponse,
+    AsyncTasksResourceWithStreamingResponse,
+)
 from .test_cases import (
     TestCasesResource,
     AsyncTestCasesResource,
@@ -120,6 +128,12 @@ __all__ = [
     "AsyncScheduledEvaluationsResourceWithRawResponse",
     "ScheduledEvaluationsResourceWithStreamingResponse",
     "AsyncScheduledEvaluationsResourceWithStreamingResponse",
+    "TasksResource",
+    "AsyncTasksResource",
+    "TasksResourceWithRawResponse",
+    "AsyncTasksResourceWithRawResponse",
+    "TasksResourceWithStreamingResponse",
+    "AsyncTasksResourceWithStreamingResponse",
     "TestCasesResource",
     "AsyncTestCasesResource",
     "TestCasesResourceWithRawResponse",

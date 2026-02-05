@@ -25,6 +25,7 @@ from .resources import (
     checks,
     datasets,
     projects,
+    tasks,
     knowledge_bases,
     scheduled_evaluations,
 )
@@ -61,6 +62,7 @@ class HubClient(SyncAPIClient):
     projects: projects.ProjectsResource
     scans: scans.ScansResource
     scheduled_evaluations: scheduled_evaluations.ScheduledEvaluationsResource
+    tasks: tasks.TasksResource
     test_cases: test_cases.TestCasesResource
     with_raw_response: HubClientWithRawResponse
     with_streaming_response: HubClientWithStreamedResponse
@@ -128,6 +130,7 @@ class HubClient(SyncAPIClient):
         self.projects = projects.ProjectsResource(self)
         self.scans = scans.ScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(self)
+        self.tasks = tasks.TasksResource(self)
         self.test_cases = test_cases.TestCasesResource(self)
         self.with_raw_response = HubClientWithRawResponse(self)
         self.with_streaming_response = HubClientWithStreamedResponse(self)
@@ -247,6 +250,7 @@ class AsyncHubClient(AsyncAPIClient):
     projects: projects.AsyncProjectsResource
     scans: scans.AsyncScansResource
     scheduled_evaluations: scheduled_evaluations.AsyncScheduledEvaluationsResource
+    tasks: tasks.AsyncTasksResource
     test_cases: test_cases.AsyncTestCasesResource
     with_raw_response: AsyncHubClientWithRawResponse
     with_streaming_response: AsyncHubClientWithStreamedResponse
@@ -314,6 +318,7 @@ class AsyncHubClient(AsyncAPIClient):
         self.projects = projects.AsyncProjectsResource(self)
         self.scans = scans.AsyncScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
+        self.tasks = tasks.AsyncTasksResource(self)
         self.test_cases = test_cases.AsyncTestCasesResource(self)
         self.with_raw_response = AsyncHubClientWithRawResponse(self)
         self.with_streaming_response = AsyncHubClientWithStreamedResponse(self)
@@ -438,6 +443,7 @@ class HubClientWithRawResponse:
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithRawResponse(
             client.scheduled_evaluations
         )
+        self.tasks = tasks.TasksResourceWithRawResponse(client.tasks)
         self.test_cases = test_cases.TestCasesResourceWithRawResponse(client.test_cases)
 
 
@@ -454,6 +460,7 @@ class AsyncHubClientWithRawResponse:
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithRawResponse(
             client.scheduled_evaluations
         )
+        self.tasks = tasks.AsyncTasksResourceWithRawResponse(client.tasks)
         self.test_cases = test_cases.AsyncTestCasesResourceWithRawResponse(client.test_cases)
 
 
@@ -470,6 +477,7 @@ class HubClientWithStreamedResponse:
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithStreamingResponse(
             client.scheduled_evaluations
         )
+        self.tasks = tasks.TasksResourceWithStreamingResponse(client.tasks)
         self.test_cases = test_cases.TestCasesResourceWithStreamingResponse(client.test_cases)
 
 
@@ -486,6 +494,7 @@ class AsyncHubClientWithStreamedResponse:
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithStreamingResponse(
             client.scheduled_evaluations
         )
+        self.tasks = tasks.AsyncTasksResourceWithStreamingResponse(client.tasks)
         self.test_cases = test_cases.AsyncTestCasesResourceWithStreamingResponse(client.test_cases)
 
 
