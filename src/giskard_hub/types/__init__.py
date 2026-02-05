@@ -298,9 +298,6 @@ from .scheduled_evaluation_list_evaluations_response import (
 )
 
 # Knowledge base responses
-from .paginated_api_response_knowledge_base_document_row_api_resource import (
-    PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource as PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
-)
 
 __all__ = [
     # Common types
@@ -373,7 +370,6 @@ __all__ = [
     "KnowledgeBaseListParams",
     "KnowledgeBaseBulkDeleteParams",
     "KnowledgeBaseSearchDocumentsParams",
-    "PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource",
     # Scheduled evaluation types
     "ScheduledEvaluationCreateParams",
     "ScheduledEvaluationUpdateParams",

@@ -5,6 +5,8 @@ from typing import Any, Dict, List, Mapping, Optional, cast
 import httpx
 
 from ..types import (
+    APIPaginatedResponse,
+    KnowledgeBaseDocumentRowAPIResource,
     knowledge_base_list_params,
     knowledge_base_create_params,
     knowledge_base_update_params,
@@ -24,12 +26,8 @@ from .._response import (
 from .._base_client import make_request_options
 from ..types.common import APIResponse
 from ..types.knowledge_base import KnowledgeBase
-from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
 from ..types.knowledge_base_document_detail_api_resource import KnowledgeBaseDocumentDetailAPIResource
-from ..types.paginated_api_response_knowledge_base_document_row_api_resource import (
-    PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
-)
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
 
@@ -255,7 +253,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Knowledge Base
 
@@ -277,7 +275,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -290,7 +288,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Knowledge Bases
 
@@ -317,7 +315,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                     knowledge_base_bulk_delete_params.KnowledgeBaseBulkDeleteParams,
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def search_documents(
@@ -335,7 +333,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource:
+    ) -> APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -378,7 +376,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                     knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
-            cast_to=PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
+            cast_to=APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None],
         )
 
     def retrieve_document(
@@ -645,7 +643,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Knowledge Base
 
@@ -667,7 +665,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -680,7 +678,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Knowledge Bases
 
@@ -707,7 +705,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     knowledge_base_bulk_delete_params.KnowledgeBaseBulkDeleteParams,
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def search_documents(
@@ -725,7 +723,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource:
+    ) -> APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -768,7 +766,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
-            cast_to=PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
+            cast_to=APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None],
         )
 
     async def retrieve_document(
