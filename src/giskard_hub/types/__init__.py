@@ -14,7 +14,7 @@ from __future__ import annotations
 # ==============================================================================
 # Core Models - Main domain objects
 # ==============================================================================
-from .agent import Agent as Agent
+from .agent import Agent as Agent, AgentOutput as AgentOutput
 
 # ==============================================================================
 # Scan Probe Types (from scans/ subdirectory)
@@ -224,7 +224,6 @@ from .evaluation_update_params import EvaluationUpdateParams as EvaluationUpdate
 from .success_execution_status import SuccessExecutionStatus as SuccessExecutionStatus
 
 # Agent responses
-from .api_response_agent_output import APIResponseAgentOutput as APIResponseAgentOutput
 from .groundedness_params_param import GroundednessParamsParam as GroundednessParamsParam
 from .string_match_params_param import StringMatchParamsParam as StringMatchParamsParam
 from .api_response_audit_display import APIResponseAuditDisplay as APIResponseAuditDisplay
@@ -314,6 +313,7 @@ __all__ = [
     "APIResponseWithIncluded",
     # Core models
     "Agent",
+    "AgentOutput",
     "Dataset",
     "TestCase",
     "KnowledgeBase",
@@ -336,7 +336,6 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
-    "APIResponseAgentOutput",
     # Dataset types
     "DatasetCreateParams",
     "DatasetUpdateParams",

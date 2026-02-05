@@ -5,6 +5,7 @@ from typing import Dict, List, Iterable, Optional
 import httpx
 
 from ..types import (
+    AgentOutput,
     agent_list_params,
     agent_create_params,
     agent_update_params,
@@ -27,10 +28,7 @@ from ..types.agent import Agent
 from .._base_client import make_request_options
 from ..types.common import APIResponse
 from ..types.header_param import HeaderParam
-from ..types.api_response_str import APIResponseStr
-from ..types.api_response_none import APIResponseNone
 from ..types.chat_message_param import ChatMessageParam
-from ..types.api_response_agent_output import APIResponseAgentOutput
 
 __all__ = ["AgentsResource", "AsyncAgentsResource"]
 
@@ -256,7 +254,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Agent
 
@@ -278,7 +276,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -291,7 +289,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Agents
 
@@ -315,7 +313,7 @@ class AgentsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"agent_ids": agent_ids}, agent_bulk_delete_params.AgentBulkDeleteParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def generate_completion(
@@ -329,7 +327,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgentOutput:
+    ) -> APIResponse[AgentOutput]:
         """
         Generate Agent Completion
 
@@ -356,7 +354,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgentOutput,
+            cast_to=APIResponse[AgentOutput],
         )
 
     def test_connection(
@@ -370,7 +368,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgentOutput:
+    ) -> APIResponse[AgentOutput]:
         """
         Test Agent Connection
 
@@ -399,7 +397,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgentOutput,
+            cast_to=APIResponse[AgentOutput],
         )
 
     def autofill_description(
@@ -412,7 +410,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseStr:
+    ) -> APIResponse[str]:
         """
         Autofill Agent Description
 
@@ -435,7 +433,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseStr,
+            cast_to=APIResponse[str],
         )
 
 
@@ -660,7 +658,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Agent
 
@@ -682,7 +680,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -695,7 +693,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Agents
 
@@ -721,7 +719,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                     {"agent_ids": agent_ids}, agent_bulk_delete_params.AgentBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def generate_completion(
@@ -735,7 +733,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgentOutput:
+    ) -> APIResponse[AgentOutput]:
         """
         Generate Agent Completion
 
@@ -762,7 +760,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgentOutput,
+            cast_to=APIResponse[AgentOutput],
         )
 
     async def test_connection(
@@ -776,7 +774,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgentOutput:
+    ) -> APIResponse[AgentOutput]:
         """
         Test Agent Connection
 
@@ -805,7 +803,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgentOutput,
+            cast_to=APIResponse[AgentOutput],
         )
 
     async def autofill_description(
@@ -818,7 +816,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseStr:
+    ) -> APIResponse[str]:
         """
         Autofill Agent Description
 
@@ -841,7 +839,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseStr,
+            cast_to=APIResponse[str],
         )
 
 
