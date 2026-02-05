@@ -11,6 +11,8 @@ This module provides all type definitions used throughout the SDK, organized by 
 
 from __future__ import annotations
 
+from .user import User as User
+
 # ==============================================================================
 # Core Models - Main domain objects
 # ==============================================================================
@@ -74,6 +76,7 @@ from .evaluations import (
 
 # Scan types and responses
 from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
+from .task_status import TaskStatus as TaskStatus
 
 # ==============================================================================
 # Shared Component Types - Used across multiple resources
@@ -85,6 +88,7 @@ from .model_output import ModelOutput as ModelOutput
 
 # Models and outputs
 from .minimal_model import MinimalModel as MinimalModel
+from .task_priority import TaskPriority as TaskPriority
 
 # Task progress
 from .task_progress import TaskProgress as TaskProgress
@@ -102,6 +106,7 @@ from .execution_error import ExecutionError as ExecutionError
 from .metadata_params import MetadataParams as MetadataParams
 from .frequency_option import FrequencyOption as FrequencyOption
 from .scan_list_params import ScanListParams as ScanListParams
+from .task_list_params import TaskListParams as TaskListParams
 from .agent_list_params import AgentListParams as AgentListParams
 
 # ==============================================================================
@@ -114,6 +119,9 @@ from .check_list_params import CheckListParams as CheckListParams
 # ==============================================================================
 from .conformity_params import ConformityParams as ConformityParams
 from .output_annotation import OutputAnnotation as OutputAnnotation
+
+# Reference types
+from .task_api_resource import TaskAPIResource as TaskAPIResource
 
 # ==============================================================================
 # API Resources - API-specific resource representations
@@ -132,6 +140,13 @@ from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
 # ==============================================================================
 # Scan parameters
 from .scan_create_params import ScanCreateParams as ScanCreateParams
+
+# ==============================================================================
+# Task Types
+# ==============================================================================
+# Task parameters
+from .task_create_params import TaskCreateParams as TaskCreateParams
+from .task_update_params import TaskUpdateParams as TaskUpdateParams
 
 # ==============================================================================
 # Agent Types
@@ -153,6 +168,7 @@ from .groundedness_params import GroundednessParams as GroundednessParams
 from .minimal_model_param import MinimalModelParam as MinimalModelParam
 from .string_match_params import StringMatchParams as StringMatchParams
 from .task_progress_param import TaskProgressParam as TaskProgressParam
+from .test_case_reference import TestCaseReferencence as TestCaseReferencence
 from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
 from .project_api_resource import ProjectAPIResource as ProjectAPIResource
 from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
@@ -188,8 +204,10 @@ from .scenario_update_params import ScenarioUpdateParams as ScenarioUpdateParams
 from .test_case_check_config import TestCaseCheckConfig as TestCaseCheckConfig
 from .conformity_params_param import ConformityParamsParam as ConformityParamsParam
 from .evaluation_api_resource import EvaluationAPIResource as EvaluationAPIResource
+from .probe_attempt_reference import ProbeAttemptReference as ProbeAttemptReference
 from .scan_bulk_delete_params import ScanBulkDeleteParams as ScanBulkDeleteParams
 from .scenario_preview_params import ScenarioPreviewParams as ScenarioPreviewParams
+from .task_bulk_delete_params import TaskBulkDeleteParams as TaskBulkDeleteParams
 
 # ==============================================================================
 # Test Case Types
@@ -250,6 +268,7 @@ from .evaluation_bulk_delete_params import EvaluationBulkDeleteParams as Evaluat
 from .scenario_preview_api_resource import ScenarioPreviewAPIResource as ScenarioPreviewAPIResource
 from .evaluation_create_local_params import EvaluationCreateLocalParams as EvaluationCreateLocalParams
 from .success_execution_status_param import SuccessExecutionStatusParam as SuccessExecutionStatusParam
+from .test_case_evaluation_reference import TestCaseEvaluationReference as TestCaseEvaluationReference
 from .agent_generate_completion_params import AgentGenerateCompletionParams as AgentGenerateCompletionParams
 from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
@@ -305,6 +324,7 @@ __all__ = [
     "TestCaseComment",
     "KnowledgeBase",
     "ScheduledEvaluation",
+    "User",
     # API resources
     "AuditAPIResource",
     "CheckAPIResource",
@@ -312,8 +332,13 @@ __all__ = [
     "ProjectAPIResource",
     "ScenarioAPIResource",
     "ScenarioPreviewAPIResource",
+    "TaskAPIResource",
     "KnowledgeBaseDocumentRowAPIResource",
     "KnowledgeBaseDocumentDetailAPIResource",
+    # Reference types
+    "ProbeAttemptReference",
+    "TestCaseReferencence",
+    "TestCaseEvaluationReference",
     # Agent types
     "AgentAPIReference",
     "AgentCreateParams",
@@ -357,6 +382,13 @@ __all__ = [
     "CheckUpdateParams",
     "CheckListParams",
     "CheckBulkDeleteParams",
+    # Task types
+    "TaskCreateParams",
+    "TaskUpdateParams",
+    "TaskListParams",
+    "TaskBulkDeleteParams",
+    "TaskStatus",
+    "TaskPriority",
     # Knowledge base types
     "KnowledgeBaseCreateParams",
     "KnowledgeBaseUpdateParams",

@@ -347,3 +347,25 @@ Methods:
 - <code title="delete /v2/test-cases/{test_case_id}/comments/{comment_id}">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">delete</a>(comment_id, \*, test_case_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="post /v2/test-cases/{test_case_id}/comments">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">add</a>(test_case_id, \*\*<a href="src/giskard_hub/types/test_cases/comment_add_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCaseComment</a>]</code>
 - <code title="patch /v2/test-cases/{test_case_id}/comments/{comment_id}">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">edit</a>(comment_id, \*, test_case_id, \*\*<a href="src/giskard_hub/types/test_cases/comment_edit_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCaseComment</a>]</code>
+
+# Tasks
+
+Types:
+
+```python
+from giskard_hub.types import (
+    TaskAPIResource,
+    TaskStatus,
+    TaskPriority,
+    APIResponse,
+)
+```
+
+Methods:
+
+- <code title="post /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">create</a>(\*\*<a href="src/giskard_hub/types/task_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]</code>
+- <code title="get /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">retrieve</a>(task_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]</code>
+- <code title="patch /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">update</a>(task_id, \*\*<a href="src/giskard_hub/types/task_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]</code>
+- <code title="get /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">list</a>(\*\*<a href="src/giskard_hub/types/task_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]]</code>
+- <code title="delete /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">delete</a>(task_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
+- <code title="delete /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/task_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>

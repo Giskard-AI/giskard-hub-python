@@ -14,6 +14,14 @@ from .scans import (
     ScansResourceWithStreamingResponse,
     AsyncScansResourceWithStreamingResponse,
 )
+from .tasks import (
+    TasksResource,
+    AsyncTasksResource,
+    TasksResourceWithRawResponse,
+    AsyncTasksResourceWithRawResponse,
+    TasksResourceWithStreamingResponse,
+    AsyncTasksResourceWithStreamingResponse,
+)
 from .agents import (
     AgentsResource,
     AsyncAgentsResource,
@@ -120,6 +128,12 @@ __all__ = [
     "AsyncScheduledEvaluationsResourceWithRawResponse",
     "ScheduledEvaluationsResourceWithStreamingResponse",
     "AsyncScheduledEvaluationsResourceWithStreamingResponse",
+    "TasksResource",
+    "AsyncTasksResource",
+    "TasksResourceWithRawResponse",
+    "AsyncTasksResourceWithRawResponse",
+    "TasksResourceWithStreamingResponse",
+    "AsyncTasksResourceWithStreamingResponse",
     "TestCasesResource",
     "AsyncTestCasesResource",
     "TestCasesResourceWithRawResponse",
