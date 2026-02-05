@@ -290,6 +290,52 @@ from .frequency_option import FrequencyOption as FrequencyOption
 from .metric import Metric as Metric
 
 # ==============================================================================
+# Evaluation Results Types (from evaluations/ subdirectory)
+# ==============================================================================
+
+from .evaluations import (
+    TaskState as TaskState,
+    FailureCategory as FailureCategory,
+    FailureCategoryParam as FailureCategoryParam,
+    ResultListParams as ResultListParams,
+    ResultListResponse as ResultListResponse,
+    ResultSearchParams as ResultSearchParams,
+    ResultSearchResponse as ResultSearchResponse,
+    ResultRetrieveParams as ResultRetrieveParams,
+    ResultRetrieveResponse as ResultRetrieveResponse,
+    ResultUpdateParams as ResultUpdateParams,
+    ResultUpdateVisibilityParams as ResultUpdateVisibilityParams,
+    ResultSubmitLocalOutputParams as ResultSubmitLocalOutputParams,
+    TestCaseEvaluationAPIResource as TestCaseEvaluationAPIResource,
+    APIResponseTestCaseEvaluationAPIResource as APIResponseTestCaseEvaluationAPIResource,
+)
+
+# ==============================================================================
+# Scan Probe Types (from scans/ subdirectory)
+# ==============================================================================
+
+from .scans import (
+    Severity as Severity,
+    ReviewStatus as ReviewStatus,
+    ScanProbeResult as ScanProbeResult,
+    ScanProbeAttempt as ScanProbeAttempt,
+    AttemptUpdateParams as AttemptUpdateParams,
+    AttemptUpdateResponse as AttemptUpdateResponse,
+    ProbeRetrieveResponse as ProbeRetrieveResponse,
+    ProbeListAttemptsResponse as ProbeListAttemptsResponse,
+)
+
+# ==============================================================================
+# Test Case Comment Types (from test_cases/ subdirectory)
+# ==============================================================================
+
+from .test_cases import (
+    CommentAddParams as CommentAddParams,
+    CommentEditParams as CommentEditParams,
+    APIResponseTestCaseComment as APIResponseTestCaseComment,
+)
+
+# ==============================================================================
 # Generic API Response Wrappers
 # ==============================================================================
 
@@ -464,4 +510,32 @@ __all__ = [
     # Generic wrappers
     "APIResponseNone",
     "APIResponseStr",
+    # Evaluation results types
+    "TaskState",
+    "FailureCategory",
+    "FailureCategoryParam",
+    "ResultListParams",
+    "ResultListResponse",
+    "ResultSearchParams",
+    "ResultSearchResponse",
+    "ResultRetrieveParams",
+    "ResultRetrieveResponse",
+    "ResultUpdateParams",
+    "ResultUpdateVisibilityParams",
+    "ResultSubmitLocalOutputParams",
+    "TestCaseEvaluationAPIResource",
+    "APIResponseTestCaseEvaluationAPIResource",
+    # Scan probe types
+    "Severity",
+    "ReviewStatus",
+    "ScanProbeResult",
+    "ScanProbeAttempt",
+    "AttemptUpdateParams",
+    "AttemptUpdateResponse",
+    "ProbeRetrieveResponse",
+    "ProbeListAttemptsResponse",
+    # Test case comment types
+    "CommentAddParams",
+    "CommentEditParams",
+    "APIResponseTestCaseComment",
 ]
