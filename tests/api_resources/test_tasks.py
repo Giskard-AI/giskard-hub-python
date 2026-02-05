@@ -24,8 +24,8 @@ class TestTasks:
     @parametrize
     def test_method_create(self, client: HubClient) -> None:
         task = client.tasks.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
         assert_matches_type(APIResponse[TaskAPIResource], task, path=["response"])
 
@@ -33,16 +33,16 @@ class TestTasks:
     @parametrize
     def test_method_create_with_all_params(self, client: HubClient) -> None:
         task = client.tasks.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            assignee_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
             priority="high",
-            related_entity={
-                "type": "dataset",
-                "dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
             status="open",
+            assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            evaluation_result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            disable_test=True,
+            hide_result=False,
         )
         assert_matches_type(APIResponse[TaskAPIResource], task, path=["response"])
 
@@ -50,8 +50,8 @@ class TestTasks:
     @parametrize
     def test_raw_response_create(self, client: HubClient) -> None:
         response = client.tasks.with_raw_response.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
 
         assert response.is_closed is True
@@ -63,8 +63,8 @@ class TestTasks:
     @parametrize
     def test_streaming_response_create(self, client: HubClient) -> None:
         with client.tasks.with_streaming_response.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -132,15 +132,11 @@ class TestTasks:
     def test_method_update_with_all_params(self, client: HubClient) -> None:
         task = client.tasks.update(
             task_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            assignee_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            description="description",
-            name="name",
-            priority="high",
-            related_entity={
-                "type": "dataset",
-                "dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
             status="in_progress",
+            description="description",
+            priority="high",
+            assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            set_test_case_status="passed",
         )
         assert_matches_type(APIResponse[TaskAPIResource], task, path=["response"])
 
@@ -307,8 +303,8 @@ class TestAsyncTasks:
     @parametrize
     async def test_method_create(self, async_client: AsyncHubClient) -> None:
         task = await async_client.tasks.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
         assert_matches_type(APIResponse[TaskAPIResource], task, path=["response"])
 
@@ -316,16 +312,16 @@ class TestAsyncTasks:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncHubClient) -> None:
         task = await async_client.tasks.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            assignee_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
             priority="high",
-            related_entity={
-                "type": "dataset",
-                "dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
             status="open",
+            assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            evaluation_result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            disable_test=True,
+            hide_result=False,
         )
         assert_matches_type(APIResponse[TaskAPIResource], task, path=["response"])
 
@@ -333,8 +329,8 @@ class TestAsyncTasks:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncHubClient) -> None:
         response = await async_client.tasks.with_raw_response.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         )
 
         assert response.is_closed is True
@@ -346,8 +342,8 @@ class TestAsyncTasks:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.tasks.with_streaming_response.create(
-            name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -415,15 +411,11 @@ class TestAsyncTasks:
     async def test_method_update_with_all_params(self, async_client: AsyncHubClient) -> None:
         task = await async_client.tasks.update(
             task_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            assignee_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            description="description",
-            name="name",
-            priority="high",
-            related_entity={
-                "type": "dataset",
-                "dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
             status="in_progress",
+            description="description",
+            priority="high",
+            assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            set_test_case_status="passed",
         )
         assert_matches_type(APIResponse[TaskAPIResource], task, path=["response"])
 
