@@ -27,10 +27,8 @@ class TestKnowledgeBases:
     @parametrize
     def test_method_create(self, client: HubClient) -> None:
         knowledge_base = client.knowledge_bases.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         )
         assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
@@ -39,14 +37,12 @@ class TestKnowledgeBases:
     @parametrize
     def test_method_create_with_all_params(self, client: HubClient) -> None:
         knowledge_base = client.knowledge_bases.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                "description": "description",
-                "document_column": "document_column",
-                "topic_column": "topic_column",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
+            description="description",
+            document_column="document_column",
+            topic_column="topic_column",
         )
         assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
@@ -54,10 +50,8 @@ class TestKnowledgeBases:
     @parametrize
     def test_raw_response_create(self, client: HubClient) -> None:
         response = client.knowledge_bases.with_raw_response.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         )
 
@@ -70,10 +64,8 @@ class TestKnowledgeBases:
     @parametrize
     def test_streaming_response_create(self, client: HubClient) -> None:
         with client.knowledge_bases.with_streaming_response.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         ) as response:
             assert not response.is_closed
@@ -442,10 +434,8 @@ class TestAsyncKnowledgeBases:
     @parametrize
     async def test_method_create(self, async_client: AsyncHubClient) -> None:
         knowledge_base = await async_client.knowledge_bases.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         )
         assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
@@ -454,14 +444,12 @@ class TestAsyncKnowledgeBases:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncHubClient) -> None:
         knowledge_base = await async_client.knowledge_bases.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                "description": "description",
-                "document_column": "document_column",
-                "topic_column": "topic_column",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
+            description="description",
+            document_column="document_column",
+            topic_column="topic_column",
         )
         assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
@@ -469,10 +457,8 @@ class TestAsyncKnowledgeBases:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncHubClient) -> None:
         response = await async_client.knowledge_bases.with_raw_response.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         )
 
@@ -485,10 +471,8 @@ class TestAsyncKnowledgeBases:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.knowledge_bases.with_streaming_response.create(
-            data={
-                "name": "name",
-                "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            },
+            name="name",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         ) as response:
             assert not response.is_closed
