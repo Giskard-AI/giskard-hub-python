@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 import httpx
 
@@ -23,12 +23,12 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.common import APIResponse
 from ..types.dataset import Dataset
 from ..types.test_case import TestCase
 from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
 from ..types.dataset_list_tags_response import DatasetListTagsResponse
-from ..types.common import APIResponse, APIListResponse
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -197,7 +197,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[Dataset]:
+    ) -> APIResponse[List[Dataset]]:
         """
         List Datasets
 
@@ -221,7 +221,7 @@ class DatasetsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_id": project_id}, dataset_list_params.DatasetListParams),
             ),
-            cast_to=APIListResponse[Dataset],
+            cast_to=APIResponse[List[Dataset]],
         )
 
     def delete(
@@ -467,7 +467,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[TestCase]:
+    ) -> APIResponse[List[TestCase]]:
         """
         List Dataset Test Cases
 
@@ -489,7 +489,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIListResponse[TestCase],
+            cast_to=APIResponse[List[TestCase]],
         )
 
 
@@ -657,7 +657,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[Dataset]:
+    ) -> APIResponse[List[Dataset]]:
         """
         List Datasets
 
@@ -681,7 +681,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"project_id": project_id}, dataset_list_params.DatasetListParams),
             ),
-            cast_to=APIListResponse[Dataset],
+            cast_to=APIResponse[List[Dataset]],
         )
 
     async def delete(
@@ -929,7 +929,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[TestCase]:
+    ) -> APIResponse[List[TestCase]]:
         """
         List Dataset Test Cases
 
@@ -951,7 +951,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIListResponse[TestCase],
+            cast_to=APIResponse[List[TestCase]],
         )
 
 

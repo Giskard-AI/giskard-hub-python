@@ -9,8 +9,8 @@ from __future__ import annotations
 from .responses import (
     APIResponse as APIResponse,
     APIListResponse as APIListResponse,
-    APIPaginatedResponse as APIPaginatedResponse,
     APIPaginatedMetadata as APIPaginatedMetadata,
+    APIPaginatedResponse as APIPaginatedResponse,
     APIResponseWithIncluded as APIResponseWithIncluded,
 )
 

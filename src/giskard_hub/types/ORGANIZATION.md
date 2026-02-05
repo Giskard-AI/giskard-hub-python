@@ -69,7 +69,7 @@ class {Resource}ListResponse(BaseModel):
     data: List[{Resource}]
 ```
 
-These can use a generic `APIListResponse[T]` type.
+These can use a generic `APIResponse[List[T]` type.
 
 ## Migration Strategy
 

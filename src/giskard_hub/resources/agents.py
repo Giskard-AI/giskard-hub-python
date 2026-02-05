@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Iterable, Optional
+from typing import Dict, List, Iterable, Optional
 
 import httpx
 
@@ -23,14 +23,14 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from .._base_client import make_request_options
 from ..types.agent import Agent
+from .._base_client import make_request_options
+from ..types.common import APIResponse
 from ..types.header_param import HeaderParam
 from ..types.api_response_str import APIResponseStr
 from ..types.api_response_none import APIResponseNone
 from ..types.chat_message_param import ChatMessageParam
 from ..types.api_response_agent_output import APIResponseAgentOutput
-from ..types.common import APIResponse, APIListResponse
 
 __all__ = ["AgentsResource", "AsyncAgentsResource"]
 
@@ -219,7 +219,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[Agent]:
+    ) -> APIResponse[List[Agent]]:
         """
         List Agents
 
@@ -243,7 +243,7 @@ class AgentsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_id": project_id}, agent_list_params.AgentListParams),
             ),
-            cast_to=APIListResponse[Agent],
+            cast_to=APIResponse[List[Agent]],
         )
 
     def delete(
@@ -623,7 +623,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[Agent]:
+    ) -> APIResponse[List[Agent]]:
         """
         List Agents
 
@@ -647,7 +647,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"project_id": project_id}, agent_list_params.AgentListParams),
             ),
-            cast_to=APIListResponse[Agent],
+            cast_to=APIResponse[List[Agent]],
         )
 
     async def delete(

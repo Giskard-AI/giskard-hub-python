@@ -10,9 +10,9 @@ import pytest
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
-    EvaluationAPIResource,
     APIResponse,
     APIResponseNone,
+    EvaluationAPIResource,
     EvaluationListResponse,
     EvaluationRetrieveResponse,
     EvaluationRunSingleResponse,

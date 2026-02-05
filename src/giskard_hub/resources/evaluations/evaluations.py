@@ -32,16 +32,16 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
-from ...types.evaluation_api_resource import EvaluationAPIResource
+from ...types.common import APIResponse
 from ...types.api_response_none import APIResponseNone
 from ...types.chat_message_param import ChatMessageParam
 from ...types.model_output_param import AgentOutputParam
 from ...types.minimal_model_param import MinimalAgentParam
 from ...types.dataset_subset_param import DatasetSubsetParam
+from ...types.evaluation_api_resource import EvaluationAPIResource
 from ...types.evaluation_list_response import EvaluationListResponse
 from ...types.evaluation_retrieve_response import EvaluationRetrieveResponse
 from ...types.evaluation_run_single_response import EvaluationRunSingleResponse
-from ...types.common import APIResponse
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
 

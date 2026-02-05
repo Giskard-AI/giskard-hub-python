@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import List, Iterable, Optional
 
 import httpx
 
@@ -16,9 +16,9 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.check_api_resource import CheckAPIResource
+from ..types.common import APIResponse
 from ..types.api_response_none import APIResponseNone
-from ..types.common import APIResponse, APIListResponse
+from ..types.check_api_resource import CheckAPIResource
 
 __all__ = ["ChecksResource", "AsyncChecksResource"]
 
@@ -200,7 +200,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[CheckAPIResource]:
+    ) -> APIResponse[List[CheckAPIResource]]:
         """
         List Checks
 
@@ -232,7 +232,7 @@ class ChecksResource(SyncAPIResource):
                     check_list_params.CheckListParams,
                 ),
             ),
-            cast_to=APIListResponse[CheckAPIResource],
+            cast_to=APIResponse[List[CheckAPIResource]],
         )
 
     def delete(
@@ -485,7 +485,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[CheckAPIResource]:
+    ) -> APIResponse[List[CheckAPIResource]]:
         """
         List Checks
 
@@ -517,7 +517,7 @@ class AsyncChecksResource(AsyncAPIResource):
                     check_list_params.CheckListParams,
                 ),
             ),
-            cast_to=APIListResponse[CheckAPIResource],
+            cast_to=APIResponse[List[CheckAPIResource]],
         )
 
     async def delete(

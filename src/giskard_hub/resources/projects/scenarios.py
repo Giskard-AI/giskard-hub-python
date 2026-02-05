@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 import httpx
 
@@ -16,10 +16,10 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
+from ...types.common import APIResponse
+from ...types.api_response_none import APIResponseNone
 from ...types.scenario_api_resource import ScenarioAPIResource
 from ...types.scenario_preview_api_resource import ScenarioPreviewAPIResource
-from ...types.api_response_none import APIResponseNone
-from ...types.common import APIResponse, APIListResponse
 
 __all__ = ["ScenariosResource", "AsyncScenariosResource"]
 
@@ -203,7 +203,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[ScenarioAPIResource]:
+    ) -> APIResponse[List[ScenarioAPIResource]]:
         """
         List Scenarios
 
@@ -225,7 +225,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIListResponse[ScenarioAPIResource],
+            cast_to=APIResponse[List[ScenarioAPIResource]],
         )
 
     def delete(
@@ -503,7 +503,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[ScenarioAPIResource]:
+    ) -> APIResponse[List[ScenarioAPIResource]]:
         """
         List Scenarios
 
@@ -525,7 +525,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIListResponse[ScenarioAPIResource],
+            cast_to=APIResponse[List[ScenarioAPIResource]],
         )
 
     async def delete(

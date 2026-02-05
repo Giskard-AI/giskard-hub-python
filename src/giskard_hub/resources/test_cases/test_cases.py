@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Iterable, Optional
+from typing import List, Literal, Iterable, Optional
 
 import httpx
 
@@ -29,12 +29,12 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
+from ...types.common import APIResponse
 from ...types.test_case import TestCase
 from ...types.api_response_none import APIResponseNone
 from ...types.chat_message_param import ChatMessageParam
 from ...types.test_case_check_config_param import TestCaseCheckConfigParam
 from ...types.chat_message_with_metadata_param import ChatMessageWithMetadataParam
-from ...types.common import APIResponse, APIListResponse
 
 __all__ = ["TestCasesResource", "AsyncTestCasesResource"]
 
@@ -304,7 +304,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[TestCase]:
+    ) -> APIResponse[List[TestCase]]:
         """
         Bulk Update Test Cases
 
@@ -345,7 +345,7 @@ class TestCasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIListResponse[TestCase],
+            cast_to=APIResponse[List[TestCase]],
         )
 
 
@@ -612,7 +612,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[TestCase]:
+    ) -> APIResponse[List[TestCase]]:
         """
         Bulk Update Test Cases
 
@@ -653,7 +653,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIListResponse[TestCase],
+            cast_to=APIResponse[List[TestCase]],
         )
 
 

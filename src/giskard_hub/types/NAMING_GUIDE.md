@@ -106,7 +106,7 @@ For responses with pagination metadata:
 
 Instead of creating new types, use these generics from `common/`:
 - `APIResponse[T]` - Single resource response
-- `APIListResponse[T]` - List of resources response  
+- `APIResponse[List[T]` - List of resources response  
 - `APIPaginatedResponse[T]` - Paginated list with metadata
 - `APIResponseWithIncluded[T, TIncluded]` - Response with included related resources
 

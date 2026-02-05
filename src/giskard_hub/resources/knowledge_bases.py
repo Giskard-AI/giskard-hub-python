@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Mapping, Optional, cast
+from typing import Any, Dict, List, Mapping, Optional, cast
 
 import httpx
 
@@ -22,14 +22,14 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.common import APIResponse
 from ..types.knowledge_base import KnowledgeBase
-from ..types.knowledge_base_document_detail_api_resource import KnowledgeBaseDocumentDetailAPIResource
 from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
+from ..types.knowledge_base_document_detail_api_resource import KnowledgeBaseDocumentDetailAPIResource
 from ..types.paginated_api_response_knowledge_base_document_row_api_resource import (
     PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
 )
-from ..types.common import APIResponse, APIListResponse
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
 
@@ -218,7 +218,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[KnowledgeBase]:
+    ) -> APIResponse[List[KnowledgeBase]]:
         """
         List Knowledge Bases
 
@@ -242,7 +242,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams),
             ),
-            cast_to=APIListResponse[KnowledgeBase],
+            cast_to=APIResponse[List[KnowledgeBase]],
         )
 
     def delete(
@@ -606,7 +606,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIListResponse[KnowledgeBase]:
+    ) -> APIResponse[List[KnowledgeBase]]:
         """
         List Knowledge Bases
 
@@ -632,7 +632,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     {"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams
                 ),
             ),
-            cast_to=APIListResponse[KnowledgeBase],
+            cast_to=APIResponse[List[KnowledgeBase]],
         )
 
     async def delete(
