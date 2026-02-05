@@ -16,8 +16,8 @@ class KnowledgeBaseDocumentRowAPIResource(BaseModel):
     knowledge_base_id: str
     """Knowledge base ID"""
 
-    preview: str
-    """Document preview"""
+    snippet: str
+    """Document content capped"""
 
     updated_at: datetime
     """Date of the last modification"""
