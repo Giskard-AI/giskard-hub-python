@@ -1,13 +1,20 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from typing_extensions import TypedDict
 
-from .knowledge_base_documents_search_filters import KnowledgeBaseDocumentsSearchFilters
+from giskard_hub._types import SequenceNotStr
 
 __all__ = ["KnowledgeBaseSearchDocumentsParams"]
 
 
 class KnowledgeBaseSearchDocumentsParams(TypedDict, total=False):
-    filters: Optional[KnowledgeBaseDocumentsSearchFilters]
-    """Search filters"""
+    search: Optional[str]
+
+    order_by: SequenceNotStr[Dict[str, Any]]
+
+    filters: Dict[str, Dict[str, Any]]
+
+    limit: int
+
+    offset: int

@@ -1,17 +1,15 @@
 from __future__ import annotations
 
-from typing import Mapping, Optional, cast
+from typing import Any, Dict, Mapping, Optional, cast
 
 import httpx
 
 from ..types import (
     knowledge_base_list_params,
     knowledge_base_create_params,
-    knowledge_base_export_params,
     knowledge_base_update_params,
     knowledge_base_bulk_delete_params,
     knowledge_base_search_documents_params,
-    knowledge_base_get_document_navigation_info_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
@@ -28,8 +26,6 @@ from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
 from ..types.api_response_knowledge_base import APIResponseKnowledgeBase
 from ..types.knowledge_base_list_response import KnowledgeBaseListResponse
-from ..types.knowledge_base_documents_search_filters import KnowledgeBaseDocumentsSearchFilters
-from ..types.api_response_navigation_info_api_resource import APIResponseNavigationInfoAPIResource
 from ..types.api_response_knowledge_base_document_detail_api_resource import (
     APIResponseKnowledgeBaseDocumentDetailAPIResource,
 )
@@ -330,9 +326,11 @@ class KnowledgeBasesResource(SyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        filters: Optional[KnowledgeBaseDocumentsSearchFilters] | Omit = omit,
-        limit: Optional[int] | Omit = omit,
-        offset: Optional[int] | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
+        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -345,6 +343,10 @@ class KnowledgeBasesResource(SyncAPIResource):
 
         Args:
           knowledge_base_id: ID of the knowledge base
+
+          search: Search query for knowledge base documents
+
+          order_by: Order by criteria for knowledge base documents
 
           filters: Search filters
 
@@ -365,7 +367,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         return self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=maybe_transform(
-                {"filters": filters}, knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams
+                {"filters": filters, "order_by": order_by, "search": search},
+                knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -418,95 +421,6 @@ class KnowledgeBasesResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponseKnowledgeBaseDocumentDetailAPIResource,
-        )
-
-    def get_document_navigation_info(
-        self,
-        knowledge_base_id: str,
-        document_id: str,
-        *,
-        filters: Optional[KnowledgeBaseDocumentsSearchFilters] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNavigationInfoAPIResource:
-        """
-        Get Knowledge Base Document Navigation Info By Filters
-
-        Args:
-          knowledge_base_id: ID of the knowledge base
-
-          document_id: ID of the document
-
-          filters: Search filters
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        if not document_id:
-            raise ValueError(f"Expected a non-empty value for `document_id` but received {document_id!r}")
-        return self._post(
-            f"/v2/knowledge-bases/{knowledge_base_id}/documents/{document_id}/navigation-info",
-            body=maybe_transform(
-                {"filters": filters},
-                knowledge_base_get_document_navigation_info_params.KnowledgeBaseGetDocumentNavigationInfoParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseNavigationInfoAPIResource,
-        )
-
-    def export(
-        self,
-        knowledge_base_id: str,
-        *,
-        format: Optional[str] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> object:
-        """
-        Export Knowledge Base
-
-        Args:
-          knowledge_base_id: ID of the knowledge base to export
-
-          format: Export format
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._get(
-            f"/v2/knowledge-bases/{knowledge_base_id}/export",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform({"format": format}, knowledge_base_export_params.KnowledgeBaseExportParams),
-            ),
-            cast_to=object,
         )
 
 
@@ -802,9 +716,11 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        filters: Optional[KnowledgeBaseDocumentsSearchFilters] | Omit = omit,
-        limit: Optional[int] | Omit = omit,
-        offset: Optional[int] | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
+        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -817,6 +733,10 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
 
         Args:
           knowledge_base_id: ID of the knowledge base
+
+          search: Search query for knowledge base documents
+
+          order_by: Order by criteria for knowledge base documents
 
           filters: Search filters
 
@@ -837,7 +757,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         return await self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=await async_maybe_transform(
-                {"filters": filters}, knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams
+                {"filters": filters, "order_by": order_by, "search": search},
+                knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -892,97 +813,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponseKnowledgeBaseDocumentDetailAPIResource,
         )
 
-    async def get_document_navigation_info(
-        self,
-        knowledge_base_id: str,
-        document_id: str,
-        *,
-        filters: Optional[KnowledgeBaseDocumentsSearchFilters] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNavigationInfoAPIResource:
-        """
-        Get Knowledge Base Document Navigation Info By Filters
-
-        Args:
-          knowledge_base_id: ID of the knowledge base
-
-          document_id: ID of the document
-
-          filters: Search filters
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        if not document_id:
-            raise ValueError(f"Expected a non-empty value for `document_id` but received {document_id!r}")
-        return await self._post(
-            f"/v2/knowledge-bases/{knowledge_base_id}/documents/{document_id}/navigation-info",
-            body=await async_maybe_transform(
-                {"filters": filters},
-                knowledge_base_get_document_navigation_info_params.KnowledgeBaseGetDocumentNavigationInfoParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponseNavigationInfoAPIResource,
-        )
-
-    async def export(
-        self,
-        knowledge_base_id: str,
-        *,
-        format: Optional[str] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> object:
-        """
-        Export Knowledge Base
-
-        Args:
-          knowledge_base_id: ID of the knowledge base to export
-
-          format: Export format
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not knowledge_base_id:
-            raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._get(
-            f"/v2/knowledge-bases/{knowledge_base_id}/export",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {"format": format}, knowledge_base_export_params.KnowledgeBaseExportParams
-                ),
-            ),
-            cast_to=object,
-        )
-
 
 class KnowledgeBasesResourceWithRawResponse:
     def __init__(self, knowledge_bases: KnowledgeBasesResource) -> None:
@@ -1011,12 +841,6 @@ class KnowledgeBasesResourceWithRawResponse:
         )
         self.retrieve_document = to_raw_response_wrapper(
             knowledge_bases.retrieve_document,
-        )
-        self.get_document_navigation_info = to_raw_response_wrapper(
-            knowledge_bases.get_document_navigation_info,
-        )
-        self.export = to_raw_response_wrapper(
-            knowledge_bases.export,
         )
 
 
@@ -1048,12 +872,6 @@ class AsyncKnowledgeBasesResourceWithRawResponse:
         self.retrieve_document = async_to_raw_response_wrapper(
             knowledge_bases.retrieve_document,
         )
-        self.get_document_navigation_info = async_to_raw_response_wrapper(
-            knowledge_bases.get_document_navigation_info,
-        )
-        self.export = async_to_raw_response_wrapper(
-            knowledge_bases.export,
-        )
 
 
 class KnowledgeBasesResourceWithStreamingResponse:
@@ -1084,12 +902,6 @@ class KnowledgeBasesResourceWithStreamingResponse:
         self.retrieve_document = to_streamed_response_wrapper(
             knowledge_bases.retrieve_document,
         )
-        self.get_document_navigation_info = to_streamed_response_wrapper(
-            knowledge_bases.get_document_navigation_info,
-        )
-        self.export = to_streamed_response_wrapper(
-            knowledge_bases.export,
-        )
 
 
 class AsyncKnowledgeBasesResourceWithStreamingResponse:
@@ -1119,10 +931,4 @@ class AsyncKnowledgeBasesResourceWithStreamingResponse:
         )
         self.retrieve_document = async_to_streamed_response_wrapper(
             knowledge_bases.retrieve_document,
-        )
-        self.get_document_navigation_info = async_to_streamed_response_wrapper(
-            knowledge_bases.get_document_navigation_info,
-        )
-        self.export = async_to_streamed_response_wrapper(
-            knowledge_bases.export,
         )

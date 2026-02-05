@@ -18,7 +18,6 @@ from .audit_diff_item import AuditDiffItem as AuditDiffItem
 from .audit_diff_kind import AuditDiffKind as AuditDiffKind
 from .execution_error import ExecutionError as ExecutionError
 from .metadata_params import MetadataParams as MetadataParams
-from .sort_by_literal import SortByLiteral as SortByLiteral
 from .api_response_str import APIResponseStr as APIResponseStr
 from .frequency_option import FrequencyOption as FrequencyOption
 from .scan_list_params import ScanListParams as ScanListParams
@@ -58,7 +57,6 @@ from .scan_create_response import ScanCreateResponse as ScanCreateResponse
 from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
 from .scheduled_evaluation import ScheduledEvaluation as ScheduledEvaluation
 from .api_response_scenario import APIResponseScenario as APIResponseScenario
-from .chat_test_case_status import ChatTestCaseStatus as ChatTestCaseStatus
 from .dataset_create_params import DatasetCreateParams as DatasetCreateParams
 from .dataset_list_response import DatasetListResponse as DatasetListResponse
 from .dataset_update_params import DatasetUpdateParams as DatasetUpdateParams
@@ -110,10 +108,8 @@ from .error_execution_status_param import ErrorExecutionStatusParam as ErrorExec
 from .evaluation_retrieve_response import EvaluationRetrieveResponse as EvaluationRetrieveResponse
 from .evaluation_run_single_params import EvaluationRunSingleParams as EvaluationRunSingleParams
 from .knowledge_base_create_params import KnowledgeBaseCreateParams as KnowledgeBaseCreateParams
-from .knowledge_base_export_params import KnowledgeBaseExportParams as KnowledgeBaseExportParams
 from .knowledge_base_list_response import KnowledgeBaseListResponse as KnowledgeBaseListResponse
 from .knowledge_base_update_params import KnowledgeBaseUpdateParams as KnowledgeBaseUpdateParams
-from .navigation_info_api_resource import NavigationInfoAPIResource as NavigationInfoAPIResource
 from .test_case_bulk_delete_params import TestCaseBulkDeleteParams as TestCaseBulkDeleteParams
 from .test_case_bulk_update_params import TestCaseBulkUpdateParams as TestCaseBulkUpdateParams
 from .test_case_check_config_param import TestCaseCheckConfigParam as TestCaseCheckConfigParam
@@ -146,32 +142,17 @@ from .dataset_generate_scenario_based_params import (
 from .knowledge_base_search_documents_params import (
     KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
 )
-from .knowledge_base_documents_search_filters import (
-    KnowledgeBaseDocumentsSearchFilters as KnowledgeBaseDocumentsSearchFilters,
-)
-from .knowledge_base_retrieve_document_params import (
-    KnowledgeBaseRetrieveDocumentParams as KnowledgeBaseRetrieveDocumentParams,
-)
 from .scheduled_evaluation_bulk_delete_params import (
     ScheduledEvaluationBulkDeleteParams as ScheduledEvaluationBulkDeleteParams,
 )
 from .knowledge_base_document_row_api_resource import (
     KnowledgeBaseDocumentRowAPIResource as KnowledgeBaseDocumentRowAPIResource,
 )
-from .api_response_navigation_info_api_resource import (
-    APIResponseNavigationInfoAPIResource as APIResponseNavigationInfoAPIResource,
-)
 from .knowledge_base_document_detail_api_resource import (
     KnowledgeBaseDocumentDetailAPIResource as KnowledgeBaseDocumentDetailAPIResource,
 )
-from .search_knowledge_base_documents_api_request import (
-    SearchKnowledgeBaseDocumentsAPIRequest as SearchKnowledgeBaseDocumentsAPIRequest,
-)
 from .scheduled_evaluation_list_evaluations_response import (
     ScheduledEvaluationListEvaluationsResponse as ScheduledEvaluationListEvaluationsResponse,
-)
-from .knowledge_base_get_document_navigation_info_params import (
-    KnowledgeBaseGetDocumentNavigationInfoParams as KnowledgeBaseGetDocumentNavigationInfoParams,
 )
 from .api_response_knowledge_base_document_detail_api_resource import (
     APIResponseKnowledgeBaseDocumentDetailAPIResource as APIResponseKnowledgeBaseDocumentDetailAPIResource,
