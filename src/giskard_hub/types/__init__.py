@@ -25,9 +25,6 @@ from .scans import (
     ScanProbeResult as ScanProbeResult,
     ScanProbeAttempt as ScanProbeAttempt,
     AttemptUpdateParams as AttemptUpdateParams,
-    AttemptUpdateResponse as AttemptUpdateResponse,
-    ProbeRetrieveResponse as ProbeRetrieveResponse,
-    ProbeListAttemptsResponse as ProbeListAttemptsResponse,
 )
 
 # ==============================================================================
@@ -77,7 +74,7 @@ from .evaluations import (
 )
 
 # Scan types and responses
-from .scan_result import ScanResult as ScanResult
+from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
 
 # ==============================================================================
 # Shared Component Types - Used across multiple resources
@@ -139,7 +136,6 @@ from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
 # ==============================================================================
 # Scan parameters
 from .scan_create_params import ScanCreateParams as ScanCreateParams
-from .scan_list_response import ScanListResponse as ScanListResponse
 
 # ==============================================================================
 # Agent Types
@@ -163,7 +159,6 @@ from .string_match_params import StringMatchParams as StringMatchParams
 from .task_progress_param import TaskProgressParam as TaskProgressParam
 from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
 from .project_api_resource import ProjectAPIResource as ProjectAPIResource
-from .scan_create_response import ScanCreateResponse as ScanCreateResponse
 from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
 from .scheduled_evaluation import ScheduledEvaluation as ScheduledEvaluation
 
@@ -185,7 +180,6 @@ from .project_update_params import ProjectUpdateParams as ProjectUpdateParams
 from .scenario_api_resource import ScenarioAPIResource as ScenarioAPIResource
 from .error_execution_status import ErrorExecutionStatus as ErrorExecutionStatus
 from .evaluation_list_params import EvaluationListParams as EvaluationListParams
-from .scan_retrieve_response import ScanRetrieveResponse as ScanRetrieveResponse
 
 # Test case responses
 # (Test case responses now use generic APIResponse[TestCase] and APIResponse[List[TestCase])
@@ -232,7 +226,6 @@ from .success_execution_status import SuccessExecutionStatus as SuccessExecution
 # Agent responses
 from .api_response_agent_output import APIResponseAgentOutput as APIResponseAgentOutput
 from .groundedness_params_param import GroundednessParamsParam as GroundednessParamsParam
-from .scan_list_probes_response import ScanListProbesResponse as ScanListProbesResponse
 from .string_match_params_param import StringMatchParamsParam as StringMatchParamsParam
 from .api_response_audit_display import APIResponseAuditDisplay as APIResponseAuditDisplay
 from .audit_display_api_response import AuditDisplayAPIResponse as AuditDisplayAPIResponse
@@ -261,7 +254,6 @@ from .test_case_bulk_delete_params import TestCaseBulkDeleteParams as TestCaseBu
 from .test_case_bulk_update_params import TestCaseBulkUpdateParams as TestCaseBulkUpdateParams
 from .test_case_check_config_param import TestCaseCheckConfigParam as TestCaseCheckConfigParam
 from .evaluation_bulk_delete_params import EvaluationBulkDeleteParams as EvaluationBulkDeleteParams
-from .scan_list_categories_response import ScanListCategoriesResponse as ScanListCategoriesResponse
 from .scenario_preview_api_resource import ScenarioPreviewAPIResource as ScenarioPreviewAPIResource
 from .evaluation_create_local_params import EvaluationCreateLocalParams as EvaluationCreateLocalParams
 from .success_execution_status_param import SuccessExecutionStatusParam as SuccessExecutionStatusParam
@@ -374,11 +366,7 @@ __all__ = [
     "ScanRetrieveParams",
     "ScanBulkDeleteParams",
     "ScanResult",
-    "ScanListResponse",
-    "ScanRetrieveResponse",
-    "ScanCreateResponse",
-    "ScanListCategoriesResponse",
-    "ScanListProbesResponse",
+    "ScanCategory",
     # Check types
     "CheckCreateParams",
     "CheckUpdateParams",
@@ -478,9 +466,6 @@ __all__ = [
     "ScanProbeResult",
     "ScanProbeAttempt",
     "AttemptUpdateParams",
-    "AttemptUpdateResponse",
-    "ProbeRetrieveResponse",
-    "ProbeListAttemptsResponse",
     # Test case comment types
     "CommentAddParams",
     "CommentEditParams",

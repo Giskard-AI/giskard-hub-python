@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from typing import List, Union, Literal, Optional
 
 import httpx
 
@@ -12,7 +12,19 @@ from .probes import (
     ProbesResourceWithStreamingResponse,
     AsyncProbesResourceWithStreamingResponse,
 )
-from ...types import scan_list_params, scan_create_params, scan_retrieve_params, scan_bulk_delete_params
+from ...types import (
+    Agent,
+    ScanResult,
+    APIResponse,
+    ScanCategory,
+    KnowledgeBase,
+    ScanProbeResult,
+    APIResponseWithIncluded,
+    scan_list_params,
+    scan_create_params,
+    scan_retrieve_params,
+    scan_bulk_delete_params,
+)
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from .attempts import (
@@ -32,12 +44,6 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
-from ...types.api_response_none import APIResponseNone
-from ...types.scan_list_response import ScanListResponse
-from ...types.scan_create_response import ScanCreateResponse
-from ...types.scan_retrieve_response import ScanRetrieveResponse
-from ...types.scan_list_probes_response import ScanListProbesResponse
-from ...types.scan_list_categories_response import ScanListCategoriesResponse
 
 __all__ = ["ScansResource", "AsyncScansResource"]
 
@@ -83,7 +89,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanCreateResponse:
+    ) -> APIResponse[ScanResult]:
         """
         Create Scan
 
@@ -118,7 +124,7 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ScanCreateResponse,
+            cast_to=APIResponse[ScanResult],
         )
 
     def retrieve(
@@ -132,7 +138,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanRetrieveResponse:
+    ) -> APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]]:
         """
         Retrieve Scan
 
@@ -160,7 +166,7 @@ class ScansResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, scan_retrieve_params.ScanRetrieveParams),
             ),
-            cast_to=ScanRetrieveResponse,
+            cast_to=APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]],
         )
 
     def list(
@@ -174,7 +180,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanListResponse:
+    ) -> APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]]:
         """
         List Scans
 
@@ -206,7 +212,7 @@ class ScansResource(SyncAPIResource):
                     scan_list_params.ScanListParams,
                 ),
             ),
-            cast_to=ScanListResponse,
+            cast_to=APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]],
         )
 
     def delete(
@@ -219,7 +225,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Scan
 
@@ -241,7 +247,7 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -254,7 +260,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Scans
 
@@ -278,7 +284,7 @@ class ScansResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"scan_ids": scan_ids}, scan_bulk_delete_params.ScanBulkDeleteParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def list_categories(
@@ -290,7 +296,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanListCategoriesResponse:
+    ) -> APIResponse[List[ScanCategory]]:
         """
         List Scan Categories
 
@@ -308,7 +314,7 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ScanListCategoriesResponse,
+            cast_to=APIResponse[List[ScanCategory]],
         )
 
     def list_probes(
@@ -321,7 +327,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanListProbesResponse:
+    ) -> APIResponse[List[ScanProbeResult]]:
         """
         List Scan Probes
 
@@ -343,7 +349,7 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ScanListProbesResponse,
+            cast_to=APIResponse[List[ScanProbeResult]],
         )
 
 
@@ -388,7 +394,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanCreateResponse:
+    ) -> APIResponse[ScanResult]:
         """
         Create Scan
 
@@ -423,7 +429,7 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ScanCreateResponse,
+            cast_to=APIResponse[ScanResult],
         )
 
     async def retrieve(
@@ -437,7 +443,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanRetrieveResponse:
+    ) -> APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]]:
         """
         Retrieve Scan
 
@@ -465,7 +471,7 @@ class AsyncScansResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, scan_retrieve_params.ScanRetrieveParams),
             ),
-            cast_to=ScanRetrieveResponse,
+            cast_to=APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]],
         )
 
     async def list(
@@ -479,7 +485,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanListResponse:
+    ) -> APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]]:
         """
         List Scans
 
@@ -511,7 +517,7 @@ class AsyncScansResource(AsyncAPIResource):
                     scan_list_params.ScanListParams,
                 ),
             ),
-            cast_to=ScanListResponse,
+            cast_to=APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]],
         )
 
     async def delete(
@@ -524,7 +530,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Scan
 
@@ -546,7 +552,7 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -559,7 +565,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Scans
 
@@ -583,7 +589,7 @@ class AsyncScansResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"scan_ids": scan_ids}, scan_bulk_delete_params.ScanBulkDeleteParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def list_categories(
@@ -595,7 +601,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanListCategoriesResponse:
+    ) -> APIResponse[List[ScanCategory]]:
         """
         List Scan Categories
 
@@ -613,7 +619,7 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ScanListCategoriesResponse,
+            cast_to=APIResponse[List[ScanCategory]],
         )
 
     async def list_probes(
@@ -626,7 +632,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanListProbesResponse:
+    ) -> APIResponse[List[ScanProbeResult]]:
         """
         List Scan Probes
 
@@ -648,7 +654,7 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ScanListProbesResponse,
+            cast_to=APIResponse[List[ScanProbeResult]],
         )
 
 

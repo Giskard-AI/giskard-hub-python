@@ -5,7 +5,7 @@ from .._models import BaseModel
 from .task_progress import TaskProgress
 from .agent_api_reference import AgentAPIReference
 
-__all__ = ["ScanResult", "KnowledgeBaseAPIReference"]
+__all__ = ["ScanResult", "KnowledgeBaseAPIReference", "ScanCategory"]
 
 
 class KnowledgeBaseAPIReference(BaseModel):
@@ -30,3 +30,13 @@ class ScanResult(BaseModel):
     status: TaskProgress
 
     updated_at: datetime
+
+
+class ScanCategory(BaseModel):
+    id: str
+
+    description: str
+
+    owasp_id: Optional[str] = None
+
+    title: str
