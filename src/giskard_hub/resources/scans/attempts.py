@@ -16,7 +16,8 @@ from ..._response import (
 )
 from ...types.scans import Severity, ReviewStatus, attempt_update_params
 from ..._base_client import make_request_options
-from ...types.scans.attempt_update_response import AttemptUpdateResponse
+from ...types.common import APIResponse
+from ...types.scans.scan_probe_attempt import ScanProbeAttempt
 
 __all__ = ["AttemptsResource", "AsyncAttemptsResource"]
 
@@ -54,7 +55,7 @@ class AttemptsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AttemptUpdateResponse:
+    ) -> APIResponse[ScanProbeAttempt]:
         """
         Update Scan Probe Attempt
 
@@ -90,7 +91,7 @@ class AttemptsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=AttemptUpdateResponse,
+            cast_to=APIResponse[ScanProbeAttempt],
         )
 
 
@@ -127,7 +128,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AttemptUpdateResponse:
+    ) -> APIResponse[ScanProbeAttempt]:
         """
         Update Scan Probe Attempt
 
@@ -163,7 +164,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=AttemptUpdateResponse,
+            cast_to=APIResponse[ScanProbeAttempt],
         )
 
 

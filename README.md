@@ -138,11 +138,9 @@ from giskard_hub import HubClient
 client = HubClient()
 
 client.knowledge_bases.create(
-    data={
-        "name": "name",
-        "project_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-    },
-    file=Path("/path/to/file"),
+    name="My Knowledge Base",
+    project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+    file=Path("/path/to/file.jsonl"),
 )
 ```
 

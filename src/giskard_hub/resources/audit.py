@@ -1,10 +1,16 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import httpx
 
-from ..types import audit_search_params, audit_list_entity_params
+from ..types import (
+    AuditAPIResource,
+    APIPaginatedResponse,
+    AuditDisplayAPIResource,
+    audit_search_params,
+    audit_list_entity_params,
+)
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -16,8 +22,6 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.api_response_audit import APIResponseAudit
-from ..types.api_response_audit_display import APIResponseAuditDisplay
 
 __all__ = ["AuditResource", "AsyncAuditResource"]
 
@@ -56,7 +60,7 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAudit:
+    ) -> APIPaginatedResponse[List[AuditAPIResource], None]:
         """
         Search Audit Logs By Filters
 
@@ -102,7 +106,7 @@ class AuditResource(SyncAPIResource):
                     audit_search_params.AuditSearchParams,
                 ),
             ),
-            cast_to=APIResponseAudit,
+            cast_to=APIPaginatedResponse[List[AuditAPIResource], None],
         )
 
     def list_entities(
@@ -118,7 +122,7 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAuditDisplay:
+    ) -> APIPaginatedResponse[List[AuditDisplayAPIResource], None]:
         """
         List Entity Audit Display Logs
 
@@ -158,7 +162,7 @@ class AuditResource(SyncAPIResource):
                     audit_list_entity_params.AuditListEntityParams,
                 ),
             ),
-            cast_to=APIResponseAuditDisplay,
+            cast_to=APIPaginatedResponse[List[AuditDisplayAPIResource], None],
         )
 
 
@@ -196,7 +200,7 @@ class AsyncAuditResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAudit:
+    ) -> APIPaginatedResponse[List[AuditAPIResource], None]:
         """
         Search Audit Logs By Filters
 
@@ -242,7 +246,7 @@ class AsyncAuditResource(AsyncAPIResource):
                     audit_search_params.AuditSearchParams,
                 ),
             ),
-            cast_to=APIResponseAudit,
+            cast_to=APIPaginatedResponse[List[AuditAPIResource], None],
         )
 
     async def list_entities(
@@ -258,7 +262,7 @@ class AsyncAuditResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAuditDisplay:
+    ) -> APIPaginatedResponse[List[AuditDisplayAPIResource], None]:
         """
         List Entity Audit Display Logs
 
@@ -298,7 +302,7 @@ class AsyncAuditResource(AsyncAPIResource):
                     audit_list_entity_params.AuditListEntityParams,
                 ),
             ),
-            cast_to=APIResponseAuditDisplay,
+            cast_to=APIPaginatedResponse[List[AuditDisplayAPIResource], None],
         )
 
 

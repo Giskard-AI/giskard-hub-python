@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Iterable, Optional
+from typing import List, Literal, Iterable, Optional
 
 import httpx
 
@@ -29,10 +29,9 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
-from ...types.api_response_none import APIResponseNone
+from ...types.common import APIResponse
+from ...types.test_case import TestCase
 from ...types.chat_message_param import ChatMessageParam
-from ...types.api_response_test_case import APIResponseTestCase
-from ...types.api_response_list_test_case import APIResponseListTestCase
 from ...types.test_case_check_config_param import TestCaseCheckConfigParam
 from ...types.chat_message_with_metadata_param import ChatMessageWithMetadataParam
 
@@ -79,7 +78,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCase:
+    ) -> APIResponse[TestCase]:
         """
         Create Test Case
 
@@ -117,7 +116,7 @@ class TestCasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCase,
+            cast_to=APIResponse[TestCase],
         )
 
     def retrieve(
@@ -130,7 +129,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCase:
+    ) -> APIResponse[TestCase]:
         """
         Retrieve Test Case
 
@@ -152,7 +151,7 @@ class TestCasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCase,
+            cast_to=APIResponse[TestCase],
         )
 
     def update(
@@ -170,7 +169,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCase:
+    ) -> APIResponse[TestCase]:
         """
         Update Test Case
 
@@ -212,7 +211,7 @@ class TestCasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCase,
+            cast_to=APIResponse[TestCase],
         )
 
     def delete(
@@ -225,7 +224,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Test Case
 
@@ -247,7 +246,7 @@ class TestCasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -260,7 +259,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Test Cases
 
@@ -286,7 +285,7 @@ class TestCasesResource(SyncAPIResource):
                     {"test_case_ids": test_case_ids}, test_case_bulk_delete_params.TestCaseBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_update(
@@ -304,7 +303,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseListTestCase:
+    ) -> APIResponse[List[TestCase]]:
         """
         Bulk Update Test Cases
 
@@ -345,7 +344,7 @@ class TestCasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseListTestCase,
+            cast_to=APIResponse[List[TestCase]],
         )
 
 
@@ -387,7 +386,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCase:
+    ) -> APIResponse[TestCase]:
         """
         Create Test Case
 
@@ -425,7 +424,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCase,
+            cast_to=APIResponse[TestCase],
         )
 
     async def retrieve(
@@ -438,7 +437,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCase:
+    ) -> APIResponse[TestCase]:
         """
         Retrieve Test Case
 
@@ -460,7 +459,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCase,
+            cast_to=APIResponse[TestCase],
         )
 
     async def update(
@@ -478,7 +477,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseTestCase:
+    ) -> APIResponse[TestCase]:
         """
         Update Test Case
 
@@ -520,7 +519,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseTestCase,
+            cast_to=APIResponse[TestCase],
         )
 
     async def delete(
@@ -533,7 +532,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Test Case
 
@@ -555,7 +554,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -568,7 +567,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Test Cases
 
@@ -594,7 +593,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     {"test_case_ids": test_case_ids}, test_case_bulk_delete_params.TestCaseBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_update(
@@ -612,7 +611,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseListTestCase:
+    ) -> APIResponse[List[TestCase]]:
         """
         Bulk Update Test Cases
 
@@ -653,7 +652,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseListTestCase,
+            cast_to=APIResponse[List[TestCase]],
         )
 
 

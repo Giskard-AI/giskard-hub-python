@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import List, Iterable, Optional
 
 import httpx
 
@@ -24,9 +24,8 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
-from ...types.api_response_none import APIResponseNone
-from ...types.project_list_response import ProjectListResponse
-from ...types.api_response_project_api_resource import APIResponseProjectAPIResource
+from ...types.common import APIResponse
+from ...types.project_api_resource import ProjectAPIResource
 from ...types.evaluations.failure_category_param import FailureCategoryParam
 
 __all__ = ["ProjectsResource", "AsyncProjectsResource"]
@@ -67,7 +66,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponse[ProjectAPIResource]:
         """
         Create Project
 
@@ -96,7 +95,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponse[ProjectAPIResource],
         )
 
     def retrieve(
@@ -109,7 +108,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponse[ProjectAPIResource]:
         """
         Retrieve Project
 
@@ -131,7 +130,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponse[ProjectAPIResource],
         )
 
     def update(
@@ -147,7 +146,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponse[ProjectAPIResource]:
         """
         Update Project
 
@@ -183,7 +182,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponse[ProjectAPIResource],
         )
 
     def list(
@@ -195,7 +194,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProjectListResponse:
+    ) -> APIResponse[List[ProjectAPIResource]]:
         """
         List Projects
 
@@ -213,7 +212,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProjectListResponse,
+            cast_to=APIResponse[List[ProjectAPIResource]],
         )
 
     def delete(
@@ -226,7 +225,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Project
 
@@ -248,7 +247,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     def bulk_delete(
@@ -261,7 +260,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Projects
 
@@ -285,7 +284,7 @@ class ProjectsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
 
@@ -324,7 +323,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponse[ProjectAPIResource]:
         """
         Create Project
 
@@ -353,7 +352,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponse[ProjectAPIResource],
         )
 
     async def retrieve(
@@ -366,7 +365,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponse[ProjectAPIResource]:
         """
         Retrieve Project
 
@@ -388,7 +387,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponse[ProjectAPIResource],
         )
 
     async def update(
@@ -404,7 +403,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseProjectAPIResource:
+    ) -> APIResponse[ProjectAPIResource]:
         """
         Update Project
 
@@ -440,7 +439,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseProjectAPIResource,
+            cast_to=APIResponse[ProjectAPIResource],
         )
 
     async def list(
@@ -452,7 +451,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProjectListResponse:
+    ) -> APIResponse[List[ProjectAPIResource]]:
         """
         List Projects
 
@@ -470,7 +469,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProjectListResponse,
+            cast_to=APIResponse[List[ProjectAPIResource]],
         )
 
     async def delete(
@@ -483,7 +482,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Delete Project
 
@@ -505,7 +504,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
     async def bulk_delete(
@@ -518,7 +517,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseNone:
+    ) -> APIResponse[None]:
         """
         Bulk Delete Projects
 
@@ -544,7 +543,7 @@ class AsyncProjectsResource(AsyncAPIResource):
                     {"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams
                 ),
             ),
-            cast_to=APIResponseNone,
+            cast_to=APIResponse[None],
         )
 
 

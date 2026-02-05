@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import List
+
 import httpx
 
 from ..._types import Body, Query, Headers, NotGiven, not_given
@@ -11,9 +13,9 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ...types.scans import ScanProbeResult, ScanProbeAttempt
 from ..._base_client import make_request_options
-from ...types.scans.probe_retrieve_response import ProbeRetrieveResponse
-from ...types.scans.probe_list_attempts_response import ProbeListAttemptsResponse
+from ...types.common import APIResponse
 
 __all__ = ["ProbesResource", "AsyncProbesResource"]
 
@@ -48,7 +50,7 @@ class ProbesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProbeRetrieveResponse:
+    ) -> APIResponse[ScanProbeResult]:
         """
         Retrieve Scan Probe
 
@@ -70,7 +72,7 @@ class ProbesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProbeRetrieveResponse,
+            cast_to=APIResponse[ScanProbeResult],
         )
 
     def list_attempts(
@@ -83,7 +85,7 @@ class ProbesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProbeListAttemptsResponse:
+    ) -> APIResponse[List[ScanProbeAttempt]]:
         """
         List Scan Probe Attempts
 
@@ -105,7 +107,7 @@ class ProbesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProbeListAttemptsResponse,
+            cast_to=APIResponse[List[ScanProbeAttempt]],
         )
 
 
@@ -139,7 +141,7 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProbeRetrieveResponse:
+    ) -> APIResponse[ScanProbeResult]:
         """
         Retrieve Scan Probe
 
@@ -161,7 +163,7 @@ class AsyncProbesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProbeRetrieveResponse,
+            cast_to=APIResponse[ScanProbeResult],
         )
 
     async def list_attempts(
@@ -174,7 +176,7 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ProbeListAttemptsResponse:
+    ) -> APIResponse[List[ScanProbeAttempt]]:
         """
         List Scan Probe Attempts
 
@@ -196,7 +198,7 @@ class AsyncProbesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ProbeListAttemptsResponse,
+            cast_to=APIResponse[List[ScanProbeAttempt]],
         )
 
 
