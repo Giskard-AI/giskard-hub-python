@@ -16,10 +16,10 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
+from ...types.scenario_api_resource import ScenarioAPIResource
+from ...types.scenario_preview_api_resource import ScenarioPreviewAPIResource
 from ...types.api_response_none import APIResponseNone
-from ...types.api_response_scenario import APIResponseScenario
-from ...types.api_response_list_scenario import APIResponseListScenario
-from ...types.api_response_scenario_preview import APIResponseScenarioPreview
+from ...types.common import APIResponse, APIListResponse
 
 __all__ = ["ScenariosResource", "AsyncScenariosResource"]
 
@@ -57,7 +57,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenario:
+    ) -> APIResponse[ScenarioAPIResource]:
         """
         Create Scenario
 
@@ -93,7 +93,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScenario,
+            cast_to=APIResponse[ScenarioAPIResource],
         )
 
     def retrieve(
@@ -107,7 +107,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenario:
+    ) -> APIResponse[ScenarioAPIResource]:
         """
         Retrieve Scenario
 
@@ -133,7 +133,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScenario,
+            cast_to=APIResponse[ScenarioAPIResource],
         )
 
     def update(
@@ -150,7 +150,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenario:
+    ) -> APIResponse[ScenarioAPIResource]:
         """
         Update Scenario
 
@@ -190,7 +190,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScenario,
+            cast_to=APIResponse[ScenarioAPIResource],
         )
 
     def list(
@@ -203,7 +203,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseListScenario:
+    ) -> APIListResponse[ScenarioAPIResource]:
         """
         List Scenarios
 
@@ -225,7 +225,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseListScenario,
+            cast_to=APIListResponse[ScenarioAPIResource],
         )
 
     def delete(
@@ -281,7 +281,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenarioPreview:
+    ) -> APIResponse[ScenarioPreviewAPIResource]:
         """
         Preview Scenario
 
@@ -320,7 +320,7 @@ class ScenariosResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"agent_id": agent_id}, scenario_preview_params.ScenarioPreviewParams),
             ),
-            cast_to=APIResponseScenarioPreview,
+            cast_to=APIResponse[ScenarioPreviewAPIResource],
         )
 
 
@@ -357,7 +357,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenario:
+    ) -> APIResponse[ScenarioAPIResource]:
         """
         Create Scenario
 
@@ -393,7 +393,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScenario,
+            cast_to=APIResponse[ScenarioAPIResource],
         )
 
     async def retrieve(
@@ -407,7 +407,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenario:
+    ) -> APIResponse[ScenarioAPIResource]:
         """
         Retrieve Scenario
 
@@ -433,7 +433,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScenario,
+            cast_to=APIResponse[ScenarioAPIResource],
         )
 
     async def update(
@@ -450,7 +450,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenario:
+    ) -> APIResponse[ScenarioAPIResource]:
         """
         Update Scenario
 
@@ -490,7 +490,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseScenario,
+            cast_to=APIResponse[ScenarioAPIResource],
         )
 
     async def list(
@@ -503,7 +503,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseListScenario:
+    ) -> APIListResponse[ScenarioAPIResource]:
         """
         List Scenarios
 
@@ -525,7 +525,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseListScenario,
+            cast_to=APIListResponse[ScenarioAPIResource],
         )
 
     async def delete(
@@ -581,7 +581,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseScenarioPreview:
+    ) -> APIResponse[ScenarioPreviewAPIResource]:
         """
         Preview Scenario
 
@@ -622,7 +622,7 @@ class AsyncScenariosResource(AsyncAPIResource):
                     {"agent_id": agent_id}, scenario_preview_params.ScenarioPreviewParams
                 ),
             ),
-            cast_to=APIResponseScenarioPreview,
+            cast_to=APIResponse[ScenarioPreviewAPIResource],
         )
 
 

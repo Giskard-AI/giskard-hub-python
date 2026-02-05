@@ -32,6 +32,7 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ..._base_client import make_request_options
+from ...types.evaluation_api_resource import EvaluationAPIResource
 from ...types.api_response_none import APIResponseNone
 from ...types.chat_message_param import ChatMessageParam
 from ...types.model_output_param import AgentOutputParam
@@ -40,7 +41,7 @@ from ...types.dataset_subset_param import DatasetSubsetParam
 from ...types.evaluation_list_response import EvaluationListResponse
 from ...types.evaluation_retrieve_response import EvaluationRetrieveResponse
 from ...types.evaluation_run_single_response import EvaluationRunSingleResponse
-from ...types.api_response_evaluation_api_resource import APIResponseEvaluationAPIResource
+from ...types.common import APIResponse
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
 
@@ -85,7 +86,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """Create Evaluation
 
         Args:
@@ -126,7 +127,7 @@ class EvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     def retrieve(
@@ -182,7 +183,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """
         Update Evaluation
 
@@ -207,7 +208,7 @@ class EvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     def list(
@@ -342,7 +343,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """
         Create Local Evaluation
 
@@ -374,7 +375,7 @@ class EvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     def rerun_errored_results(
@@ -387,7 +388,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """
         Rerun Errored Evaluation Results
 
@@ -409,7 +410,7 @@ class EvaluationsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     def run_single(
@@ -508,7 +509,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """Create Evaluation
 
         Args:
@@ -549,7 +550,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     async def retrieve(
@@ -607,7 +608,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """
         Update Evaluation
 
@@ -632,7 +633,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     async def list(
@@ -767,7 +768,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """
         Create Local Evaluation
 
@@ -799,7 +800,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     async def rerun_errored_results(
@@ -812,7 +813,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseEvaluationAPIResource:
+    ) -> APIResponse[EvaluationAPIResource]:
         """
         Rerun Errored Evaluation Results
 
@@ -834,7 +835,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseEvaluationAPIResource,
+            cast_to=APIResponse[EvaluationAPIResource],
         )
 
     async def run_single(

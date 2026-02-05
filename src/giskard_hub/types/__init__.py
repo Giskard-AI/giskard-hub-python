@@ -61,8 +61,6 @@ from .agent_generate_completion_params import AgentGenerateCompletionParams as A
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
 
 # Agent responses
-from .agent_list_response import AgentListResponse as AgentListResponse
-from .api_response_agent import APIResponseAgent as APIResponseAgent
 from .api_response_agent_output import APIResponseAgentOutput as APIResponseAgentOutput
 
 # ==============================================================================
@@ -81,9 +79,7 @@ from .dataset_subset import DatasetSubset as DatasetSubset
 from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
 
 # Dataset responses
-from .dataset_list_response import DatasetListResponse as DatasetListResponse
 from .dataset_list_tags_response import DatasetListTagsResponse as DatasetListTagsResponse
-from .api_response_dataset import APIResponseDataset as APIResponseDataset
 
 # ==============================================================================
 # Evaluation Types
@@ -102,7 +98,6 @@ from .evaluation_run_single_params import EvaluationRunSingleParams as Evaluatio
 from .evaluation_list_response import EvaluationListResponse as EvaluationListResponse
 from .evaluation_retrieve_response import EvaluationRetrieveResponse as EvaluationRetrieveResponse
 from .evaluation_run_single_response import EvaluationRunSingleResponse as EvaluationRunSingleResponse
-from .api_response_evaluation_api_resource import APIResponseEvaluationAPIResource as APIResponseEvaluationAPIResource
 
 # ==============================================================================
 # Project Types
@@ -114,8 +109,7 @@ from .project_update_params import ProjectUpdateParams as ProjectUpdateParams
 from .project_bulk_delete_params import ProjectBulkDeleteParams as ProjectBulkDeleteParams
 
 # Project responses
-from .project_list_response import ProjectListResponse as ProjectListResponse
-from .api_response_project_api_resource import APIResponseProjectAPIResource as APIResponseProjectAPIResource
+# (Project responses now use generic APIResponse[ProjectAPIResource] and APIListResponse[ProjectAPIResource])
 
 # ==============================================================================
 # Scan Types
@@ -146,8 +140,7 @@ from .check_list_params import CheckListParams as CheckListParams
 from .check_bulk_delete_params import CheckBulkDeleteParams as CheckBulkDeleteParams
 
 # Check responses
-from .check_list_response import CheckListResponse as CheckListResponse
-from .api_response_check import APIResponseCheck as APIResponseCheck
+# (Check responses now use generic APIResponse[CheckAPIResource] and APIListResponse[CheckAPIResource])
 
 # ==============================================================================
 # Knowledge Base Types
@@ -161,9 +154,6 @@ from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as 
 from .knowledge_base_search_documents_params import KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams
 
 # Knowledge base responses
-from .knowledge_base_list_response import KnowledgeBaseListResponse as KnowledgeBaseListResponse
-from .api_response_knowledge_base import APIResponseKnowledgeBase as APIResponseKnowledgeBase
-from .api_response_knowledge_base_document_detail_api_resource import APIResponseKnowledgeBaseDocumentDetailAPIResource as APIResponseKnowledgeBaseDocumentDetailAPIResource
 from .paginated_api_response_knowledge_base_document_row_api_resource import PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource as PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource
 
 # ==============================================================================
@@ -196,8 +186,7 @@ from .test_case_check_config import TestCaseCheckConfig as TestCaseCheckConfig
 from .test_case_check_config_param import TestCaseCheckConfigParam as TestCaseCheckConfigParam
 
 # Test case responses
-from .api_response_test_case import APIResponseTestCase as APIResponseTestCase
-from .api_response_list_test_case import APIResponseListTestCase as APIResponseListTestCase
+# (Test case responses now use generic APIResponse[TestCase] and APIListResponse[TestCase])
 
 # ==============================================================================
 # Scenario Types
@@ -209,9 +198,7 @@ from .scenario_update_params import ScenarioUpdateParams as ScenarioUpdateParams
 from .scenario_preview_params import ScenarioPreviewParams as ScenarioPreviewParams
 
 # Scenario responses
-from .api_response_scenario import APIResponseScenario as APIResponseScenario
-from .api_response_scenario_preview import APIResponseScenarioPreview as APIResponseScenarioPreview
-from .api_response_list_scenario import APIResponseListScenario as APIResponseListScenario
+# (Scenario responses now use generic APIResponse[ScenarioAPIResource], APIResponse[ScenarioPreviewAPIResource], and APIListResponse[ScenarioAPIResource])
 
 # ==============================================================================
 # Audit Types
@@ -373,8 +360,6 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
-    "AgentListResponse",
-    "APIResponseAgent",
     "APIResponseAgentOutput",
     # Dataset types
     "DatasetCreateParams",
@@ -386,9 +371,7 @@ __all__ = [
     "DatasetGenerateAdversarialParams",
     "DatasetSubset",
     "DatasetSubsetParam",
-    "DatasetListResponse",
     "DatasetListTagsResponse",
-    "APIResponseDataset",
     # Evaluation types
     "EvaluationCreateParams",
     "EvaluationCreateLocalParams",
@@ -400,13 +383,10 @@ __all__ = [
     "EvaluationListResponse",
     "EvaluationRetrieveResponse",
     "EvaluationRunSingleResponse",
-    "APIResponseEvaluationAPIResource",
     # Project types
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
-    "ProjectListResponse",
-    "APIResponseProjectAPIResource",
     # Scan types
     "ScanCreateParams",
     "ScanListParams",
@@ -423,17 +403,12 @@ __all__ = [
     "CheckUpdateParams",
     "CheckListParams",
     "CheckBulkDeleteParams",
-    "CheckListResponse",
-    "APIResponseCheck",
     # Knowledge base types
     "KnowledgeBaseCreateParams",
     "KnowledgeBaseUpdateParams",
     "KnowledgeBaseListParams",
     "KnowledgeBaseBulkDeleteParams",
     "KnowledgeBaseSearchDocumentsParams",
-    "KnowledgeBaseListResponse",
-    "APIResponseKnowledgeBase",
-    "APIResponseKnowledgeBaseDocumentDetailAPIResource",
     "PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource",
     # Scheduled evaluation types
     "ScheduledEvaluationCreateParams",
@@ -452,15 +427,10 @@ __all__ = [
     "TestCaseBulkUpdateParams",
     "TestCaseCheckConfig",
     "TestCaseCheckConfigParam",
-    "APIResponseTestCase",
-    "APIResponseListTestCase",
     # Scenario types
     "ScenarioCreateParams",
     "ScenarioUpdateParams",
     "ScenarioPreviewParams",
-    "APIResponseScenario",
-    "APIResponseScenarioPreview",
-    "APIResponseListScenario",
     # Audit types
     "AuditListEntityParams",
     "AuditSearchParams",

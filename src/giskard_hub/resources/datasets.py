@@ -23,12 +23,12 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.dataset import Dataset
+from ..types.test_case import TestCase
 from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
-from ..types.api_response_dataset import APIResponseDataset
-from ..types.dataset_list_response import DatasetListResponse
 from ..types.dataset_list_tags_response import DatasetListTagsResponse
-from ..types.api_response_list_test_case import APIResponseListTestCase
+from ..types.common import APIResponse, APIListResponse
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -65,7 +65,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Create Dataset
 
@@ -97,7 +97,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     def retrieve(
@@ -110,7 +110,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Retrieve Dataset
 
@@ -132,7 +132,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     def update(
@@ -148,7 +148,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Update Dataset
 
@@ -184,7 +184,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     def list(
@@ -197,7 +197,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DatasetListResponse:
+    ) -> APIListResponse[Dataset]:
         """
         List Datasets
 
@@ -221,7 +221,7 @@ class DatasetsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_id": project_id}, dataset_list_params.DatasetListParams),
             ),
-            cast_to=DatasetListResponse,
+            cast_to=APIListResponse[Dataset],
         )
 
     def delete(
@@ -311,7 +311,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Generate Scenario Based Dataset
 
@@ -356,7 +356,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     def generate_document_based(
@@ -375,7 +375,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Generate Document Based Dataset
 
@@ -419,7 +419,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     def list_tags(
@@ -467,7 +467,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseListTestCase:
+    ) -> APIListResponse[TestCase]:
         """
         List Dataset Test Cases
 
@@ -489,7 +489,7 @@ class DatasetsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseListTestCase,
+            cast_to=APIListResponse[TestCase],
         )
 
 
@@ -525,7 +525,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Create Dataset
 
@@ -557,7 +557,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     async def retrieve(
@@ -570,7 +570,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Retrieve Dataset
 
@@ -592,7 +592,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     async def update(
@@ -608,7 +608,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Update Dataset
 
@@ -644,7 +644,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     async def list(
@@ -657,7 +657,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DatasetListResponse:
+    ) -> APIListResponse[Dataset]:
         """
         List Datasets
 
@@ -681,7 +681,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"project_id": project_id}, dataset_list_params.DatasetListParams),
             ),
-            cast_to=DatasetListResponse,
+            cast_to=APIListResponse[Dataset],
         )
 
     async def delete(
@@ -773,7 +773,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Generate Scenario Based Dataset
 
@@ -818,7 +818,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     async def generate_document_based(
@@ -837,7 +837,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseDataset:
+    ) -> APIResponse[Dataset]:
         """
         Generate Document Based Dataset
 
@@ -881,7 +881,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseDataset,
+            cast_to=APIResponse[Dataset],
         )
 
     async def list_tags(
@@ -929,7 +929,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseListTestCase:
+    ) -> APIListResponse[TestCase]:
         """
         List Dataset Test Cases
 
@@ -951,7 +951,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseListTestCase,
+            cast_to=APIListResponse[TestCase],
         )
 
 

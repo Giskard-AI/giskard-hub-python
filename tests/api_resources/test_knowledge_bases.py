@@ -10,10 +10,11 @@ import pytest
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
+    KnowledgeBase,
+    KnowledgeBaseDocumentDetailAPIResource,
+    APIResponse,
+    APIListResponse,
     APIResponseNone,
-    APIResponseKnowledgeBase,
-    KnowledgeBaseListResponse,
-    APIResponseKnowledgeBaseDocumentDetailAPIResource,
     PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
 )
 
@@ -33,7 +34,7 @@ class TestKnowledgeBases:
             },
             file=b"raw file contents",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -48,7 +49,7 @@ class TestKnowledgeBases:
             },
             file=b"raw file contents",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -64,7 +65,7 @@ class TestKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = response.parse()
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -80,7 +81,7 @@ class TestKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = response.parse()
-            assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+            assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -90,7 +91,7 @@ class TestKnowledgeBases:
         knowledge_base = client.knowledge_bases.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -102,7 +103,7 @@ class TestKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = response.parse()
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -114,7 +115,7 @@ class TestKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = response.parse()
-            assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+            assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -135,7 +136,7 @@ class TestKnowledgeBases:
         knowledge_base = client.knowledge_bases.update(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -152,7 +153,7 @@ class TestKnowledgeBases:
                 "state": "skipped",
             },
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -164,7 +165,7 @@ class TestKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = response.parse()
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -176,7 +177,7 @@ class TestKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = response.parse()
-            assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+            assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -195,7 +196,7 @@ class TestKnowledgeBases:
     @parametrize
     def test_method_list(self, client: HubClient) -> None:
         knowledge_base = client.knowledge_bases.list()
-        assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+        assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -203,7 +204,7 @@ class TestKnowledgeBases:
         knowledge_base = client.knowledge_bases.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+        assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -213,7 +214,7 @@ class TestKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = response.parse()
-        assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+        assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -223,7 +224,7 @@ class TestKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = response.parse()
-            assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+            assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -325,7 +326,7 @@ class TestAsyncKnowledgeBases:
             },
             file=b"raw file contents",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -340,7 +341,7 @@ class TestAsyncKnowledgeBases:
             },
             file=b"raw file contents",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -356,7 +357,7 @@ class TestAsyncKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = await response.parse()
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -372,7 +373,7 @@ class TestAsyncKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = await response.parse()
-            assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+            assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -382,7 +383,7 @@ class TestAsyncKnowledgeBases:
         knowledge_base = await async_client.knowledge_bases.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -394,7 +395,7 @@ class TestAsyncKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = await response.parse()
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -406,7 +407,7 @@ class TestAsyncKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = await response.parse()
-            assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+            assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -427,7 +428,7 @@ class TestAsyncKnowledgeBases:
         knowledge_base = await async_client.knowledge_bases.update(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -444,7 +445,7 @@ class TestAsyncKnowledgeBases:
                 "state": "skipped",
             },
         )
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -456,7 +457,7 @@ class TestAsyncKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = await response.parse()
-        assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+        assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -468,7 +469,7 @@ class TestAsyncKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = await response.parse()
-            assert_matches_type(APIResponseKnowledgeBase, knowledge_base, path=["response"])
+            assert_matches_type(APIResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -487,7 +488,7 @@ class TestAsyncKnowledgeBases:
     @parametrize
     async def test_method_list(self, async_client: AsyncHubClient) -> None:
         knowledge_base = await async_client.knowledge_bases.list()
-        assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+        assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -495,7 +496,7 @@ class TestAsyncKnowledgeBases:
         knowledge_base = await async_client.knowledge_bases.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+        assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -505,7 +506,7 @@ class TestAsyncKnowledgeBases:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         knowledge_base = await response.parse()
-        assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+        assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -515,7 +516,7 @@ class TestAsyncKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = await response.parse()
-            assert_matches_type(KnowledgeBaseListResponse, knowledge_base, path=["response"])
+            assert_matches_type(APIListResponse[KnowledgeBase], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

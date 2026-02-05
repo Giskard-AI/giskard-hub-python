@@ -24,13 +24,13 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.agent import Agent
 from ..types.header_param import HeaderParam
 from ..types.api_response_str import APIResponseStr
 from ..types.api_response_none import APIResponseNone
-from ..types.api_response_agent import APIResponseAgent
 from ..types.chat_message_param import ChatMessageParam
-from ..types.agent_list_response import AgentListResponse
 from ..types.api_response_agent_output import APIResponseAgentOutput
+from ..types.common import APIResponse, APIListResponse
 
 __all__ = ["AgentsResource", "AsyncAgentsResource"]
 
@@ -70,7 +70,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgent:
+    ) -> APIResponse[Agent]:
         """
         Create Agent
 
@@ -111,7 +111,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgent,
+            cast_to=APIResponse[Agent],
         )
 
     def retrieve(
@@ -124,7 +124,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgent:
+    ) -> APIResponse[Agent]:
         """
         Retrieve Agent
 
@@ -146,7 +146,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgent,
+            cast_to=APIResponse[Agent],
         )
 
     def update(
@@ -164,7 +164,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgent:
+    ) -> APIResponse[Agent]:
         """
         Update Agent
 
@@ -206,7 +206,7 @@ class AgentsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgent,
+            cast_to=APIResponse[Agent],
         )
 
     def list(
@@ -219,7 +219,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentListResponse:
+    ) -> APIListResponse[Agent]:
         """
         List Agents
 
@@ -243,7 +243,7 @@ class AgentsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_id": project_id}, agent_list_params.AgentListParams),
             ),
-            cast_to=AgentListResponse,
+            cast_to=APIListResponse[Agent],
         )
 
     def delete(
@@ -474,7 +474,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgent:
+    ) -> APIResponse[Agent]:
         """
         Create Agent
 
@@ -515,7 +515,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgent,
+            cast_to=APIResponse[Agent],
         )
 
     async def retrieve(
@@ -528,7 +528,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgent:
+    ) -> APIResponse[Agent]:
         """
         Retrieve Agent
 
@@ -550,7 +550,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgent,
+            cast_to=APIResponse[Agent],
         )
 
     async def update(
@@ -568,7 +568,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseAgent:
+    ) -> APIResponse[Agent]:
         """
         Update Agent
 
@@ -610,7 +610,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseAgent,
+            cast_to=APIResponse[Agent],
         )
 
     async def list(
@@ -623,7 +623,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentListResponse:
+    ) -> APIListResponse[Agent]:
         """
         List Agents
 
@@ -647,7 +647,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"project_id": project_id}, agent_list_params.AgentListParams),
             ),
-            cast_to=AgentListResponse,
+            cast_to=APIListResponse[Agent],
         )
 
     async def delete(

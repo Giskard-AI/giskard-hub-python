@@ -22,16 +22,14 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.knowledge_base import KnowledgeBase
+from ..types.knowledge_base_document_detail_api_resource import KnowledgeBaseDocumentDetailAPIResource
 from ..types.api_response_none import APIResponseNone
 from ..types.task_progress_param import TaskProgressParam
-from ..types.api_response_knowledge_base import APIResponseKnowledgeBase
-from ..types.knowledge_base_list_response import KnowledgeBaseListResponse
-from ..types.api_response_knowledge_base_document_detail_api_resource import (
-    APIResponseKnowledgeBaseDocumentDetailAPIResource,
-)
 from ..types.paginated_api_response_knowledge_base_document_row_api_resource import (
     PaginatedAPIResponseKnowledgeBaseDocumentRowAPIResource,
 )
+from ..types.common import APIResponse, APIListResponse
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
 
@@ -71,7 +69,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBase:
+    ) -> APIResponse[KnowledgeBase]:
         """
         Create Knowledge Base
 
@@ -118,7 +116,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBase,
+            cast_to=APIResponse[KnowledgeBase],
         )
 
     def retrieve(
@@ -131,7 +129,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBase:
+    ) -> APIResponse[KnowledgeBase]:
         """
         Retrieve Knowledge Base
 
@@ -153,7 +151,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBase,
+            cast_to=APIResponse[KnowledgeBase],
         )
 
     def update(
@@ -170,7 +168,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBase:
+    ) -> APIResponse[KnowledgeBase]:
         """
         Update Knowledge Base
 
@@ -207,7 +205,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBase,
+            cast_to=APIResponse[KnowledgeBase],
         )
 
     def list(
@@ -220,7 +218,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> KnowledgeBaseListResponse:
+    ) -> APIListResponse[KnowledgeBase]:
         """
         List Knowledge Bases
 
@@ -244,7 +242,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams),
             ),
-            cast_to=KnowledgeBaseListResponse,
+            cast_to=APIListResponse[KnowledgeBase],
         )
 
     def delete(
@@ -394,7 +392,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBaseDocumentDetailAPIResource:
+    ) -> APIResponse[KnowledgeBaseDocumentDetailAPIResource]:
         """
         Retrieve Knowledge Base Document
 
@@ -420,7 +418,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBaseDocumentDetailAPIResource,
+            cast_to=APIResponse[KnowledgeBaseDocumentDetailAPIResource],
         )
 
 
@@ -459,7 +457,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBase:
+    ) -> APIResponse[KnowledgeBase]:
         """
         Create Knowledge Base
 
@@ -506,7 +504,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBase,
+            cast_to=APIResponse[KnowledgeBase],
         )
 
     async def retrieve(
@@ -519,7 +517,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBase:
+    ) -> APIResponse[KnowledgeBase]:
         """
         Retrieve Knowledge Base
 
@@ -541,7 +539,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBase,
+            cast_to=APIResponse[KnowledgeBase],
         )
 
     async def update(
@@ -558,7 +556,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBase:
+    ) -> APIResponse[KnowledgeBase]:
         """
         Update Knowledge Base
 
@@ -595,7 +593,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBase,
+            cast_to=APIResponse[KnowledgeBase],
         )
 
     async def list(
@@ -608,7 +606,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> KnowledgeBaseListResponse:
+    ) -> APIListResponse[KnowledgeBase]:
         """
         List Knowledge Bases
 
@@ -634,7 +632,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     {"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams
                 ),
             ),
-            cast_to=KnowledgeBaseListResponse,
+            cast_to=APIListResponse[KnowledgeBase],
         )
 
     async def delete(
@@ -784,7 +782,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseKnowledgeBaseDocumentDetailAPIResource:
+    ) -> APIResponse[KnowledgeBaseDocumentDetailAPIResource]:
         """
         Retrieve Knowledge Base Document
 
@@ -810,7 +808,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponseKnowledgeBaseDocumentDetailAPIResource,
+            cast_to=APIResponse[KnowledgeBaseDocumentDetailAPIResource],
         )
 
 
