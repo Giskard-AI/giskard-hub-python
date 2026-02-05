@@ -117,7 +117,6 @@ from .check_list_params import CheckListParams as CheckListParams
 # ==============================================================================
 from .conformity_params import ConformityParams as ConformityParams
 from .output_annotation import OutputAnnotation as OutputAnnotation
-from .api_response_audit import APIResponseAudit as APIResponseAudit
 
 # ==============================================================================
 # API Resources - API-specific resource representations
@@ -226,7 +225,6 @@ from .success_execution_status import SuccessExecutionStatus as SuccessExecution
 # Agent responses
 from .groundedness_params_param import GroundednessParamsParam as GroundednessParamsParam
 from .string_match_params_param import StringMatchParamsParam as StringMatchParamsParam
-from .api_response_audit_display import APIResponseAuditDisplay as APIResponseAuditDisplay
 from .audit_display_api_response import AuditDisplayAPIResponse as AuditDisplayAPIResponse
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
@@ -405,8 +403,6 @@ __all__ = [
     "AuditDiffKind",
     "AuditDiffItem",
     "AuditDisplayAPIResponse",
-    "APIResponseAudit",
-    "APIResponseAuditDisplay",
     # Shared component types
     "ChatMessage",
     "ChatMessageParam",
