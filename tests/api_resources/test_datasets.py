@@ -501,14 +501,23 @@ class TestDatasets:
         result = client.datasets.search_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             filters={
-                "status": ["active", "draft"],
-                "tags": ["tag1", "tag2"],
-                "checks": ["check1", "check2"],
+                "status": {
+                    "selected_options": ["active", "draft"],
+                    "match_logic": "any",
+                },
+                "tags": {
+                    "selected_options": ["tag1", "tag2"],
+                    "match_logic": "any",
+                },
+                "checks": {
+                    "selected_options": ["check1", "check2"],
+                    "match_logic": "any",
+                },
             },
-            sort_by={
+            order_by=[{
                 "field": "created_at",
                 "order": "desc",
-            },
+            }],
             limit=10,
             offset=0,
         )
@@ -1039,14 +1048,23 @@ class TestAsyncDatasets:
         result = await async_client.datasets.search_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             filters={
-                "status": ["active", "draft"],
-                "tags": ["tag1", "tag2"],
-                "checks": ["check1", "check2"],
+                "status": {
+                    "selected_options": ["active", "draft"],
+                    "match_logic": "any",
+                },
+                "tags": {
+                    "selected_options": ["tag1", "tag2"],
+                    "match_logic": "any",
+                },
+                "checks": {
+                    "selected_options": ["check1", "check2"],
+                    "match_logic": "any",
+                },
             },
-            sort_by={
+            order_by=[{
                 "field": "created_at",
                 "order": "desc",
-            },
+            }],
             limit=10,
             offset=0,
         )
