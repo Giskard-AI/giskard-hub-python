@@ -243,26 +243,9 @@ from .string_match_params_param import StringMatchParamsParam as StringMatchPara
 from .audit_display_api_resource import AuditDisplayAPIResource as AuditDisplayAPIResource
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
-
-# Dataset search types
-from .simple_test_case_api_resource import SimpleTestCaseAPIResource as SimpleTestCaseAPIResource
-from .dataset_test_case_check_counts import DatasetTestCaseCheckCounts as DatasetTestCaseCheckCounts
-from .dataset_test_case_status_counts import DatasetTestCaseStatusCounts as DatasetTestCaseStatusCounts
-from .dataset_test_case_tag_counts import DatasetTestCaseTagCounts as DatasetTestCaseTagCounts
-from .dataset_test_cases_search_filters import (
-    DatasetTestCasesSearchFilters as DatasetTestCasesSearchFilters,
-    DatasetTestCasesSearchFiltersParam as DatasetTestCasesSearchFiltersParam,
-)
 from .dataset_test_cases_sort_by import (
     DatasetTestCasesSortBy as DatasetTestCasesSortBy,
     DatasetTestCasesSortByParam as DatasetTestCasesSortByParam,
-)
-from .dataset_search_test_cases_params import DatasetSearchTestCasesParams as DatasetSearchTestCasesParams
-from .dataset_search_selection_summary_params import (
-    DatasetSearchSelectionSummaryParams as DatasetSearchSelectionSummaryParams,
-)
-from .dataset_test_case_selection_summary_api_resource import (
-    DatasetTestCaseSelectionSummaryAPIResource as DatasetTestCaseSelectionSummaryAPIResource,
 )
 
 # Dataset responses
@@ -292,9 +275,16 @@ from .success_execution_status_param import SuccessExecutionStatusParam as Succe
 from .test_case_evaluation_reference import TestCaseEvaluationReference as TestCaseEvaluationReference
 from .agent_generate_completion_params import AgentGenerateCompletionParams as AgentGenerateCompletionParams
 from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
+from .dataset_search_test_cases_params import DatasetSearchTestCasesParams as DatasetSearchTestCasesParams
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
+
+# Dataset search types
+from .dataset_test_cases_search_filters import (
+    DatasetTestCasesSearchFilters as DatasetTestCasesSearchFilters,
+    DatasetTestCasesSearchFiltersParam as DatasetTestCasesSearchFiltersParam,
+)
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
 
 # ==============================================================================
@@ -380,17 +370,11 @@ __all__ = [
     "DatasetSubset",
     "DatasetSubsetParam",
     # Dataset search types
-    "SimpleTestCaseAPIResource",
-    "DatasetTestCaseCheckCounts",
-    "DatasetTestCaseStatusCounts",
-    "DatasetTestCaseTagCounts",
     "DatasetTestCasesSearchFilters",
     "DatasetTestCasesSearchFiltersParam",
     "DatasetTestCasesSortBy",
     "DatasetTestCasesSortByParam",
     "DatasetSearchTestCasesParams",
-    "DatasetSearchSelectionSummaryParams",
-    "DatasetTestCaseSelectionSummaryAPIResource",
     # Evaluation types
     "EvaluationCreateParams",
     "EvaluationCreateLocalParams",

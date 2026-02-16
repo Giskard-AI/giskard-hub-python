@@ -9,10 +9,9 @@ from ..types import (
     dataset_create_params,
     dataset_update_params,
     dataset_bulk_delete_params,
+    dataset_search_test_cases_params,
     dataset_generate_document_based_params,
     dataset_generate_scenario_based_params,
-    dataset_search_test_cases_params,
-    dataset_search_selection_summary_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -29,8 +28,6 @@ from ..types.common import APIResponse, APIPaginatedResponse
 from ..types.dataset import Dataset
 from ..types.test_case import TestCase
 from ..types.task_progress_param import TaskProgressParam
-from ..types.simple_test_case_api_resource import SimpleTestCaseAPIResource
-from ..types.dataset_test_case_selection_summary_api_resource import DatasetTestCaseSelectionSummaryAPIResource
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -553,96 +550,6 @@ class DatasetsResource(SyncAPIResource):
                 ),
             ),
             cast_to=APIPaginatedResponse[TestCase, None],
-        )
-
-    def search_test_cases_simple(
-        self,
-        dataset_id: str,
-        *,
-        filters: dataset_search_test_cases_params.DatasetTestCasesSearchFiltersParam | Omit = omit,
-        sort_by: dataset_search_test_cases_params.DatasetTestCasesSortByParam | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[SimpleTestCaseAPIResource]]:
-        """
-        Search Simple Dataset Test Cases By Filters
-
-        Args:
-          dataset_id: The ID of the dataset to search test cases in
-
-          filters: Search filters to apply
-
-          sort_by: Sort options
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not dataset_id:
-            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._post(
-            f"/v2/datasets/{dataset_id}/test-cases/simple-search",
-            body=maybe_transform(
-                {
-                    "filters": filters,
-                    "sort_by": sort_by,
-                },
-                dataset_search_test_cases_params.DatasetSearchTestCasesParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[List[SimpleTestCaseAPIResource]],
-        )
-
-    def get_test_cases_selection_summary(
-        self,
-        dataset_id: str,
-        *,
-        filters: dataset_search_selection_summary_params.DatasetTestCasesSearchFiltersParam | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[DatasetTestCaseSelectionSummaryAPIResource]:
-        """
-        Get Dataset Test Cases Selection Summary
-
-        Args:
-          dataset_id: The ID of the dataset to get selection summary for
-
-          filters: Search filters to apply
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not dataset_id:
-            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._post(
-            f"/v2/datasets/{dataset_id}/test-cases/selection-summary",
-            body=maybe_transform(
-                {"filters": filters},
-                dataset_search_selection_summary_params.DatasetSearchSelectionSummaryParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[DatasetTestCaseSelectionSummaryAPIResource],
         )
 
 
@@ -1168,96 +1075,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[TestCase, None],
         )
 
-    async def search_test_cases_simple(
-        self,
-        dataset_id: str,
-        *,
-        filters: dataset_search_test_cases_params.DatasetTestCasesSearchFiltersParam | Omit = omit,
-        sort_by: dataset_search_test_cases_params.DatasetTestCasesSortByParam | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[SimpleTestCaseAPIResource]]:
-        """
-        Search Simple Dataset Test Cases By Filters
-
-        Args:
-          dataset_id: The ID of the dataset to search test cases in
-
-          filters: Search filters to apply
-
-          sort_by: Sort options
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not dataset_id:
-            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._post(
-            f"/v2/datasets/{dataset_id}/test-cases/simple-search",
-            body=await async_maybe_transform(
-                {
-                    "filters": filters,
-                    "sort_by": sort_by,
-                },
-                dataset_search_test_cases_params.DatasetSearchTestCasesParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[List[SimpleTestCaseAPIResource]],
-        )
-
-    async def get_test_cases_selection_summary(
-        self,
-        dataset_id: str,
-        *,
-        filters: dataset_search_selection_summary_params.DatasetTestCasesSearchFiltersParam | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[DatasetTestCaseSelectionSummaryAPIResource]:
-        """
-        Get Dataset Test Cases Selection Summary
-
-        Args:
-          dataset_id: The ID of the dataset to get selection summary for
-
-          filters: Search filters to apply
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not dataset_id:
-            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._post(
-            f"/v2/datasets/{dataset_id}/test-cases/selection-summary",
-            body=await async_maybe_transform(
-                {"filters": filters},
-                dataset_search_selection_summary_params.DatasetSearchSelectionSummaryParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[DatasetTestCaseSelectionSummaryAPIResource],
-        )
-
 
 class DatasetsResourceWithRawResponse:
     def __init__(self, datasets: DatasetsResource) -> None:
@@ -1295,12 +1112,6 @@ class DatasetsResourceWithRawResponse:
         )
         self.search_test_cases = to_raw_response_wrapper(
             datasets.search_test_cases,
-        )
-        self.search_test_cases_simple = to_raw_response_wrapper(
-            datasets.search_test_cases_simple,
-        )
-        self.get_test_cases_selection_summary = to_raw_response_wrapper(
-            datasets.get_test_cases_selection_summary,
         )
 
 
@@ -1341,12 +1152,6 @@ class AsyncDatasetsResourceWithRawResponse:
         self.search_test_cases = async_to_raw_response_wrapper(
             datasets.search_test_cases,
         )
-        self.search_test_cases_simple = async_to_raw_response_wrapper(
-            datasets.search_test_cases_simple,
-        )
-        self.get_test_cases_selection_summary = async_to_raw_response_wrapper(
-            datasets.get_test_cases_selection_summary,
-        )
 
 
 class DatasetsResourceWithStreamingResponse:
@@ -1386,12 +1191,6 @@ class DatasetsResourceWithStreamingResponse:
         self.search_test_cases = to_streamed_response_wrapper(
             datasets.search_test_cases,
         )
-        self.search_test_cases_simple = to_streamed_response_wrapper(
-            datasets.search_test_cases_simple,
-        )
-        self.get_test_cases_selection_summary = to_streamed_response_wrapper(
-            datasets.get_test_cases_selection_summary,
-        )
 
 
 class AsyncDatasetsResourceWithStreamingResponse:
@@ -1430,10 +1229,4 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.search_test_cases = async_to_streamed_response_wrapper(
             datasets.search_test_cases,
-        )
-        self.search_test_cases_simple = async_to_streamed_response_wrapper(
-            datasets.search_test_cases_simple,
-        )
-        self.get_test_cases_selection_summary = async_to_streamed_response_wrapper(
-            datasets.get_test_cases_selection_summary,
         )
