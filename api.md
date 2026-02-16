@@ -77,6 +77,7 @@ from giskard_hub.types import (
     TestCase,
     TaskProgress,
     APIResponse,
+    APIPaginatedResponse,
 )
 ```
 
@@ -92,6 +93,7 @@ Methods:
 - <code title="post /v2/datasets/generate-document-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_document_based</a>(\*\*<a href="src/giskard_hub/types/dataset_generate_document_based_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]</code>
 - <code title="get /v2/datasets/{dataset_id}/tags">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_tags</a>(dataset_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[str]]</code>
 - <code title="get /v2/datasets/{dataset_id}/test-cases">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_test_cases</a>(dataset_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
+- <code title="post /v2/datasets/{dataset_id}/test-cases/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">search_test_cases</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset_search_test_cases_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>, None]</code>
 
 # Evaluations
 

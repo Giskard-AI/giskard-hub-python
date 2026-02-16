@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import httpx
 
@@ -9,6 +9,7 @@ from ..types import (
     dataset_create_params,
     dataset_update_params,
     dataset_bulk_delete_params,
+    dataset_search_test_cases_params,
     dataset_generate_document_based_params,
     dataset_generate_scenario_based_params,
 )
@@ -23,7 +24,7 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.common import APIResponse
+from ..types.common import APIResponse, APIPaginatedResponse
 from ..types.dataset import Dataset
 from ..types.test_case import TestCase
 from ..types.task_progress_param import TaskProgressParam
@@ -490,6 +491,71 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
+    def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
+        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIPaginatedResponse[TestCase, None]:
+        """
+        Search Dataset Test Cases By Filters
+
+        Args:
+          dataset_id: The ID of the dataset to search test cases in
+
+          search: Search query for test cases
+
+          order_by: Order by criteria for test cases
+
+          filters: Search filters to apply
+
+          limit: Maximum number of results to return
+
+          offset: Number of results to skip
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        return self._post(
+            f"/v2/datasets/{dataset_id}/test-cases/search",
+            body=maybe_transform(
+                {
+                    "filters": filters,
+                    "order_by": order_by,
+                    "search": search,
+                },
+                dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"limit": limit, "offset": offset},
+                    dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+                ),
+            ),
+            cast_to=APIPaginatedResponse[TestCase, None],
+        )
+
 
 class AsyncDatasetsResource(AsyncAPIResource):
     @cached_property
@@ -952,6 +1018,71 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
+    async def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIPaginatedResponse[TestCase, None]:
+        """
+        Search Dataset Test Cases By Filters
+
+        Args:
+          dataset_id: The ID of the dataset to search test cases in
+
+          search: Search query for test cases
+
+          filters: Search filters to apply
+
+          order_by: Order by criteria for test cases
+
+          limit: Maximum number of results to return
+
+          offset: Number of results to skip
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        return await self._post(
+            f"/v2/datasets/{dataset_id}/test-cases/search",
+            body=await async_maybe_transform(
+                {
+                    "filters": filters,
+                    "order_by": order_by,
+                    "search": search,
+                },
+                dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"limit": limit, "offset": offset},
+                    dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+                ),
+            ),
+            cast_to=APIPaginatedResponse[TestCase, None],
+        )
+
 
 class DatasetsResourceWithRawResponse:
     def __init__(self, datasets: DatasetsResource) -> None:
@@ -986,6 +1117,9 @@ class DatasetsResourceWithRawResponse:
         )
         self.list_test_cases = to_raw_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.search_test_cases = to_raw_response_wrapper(
+            datasets.search_test_cases,
         )
 
 
@@ -1023,6 +1157,9 @@ class AsyncDatasetsResourceWithRawResponse:
         self.list_test_cases = async_to_raw_response_wrapper(
             datasets.list_test_cases,
         )
+        self.search_test_cases = async_to_raw_response_wrapper(
+            datasets.search_test_cases,
+        )
 
 
 class DatasetsResourceWithStreamingResponse:
@@ -1059,6 +1196,9 @@ class DatasetsResourceWithStreamingResponse:
         self.list_test_cases = to_streamed_response_wrapper(
             datasets.list_test_cases,
         )
+        self.search_test_cases = to_streamed_response_wrapper(
+            datasets.search_test_cases,
+        )
 
 
 class AsyncDatasetsResourceWithStreamingResponse:
@@ -1094,4 +1234,7 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.list_test_cases = async_to_streamed_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.search_test_cases = async_to_streamed_response_wrapper(
+            datasets.search_test_cases,
         )
