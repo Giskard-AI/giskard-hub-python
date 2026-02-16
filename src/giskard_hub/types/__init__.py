@@ -244,6 +244,27 @@ from .audit_display_api_resource import AuditDisplayAPIResource as AuditDisplayA
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
 
+# Dataset search types
+from .simple_test_case_api_resource import SimpleTestCaseAPIResource as SimpleTestCaseAPIResource
+from .dataset_test_case_check_counts import DatasetTestCaseCheckCounts as DatasetTestCaseCheckCounts
+from .dataset_test_case_status_counts import DatasetTestCaseStatusCounts as DatasetTestCaseStatusCounts
+from .dataset_test_case_tag_counts import DatasetTestCaseTagCounts as DatasetTestCaseTagCounts
+from .dataset_test_cases_search_filters import (
+    DatasetTestCasesSearchFilters as DatasetTestCasesSearchFilters,
+    DatasetTestCasesSearchFiltersParam as DatasetTestCasesSearchFiltersParam,
+)
+from .dataset_test_cases_sort_by import (
+    DatasetTestCasesSortBy as DatasetTestCasesSortBy,
+    DatasetTestCasesSortByParam as DatasetTestCasesSortByParam,
+)
+from .dataset_search_test_cases_params import DatasetSearchTestCasesParams as DatasetSearchTestCasesParams
+from .dataset_search_selection_summary_params import (
+    DatasetSearchSelectionSummaryParams as DatasetSearchSelectionSummaryParams,
+)
+from .dataset_test_case_selection_summary_api_resource import (
+    DatasetTestCaseSelectionSummaryAPIResource as DatasetTestCaseSelectionSummaryAPIResource,
+)
+
 # Dataset responses
 from .evaluation_retrieve_params import EvaluationRetrieveParams as EvaluationRetrieveParams
 from .knowledge_base_list_params import KnowledgeBaseListParams as KnowledgeBaseListParams
@@ -358,6 +379,18 @@ __all__ = [
     "DatasetGenerateAdversarialParams",
     "DatasetSubset",
     "DatasetSubsetParam",
+    # Dataset search types
+    "SimpleTestCaseAPIResource",
+    "DatasetTestCaseCheckCounts",
+    "DatasetTestCaseStatusCounts",
+    "DatasetTestCaseTagCounts",
+    "DatasetTestCasesSearchFilters",
+    "DatasetTestCasesSearchFiltersParam",
+    "DatasetTestCasesSortBy",
+    "DatasetTestCasesSortByParam",
+    "DatasetSearchTestCasesParams",
+    "DatasetSearchSelectionSummaryParams",
+    "DatasetTestCaseSelectionSummaryAPIResource",
     # Evaluation types
     "EvaluationCreateParams",
     "EvaluationCreateLocalParams",
