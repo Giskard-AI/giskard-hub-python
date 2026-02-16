@@ -243,10 +243,6 @@ from .string_match_params_param import StringMatchParamsParam as StringMatchPara
 from .audit_display_api_resource import AuditDisplayAPIResource as AuditDisplayAPIResource
 from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
 from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
-from .dataset_test_cases_sort_by import (
-    DatasetTestCasesSortBy as DatasetTestCasesSortBy,
-    DatasetTestCasesSortByParam as DatasetTestCasesSortByParam,
-)
 
 # Dataset responses
 from .evaluation_retrieve_params import EvaluationRetrieveParams as EvaluationRetrieveParams
@@ -281,10 +277,6 @@ from .semantic_similarity_params_param import SemanticSimilarityParamsParam as S
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
 
 # Dataset search types
-from .dataset_test_cases_search_filters import (
-    DatasetTestCasesSearchFilters as DatasetTestCasesSearchFilters,
-    DatasetTestCasesSearchFiltersParam as DatasetTestCasesSearchFiltersParam,
-)
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
 
 # ==============================================================================
@@ -370,10 +362,6 @@ __all__ = [
     "DatasetSubset",
     "DatasetSubsetParam",
     # Dataset search types
-    "DatasetTestCasesSearchFilters",
-    "DatasetTestCasesSearchFiltersParam",
-    "DatasetTestCasesSortBy",
-    "DatasetTestCasesSortByParam",
     "DatasetSearchTestCasesParams",
     # Evaluation types
     "EvaluationCreateParams",

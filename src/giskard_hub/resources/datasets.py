@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import httpx
 
@@ -495,8 +495,9 @@ class DatasetsResource(SyncAPIResource):
         self,
         dataset_id: str,
         *,
-        filters: dataset_search_test_cases_params.DatasetTestCasesSearchFiltersParam | Omit = omit,
-        sort_by: dataset_search_test_cases_params.DatasetTestCasesSortByParam | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
+        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -512,9 +513,11 @@ class DatasetsResource(SyncAPIResource):
         Args:
           dataset_id: The ID of the dataset to search test cases in
 
-          filters: Search filters to apply
+          search: Search query for test cases
 
-          sort_by: Sort options
+          order_by: Order by criteria for test cases
+
+          filters: Search filters to apply
 
           limit: Maximum number of results to return
 
@@ -535,7 +538,8 @@ class DatasetsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "filters": filters,
-                    "sort_by": sort_by,
+                    "order_by": order_by,
+                    "search": search,
                 },
                 dataset_search_test_cases_params.DatasetSearchTestCasesParams,
             ),
@@ -1018,8 +1022,9 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         dataset_id: str,
         *,
-        filters: dataset_search_test_cases_params.DatasetTestCasesSearchFiltersParam | Omit = omit,
-        sort_by: dataset_search_test_cases_params.DatasetTestCasesSortByParam | Omit = omit,
+        search: Optional[str] | Omit = omit,
+        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1035,9 +1040,11 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Args:
           dataset_id: The ID of the dataset to search test cases in
 
+          search: Search query for test cases
+
           filters: Search filters to apply
 
-          sort_by: Sort options
+          order_by: Order by criteria for test cases
 
           limit: Maximum number of results to return
 
@@ -1058,7 +1065,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "filters": filters,
-                    "sort_by": sort_by,
+                    "order_by": order_by,
+                    "search": search,
                 },
                 dataset_search_test_cases_params.DatasetSearchTestCasesParams,
             ),
