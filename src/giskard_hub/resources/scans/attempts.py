@@ -18,6 +18,7 @@ from ...types.scans import Severity, ReviewStatus, attempt_update_params
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
 from ...types.scans.scan_probe_attempt import ScanProbeAttempt
+from ...types.probe_attempt_navigation_api_resource import ProbeAttemptNavigationAPIResource
 
 __all__ = ["AttemptsResource", "AsyncAttemptsResource"]
 
@@ -94,6 +95,39 @@ class AttemptsResource(SyncAPIResource):
             cast_to=APIResponse[ScanProbeAttempt],
         )
 
+    def navigation(
+        self,
+        probe_attempt_id: str,
+        *,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponse[ProbeAttemptNavigationAPIResource]:
+        """
+        Get Probe Attempt Navigation
+
+        Args:
+          probe_attempt_id: Probe Attempt ID to get navigation for
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not probe_attempt_id:
+            raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")
+        return self._get(
+            f"/v2/scan-attempts/{probe_attempt_id}/navigation",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProbeAttemptNavigationAPIResource],
+        )
+
 
 class AsyncAttemptsResource(AsyncAPIResource):
     @cached_property
@@ -167,6 +201,26 @@ class AsyncAttemptsResource(AsyncAPIResource):
             cast_to=APIResponse[ScanProbeAttempt],
         )
 
+    async def navigation(
+        self,
+        probe_attempt_id: str,
+        *,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponse[ProbeAttemptNavigationAPIResource]:
+        """Get Probe Attempt Navigation"""
+        if not probe_attempt_id:
+            raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")
+        return await self._get(
+            f"/v2/scan-attempts/{probe_attempt_id}/navigation",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProbeAttemptNavigationAPIResource],
+        )
+
 
 class AttemptsResourceWithRawResponse:
     def __init__(self, attempts: AttemptsResource) -> None:
@@ -174,6 +228,9 @@ class AttemptsResourceWithRawResponse:
 
         self.update = to_raw_response_wrapper(
             attempts.update,
+        )
+        self.navigation = to_raw_response_wrapper(
+            attempts.navigation,
         )
 
 
@@ -184,6 +241,9 @@ class AsyncAttemptsResourceWithRawResponse:
         self.update = async_to_raw_response_wrapper(
             attempts.update,
         )
+        self.navigation = async_to_raw_response_wrapper(
+            attempts.navigation,
+        )
 
 
 class AttemptsResourceWithStreamingResponse:
@@ -193,6 +253,9 @@ class AttemptsResourceWithStreamingResponse:
         self.update = to_streamed_response_wrapper(
             attempts.update,
         )
+        self.navigation = to_streamed_response_wrapper(
+            attempts.navigation,
+        )
 
 
 class AsyncAttemptsResourceWithStreamingResponse:
@@ -201,4 +264,7 @@ class AsyncAttemptsResourceWithStreamingResponse:
 
         self.update = async_to_streamed_response_wrapper(
             attempts.update,
+        )
+        self.navigation = async_to_streamed_response_wrapper(
+            attempts.navigation,
         )

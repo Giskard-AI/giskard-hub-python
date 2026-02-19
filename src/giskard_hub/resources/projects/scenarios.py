@@ -271,7 +271,7 @@ class ScenariosResource(SyncAPIResource):
         self,
         project_id: str,
         *,
-        agent_id: str,
+        agent_id: Optional[str] | Omit = omit,
         description: str,
         rules: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -571,7 +571,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         self,
         project_id: str,
         *,
-        agent_id: str,
+        agent_id: Optional[str] | Omit = omit,
         description: str,
         rules: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.

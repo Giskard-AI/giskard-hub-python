@@ -5,6 +5,7 @@ from typing import List, Literal, Iterable, Optional
 import httpx
 
 from ...types import (
+    BulkMoveChatTestCasesRequest,
     test_case_create_params,
     test_case_update_params,
     test_case_bulk_delete_params,
@@ -347,6 +348,47 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
+    def bulk_move(
+        self,
+        *,
+        test_case_ids: List[str],
+        target_dataset_id: str,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponse[None]:
+        """
+        Bulk Move Test Cases
+
+        Args:
+          test_case_ids: List of test case IDs to move
+
+          target_dataset_id: Target dataset ID to move test cases to
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._post(
+            "/v2/test-cases/bulk-move",
+            body=maybe_transform(
+                {
+                    "test_case_ids": test_case_ids,
+                    "target_dataset_id": target_dataset_id,
+                },
+                BulkMoveChatTestCasesRequest,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[None],
+        )
+
 
 class AsyncTestCasesResource(AsyncAPIResource):
     @cached_property
@@ -655,6 +697,32 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
+    async def bulk_move(
+        self,
+        *,
+        test_case_ids: List[str],
+        target_dataset_id: str,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIResponse[None]:
+        """Bulk Move Test Cases"""
+        return await self._post(
+            "/v2/test-cases/bulk-move",
+            body=await async_maybe_transform(
+                {
+                    "test_case_ids": test_case_ids,
+                    "target_dataset_id": target_dataset_id,
+                },
+                BulkMoveChatTestCasesRequest,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[None],
+        )
+
 
 class TestCasesResourceWithRawResponse:
     __test__ = False
@@ -679,6 +747,9 @@ class TestCasesResourceWithRawResponse:
         )
         self.bulk_update = to_raw_response_wrapper(
             test_cases.bulk_update,
+        )
+        self.bulk_move = to_raw_response_wrapper(
+            test_cases.bulk_move,
         )
 
     @cached_property
@@ -707,6 +778,9 @@ class AsyncTestCasesResourceWithRawResponse:
         )
         self.bulk_update = async_to_raw_response_wrapper(
             test_cases.bulk_update,
+        )
+        self.bulk_move = async_to_raw_response_wrapper(
+            test_cases.bulk_move,
         )
 
     @cached_property
@@ -738,6 +812,9 @@ class TestCasesResourceWithStreamingResponse:
         self.bulk_update = to_streamed_response_wrapper(
             test_cases.bulk_update,
         )
+        self.bulk_move = to_streamed_response_wrapper(
+            test_cases.bulk_move,
+        )
 
     @cached_property
     def comments(self) -> CommentsResourceWithStreamingResponse:
@@ -765,6 +842,9 @@ class AsyncTestCasesResourceWithStreamingResponse:
         )
         self.bulk_update = async_to_streamed_response_wrapper(
             test_cases.bulk_update,
+        )
+        self.bulk_move = async_to_streamed_response_wrapper(
+            test_cases.bulk_move,
         )
 
     @cached_property
