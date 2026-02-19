@@ -20,7 +20,6 @@ from ._types import (
 from ._utils import is_given, get_async_library
 from ._version import __version__
 from .resources import (
-    auth,
     audit,
     tasks,
     users,
@@ -57,7 +56,6 @@ __all__ = [
 
 
 class HubClient(SyncAPIClient):
-    auth: auth.AuthResource
     audit: audit.AuditResource
     users: users.UsersResource
     groups: groups.GroupsResource
@@ -129,7 +127,6 @@ class HubClient(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.auth = auth.AuthResource(self)
         self.audit = audit.AuditResource(self)
         self.users = users.UsersResource(self)
         self.groups = groups.GroupsResource(self)
@@ -253,7 +250,6 @@ class HubClient(SyncAPIClient):
 
 
 class AsyncHubClient(AsyncAPIClient):
-    auth: auth.AsyncAuthResource
     audit: audit.AsyncAuditResource
     users: users.AsyncUsersResource
     groups: groups.AsyncGroupsResource
@@ -325,7 +321,6 @@ class AsyncHubClient(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.auth = auth.AsyncAuthResource(self)
         self.audit = audit.AsyncAuditResource(self)
         self.users = users.AsyncUsersResource(self)
         self.groups = groups.AsyncGroupsResource(self)
@@ -452,7 +447,6 @@ class AsyncHubClient(AsyncAPIClient):
 
 class HubClientWithRawResponse:
     def __init__(self, client: HubClient) -> None:
-        self.auth = auth.AuthResourceWithRawResponse(client.auth)
         self.audit = audit.AuditResourceWithRawResponse(client.audit)
         self.users = users.UsersResourceWithRawResponse(client.users)
         self.groups = groups.GroupsResourceWithRawResponse(client.groups)
@@ -473,7 +467,6 @@ class HubClientWithRawResponse:
 
 class AsyncHubClientWithRawResponse:
     def __init__(self, client: AsyncHubClient) -> None:
-        self.auth = auth.AsyncAuthResourceWithRawResponse(client.auth)
         self.audit = audit.AsyncAuditResourceWithRawResponse(client.audit)
         self.users = users.AsyncUsersResourceWithRawResponse(client.users)
         self.groups = groups.AsyncGroupsResourceWithRawResponse(client.groups)
@@ -494,7 +487,6 @@ class AsyncHubClientWithRawResponse:
 
 class HubClientWithStreamedResponse:
     def __init__(self, client: HubClient) -> None:
-        self.auth = auth.AuthResourceWithStreamingResponse(client.auth)
         self.audit = audit.AuditResourceWithStreamingResponse(client.audit)
         self.users = users.UsersResourceWithStreamingResponse(client.users)
         self.groups = groups.GroupsResourceWithStreamingResponse(client.groups)
@@ -515,7 +507,6 @@ class HubClientWithStreamedResponse:
 
 class AsyncHubClientWithStreamedResponse:
     def __init__(self, client: AsyncHubClient) -> None:
-        self.auth = auth.AsyncAuthResourceWithStreamingResponse(client.auth)
         self.audit = audit.AsyncAuditResourceWithStreamingResponse(client.audit)
         self.users = users.AsyncUsersResourceWithStreamingResponse(client.users)
         self.groups = groups.AsyncGroupsResourceWithStreamingResponse(client.groups)

@@ -1,11 +1,3 @@
-from .auth import (
-    AuthResource,
-    AsyncAuthResource,
-    AuthResourceWithRawResponse,
-    AsyncAuthResourceWithRawResponse,
-    AuthResourceWithStreamingResponse,
-    AsyncAuthResourceWithStreamingResponse,
-)
 from .audit import (
     AuditResource,
     AsyncAuditResource,
@@ -112,12 +104,6 @@ from .scheduled_evaluations import (
 )
 
 __all__ = [
-    "AuthResource",
-    "AsyncAuthResource",
-    "AuthResourceWithRawResponse",
-    "AsyncAuthResourceWithRawResponse",
-    "AuthResourceWithStreamingResponse",
-    "AsyncAuthResourceWithStreamingResponse",
     "AuditResource",
     "AsyncAuditResource",
     "AuditResourceWithRawResponse",
