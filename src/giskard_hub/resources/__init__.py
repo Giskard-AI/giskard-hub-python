@@ -1,3 +1,11 @@
+from .auth import (
+    AuthResource,
+    AsyncAuthResource,
+    AuthResourceWithRawResponse,
+    AsyncAuthResourceWithRawResponse,
+    AuthResourceWithStreamingResponse,
+    AsyncAuthResourceWithStreamingResponse,
+)
 from .audit import (
     AuditResource,
     AsyncAuditResource,
@@ -5,6 +13,30 @@ from .audit import (
     AsyncAuditResourceWithRawResponse,
     AuditResourceWithStreamingResponse,
     AsyncAuditResourceWithStreamingResponse,
+)
+from .users import (
+    UsersResource,
+    AsyncUsersResource,
+    UsersResourceWithRawResponse,
+    AsyncUsersResourceWithRawResponse,
+    UsersResourceWithStreamingResponse,
+    AsyncUsersResourceWithStreamingResponse,
+)
+from .groups import (
+    GroupsResource,
+    AsyncGroupsResource,
+    GroupsResourceWithRawResponse,
+    AsyncGroupsResourceWithRawResponse,
+    GroupsResourceWithStreamingResponse,
+    AsyncGroupsResourceWithStreamingResponse,
+)
+from .playground_chats import (
+    PlaygroundChatsResource,
+    AsyncPlaygroundChatsResource,
+    PlaygroundChatsResourceWithRawResponse,
+    AsyncPlaygroundChatsResourceWithRawResponse,
+    PlaygroundChatsResourceWithStreamingResponse,
+    AsyncPlaygroundChatsResourceWithStreamingResponse,
 )
 from .scans import (
     ScansResource,
@@ -80,12 +112,36 @@ from .scheduled_evaluations import (
 )
 
 __all__ = [
+    "AuthResource",
+    "AsyncAuthResource",
+    "AuthResourceWithRawResponse",
+    "AsyncAuthResourceWithRawResponse",
+    "AuthResourceWithStreamingResponse",
+    "AsyncAuthResourceWithStreamingResponse",
     "AuditResource",
     "AsyncAuditResource",
     "AuditResourceWithRawResponse",
     "AsyncAuditResourceWithRawResponse",
     "AuditResourceWithStreamingResponse",
     "AsyncAuditResourceWithStreamingResponse",
+    "UsersResource",
+    "AsyncUsersResource",
+    "UsersResourceWithRawResponse",
+    "AsyncUsersResourceWithRawResponse",
+    "UsersResourceWithStreamingResponse",
+    "AsyncUsersResourceWithStreamingResponse",
+    "GroupsResource",
+    "AsyncGroupsResource",
+    "GroupsResourceWithRawResponse",
+    "AsyncGroupsResourceWithRawResponse",
+    "GroupsResourceWithStreamingResponse",
+    "AsyncGroupsResourceWithStreamingResponse",
+    "PlaygroundChatsResource",
+    "AsyncPlaygroundChatsResource",
+    "PlaygroundChatsResourceWithRawResponse",
+    "AsyncPlaygroundChatsResourceWithRawResponse",
+    "PlaygroundChatsResourceWithStreamingResponse",
+    "AsyncPlaygroundChatsResourceWithStreamingResponse",
     "AgentsResource",
     "AsyncAgentsResource",
     "AgentsResourceWithRawResponse",

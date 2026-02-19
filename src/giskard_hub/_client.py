@@ -20,12 +20,16 @@ from ._types import (
 from ._utils import is_given, get_async_library
 from ._version import __version__
 from .resources import (
+    auth,
     audit,
     tasks,
+    users,
+    groups,
     agents,
     checks,
     datasets,
     projects,
+    playground_chats,
     knowledge_bases,
     scheduled_evaluations,
 )
@@ -53,12 +57,16 @@ __all__ = [
 
 
 class HubClient(SyncAPIClient):
+    auth: auth.AuthResource
     audit: audit.AuditResource
+    users: users.UsersResource
+    groups: groups.GroupsResource
     agents: agents.AgentsResource
     checks: checks.ChecksResource
     datasets: datasets.DatasetsResource
     evaluations: evaluations.EvaluationsResource
     knowledge_bases: knowledge_bases.KnowledgeBasesResource
+    playground_chats: playground_chats.PlaygroundChatsResource
     projects: projects.ProjectsResource
     scans: scans.ScansResource
     scheduled_evaluations: scheduled_evaluations.ScheduledEvaluationsResource
@@ -121,12 +129,16 @@ class HubClient(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
+        self.auth = auth.AuthResource(self)
         self.audit = audit.AuditResource(self)
+        self.users = users.UsersResource(self)
+        self.groups = groups.GroupsResource(self)
         self.agents = agents.AgentsResource(self)
         self.checks = checks.ChecksResource(self)
         self.datasets = datasets.DatasetsResource(self)
         self.evaluations = evaluations.EvaluationsResource(self)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResource(self)
+        self.playground_chats = playground_chats.PlaygroundChatsResource(self)
         self.projects = projects.ProjectsResource(self)
         self.scans = scans.ScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(self)
@@ -241,12 +253,16 @@ class HubClient(SyncAPIClient):
 
 
 class AsyncHubClient(AsyncAPIClient):
+    auth: auth.AsyncAuthResource
     audit: audit.AsyncAuditResource
+    users: users.AsyncUsersResource
+    groups: groups.AsyncGroupsResource
     agents: agents.AsyncAgentsResource
     checks: checks.AsyncChecksResource
     datasets: datasets.AsyncDatasetsResource
     evaluations: evaluations.AsyncEvaluationsResource
     knowledge_bases: knowledge_bases.AsyncKnowledgeBasesResource
+    playground_chats: playground_chats.AsyncPlaygroundChatsResource
     projects: projects.AsyncProjectsResource
     scans: scans.AsyncScansResource
     scheduled_evaluations: scheduled_evaluations.AsyncScheduledEvaluationsResource
@@ -309,12 +325,16 @@ class AsyncHubClient(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
+        self.auth = auth.AsyncAuthResource(self)
         self.audit = audit.AsyncAuditResource(self)
+        self.users = users.AsyncUsersResource(self)
+        self.groups = groups.AsyncGroupsResource(self)
         self.agents = agents.AsyncAgentsResource(self)
         self.checks = checks.AsyncChecksResource(self)
         self.datasets = datasets.AsyncDatasetsResource(self)
         self.evaluations = evaluations.AsyncEvaluationsResource(self)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResource(self)
+        self.playground_chats = playground_chats.AsyncPlaygroundChatsResource(self)
         self.projects = projects.AsyncProjectsResource(self)
         self.scans = scans.AsyncScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
@@ -432,12 +452,16 @@ class AsyncHubClient(AsyncAPIClient):
 
 class HubClientWithRawResponse:
     def __init__(self, client: HubClient) -> None:
+        self.auth = auth.AuthResourceWithRawResponse(client.auth)
         self.audit = audit.AuditResourceWithRawResponse(client.audit)
+        self.users = users.UsersResourceWithRawResponse(client.users)
+        self.groups = groups.GroupsResourceWithRawResponse(client.groups)
         self.agents = agents.AgentsResourceWithRawResponse(client.agents)
         self.checks = checks.ChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithRawResponse(client.datasets)
         self.evaluations = evaluations.EvaluationsResourceWithRawResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.PlaygroundChatsResourceWithRawResponse(client.playground_chats)
         self.projects = projects.ProjectsResourceWithRawResponse(client.projects)
         self.scans = scans.ScansResourceWithRawResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithRawResponse(
@@ -449,12 +473,16 @@ class HubClientWithRawResponse:
 
 class AsyncHubClientWithRawResponse:
     def __init__(self, client: AsyncHubClient) -> None:
+        self.auth = auth.AsyncAuthResourceWithRawResponse(client.auth)
         self.audit = audit.AsyncAuditResourceWithRawResponse(client.audit)
+        self.users = users.AsyncUsersResourceWithRawResponse(client.users)
+        self.groups = groups.AsyncGroupsResourceWithRawResponse(client.groups)
         self.agents = agents.AsyncAgentsResourceWithRawResponse(client.agents)
         self.checks = checks.AsyncChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithRawResponse(client.datasets)
         self.evaluations = evaluations.AsyncEvaluationsResourceWithRawResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.AsyncPlaygroundChatsResourceWithRawResponse(client.playground_chats)
         self.projects = projects.AsyncProjectsResourceWithRawResponse(client.projects)
         self.scans = scans.AsyncScansResourceWithRawResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithRawResponse(
@@ -466,12 +494,16 @@ class AsyncHubClientWithRawResponse:
 
 class HubClientWithStreamedResponse:
     def __init__(self, client: HubClient) -> None:
+        self.auth = auth.AuthResourceWithStreamingResponse(client.auth)
         self.audit = audit.AuditResourceWithStreamingResponse(client.audit)
+        self.users = users.UsersResourceWithStreamingResponse(client.users)
+        self.groups = groups.GroupsResourceWithStreamingResponse(client.groups)
         self.agents = agents.AgentsResourceWithStreamingResponse(client.agents)
         self.checks = checks.ChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithStreamingResponse(client.datasets)
         self.evaluations = evaluations.EvaluationsResourceWithStreamingResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.PlaygroundChatsResourceWithStreamingResponse(client.playground_chats)
         self.projects = projects.ProjectsResourceWithStreamingResponse(client.projects)
         self.scans = scans.ScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithStreamingResponse(
@@ -483,12 +515,18 @@ class HubClientWithStreamedResponse:
 
 class AsyncHubClientWithStreamedResponse:
     def __init__(self, client: AsyncHubClient) -> None:
+        self.auth = auth.AsyncAuthResourceWithStreamingResponse(client.auth)
         self.audit = audit.AsyncAuditResourceWithStreamingResponse(client.audit)
+        self.users = users.AsyncUsersResourceWithStreamingResponse(client.users)
+        self.groups = groups.AsyncGroupsResourceWithStreamingResponse(client.groups)
         self.agents = agents.AsyncAgentsResourceWithStreamingResponse(client.agents)
         self.checks = checks.AsyncChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithStreamingResponse(client.datasets)
         self.evaluations = evaluations.AsyncEvaluationsResourceWithStreamingResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.AsyncPlaygroundChatsResourceWithStreamingResponse(
+            client.playground_chats
+        )
         self.projects = projects.AsyncProjectsResourceWithStreamingResponse(client.projects)
         self.scans = scans.AsyncScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithStreamingResponse(
