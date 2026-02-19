@@ -19,6 +19,63 @@ from .user import User as User
 from .agent import Agent as Agent, AgentOutput as AgentOutput
 
 # ==============================================================================
+# User and Group Types
+# ==============================================================================
+from .user_api_resource import UserAPIResource as UserAPIResource
+from .user_detail_api_resource import UserDetailAPIResource as UserDetailAPIResource
+from .user_preferences_api_resource import UserPreferencesAPIResource as UserPreferencesAPIResource
+from .notification_preferences_api_resource import (
+    NotificationPreferencesAPIResource as NotificationPreferencesAPIResource,
+)
+from .group_api_resource import GroupAPIResource as GroupAPIResource
+from .group_detail_api_resource import GroupDetailAPIResource as GroupDetailAPIResource
+from .group_api_reference import GroupAPIReference as GroupAPIReference
+from .invite_user_request import InviteUserRequest as InviteUserRequest
+from .update_user_groups_request import UpdateUserGroupsRequest as UpdateUserGroupsRequest
+from .update_notification_preferences_request import (
+    UpdateNotificationPreferencesRequest as UpdateNotificationPreferencesRequest,
+)
+from .create_group_request import CreateGroupRequest as CreateGroupRequest
+from .update_group_request import UpdateGroupRequest as UpdateGroupRequest
+from .user_list_params import UserListParams as UserListParams
+
+# ==============================================================================
+# Playground Chat Types
+# ==============================================================================
+from .playground_chat_api_resource import PlaygroundChatAPIResource as PlaygroundChatAPIResource
+from .create_playground_chat import CreatePlaygroundChat as CreatePlaygroundChat
+from .playground_chat_update_data import PlaygroundChatUpdateData as PlaygroundChatUpdateData
+from .playground_chat_list_params import PlaygroundChatListParams as PlaygroundChatListParams
+from .playground_chat_retrieve_params import PlaygroundChatRetrieveParams as PlaygroundChatRetrieveParams
+
+# ==============================================================================
+# Probe Attempt Navigation Types
+# ==============================================================================
+from .probe_attempt_navigation_api_resource import (
+    ProbeAttemptNavigationAPIResource as ProbeAttemptNavigationAPIResource,
+)
+
+# ==============================================================================
+# Scheduled Evaluation Runs Types
+# ==============================================================================
+from .scheduled_evaluation_latest_runs_api_resource import (
+    ScheduledEvaluationLatestRunsAPIResource as ScheduledEvaluationLatestRunsAPIResource,
+)
+from .scheduled_evaluation_list_runs_params import (
+    ScheduledEvaluationListRunsParams as ScheduledEvaluationListRunsParams,
+)
+
+# ==============================================================================
+# Dataset Import Types
+# ==============================================================================
+from .dataset_import_params import DatasetImportParams as DatasetImportParams
+
+# ==============================================================================
+# Test Case Bulk Operations Types
+# ==============================================================================
+from .bulk_move_chat_test_cases_request import BulkMoveChatTestCasesRequest as BulkMoveChatTestCasesRequest
+
+# ==============================================================================
 # Scan Probe Types (from scans/ subdirectory)
 # ==============================================================================
 from .scans import (
@@ -482,4 +539,33 @@ __all__ = [
     # Test case comment types
     "CommentAddParams",
     "CommentEditParams",
+    # User and group types
+    "UserAPIResource",
+    "UserDetailAPIResource",
+    "UserPreferencesAPIResource",
+    "NotificationPreferencesAPIResource",
+    "GroupAPIResource",
+    "GroupDetailAPIResource",
+    "GroupAPIReference",
+    "InviteUserRequest",
+    "UpdateUserGroupsRequest",
+    "UpdateNotificationPreferencesRequest",
+    "CreateGroupRequest",
+    "UpdateGroupRequest",
+    "UserListParams",
+    # Playground chat types
+    "PlaygroundChatAPIResource",
+    "CreatePlaygroundChat",
+    "PlaygroundChatUpdateData",
+    "PlaygroundChatListParams",
+    "PlaygroundChatRetrieveParams",
+    # Probe attempt navigation types
+    "ProbeAttemptNavigationAPIResource",
+    # Scheduled evaluation runs types
+    "ScheduledEvaluationLatestRunsAPIResource",
+    "ScheduledEvaluationListRunsParams",
+    # Dataset import types
+    "DatasetImportParams",
+    # Test case bulk operations types
+    "BulkMoveChatTestCasesRequest",
 ]
