@@ -10,6 +10,7 @@ class UserReference(BaseModel):
 
     name: str
 
+
 class User(BaseModel):
     id: str
 

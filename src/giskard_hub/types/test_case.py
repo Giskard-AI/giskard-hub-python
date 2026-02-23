@@ -1,11 +1,11 @@
 from typing import List, Optional
 from datetime import datetime
 
+from .user import UserReference
 from .._models import BaseModel
 from .chat_message import ChatMessage
 from .test_case_check_config import TestCaseCheckConfig
 from .chat_message_with_metadata import ChatMessageWithMetadata
-from .user import UserReference
 
 __all__ = ["TestCase", "TestCaseComment"]
 
@@ -26,7 +26,7 @@ class TestCaseComment(BaseModel):
 
 class TestCase(BaseModel):
     __test__ = False
-    
+
     id: str
 
     checks: List[TestCaseCheckConfig]
