@@ -5,33 +5,33 @@ from .._models import BaseModel
 from .chat_message import ChatMessage
 from .test_case_check_config import TestCaseCheckConfig
 from .chat_message_with_metadata import ChatMessageWithMetadata
+from .user import UserReference
 
-__all__ = ["TestCase", "Comment", "TestCaseComment", "TestCaseCommentUser"]
+__all__ = ["TestCase", "TestCaseComment"]
 
 
-class Comment(BaseModel):
+class TestCaseComment(BaseModel):
+    __test__ = False
+
+    id: str
+
     comment: str
 
     created_at: datetime
-    """Date of creation"""
 
     updated_at: datetime
-    """Date of the last modification"""
 
-    user_id: str
-
-    user_name: str
-
-    uuid: Optional[str] = None
+    user: UserReference
 
 
 class TestCase(BaseModel):
     __test__ = False
+    
     id: str
 
     checks: List[TestCaseCheckConfig]
 
-    comments: List[Comment]
+    comments: List[TestCaseComment]
 
     created_at: datetime
 
@@ -44,22 +44,3 @@ class TestCase(BaseModel):
     tags: List[str]
 
     updated_at: datetime
-
-
-class TestCaseCommentUser(BaseModel):
-    id: str
-
-    name: str
-
-
-class TestCaseComment(BaseModel):
-    __test__ = False
-    id: str
-
-    comment: str
-
-    created_at: datetime
-
-    updated_at: datetime
-
-    user: TestCaseCommentUser
