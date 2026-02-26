@@ -11,7 +11,7 @@ This module provides all type definitions used throughout the SDK, organized by 
 
 from __future__ import annotations
 
-from .user import User as User
+from .user import User as User, UserReference as UserReference
 
 # ==============================================================================
 # Core Models - Main domain objects
@@ -375,6 +375,7 @@ __all__ = [
     "KnowledgeBaseDocumentRowAPIResource",
     "KnowledgeBaseDocumentDetailAPIResource",
     # Reference types
+    "UserReference",
     "ProbeAttemptReference",
     "TestCaseReferencence",
     "TestCaseEvaluationReference",
