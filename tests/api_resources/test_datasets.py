@@ -514,10 +514,12 @@ class TestDatasets:
                     "match_logic": "any",
                 },
             },
-            order_by=[{
-                "field": "created_at",
-                "order": "desc",
-            }],
+            order_by=[
+                {
+                    "field": "created_at",
+                    "order": "desc",
+                }
+            ],
             limit=10,
             offset=0,
         )
@@ -1061,10 +1063,12 @@ class TestAsyncDatasets:
                     "match_logic": "any",
                 },
             },
-            order_by=[{
-                "field": "created_at",
-                "order": "desc",
-            }],
+            order_by=[
+                {
+                    "field": "created_at",
+                    "order": "desc",
+                }
+            ],
             limit=10,
             offset=0,
         )
