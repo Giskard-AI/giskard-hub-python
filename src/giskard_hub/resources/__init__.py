@@ -6,22 +6,6 @@ from .audit import (
     AuditResourceWithStreamingResponse,
     AsyncAuditResourceWithStreamingResponse,
 )
-from .users import (
-    UsersResource,
-    AsyncUsersResource,
-    UsersResourceWithRawResponse,
-    AsyncUsersResourceWithRawResponse,
-    UsersResourceWithStreamingResponse,
-    AsyncUsersResourceWithStreamingResponse,
-)
-from .groups import (
-    GroupsResource,
-    AsyncGroupsResource,
-    GroupsResourceWithRawResponse,
-    AsyncGroupsResourceWithRawResponse,
-    GroupsResourceWithStreamingResponse,
-    AsyncGroupsResourceWithStreamingResponse,
-)
 from .playground_chats import (
     PlaygroundChatsResource,
     AsyncPlaygroundChatsResource,
@@ -110,18 +94,6 @@ __all__ = [
     "AsyncAuditResourceWithRawResponse",
     "AuditResourceWithStreamingResponse",
     "AsyncAuditResourceWithStreamingResponse",
-    "UsersResource",
-    "AsyncUsersResource",
-    "UsersResourceWithRawResponse",
-    "AsyncUsersResourceWithRawResponse",
-    "UsersResourceWithStreamingResponse",
-    "AsyncUsersResourceWithStreamingResponse",
-    "GroupsResource",
-    "AsyncGroupsResource",
-    "GroupsResourceWithRawResponse",
-    "AsyncGroupsResourceWithRawResponse",
-    "GroupsResourceWithStreamingResponse",
-    "AsyncGroupsResourceWithStreamingResponse",
     "PlaygroundChatsResource",
     "AsyncPlaygroundChatsResource",
     "PlaygroundChatsResourceWithRawResponse",
