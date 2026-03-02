@@ -6,8 +6,8 @@ import httpx
 
 from ..types import (
     CreatePlaygroundChat,
-    PlaygroundChatUpdateData,
     PlaygroundChatListParams,
+    PlaygroundChatUpdateData,
     PlaygroundChatRetrieveParams,
 )
 from .._types import Body, Query, Headers, NotGiven, SequenceNotStr, not_given

@@ -6,14 +6,6 @@ from .audit import (
     AuditResourceWithStreamingResponse,
     AsyncAuditResourceWithStreamingResponse,
 )
-from .playground_chats import (
-    PlaygroundChatsResource,
-    AsyncPlaygroundChatsResource,
-    PlaygroundChatsResourceWithRawResponse,
-    AsyncPlaygroundChatsResourceWithRawResponse,
-    PlaygroundChatsResourceWithStreamingResponse,
-    AsyncPlaygroundChatsResourceWithStreamingResponse,
-)
 from .scans import (
     ScansResource,
     AsyncScansResource,
@@ -77,6 +69,14 @@ from .knowledge_bases import (
     AsyncKnowledgeBasesResourceWithRawResponse,
     KnowledgeBasesResourceWithStreamingResponse,
     AsyncKnowledgeBasesResourceWithStreamingResponse,
+)
+from .playground_chats import (
+    PlaygroundChatsResource,
+    AsyncPlaygroundChatsResource,
+    PlaygroundChatsResourceWithRawResponse,
+    AsyncPlaygroundChatsResourceWithRawResponse,
+    PlaygroundChatsResourceWithStreamingResponse,
+    AsyncPlaygroundChatsResourceWithStreamingResponse,
 )
 from .scheduled_evaluations import (
     ScheduledEvaluationsResource,

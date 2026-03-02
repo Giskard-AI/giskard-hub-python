@@ -13,8 +13,6 @@ from ..types import (
     ScheduledEvaluation,
     EvaluationAPIResource,
     APIResponseWithIncluded,
-    ScheduledEvaluationLatestRunsAPIResource,
-    ScheduledEvaluationListRunsParams,
     scheduled_evaluation_list_params,
     scheduled_evaluation_create_params,
     scheduled_evaluation_update_params,

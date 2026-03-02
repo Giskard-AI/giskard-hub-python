@@ -7,14 +7,14 @@ import httpx
 from ..types import (
     dataset_list_params,
     dataset_create_params,
+    dataset_import_params,
     dataset_update_params,
     dataset_bulk_delete_params,
-    dataset_import_params,
     dataset_search_test_cases_params,
     dataset_generate_document_based_params,
     dataset_generate_scenario_based_params,
 )
-from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, FileTypes, omit, not_given
+from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource

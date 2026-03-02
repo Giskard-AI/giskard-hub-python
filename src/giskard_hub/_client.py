@@ -26,8 +26,8 @@ from .resources import (
     checks,
     datasets,
     projects,
-    playground_chats,
     knowledge_bases,
+    playground_chats,
     scheduled_evaluations,
 )
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
