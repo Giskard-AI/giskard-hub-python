@@ -848,9 +848,6 @@ class ScheduledEvaluationsResourceWithRawResponse:
         self.list_evaluations = to_raw_response_wrapper(
             scheduled_evaluations.list_evaluations,
         )
-        self.runs = to_raw_response_wrapper(
-            scheduled_evaluations.runs,
-        )
 
 
 class AsyncScheduledEvaluationsResourceWithRawResponse:
@@ -877,9 +874,6 @@ class AsyncScheduledEvaluationsResourceWithRawResponse:
         )
         self.list_evaluations = async_to_raw_response_wrapper(
             scheduled_evaluations.list_evaluations,
-        )
-        self.runs = async_to_raw_response_wrapper(
-            scheduled_evaluations.runs,
         )
 
 
@@ -908,9 +902,6 @@ class ScheduledEvaluationsResourceWithStreamingResponse:
         self.list_evaluations = to_streamed_response_wrapper(
             scheduled_evaluations.list_evaluations,
         )
-        self.runs = to_streamed_response_wrapper(
-            scheduled_evaluations.runs,
-        )
 
 
 class AsyncScheduledEvaluationsResourceWithStreamingResponse:
@@ -937,7 +928,4 @@ class AsyncScheduledEvaluationsResourceWithStreamingResponse:
         )
         self.list_evaluations = async_to_streamed_response_wrapper(
             scheduled_evaluations.list_evaluations,
-        )
-        self.runs = async_to_streamed_response_wrapper(
-            scheduled_evaluations.runs,
         )
