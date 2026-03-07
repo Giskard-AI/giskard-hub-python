@@ -195,7 +195,6 @@ from .metadata_params_param import MetadataParamsParam as MetadataParamsParam
 from .project_create_params import ProjectCreateParams as ProjectCreateParams
 from .project_update_params import ProjectUpdateParams as ProjectUpdateParams
 from .scenario_api_resource import ScenarioAPIResource as ScenarioAPIResource
-from .create_playground_chat import CreatePlaygroundChat as CreatePlaygroundChat
 from .error_execution_status import ErrorExecutionStatus as ErrorExecutionStatus
 from .evaluation_list_params import EvaluationListParams as EvaluationListParams
 
@@ -261,7 +260,6 @@ from .semantic_similarity_params import SemanticSimilarityParams as SemanticSimi
 # ==============================================================================
 from .bulk_move_test_cases_params import BulkMoveTestCasesParams as BulkMoveTestCasesParams
 from .playground_chat_list_params import PlaygroundChatListParams as PlaygroundChatListParams
-from .playground_chat_update_data import PlaygroundChatUpdateData as PlaygroundChatUpdateData
 from .agent_test_connection_params import AgentTestConnectionParams as AgentTestConnectionParams
 from .error_execution_status_param import ErrorExecutionStatusParam as ErrorExecutionStatusParam
 from .evaluation_run_single_params import EvaluationRunSingleParams as EvaluationRunSingleParams
@@ -297,6 +295,7 @@ from .agent_autofill_description_params import AgentAutofillDescriptionParams as
 
 # Dataset search types
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
+from .playground_chat_bulk_delete_params import PlaygroundChatBulkDeleteParams as PlaygroundChatBulkDeleteParams
 
 # ==============================================================================
 # Scheduled Evaluation Types
@@ -514,10 +513,9 @@ __all__ = [
     "CommentEditParams",
     # Playground chat types
     "PlaygroundChatAPIResource",
-    "CreatePlaygroundChat",
-    "PlaygroundChatUpdateData",
     "PlaygroundChatListParams",
     "PlaygroundChatRetrieveParams",
+    "PlaygroundChatBulkDeleteParams",
     # Scheduled evaluation runs types
     "ScheduledEvaluationLatestRunsAPIResource",
     "ScheduledEvaluationListRunsParams",

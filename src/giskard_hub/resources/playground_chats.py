@@ -5,10 +5,9 @@ from typing import List, Literal, Optional
 import httpx
 
 from ..types import (
-    CreatePlaygroundChat,
     PlaygroundChatListParams,
-    PlaygroundChatUpdateData,
     PlaygroundChatRetrieveParams,
+    PlaygroundChatBulkDeleteParams,
 )
 from .._types import Body, Query, Headers, NotGiven, SequenceNotStr, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -46,55 +45,6 @@ class PlaygroundChatsResource(SyncAPIResource):
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
         return PlaygroundChatsResourceWithStreamingResponse(self)
-
-    def create(
-        self,
-        *,
-        project_id: str,
-        name: str,
-        agent_id: Optional[str] | NotGiven = not_given,
-        description: Optional[str] | NotGiven = not_given,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[PlaygroundChatAPIResource]:
-        """
-        Create Playground Chat
-
-        Args:
-          project_id: Project ID to create the chat in
-
-          name: Name of the chat
-
-          agent_id: Agent ID to associate with the chat
-
-          description: Description of the chat
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        return self._post(
-            "/v2/playground-chats",
-            body=maybe_transform(
-                {
-                    "project_id": project_id,
-                    "name": name,
-                    "agent_id": agent_id,
-                    "description": description,
-                },
-                CreatePlaygroundChat,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[PlaygroundChatAPIResource],
-        )
 
     def list(
         self,
@@ -188,57 +138,27 @@ class PlaygroundChatsResource(SyncAPIResource):
             cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, object],
         )
 
-    def update(
+    async def delete(
         self,
         chat_id: str,
         *,
-        name: Optional[str] | NotGiven = not_given,
-        agent_id: Optional[str] | NotGiven = not_given,
-        description: Optional[str] | NotGiven = not_given,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[PlaygroundChatAPIResource]:
-        """
-        Update Playground Chat
-
-        Args:
-          chat_id: Chat ID to update
-
-          name: Name of the chat
-
-          agent_id: Agent ID to associate with the chat
-
-          description: Description of the chat
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
+    ) -> APIResponse[None]:
+        """Delete Playground Chat"""
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
-        return self._patch(
-            f"/v2/playground-chats/{chat_id}",
-            body=maybe_transform(
-                {
-                    "name": name,
-                    "agent_id": agent_id,
-                    "description": description,
-                },
-                PlaygroundChatUpdateData,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[PlaygroundChatAPIResource],
+        return self.bulk_delete(
+            chat_ids=[chat_id],
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
 
-    def delete_many(
+    def bulk_delete(
         self,
         *,
         chat_ids: Optional[SequenceNotStr[str]] | NotGiven = not_given,
@@ -268,7 +188,7 @@ class PlaygroundChatsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query={"chat_ids": chat_ids} if chat_ids is not not_given else {},
+                query=maybe_transform({"chat_ids": chat_ids}, PlaygroundChatBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -282,36 +202,6 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
     @cached_property
     def with_streaming_response(self) -> AsyncPlaygroundChatsResourceWithStreamingResponse:
         return AsyncPlaygroundChatsResourceWithStreamingResponse(self)
-
-    async def create(
-        self,
-        *,
-        project_id: str,
-        name: str,
-        agent_id: Optional[str] | NotGiven = not_given,
-        description: Optional[str] | NotGiven = not_given,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[PlaygroundChatAPIResource]:
-        """Create Playground Chat"""
-        return await self._post(
-            "/v2/playground-chats",
-            body=await async_maybe_transform(
-                {
-                    "project_id": project_id,
-                    "name": name,
-                    "agent_id": agent_id,
-                    "description": description,
-                },
-                CreatePlaygroundChat,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[PlaygroundChatAPIResource],
-        )
 
     async def list(
         self,
@@ -371,38 +261,27 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
             cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, object],
         )
 
-    async def update(
+    async def delete(
         self,
         chat_id: str,
         *,
-        name: Optional[str] | NotGiven = not_given,
-        agent_id: Optional[str] | NotGiven = not_given,
-        description: Optional[str] | NotGiven = not_given,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[PlaygroundChatAPIResource]:
-        """Update Playground Chat"""
+    ) -> APIResponse[None]:
+        """Delete Playground Chat"""
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
-        return await self._patch(
-            f"/v2/playground-chats/{chat_id}",
-            body=await async_maybe_transform(
-                {
-                    "name": name,
-                    "agent_id": agent_id,
-                    "description": description,
-                },
-                PlaygroundChatUpdateData,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[PlaygroundChatAPIResource],
+        return await self.bulk_delete(
+            chat_ids=[chat_id],
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
 
-    async def delete_many(
+    async def bulk_delete(
         self,
         *,
         chat_ids: Optional[SequenceNotStr[str]] | NotGiven = not_given,
@@ -419,7 +298,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query={"chat_ids": chat_ids} if chat_ids is not not_given else {},
+                query=await async_maybe_transform({"chat_ids": chat_ids}, PlaygroundChatBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -429,20 +308,17 @@ class PlaygroundChatsResourceWithRawResponse:
     def __init__(self, playground_chats: PlaygroundChatsResource) -> None:
         self._playground_chats = playground_chats
 
-        self.create = to_raw_response_wrapper(
-            playground_chats.create,
-        )
         self.list = to_raw_response_wrapper(
             playground_chats.list,
         )
         self.retrieve = to_raw_response_wrapper(
             playground_chats.retrieve,
         )
-        self.update = to_raw_response_wrapper(
-            playground_chats.update,
+        self.delete = to_raw_response_wrapper(
+            playground_chats.delete,
         )
-        self.delete_many = to_raw_response_wrapper(
-            playground_chats.delete_many,
+        self.bulk_delete = to_raw_response_wrapper(
+            playground_chats.bulk_delete,
         )
 
 
@@ -450,20 +326,17 @@ class AsyncPlaygroundChatsResourceWithRawResponse:
     def __init__(self, playground_chats: AsyncPlaygroundChatsResource) -> None:
         self._playground_chats = playground_chats
 
-        self.create = async_to_raw_response_wrapper(
-            playground_chats.create,
-        )
         self.list = async_to_raw_response_wrapper(
             playground_chats.list,
         )
         self.retrieve = async_to_raw_response_wrapper(
             playground_chats.retrieve,
         )
-        self.update = async_to_raw_response_wrapper(
-            playground_chats.update,
+        self.delete = async_to_raw_response_wrapper(
+            playground_chats.delete,
         )
-        self.delete_many = async_to_raw_response_wrapper(
-            playground_chats.delete_many,
+        self.bulk_delete = async_to_raw_response_wrapper(
+            playground_chats.bulk_delete,
         )
 
 
@@ -471,20 +344,17 @@ class PlaygroundChatsResourceWithStreamingResponse:
     def __init__(self, playground_chats: PlaygroundChatsResource) -> None:
         self._playground_chats = playground_chats
 
-        self.create = to_streamed_response_wrapper(
-            playground_chats.create,
-        )
         self.list = to_streamed_response_wrapper(
             playground_chats.list,
         )
         self.retrieve = to_streamed_response_wrapper(
             playground_chats.retrieve,
         )
-        self.update = to_streamed_response_wrapper(
-            playground_chats.update,
+        self.delete = to_streamed_response_wrapper(
+            playground_chats.delete,
         )
-        self.delete_many = to_streamed_response_wrapper(
-            playground_chats.delete_many,
+        self.bulk_delete = to_streamed_response_wrapper(
+            playground_chats.bulk_delete,
         )
 
 
@@ -492,18 +362,15 @@ class AsyncPlaygroundChatsResourceWithStreamingResponse:
     def __init__(self, playground_chats: AsyncPlaygroundChatsResource) -> None:
         self._playground_chats = playground_chats
 
-        self.create = async_to_streamed_response_wrapper(
-            playground_chats.create,
-        )
         self.list = async_to_streamed_response_wrapper(
             playground_chats.list,
         )
         self.retrieve = async_to_streamed_response_wrapper(
             playground_chats.retrieve,
         )
-        self.update = async_to_streamed_response_wrapper(
-            playground_chats.update,
+        self.delete = async_to_streamed_response_wrapper(
+            playground_chats.delete,
         )
-        self.delete_many = async_to_streamed_response_wrapper(
-            playground_chats.delete_many,
+        self.bulk_delete = async_to_streamed_response_wrapper(
+            playground_chats.bulk_delete,
         )
