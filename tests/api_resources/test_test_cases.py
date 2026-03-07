@@ -188,6 +188,7 @@ class TestTestCases:
                 }
             ],
             tags=["string"],
+            status="active",
         )
         assert_matches_type(APIResponse[TestCase], test_case, path=["response"])
 
