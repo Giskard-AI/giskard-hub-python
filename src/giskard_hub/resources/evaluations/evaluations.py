@@ -468,79 +468,6 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[List[CheckResultAPIResource]],
         )
 
-    def export_data(
-        self,
-        evaluation_id: str,
-        *,
-        format: Optional[str] | NotGiven = not_given,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> httpx.Response:
-        """
-        Export Evaluation Data
-
-        Args:
-          evaluation_id: The ID of the evaluation to export data from
-
-          format: Format for the export (optional)
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._get(
-            f"/v2/evaluations/{evaluation_id}/export-data",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query={"format": format} if format is not not_given else {},
-            ),
-            cast_to=httpx.Response,
-        )
-
-    def export_dataset(
-        self,
-        evaluation_id: str,
-        *,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> httpx.Response:
-        """
-        Export Evaluation Dataset
-
-        Args:
-          evaluation_id: The ID of the evaluation to export dataset from
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._get(
-            f"/v2/evaluations/{evaluation_id}/export-dataset",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=httpx.Response,
-        )
-
 
 class AsyncEvaluationsResource(AsyncAPIResource):
     @cached_property
@@ -966,51 +893,6 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[List[CheckResultAPIResource]],
         )
 
-    async def export_data(
-        self,
-        evaluation_id: str,
-        *,
-        format: Optional[str] | NotGiven = not_given,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> httpx.Response:
-        """Export Evaluation Data"""
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._get(
-            f"/v2/evaluations/{evaluation_id}/export-data",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query={"format": format} if format is not not_given else {},
-            ),
-            cast_to=httpx.Response,
-        )
-
-    async def export_dataset(
-        self,
-        evaluation_id: str,
-        *,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> httpx.Response:
-        """Export Evaluation Dataset"""
-        if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._get(
-            f"/v2/evaluations/{evaluation_id}/export-dataset",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=httpx.Response,
-        )
-
 
 class EvaluationsResourceWithRawResponse:
     def __init__(self, evaluations: EvaluationsResource) -> None:
@@ -1042,12 +924,6 @@ class EvaluationsResourceWithRawResponse:
         )
         self.run_single = to_raw_response_wrapper(
             evaluations.run_single,
-        )
-        self.export_data = to_raw_response_wrapper(
-            evaluations.export_data,
-        )
-        self.export_dataset = to_raw_response_wrapper(
-            evaluations.export_dataset,
         )
 
     @cached_property
@@ -1086,12 +962,6 @@ class AsyncEvaluationsResourceWithRawResponse:
         self.run_single = async_to_raw_response_wrapper(
             evaluations.run_single,
         )
-        self.export_data = async_to_raw_response_wrapper(
-            evaluations.export_data,
-        )
-        self.export_dataset = async_to_raw_response_wrapper(
-            evaluations.export_dataset,
-        )
 
     @cached_property
     def results(self) -> AsyncResultsResourceWithRawResponse:
@@ -1129,12 +999,6 @@ class EvaluationsResourceWithStreamingResponse:
         self.run_single = to_streamed_response_wrapper(
             evaluations.run_single,
         )
-        self.export_data = to_streamed_response_wrapper(
-            evaluations.export_data,
-        )
-        self.export_dataset = to_streamed_response_wrapper(
-            evaluations.export_dataset,
-        )
 
     @cached_property
     def results(self) -> ResultsResourceWithStreamingResponse:
@@ -1171,12 +1035,6 @@ class AsyncEvaluationsResourceWithStreamingResponse:
         )
         self.run_single = async_to_streamed_response_wrapper(
             evaluations.run_single,
-        )
-        self.export_data = async_to_streamed_response_wrapper(
-            evaluations.export_data,
-        )
-        self.export_dataset = async_to_streamed_response_wrapper(
-            evaluations.export_dataset,
         )
 
     @cached_property
