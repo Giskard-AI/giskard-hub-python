@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
 
 from .._models import BaseModel
+from .user_api_reference import UserAPIReference
+from .agent_api_reference import AgentAPIReference
+from .chat_message_with_metadata import ChatMessageWithMetadata
 
 __all__ = ["PlaygroundChatAPIResource"]
 
@@ -13,12 +16,12 @@ class PlaygroundChatAPIResource(BaseModel):
 
     project_id: str
 
-    name: str
-
     created_at: datetime
 
     updated_at: datetime
 
-    agent_id: Optional[str] = None
+    user: Optional[UserAPIReference] = None
 
-    description: Optional[str] = None
+    agent: Optional[AgentAPIReference] = None
+
+    messages: List[ChatMessageWithMetadata]

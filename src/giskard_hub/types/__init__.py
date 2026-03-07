@@ -147,6 +147,7 @@ from .scan_create_params import ScanCreateParams as ScanCreateParams
 # Task parameters
 from .task_create_params import TaskCreateParams as TaskCreateParams
 from .task_update_params import TaskUpdateParams as TaskUpdateParams
+from .user_api_reference import UserAPIReference as UserAPIReference
 
 # ==============================================================================
 # Agent Types
@@ -373,6 +374,7 @@ __all__ = [
     "TestCaseEvaluationReference",
     # Agent types
     "AgentAPIReference",
+    "UserAPIReference",
     "AgentCreateParams",
     "AgentUpdateParams",
     "AgentListParams",

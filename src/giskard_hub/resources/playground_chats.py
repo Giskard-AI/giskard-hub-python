@@ -5,11 +5,12 @@ from typing import List, Literal, Optional
 import httpx
 
 from ..types import (
+    Agent,
     PlaygroundChatListParams,
     PlaygroundChatRetrieveParams,
     PlaygroundChatBulkDeleteParams,
 )
-from .._types import Body, Query, Headers, NotGiven, SequenceNotStr, not_given
+from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -50,25 +51,25 @@ class PlaygroundChatsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        include: Optional[List[Literal["agent"]]] | NotGiven = not_given,
-        limit: Optional[int] | NotGiven = not_given,
-        offset: Optional[int] | NotGiven = not_given,
+        include: Optional[List[Literal["agent"]]] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[PlaygroundChatAPIResource], object]:
+    ) -> APIResponseWithIncluded[List[PlaygroundChatAPIResource], Agent]:
         """
         List Playground Chats
 
         Args:
-          project_id: Project ID to list chats for
+          project_id: Project ID to list playground chats for
 
           include: Related resources to include in the response
 
-          limit: Maximum number of chats to return
+          limit: Maximum number of playground chats to return
 
-          offset: Offset for pagination
+          offset: Offset for pagination of playground chats
 
           extra_headers: Send extra headers
 
@@ -95,24 +96,24 @@ class PlaygroundChatsResource(SyncAPIResource):
                     PlaygroundChatListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[PlaygroundChatAPIResource], object],
+            cast_to=APIResponseWithIncluded[List[PlaygroundChatAPIResource], Agent],
         )
 
     def retrieve(
         self,
         chat_id: str,
         *,
-        include: Optional[List[Literal["agent"]]] | NotGiven = not_given,
+        include: Optional[List[Literal["agent"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[PlaygroundChatAPIResource, object]:
+    ) -> APIResponseWithIncluded[PlaygroundChatAPIResource, Agent]:
         """
         Get Playground Chat
 
         Args:
-          chat_id: Chat ID to retrieve
+          chat_id: Playground chat ID to retrieve
 
           include: Related resources to include in the response
 
@@ -135,7 +136,7 @@ class PlaygroundChatsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, PlaygroundChatRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, object],
+            cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, Agent],
         )
 
     async def delete(
@@ -147,7 +148,20 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[None]:
-        """Delete Playground Chat"""
+        """
+        Delete Playground Chat
+
+        Args:
+          chat_id: Playground chat ID to delete
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
         return self.bulk_delete(
@@ -161,7 +175,7 @@ class PlaygroundChatsResource(SyncAPIResource):
     def bulk_delete(
         self,
         *,
-        chat_ids: Optional[SequenceNotStr[str]] | NotGiven = not_given,
+        chat_ids: SequenceNotStr[str],
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -171,7 +185,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         Delete Playground Chats
 
         Args:
-          chat_ids: List of chat IDs to delete
+          chat_ids: List of playground chat IDs to delete
 
           extra_headers: Send extra headers
 
@@ -207,15 +221,34 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        include: Optional[List[Literal["agent"]]] | NotGiven = not_given,
-        limit: Optional[int] | NotGiven = not_given,
-        offset: Optional[int] | NotGiven = not_given,
+        include: Optional[List[Literal["agent"]]] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[PlaygroundChatAPIResource], object]:
-        """List Playground Chats"""
+    ) -> APIResponseWithIncluded[List[PlaygroundChatAPIResource], Agent]:
+        """
+        List Playground Chats
+
+        Args:
+          project_id: Project ID to list playground chats for
+
+          include: Related resources to include in the response
+
+          limit: Maximum number of playground chats to return
+
+          offset: Offset for pagination of playground chats
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._get(
             "/v2/playground-chats",
             options=make_request_options(
@@ -233,20 +266,35 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
                     PlaygroundChatListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[PlaygroundChatAPIResource], object],
+            cast_to=APIResponseWithIncluded[List[PlaygroundChatAPIResource], Agent],
         )
 
     async def retrieve(
         self,
         chat_id: str,
         *,
-        include: Optional[List[Literal["agent"]]] | NotGiven = not_given,
+        include: Optional[List[Literal["agent"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[PlaygroundChatAPIResource, object]:
-        """Get Playground Chat"""
+    ) -> APIResponseWithIncluded[PlaygroundChatAPIResource, Agent]:
+        """
+        Get Playground Chat
+
+        Args:
+          chat_id: Playground chat ID to retrieve
+
+          include: Related resources to include in the response
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
         return await self._get(
@@ -258,7 +306,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, PlaygroundChatRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, object],
+            cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, Agent],
         )
 
     async def delete(
@@ -270,7 +318,20 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[None]:
-        """Delete Playground Chat"""
+        """
+        Delete Playground Chat
+
+        Args:
+          chat_id: Playground chat ID to delete
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
         return await self.bulk_delete(
@@ -284,13 +345,26 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
     async def bulk_delete(
         self,
         *,
-        chat_ids: Optional[SequenceNotStr[str]] | NotGiven = not_given,
+        chat_ids: SequenceNotStr[str],
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[None]:
-        """Delete Playground Chats"""
+        """
+        Delete Playground Chats
+
+        Args:
+          chat_ids: List of playground chat IDs to delete
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._delete(
             "/v2/playground-chats",
             options=make_request_options(
