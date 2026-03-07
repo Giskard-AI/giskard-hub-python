@@ -113,12 +113,12 @@ class DatasetsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[Dataset]:
         """
-        Import Dataset
+        Upload dataset from a file
 
         Args:
           project_id: Project ID to import the dataset into
 
-          file: File to import
+          file: File to upload
 
           dataset_id: Dataset ID to update (optional)
 
@@ -700,7 +700,26 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[Dataset]:
-        """Import Dataset"""
+        """
+        Upload dataset from a file
+
+        Args:
+          project_id: Project ID to import the dataset into
+
+          file: File to upload
+
+          dataset_id: Dataset ID to update (optional)
+
+          name: Name of the dataset (optional)
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         body = deepcopy_minimal(
             {
                 "file": file,
