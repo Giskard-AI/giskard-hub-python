@@ -350,6 +350,53 @@ class TestTestCases:
 
         assert cast(Any, response.is_closed) is True
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_bulk_move(self, client: HubClient) -> None:
+        test_case = client.test_cases.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_bulk_move_with_all_params(self, client: HubClient) -> None:
+        test_case = client.test_cases.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            duplicate=True,
+        )
+        assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_bulk_move(self, client: HubClient) -> None:
+        response = client.test_cases.with_raw_response.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        test_case = response.parse()
+        assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_bulk_move(self, client: HubClient) -> None:
+        with client.test_cases.with_streaming_response.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            test_case = response.parse()
+            assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
 
 class TestAsyncTestCases:
     parametrize = pytest.mark.parametrize(
@@ -686,5 +733,52 @@ class TestAsyncTestCases:
 
             test_case = await response.parse()
             assert_matches_type(APIResponse[List[TestCase]], test_case, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_bulk_move(self, async_client: AsyncHubClient) -> None:
+        test_case = await async_client.test_cases.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_bulk_move_with_all_params(self, async_client: AsyncHubClient) -> None:
+        test_case = await async_client.test_cases.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            duplicate=True,
+        )
+        assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_bulk_move(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.test_cases.with_raw_response.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        test_case = await response.parse()
+        assert_matches_type(APIResponse[None], test_case, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_bulk_move(self, async_client: AsyncHubClient) -> None:
+        async with async_client.test_cases.with_streaming_response.bulk_move(
+            test_case_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            test_case = await response.parse()
+            assert_matches_type(APIResponse[None], test_case, path=["response"])
 
         assert cast(Any, response.is_closed) is True

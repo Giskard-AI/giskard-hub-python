@@ -27,6 +27,7 @@ from .resources import (
     datasets,
     projects,
     knowledge_bases,
+    playground_chats,
     scheduled_evaluations,
 )
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
@@ -59,6 +60,7 @@ class HubClient(SyncAPIClient):
     datasets: datasets.DatasetsResource
     evaluations: evaluations.EvaluationsResource
     knowledge_bases: knowledge_bases.KnowledgeBasesResource
+    playground_chats: playground_chats.PlaygroundChatsResource
     projects: projects.ProjectsResource
     scans: scans.ScansResource
     scheduled_evaluations: scheduled_evaluations.ScheduledEvaluationsResource
@@ -127,6 +129,7 @@ class HubClient(SyncAPIClient):
         self.datasets = datasets.DatasetsResource(self)
         self.evaluations = evaluations.EvaluationsResource(self)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResource(self)
+        self.playground_chats = playground_chats.PlaygroundChatsResource(self)
         self.projects = projects.ProjectsResource(self)
         self.scans = scans.ScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(self)
@@ -247,6 +250,7 @@ class AsyncHubClient(AsyncAPIClient):
     datasets: datasets.AsyncDatasetsResource
     evaluations: evaluations.AsyncEvaluationsResource
     knowledge_bases: knowledge_bases.AsyncKnowledgeBasesResource
+    playground_chats: playground_chats.AsyncPlaygroundChatsResource
     projects: projects.AsyncProjectsResource
     scans: scans.AsyncScansResource
     scheduled_evaluations: scheduled_evaluations.AsyncScheduledEvaluationsResource
@@ -315,6 +319,7 @@ class AsyncHubClient(AsyncAPIClient):
         self.datasets = datasets.AsyncDatasetsResource(self)
         self.evaluations = evaluations.AsyncEvaluationsResource(self)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResource(self)
+        self.playground_chats = playground_chats.AsyncPlaygroundChatsResource(self)
         self.projects = projects.AsyncProjectsResource(self)
         self.scans = scans.AsyncScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
@@ -438,6 +443,7 @@ class HubClientWithRawResponse:
         self.datasets = datasets.DatasetsResourceWithRawResponse(client.datasets)
         self.evaluations = evaluations.EvaluationsResourceWithRawResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.PlaygroundChatsResourceWithRawResponse(client.playground_chats)
         self.projects = projects.ProjectsResourceWithRawResponse(client.projects)
         self.scans = scans.ScansResourceWithRawResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithRawResponse(
@@ -455,6 +461,7 @@ class AsyncHubClientWithRawResponse:
         self.datasets = datasets.AsyncDatasetsResourceWithRawResponse(client.datasets)
         self.evaluations = evaluations.AsyncEvaluationsResourceWithRawResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.AsyncPlaygroundChatsResourceWithRawResponse(client.playground_chats)
         self.projects = projects.AsyncProjectsResourceWithRawResponse(client.projects)
         self.scans = scans.AsyncScansResourceWithRawResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithRawResponse(
@@ -472,6 +479,7 @@ class HubClientWithStreamedResponse:
         self.datasets = datasets.DatasetsResourceWithStreamingResponse(client.datasets)
         self.evaluations = evaluations.EvaluationsResourceWithStreamingResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.PlaygroundChatsResourceWithStreamingResponse(client.playground_chats)
         self.projects = projects.ProjectsResourceWithStreamingResponse(client.projects)
         self.scans = scans.ScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithStreamingResponse(
@@ -489,6 +497,9 @@ class AsyncHubClientWithStreamedResponse:
         self.datasets = datasets.AsyncDatasetsResourceWithStreamingResponse(client.datasets)
         self.evaluations = evaluations.AsyncEvaluationsResourceWithStreamingResponse(client.evaluations)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
+        self.playground_chats = playground_chats.AsyncPlaygroundChatsResourceWithStreamingResponse(
+            client.playground_chats
+        )
         self.projects = projects.AsyncProjectsResourceWithStreamingResponse(client.projects)
         self.scans = scans.AsyncScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithStreamingResponse(

@@ -71,6 +71,54 @@ class TestDatasets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
+    def test_method_upload(self, client: HubClient) -> None:
+        dataset = client.datasets.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+        )
+        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_upload_with_all_params(self, client: HubClient) -> None:
+        dataset = client.datasets.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="my-dataset",
+        )
+        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_upload(self, client: HubClient) -> None:
+        response = client.datasets.with_raw_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        dataset = response.parse()
+        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_upload(self, client: HubClient) -> None:
+        with client.datasets.with_streaming_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            dataset = response.parse()
+            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
     def test_method_retrieve(self, client: HubClient) -> None:
         dataset = client.datasets.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -609,6 +657,54 @@ class TestAsyncDatasets:
         async with async_client.datasets.with_streaming_response.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            dataset = await response.parse()
+            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_upload(self, async_client: AsyncHubClient) -> None:
+        dataset = await async_client.datasets.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+        )
+        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_upload_with_all_params(self, async_client: AsyncHubClient) -> None:
+        dataset = await async_client.datasets.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="my-dataset",
+        )
+        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_upload(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.datasets.with_raw_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        dataset = await response.parse()
+        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_upload(self, async_client: AsyncHubClient) -> None:
+        async with async_client.datasets.with_streaming_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            file=b"raw file contents",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
