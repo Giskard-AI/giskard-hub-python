@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional, TypedDict
+from typing import Literal, Iterable, Optional, TypedDict
 from typing_extensions import Required
 
 from .._types import SequenceNotStr
@@ -19,5 +19,7 @@ class TestCaseCreateParams(TypedDict, total=False):
     checks: Iterable[TestCaseCheckConfigParam]
 
     demo_output: Optional[ChatMessageWithMetadataParam]
+
+    status: Optional[Literal["active", "draft"]]
 
     tags: SequenceNotStr[str]

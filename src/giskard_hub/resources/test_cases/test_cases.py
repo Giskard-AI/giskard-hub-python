@@ -72,6 +72,7 @@ class TestCasesResource(SyncAPIResource):
         messages: Iterable[ChatMessageParam],
         checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -92,6 +93,8 @@ class TestCasesResource(SyncAPIResource):
 
           demo_output: Agent output
 
+          status: Status of the test case
+
           tags: Tags to apply to the test case
 
           extra_headers: Send extra headers
@@ -110,6 +113,7 @@ class TestCasesResource(SyncAPIResource):
                     "messages": messages,
                     "checks": checks,
                     "demo_output": demo_output,
+                    "status": status,
                     "tags": tags,
                 },
                 test_case_create_params.TestCaseCreateParams,
@@ -425,6 +429,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         messages: Iterable[ChatMessageParam],
         checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -445,6 +450,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           demo_output: Agent output
 
+          status: Status of the test case
+
           tags: Tags to apply to the test case
 
           extra_headers: Send extra headers
@@ -463,6 +470,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "messages": messages,
                     "checks": checks,
                     "demo_output": demo_output,
+                    "status": status,
                     "tags": tags,
                 },
                 test_case_create_params.TestCaseCreateParams,
