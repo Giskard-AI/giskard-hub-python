@@ -15,7 +15,7 @@ from ..types import (
     dataset_generate_scenario_based_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
-from .._utils import extract_files, maybe_transform, async_maybe_transform
+from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
@@ -100,7 +100,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-    def import_dataset(
+    def upload(
         self,
         *,
         project_id: str,
@@ -132,17 +132,19 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        body = maybe_transform(
+        body = deepcopy_minimal(
             {
                 "file": file,
-            },
-            object,
+            }
         )
+
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
+
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
+
         return self._post(
             "/v2/datasets/import",
-            body=body,
+            body=maybe_transform(body, dataset_import_params.DatasetImportParams),
             files=files,
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -686,7 +688,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-    async def import_dataset(
+    async def upload(
         self,
         *,
         project_id: str,
@@ -699,17 +701,16 @@ class AsyncDatasetsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[Dataset]:
         """Import Dataset"""
-        body = await async_maybe_transform(
+        body = deepcopy_minimal(
             {
                 "file": file,
-            },
-            object,
+            }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return await self._post(
             "/v2/datasets/import",
-            body=body,
+            body=await async_maybe_transform(body, dataset_import_params.DatasetImportParams),
             files=files,
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1195,8 +1196,8 @@ class DatasetsResourceWithRawResponse:
         self.create = to_raw_response_wrapper(
             datasets.create,
         )
-        self.import_dataset = to_raw_response_wrapper(
-            datasets.import_dataset,
+        self.upload = to_raw_response_wrapper(
+            datasets.upload,
         )
         self.retrieve = to_raw_response_wrapper(
             datasets.retrieve,
@@ -1237,8 +1238,8 @@ class AsyncDatasetsResourceWithRawResponse:
         self.create = async_to_raw_response_wrapper(
             datasets.create,
         )
-        self.import_dataset = async_to_raw_response_wrapper(
-            datasets.import_dataset,
+        self.upload = async_to_raw_response_wrapper(
+            datasets.upload,
         )
         self.retrieve = async_to_raw_response_wrapper(
             datasets.retrieve,
@@ -1279,8 +1280,8 @@ class DatasetsResourceWithStreamingResponse:
         self.create = to_streamed_response_wrapper(
             datasets.create,
         )
-        self.import_dataset = to_streamed_response_wrapper(
-            datasets.import_dataset,
+        self.upload = to_streamed_response_wrapper(
+            datasets.upload,
         )
         self.retrieve = to_streamed_response_wrapper(
             datasets.retrieve,
@@ -1321,8 +1322,8 @@ class AsyncDatasetsResourceWithStreamingResponse:
         self.create = async_to_streamed_response_wrapper(
             datasets.create,
         )
-        self.import_dataset = async_to_streamed_response_wrapper(
-            datasets.import_dataset,
+        self.upload = async_to_streamed_response_wrapper(
+            datasets.upload,
         )
         self.retrieve = async_to_streamed_response_wrapper(
             datasets.retrieve,

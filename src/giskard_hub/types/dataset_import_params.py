@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import TypedDict
+from typing_extensions import Required, TypedDict
+
+from .._types import FileTypes
 
 __all__ = ["DatasetImportParams"]
 
 
 class DatasetImportParams(TypedDict, total=False):
-    project_id: str
+    file: Required[FileTypes]
+
+    project_id: Required[str]
 
     dataset_id: Optional[str]
 
