@@ -308,9 +308,6 @@ from .scheduled_evaluation_create_params import ScheduledEvaluationCreateParams 
 from .scheduled_evaluation_update_params import ScheduledEvaluationUpdateParams as ScheduledEvaluationUpdateParams
 from .dataset_generate_adversarial_params import DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams
 from .scheduled_evaluation_retrieve_params import ScheduledEvaluationRetrieveParams as ScheduledEvaluationRetrieveParams
-from .scheduled_evaluation_list_runs_params import (
-    ScheduledEvaluationListRunsParams as ScheduledEvaluationListRunsParams,
-)
 from .dataset_generate_document_based_params import (
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
 )
@@ -331,13 +328,6 @@ from .knowledge_base_document_detail_api_resource import (
 )
 from .scheduled_evaluation_list_evaluations_params import (
     ScheduledEvaluationListEvaluationsParams as ScheduledEvaluationListEvaluationsParams,
-)
-
-# ==============================================================================
-# Scheduled Evaluation Runs Types
-# ==============================================================================
-from .scheduled_evaluation_latest_runs_api_resource import (
-    ScheduledEvaluationLatestRunsAPIResource as ScheduledEvaluationLatestRunsAPIResource,
 )
 
 # Knowledge base responses
@@ -518,9 +508,6 @@ __all__ = [
     "PlaygroundChatListParams",
     "PlaygroundChatRetrieveParams",
     "PlaygroundChatBulkDeleteParams",
-    # Scheduled evaluation runs types
-    "ScheduledEvaluationLatestRunsAPIResource",
-    "ScheduledEvaluationListRunsParams",
     # Dataset import types
     "DatasetImportParams",
     # Test case bulk operations types
