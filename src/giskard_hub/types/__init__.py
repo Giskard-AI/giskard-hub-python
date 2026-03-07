@@ -72,7 +72,6 @@ from .task_api_resource import TaskAPIResource as TaskAPIResource
 from .audit_api_resource import AuditAPIResource as AuditAPIResource
 from .chat_message_param import ChatMessageParam as ChatMessageParam
 from .check_api_resource import CheckAPIResource as CheckAPIResource
-from .context_annotation import ContextAnnotation as ContextAnnotation
 from .correctness_params import CorrectnessParams as CorrectnessParams
 from .model_output_param import ModelOutputParam as ModelOutputParam
 from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
@@ -247,7 +246,6 @@ __all__ = [
     "CheckListParams",
     # Check/evaluation configuration
     "ConformityParams",
-    "ContextAnnotation",
     "OutputAnnotation",
     "TaskAPIResource",
     # API resources and params
