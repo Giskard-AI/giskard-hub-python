@@ -319,8 +319,18 @@ class TestScenarios:
     def test_method_preview(self, client: HubClient) -> None:
         scenario = client.projects.scenarios.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+        )
+        assert_matches_type(APIResponse[ScenarioPreviewAPIResource], scenario, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_preview_with_all_params(self, client: HubClient) -> None:
+        scenario = client.projects.scenarios.preview(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            rules=["rule1", "rule2"],
         )
         assert_matches_type(APIResponse[ScenarioPreviewAPIResource], scenario, path=["response"])
 
@@ -329,7 +339,6 @@ class TestScenarios:
     def test_raw_response_preview(self, client: HubClient) -> None:
         response = client.projects.scenarios.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         )
 
@@ -343,7 +352,6 @@ class TestScenarios:
     def test_streaming_response_preview(self, client: HubClient) -> None:
         with client.projects.scenarios.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         ) as response:
             assert not response.is_closed
@@ -363,7 +371,6 @@ class TestScenarios:
         ):
             client.projects.scenarios.with_raw_response.preview(
                 project_id="",
-                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 description="description",
             )
 
@@ -676,8 +683,18 @@ class TestAsyncScenarios:
     async def test_method_preview(self, async_client: AsyncHubClient) -> None:
         scenario = await async_client.projects.scenarios.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+        )
+        assert_matches_type(APIResponse[ScenarioPreviewAPIResource], scenario, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_preview_with_all_params(self, async_client: AsyncHubClient) -> None:
+        scenario = await async_client.projects.scenarios.preview(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            rules=["rule1", "rule2"],
         )
         assert_matches_type(APIResponse[ScenarioPreviewAPIResource], scenario, path=["response"])
 
@@ -686,7 +703,6 @@ class TestAsyncScenarios:
     async def test_raw_response_preview(self, async_client: AsyncHubClient) -> None:
         response = await async_client.projects.scenarios.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         )
 
@@ -700,7 +716,6 @@ class TestAsyncScenarios:
     async def test_streaming_response_preview(self, async_client: AsyncHubClient) -> None:
         async with async_client.projects.scenarios.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         ) as response:
             assert not response.is_closed
@@ -720,6 +735,5 @@ class TestAsyncScenarios:
         ):
             await async_client.projects.scenarios.with_raw_response.preview(
                 project_id="",
-                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 description="description",
             )

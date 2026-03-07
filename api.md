@@ -84,6 +84,7 @@ from giskard_hub.types import (
 Methods:
 
 - <code title="post /v2/datasets">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">create</a>(\*\*<a href="src/giskard_hub/types/dataset_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]</code>
+- <code title="post /v2/datasets/import">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">upload</a>(\*\*<a href="src/giskard_hub/types/dataset_import_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]</code>
 - <code title="get /v2/datasets/{dataset_id}">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">retrieve</a>(dataset_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]</code>
 - <code title="patch /v2/datasets/{dataset_id}">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">update</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]</code>
 - <code title="get /v2/datasets">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list</a>(\*\*<a href="src/giskard_hub/types/dataset_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
@@ -332,6 +333,7 @@ Methods:
 - <code title="delete /v2/test-cases/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">delete</a>(test_case_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/test-cases">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/test_case_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="patch /v2/test-cases">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_update</a>(\*\*<a href="src/giskard_hub/types/test_case_bulk_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
+- <code title="post /v2/test-cases/bulk-move">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_move</a>(\*\*<a href="src/giskard_hub/types/bulk_move_test_cases_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 
 ## Comments
 
@@ -371,3 +373,23 @@ Methods:
 - <code title="get /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">list</a>(\*\*<a href="src/giskard_hub/types/task_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]]</code>
 - <code title="delete /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">delete</a>(task_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/task_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
+
+# PlaygroundChats
+
+Types:
+
+```python
+from giskard_hub.types import (
+    Agent,
+    PlaygroundChatAPIResource,
+    APIResponse,
+    APIResponseWithIncluded,
+)
+```
+
+Methods:
+
+- <code title="get /v2/playground-chats">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">list</a>(\*\*<a href="src/giskard_hub/types/playground_chat_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/playground_chat_api_resource.py">PlaygroundChatAPIResource</a>], <a href="./src/giskard_hub/types/agent.py">Agent</a>]</code>
+- <code title="get /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">retrieve</a>(chat_id, \*\*<a href="src/giskard_hub/types/playground_chat_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/playground_chat_api_resource.py">PlaygroundChatAPIResource</a>, <a href="./src/giskard_hub/types/agent.py">Agent</a>]</code>
+- <code title="delete /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">delete</a>(chat_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
+- <code title="delete /v2/playground-chats">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/playground_chat_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
