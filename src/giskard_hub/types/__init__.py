@@ -255,6 +255,11 @@ from .evaluation_retrieve_params import EvaluationRetrieveParams as EvaluationRe
 from .knowledge_base_list_params import KnowledgeBaseListParams as KnowledgeBaseListParams
 from .project_bulk_delete_params import ProjectBulkDeleteParams as ProjectBulkDeleteParams
 from .semantic_similarity_params import SemanticSimilarityParams as SemanticSimilarityParams
+
+# ==============================================================================
+# Test Case Bulk Operations Types
+# ==============================================================================
+from .bulk_move_test_cases_params import BulkMoveTestCasesParams as BulkMoveTestCasesParams
 from .playground_chat_list_params import PlaygroundChatListParams as PlaygroundChatListParams
 from .playground_chat_update_data import PlaygroundChatUpdateData as PlaygroundChatUpdateData
 from .agent_test_connection_params import AgentTestConnectionParams as AgentTestConnectionParams
@@ -289,11 +294,6 @@ from .dataset_search_test_cases_params import DatasetSearchTestCasesParams as Da
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
-
-# ==============================================================================
-# Test Case Bulk Operations Types
-# ==============================================================================
-from .bulk_move_chat_test_cases_request import BulkMoveChatTestCasesRequest as BulkMoveChatTestCasesRequest
 
 # Dataset search types
 from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
@@ -524,5 +524,5 @@ __all__ = [
     # Dataset import types
     "DatasetImportParams",
     # Test case bulk operations types
-    "BulkMoveChatTestCasesRequest",
+    "BulkMoveTestCasesParams",
 ]

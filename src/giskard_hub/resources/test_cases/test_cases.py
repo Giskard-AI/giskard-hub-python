@@ -5,7 +5,7 @@ from typing import List, Literal, Iterable, Optional
 import httpx
 
 from ...types import (
-    BulkMoveChatTestCasesRequest,
+    BulkMoveTestCasesParams,
     test_case_create_params,
     test_case_update_params,
     test_case_bulk_delete_params,
@@ -352,7 +352,8 @@ class TestCasesResource(SyncAPIResource):
         self,
         *,
         test_case_ids: List[str],
-        target_dataset_id: str,
+        dataset_id: str,
+        duplicate: Optional[bool] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -364,7 +365,9 @@ class TestCasesResource(SyncAPIResource):
         Args:
           test_case_ids: List of test case IDs to move
 
-          target_dataset_id: Target dataset ID to move test cases to
+          dataset_id: Target dataset ID to move test cases to
+
+          duplicate: If true, keep a copy of the test cases in the original dataset. Default is true.
 
           extra_headers: Send extra headers
 
@@ -378,10 +381,11 @@ class TestCasesResource(SyncAPIResource):
             "/v2/test-cases/bulk-move",
             body=maybe_transform(
                 {
-                    "test_case_ids": test_case_ids,
-                    "target_dataset_id": target_dataset_id,
+                    "chat_test_case_ids": test_case_ids,
+                    "dataset_id": dataset_id,
+                    "duplicate": duplicate,
                 },
-                BulkMoveChatTestCasesRequest,
+                BulkMoveTestCasesParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -701,21 +705,40 @@ class AsyncTestCasesResource(AsyncAPIResource):
         self,
         *,
         test_case_ids: List[str],
-        target_dataset_id: str,
+        dataset_id: str,
+        duplicate: Optional[bool] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIResponse[None]:
-        """Bulk Move Test Cases"""
+        """
+        Bulk Move Test Cases
+
+        Args:
+          test_case_ids: List of test case IDs to move
+
+          dataset_id: Target dataset ID to move test cases to
+
+          duplicate: If true, keep a copy of the test cases in the original dataset. Default is true.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._post(
             "/v2/test-cases/bulk-move",
             body=await async_maybe_transform(
                 {
-                    "test_case_ids": test_case_ids,
-                    "target_dataset_id": target_dataset_id,
+                    "chat_test_case_ids": test_case_ids,
+                    "dataset_id": dataset_id,
+                    "duplicate": duplicate,
                 },
-                BulkMoveChatTestCasesRequest,
+                BulkMoveTestCasesParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
