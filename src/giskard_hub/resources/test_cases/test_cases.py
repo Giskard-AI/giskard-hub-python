@@ -72,6 +72,7 @@ class TestCasesResource(SyncAPIResource):
         messages: Iterable[ChatMessageParam],
         checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -92,6 +93,8 @@ class TestCasesResource(SyncAPIResource):
 
           demo_output: Agent output
 
+          status: Status of the test case
+
           tags: Tags to apply to the test case
 
           extra_headers: Send extra headers
@@ -110,6 +113,7 @@ class TestCasesResource(SyncAPIResource):
                     "messages": messages,
                     "checks": checks,
                     "demo_output": demo_output,
+                    "status": status,
                     "tags": tags,
                 },
                 test_case_create_params.TestCaseCreateParams,
@@ -164,6 +168,7 @@ class TestCasesResource(SyncAPIResource):
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -187,6 +192,8 @@ class TestCasesResource(SyncAPIResource):
 
           tags: Tags to update the test case
 
+          status: Status to update of the test case
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -206,6 +213,7 @@ class TestCasesResource(SyncAPIResource):
                     "demo_output": demo_output,
                     "messages": messages,
                     "tags": tags,
+                    "status": status,
                 },
                 test_case_update_params.TestCaseUpdateParams,
             ),
@@ -425,6 +433,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         messages: Iterable[ChatMessageParam],
         checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -445,6 +454,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           demo_output: Agent output
 
+          status: Status of the test case
+
           tags: Tags to apply to the test case
 
           extra_headers: Send extra headers
@@ -463,6 +474,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "messages": messages,
                     "checks": checks,
                     "demo_output": demo_output,
+                    "status": status,
                     "tags": tags,
                 },
                 test_case_create_params.TestCaseCreateParams,
@@ -517,6 +529,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -540,6 +553,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           tags: Tags to update the test case
 
+          status: Status to update of the test case
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -559,6 +574,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "demo_output": demo_output,
                     "messages": messages,
                     "tags": tags,
+                    "status": status,
                 },
                 test_case_update_params.TestCaseUpdateParams,
             ),

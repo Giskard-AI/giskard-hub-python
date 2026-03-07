@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional, TypedDict
+from typing import Literal, Iterable, Optional, TypedDict
 
 from .._types import SequenceNotStr
 from .chat_message_param import ChatMessageParam
@@ -20,3 +20,5 @@ class TestCaseUpdateParams(TypedDict, total=False):
     messages: Optional[Iterable[ChatMessageParam]]
 
     tags: Optional[SequenceNotStr[str]]
+
+    status: Optional[Literal["active", "draft"]]

@@ -62,6 +62,7 @@ class TestTestCases:
                 "role": "role",
                 "metadata": {"foo": "bar"},
             },
+            status="active",
             tags=["string"],
         )
         assert_matches_type(APIResponse[TestCase], test_case, path=["response"])
@@ -187,6 +188,7 @@ class TestTestCases:
                 }
             ],
             tags=["string"],
+            status="active",
         )
         assert_matches_type(APIResponse[TestCase], test_case, path=["response"])
 
@@ -448,6 +450,7 @@ class TestAsyncTestCases:
                 "role": "role",
                 "metadata": {"foo": "bar"},
             },
+            status="active",
             tags=["string"],
         )
         assert_matches_type(APIResponse[TestCase], test_case, path=["response"])
