@@ -333,7 +333,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None]:
+    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -376,7 +376,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                     knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None],
+            cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None],
         )
 
     def retrieve_document(
@@ -723,7 +723,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None]:
+    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -766,7 +766,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[KnowledgeBaseDocumentRowAPIResource], None],
+            cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None],
         )
 
     async def retrieve_document(
