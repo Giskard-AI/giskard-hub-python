@@ -1,7 +1,7 @@
 from typing import List, Optional
 from datetime import datetime
 
-from ..types import Header
+from .header import Header
 from .._models import BaseModel
 
 __all__ = ["Agent"]

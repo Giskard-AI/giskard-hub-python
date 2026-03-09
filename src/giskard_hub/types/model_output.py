@@ -1,7 +1,8 @@
 from typing import Dict, Optional
 
-from ..types import ChatMessage, ExecutionError
 from .._models import BaseModel
+from .chat_message import ChatMessage
+from .execution_error import ExecutionError
 
 __all__ = ["AgentOutput"]
 

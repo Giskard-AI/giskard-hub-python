@@ -64,7 +64,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Retrieve Evaluation Result
 
@@ -96,7 +96,7 @@ class ResultsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     def update(
@@ -154,7 +154,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase]:
+    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]]:
         """
         List Evaluation Results
 
@@ -182,7 +182,7 @@ class ResultsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, result_list_params.ResultListParams),
             ),
-            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase],
+            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]],
         )
 
     def rerun_test_case(
@@ -294,7 +294,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Search Evaluation Results By Filters
 
@@ -342,7 +342,7 @@ class ResultsResource(SyncAPIResource):
                     result_search_params.ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     def update_visibility(
@@ -428,7 +428,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Retrieve Evaluation Result
 
@@ -460,7 +460,7 @@ class AsyncResultsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     async def update(
@@ -520,7 +520,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase]:
+    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]]:
         """
         List Evaluation Results
 
@@ -548,7 +548,7 @@ class AsyncResultsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, result_list_params.ResultListParams),
             ),
-            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase],
+            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]],
         )
 
     async def rerun_test_case(
@@ -660,7 +660,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Search Evaluation Results By Filters
 
@@ -708,7 +708,7 @@ class AsyncResultsResource(AsyncAPIResource):
                     result_search_params.ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     async def update_visibility(

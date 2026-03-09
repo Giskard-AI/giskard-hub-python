@@ -146,7 +146,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset]:
+    ) -> APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]]:
         """
         Retrieve Evaluation
 
@@ -174,7 +174,7 @@ class EvaluationsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, evaluation_retrieve_params.EvaluationRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset],
+            cast_to=APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]],
         )
 
     def update(
@@ -227,7 +227,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]]:
         """
         List Evaluations
 
@@ -259,7 +259,7 @@ class EvaluationsResource(SyncAPIResource):
                     evaluation_list_params.EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
         )
 
     def delete(
@@ -578,7 +578,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset]:
+    ) -> APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]]:
         """
         Retrieve Evaluation
 
@@ -608,7 +608,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     {"include": include}, evaluation_retrieve_params.EvaluationRetrieveParams
                 ),
             ),
-            cast_to=APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset],
+            cast_to=APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]],
         )
 
     async def update(
@@ -661,7 +661,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]]:
         """
         List Evaluations
 
@@ -693,7 +693,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     evaluation_list_params.EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
         )
 
     async def delete(

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, List, Union, cast
+from typing import Any, List, cast
 
 import pytest
 
@@ -86,7 +86,7 @@ class TestEvaluations:
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]], evaluation, path=["response"]
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -97,7 +97,7 @@ class TestEvaluations:
             include=["agent"],
         )
         assert_matches_type(
-            APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]], evaluation, path=["response"]
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -111,7 +111,7 @@ class TestEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         evaluation = response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]], evaluation, path=["response"]
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -125,7 +125,9 @@ class TestEvaluations:
 
             evaluation = response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+                APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]],
+                evaluation,
+                path=["response"],
             )
 
         assert cast(Any, response.is_closed) is True
@@ -197,7 +199,9 @@ class TestEvaluations:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            evaluation,
+            path=["response"],
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -208,7 +212,9 @@ class TestEvaluations:
             include=["agent"],
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            evaluation,
+            path=["response"],
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -222,7 +228,9 @@ class TestEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         evaluation = response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            evaluation,
+            path=["response"],
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -236,7 +244,7 @@ class TestEvaluations:
 
             evaluation = response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]],
+                APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
                 evaluation,
                 path=["response"],
             )
@@ -591,7 +599,7 @@ class TestAsyncEvaluations:
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]], evaluation, path=["response"]
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -602,7 +610,7 @@ class TestAsyncEvaluations:
             include=["agent"],
         )
         assert_matches_type(
-            APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]], evaluation, path=["response"]
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -616,7 +624,7 @@ class TestAsyncEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         evaluation = await response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]], evaluation, path=["response"]
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -630,7 +638,9 @@ class TestAsyncEvaluations:
 
             evaluation = await response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[EvaluationAPIResource, Union[Agent, Dataset]], evaluation, path=["response"]
+                APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]],
+                evaluation,
+                path=["response"],
             )
 
         assert cast(Any, response.is_closed) is True
@@ -702,7 +712,9 @@ class TestAsyncEvaluations:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            evaluation,
+            path=["response"],
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -713,7 +725,9 @@ class TestAsyncEvaluations:
             include=["agent"],
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            evaluation,
+            path=["response"],
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -727,7 +741,9 @@ class TestAsyncEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         evaluation = await response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]], evaluation, path=["response"]
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            evaluation,
+            path=["response"],
         )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -741,7 +757,7 @@ class TestAsyncEvaluations:
 
             evaluation = await response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[List[EvaluationAPIResource], Union[Agent, Dataset]],
+                APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
                 evaluation,
                 path=["response"],
             )
