@@ -50,6 +50,11 @@ from .evaluations import (
 from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
 from .task_status import TaskStatus as TaskStatus
 from .chat_message import ChatMessage as ChatMessage
+from .filter_param import (
+    FilterValueParam as FilterValueParam,
+    ListFilterValueParam as ListFilterValueParam,
+    DateRangeFilterValueParam as DateRangeFilterValueParam,
+)
 from .header_param import HeaderParam as HeaderParam
 from .model_output import AgentOutput as AgentOutput
 from .minimal_model import MinimalAgent as MinimalAgent
@@ -57,6 +62,7 @@ from .task_priority import TaskPriority as TaskPriority
 from .task_progress import TaskProgress as TaskProgress
 from .dataset_subset import DatasetSubset as DatasetSubset
 from .knowledge_base import KnowledgeBase as KnowledgeBase
+from .order_by_param import OrderByParam as OrderByParam
 from .audit_diff_item import AuditDiffItem as AuditDiffItem
 from .audit_diff_kind import AuditDiffKind as AuditDiffKind
 from .execution_error import ExecutionError as ExecutionError
@@ -82,7 +88,11 @@ from .user_api_reference import UserAPIReference as UserAPIReference
 from .agent_api_reference import AgentAPIReference as AgentAPIReference
 from .agent_create_params import AgentCreateParams as AgentCreateParams
 from .agent_update_params import AgentUpdateParams as AgentUpdateParams
-from .audit_search_params import AuditSearchParams as AuditSearchParams
+from .audit_search_params import (
+    AuditFiltersParam as AuditFiltersParam,
+    AuditOrderByParam as AuditOrderByParam,
+    AuditSearchParams as AuditSearchParams,
+)
 from .check_create_params import CheckCreateParams as CheckCreateParams
 from .check_update_params import CheckUpdateParams as CheckUpdateParams
 from .dataset_list_params import DatasetListParams as DatasetListParams
@@ -267,6 +277,12 @@ __all__ = [
     "AgentCreateParams",
     "AgentUpdateParams",
     "AuditSearchParams",
+    "AuditOrderByParam",
+    "AuditFiltersParam",
+    "OrderByParam",
+    "ListFilterValueParam",
+    "DateRangeFilterValueParam",
+    "FilterValueParam",
     # Check types
     "CheckCreateParams",
     "CheckUpdateParams",

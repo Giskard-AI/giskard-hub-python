@@ -6,6 +6,8 @@ import httpx
 
 from ..types import (
     AuditAPIResource,
+    AuditFiltersParam,
+    AuditOrderByParam,
     APIPaginatedResponse,
     AuditDisplayAPIResource,
     audit_search_params,
@@ -50,8 +52,8 @@ class AuditResource(SyncAPIResource):
         self,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
-        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: List[AuditOrderByParam] | Omit = omit,
+        filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -60,7 +62,7 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[AuditAPIResource], None]:
+    ) -> APIPaginatedResponse[AuditAPIResource, None]:
         """
         Search Audit Logs By Filters
 
@@ -106,7 +108,7 @@ class AuditResource(SyncAPIResource):
                     audit_search_params.AuditSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[AuditAPIResource], None],
+            cast_to=APIPaginatedResponse[AuditAPIResource, None],
         )
 
     def list_entities(
