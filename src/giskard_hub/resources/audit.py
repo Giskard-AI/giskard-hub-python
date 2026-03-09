@@ -8,9 +8,9 @@ from ..types import (
     AuditAPIResource,
     AuditFiltersParam,
     AuditOrderByParam,
+    AuditSearchParams,
     APIPaginatedResponse,
     AuditDisplayAPIResource,
-    audit_search_params,
     audit_list_entity_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
@@ -93,7 +93,7 @@ class AuditResource(SyncAPIResource):
                     "order_by": order_by,
                     "search": search,
                 },
-                audit_search_params.AuditSearchParams,
+                AuditSearchParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -105,7 +105,7 @@ class AuditResource(SyncAPIResource):
                         "limit": limit,
                         "offset": offset,
                     },
-                    audit_search_params.AuditSearchParams,
+                    AuditSearchParams,
                 ),
             ),
             cast_to=APIPaginatedResponse[AuditAPIResource, None],
@@ -233,7 +233,7 @@ class AsyncAuditResource(AsyncAPIResource):
                     "order_by": order_by,
                     "search": search,
                 },
-                audit_search_params.AuditSearchParams,
+                AuditSearchParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -245,7 +245,7 @@ class AsyncAuditResource(AsyncAPIResource):
                         "limit": limit,
                         "offset": offset,
                     },
-                    audit_search_params.AuditSearchParams,
+                    AuditSearchParams,
                 ),
             ),
             cast_to=APIPaginatedResponse[AuditAPIResource, None],

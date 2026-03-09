@@ -162,7 +162,11 @@ from .test_case_evaluation_reference import TestCaseEvaluationReference as TestC
 from .playground_chat_retrieve_params import PlaygroundChatRetrieveParams as PlaygroundChatRetrieveParams
 from .agent_generate_completion_params import AgentGenerateCompletionParams as AgentGenerateCompletionParams
 from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
-from .dataset_search_test_cases_params import DatasetSearchTestCasesParams as DatasetSearchTestCasesParams
+from .dataset_search_test_cases_params import (
+    TestCaseFiltersParam as TestCaseFiltersParam,
+    TestCaseOrderByParam as TestCaseOrderByParam,
+    DatasetSearchTestCasesParams as DatasetSearchTestCasesParams,
+)
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
@@ -179,6 +183,8 @@ from .dataset_generate_scenario_based_params import (
     DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
 )
 from .knowledge_base_search_documents_params import (
+    KnowledgeBaseDocumentFiltersParam as KnowledgeBaseDocumentFiltersParam,
+    KnowledgeBaseDocumentOrderByParam as KnowledgeBaseDocumentOrderByParam,
     KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
 )
 from .scheduled_evaluation_bulk_delete_params import (
@@ -362,6 +368,8 @@ __all__ = [
     "AgentGenerateCompletionParams",
     "ChatMessageWithMetadataParam",
     "DatasetSearchTestCasesParams",
+    "TestCaseOrderByParam",
+    "TestCaseFiltersParam",
     "ScheduledEvaluationListParams",
     "SemanticSimilarityParamsParam",
     "AgentAutofillDescriptionParams",
@@ -375,6 +383,8 @@ __all__ = [
     "DatasetGenerateDocumentBasedParams",
     "DatasetGenerateScenarioBasedParams",
     "KnowledgeBaseSearchDocumentsParams",
+    "KnowledgeBaseDocumentOrderByParam",
+    "KnowledgeBaseDocumentFiltersParam",
     "ScheduledEvaluationBulkDeleteParams",
     "KnowledgeBaseDocumentRowAPIResource",
     "KnowledgeBaseDocumentDetailAPIResource",

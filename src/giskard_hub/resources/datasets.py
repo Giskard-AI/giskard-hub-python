@@ -5,6 +5,9 @@ from typing import List, Mapping, Optional, cast
 import httpx
 
 from ..types import (
+    TestCaseFiltersParam,
+    TestCaseOrderByParam,
+    DatasetSearchTestCasesParams,
     dataset_list_params,
     dataset_create_params,
     dataset_import_params,
@@ -28,11 +31,6 @@ from ..types.common import APIResponse, APIPaginatedResponse
 from ..types.dataset import Dataset
 from ..types.test_case import TestCase
 from ..types.task_progress_param import TaskProgressParam
-from ..types.dataset_search_test_cases_params import (
-    TestCaseFiltersParam,
-    TestCaseOrderByParam,
-    DatasetSearchTestCasesParams,
-)
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 

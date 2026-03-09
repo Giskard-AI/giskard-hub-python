@@ -1,17 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Mapping, Optional, cast
+from typing import List, Mapping, Optional, cast
 
 import httpx
 
 from ..types import (
     APIPaginatedResponse,
+    KnowledgeBaseDocumentFiltersParam,
+    KnowledgeBaseDocumentOrderByParam,
+    KnowledgeBaseSearchDocumentsParams,
     KnowledgeBaseDocumentRowAPIResource,
     knowledge_base_list_params,
     knowledge_base_create_params,
     knowledge_base_update_params,
     knowledge_base_bulk_delete_params,
-    knowledge_base_search_documents_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
@@ -323,8 +325,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         knowledge_base_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
-        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
+        filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -364,7 +366,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=maybe_transform(
                 {"filters": filters, "order_by": order_by, "search": search},
-                knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
+                KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -373,7 +375,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"limit": limit, "offset": offset},
-                    knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
+                    KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
             cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None],
@@ -713,8 +715,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         knowledge_base_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
-        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
+        filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -754,7 +756,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=await async_maybe_transform(
                 {"filters": filters, "order_by": order_by, "search": search},
-                knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
+                KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -763,7 +765,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"limit": limit, "offset": offset},
-                    knowledge_base_search_documents_params.KnowledgeBaseSearchDocumentsParams,
+                    KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
             cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None],
