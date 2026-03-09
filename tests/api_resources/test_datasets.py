@@ -557,15 +557,11 @@ class TestDatasets:
                     "selected_options": ["tag1", "tag2"],
                     "match_logic": "any",
                 },
-                "checks": {
-                    "selected_options": ["check1", "check2"],
-                    "match_logic": "any",
-                },
             },
             order_by=[
                 {
-                    "field": "created_at",
-                    "order": "desc",
+                    "id": "created_at",
+                    "desc": True,
                 }
             ],
             limit=10,
@@ -1154,15 +1150,11 @@ class TestAsyncDatasets:
                     "selected_options": ["tag1", "tag2"],
                     "match_logic": "any",
                 },
-                "checks": {
-                    "selected_options": ["check1", "check2"],
-                    "match_logic": "any",
-                },
             },
             order_by=[
                 {
-                    "field": "created_at",
-                    "order": "desc",
+                    "id": "created_at",
+                    "desc": True,
                 }
             ],
             limit=10,
