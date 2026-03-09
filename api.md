@@ -103,13 +103,13 @@ Types:
 ```python
 from giskard_hub.types import (
     Agent,
+    AgentOutput,
     Dataset,
     DatasetSubset,
     EvaluationAPIResource,
     CheckAPIResource,
     Metric,
-    MinimalModel,
-    ModelOutput,
+    MinimalAgent,
     OutputAnnotation,
     APIResponse,
     APIResponseWithIncluded,

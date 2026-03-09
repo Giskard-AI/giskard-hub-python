@@ -1,26 +1,16 @@
 from typing import Dict, List, Optional
 from datetime import datetime
 
-from .metric import Metric
+from ..types import Metric, MinimalAgent, TaskProgress, DatasetSubset, AgentAPIReference, DatasetAPIReference
 from .._models import BaseModel
-from .minimal_model import MinimalModel
-from .task_progress import TaskProgress
-from .dataset_subset import DatasetSubset
-from .agent_api_reference import AgentAPIReference
 
-__all__ = ["EvaluationAPIResource", "DatasetAPIReference"]
-
-
-class DatasetAPIReference(BaseModel):
-    id: str
-
-    name: str
+__all__ = ["EvaluationAPIResource"]
 
 
 class EvaluationAPIResource(BaseModel):
     id: str
 
-    agent: AgentAPIReference | MinimalModel
+    agent: AgentAPIReference | MinimalAgent
 
     created_at: datetime
 

@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Dict, Iterable, Optional, TypedDict
 from typing_extensions import Required
 
+from ..types import AgentOutputParam
 from .chat_message_param import ChatMessageParam
-from .model_output_param import ModelOutputParam
 
 __all__ = ["EvaluationRunSingleParams"]
 
@@ -14,7 +14,7 @@ class EvaluationRunSingleParams(TypedDict, total=False):
 
     messages: Required[Iterable[ChatMessageParam]]
 
-    model_output: Required[ModelOutputParam]
+    model_output: Required[AgentOutputParam]
 
     model_description: str
 

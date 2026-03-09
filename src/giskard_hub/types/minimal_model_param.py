@@ -1,17 +1,12 @@
 from __future__ import annotations
 
-from typing import Dict, Union, Optional, TypeAlias, TypedDict
+from typing import Optional, TypedDict
 from typing_extensions import Required
 
-__all__ = ["MinimalModelParam", "MinimalAgentParam"]
+__all__ = ["MinimalAgentParam"]
 
 
-class MinimalModelParamTyped(TypedDict, total=False):
+class MinimalAgentParam(TypedDict, total=False):
     name: Required[str]
 
     description: Optional[str]
-
-
-MinimalModelParam: TypeAlias = Union[MinimalModelParamTyped, Dict[str, object]]
-
-MinimalAgentParam: TypeAlias = MinimalModelParam

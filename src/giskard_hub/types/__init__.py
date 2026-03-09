@@ -12,7 +12,7 @@ This module provides all type definitions used throughout the SDK, organized by 
 from __future__ import annotations
 
 from .user import User as User, UserReference as UserReference
-from .agent import Agent as Agent, AgentOutput as AgentOutput
+from .agent import Agent as Agent
 from .scans import (
     Severity as Severity,
     ReviewStatus as ReviewStatus,
@@ -51,8 +51,8 @@ from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
 from .task_status import TaskStatus as TaskStatus
 from .chat_message import ChatMessage as ChatMessage
 from .header_param import HeaderParam as HeaderParam
-from .model_output import ModelOutput as ModelOutput
-from .minimal_model import MinimalModel as MinimalModel
+from .model_output import AgentOutput as AgentOutput
+from .minimal_model import MinimalAgent as MinimalAgent
 from .task_priority import TaskPriority as TaskPriority
 from .task_progress import TaskProgress as TaskProgress
 from .dataset_subset import DatasetSubset as DatasetSubset
@@ -73,7 +73,7 @@ from .audit_api_resource import AuditAPIResource as AuditAPIResource
 from .chat_message_param import ChatMessageParam as ChatMessageParam
 from .check_api_resource import CheckAPIResource as CheckAPIResource
 from .correctness_params import CorrectnessParams as CorrectnessParams
-from .model_output_param import ModelOutputParam as ModelOutputParam
+from .model_output_param import AgentOutputParam as AgentOutputParam
 from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
 from .scan_create_params import ScanCreateParams as ScanCreateParams
 from .task_create_params import TaskCreateParams as TaskCreateParams
@@ -87,7 +87,7 @@ from .check_create_params import CheckCreateParams as CheckCreateParams
 from .check_update_params import CheckUpdateParams as CheckUpdateParams
 from .dataset_list_params import DatasetListParams as DatasetListParams
 from .groundedness_params import GroundednessParams as GroundednessParams
-from .minimal_model_param import MinimalModelParam as MinimalModelParam
+from .minimal_model_param import MinimalAgentParam as MinimalAgentParam
 from .string_match_params import StringMatchParams as StringMatchParams
 from .task_progress_param import TaskProgressParam as TaskProgressParam
 from .test_case_reference import TestCaseReferencence as TestCaseReferencence
@@ -95,6 +95,7 @@ from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
 from .project_api_resource import ProjectAPIResource as ProjectAPIResource
 from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
 from .scheduled_evaluation import ScheduledEvaluation as ScheduledEvaluation
+from .dataset_api_reference import DatasetAPIReference as DatasetAPIReference
 from .dataset_create_params import DatasetCreateParams as DatasetCreateParams
 from .dataset_import_params import DatasetImportParams as DatasetImportParams
 from .dataset_update_params import DatasetUpdateParams as DatasetUpdateParams
@@ -188,7 +189,6 @@ __all__ = [
     "User",
     "UserReference",
     "Agent",
-    "AgentOutput",
     # Scan probe types
     "Severity",
     "ReviewStatus",
@@ -229,8 +229,8 @@ __all__ = [
     # Shared component types
     "ChatMessage",
     "HeaderParam",
-    "ModelOutput",
-    "MinimalModel",
+    "AgentOutput",
+    "MinimalAgent",
     "TaskPriority",
     "TaskProgress",
     "DatasetSubset",
@@ -253,7 +253,7 @@ __all__ = [
     "ChatMessageParam",
     "CheckAPIResource",
     "CorrectnessParams",
-    "ModelOutputParam",
+    "AgentOutputParam",
     "PaginatedMetadata",
     # Scan types
     "ScanCreateParams",
@@ -272,7 +272,7 @@ __all__ = [
     "CheckUpdateParams",
     "DatasetListParams",
     "GroundednessParams",
-    "MinimalModelParam",
+    "MinimalAgentParam",
     "StringMatchParams",
     "TaskProgressParam",
     "TestCaseReferencence",
@@ -281,6 +281,7 @@ __all__ = [
     "ScanRetrieveParams",
     "ScheduledEvaluation",
     # Dataset types
+    "DatasetAPIReference",
     "DatasetCreateParams",
     "DatasetImportParams",
     "DatasetUpdateParams",

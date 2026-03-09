@@ -2,9 +2,9 @@ from typing import List, Optional
 from datetime import datetime
 
 from . import failure_category
+from ...types import AgentOutput
 from ..._models import BaseModel
 from .task_state import TaskState
-from ..model_output import ModelOutput
 from ..output_annotation import OutputAnnotation
 
 __all__ = ["TestCaseEvaluationAPIResource", "FailureCategory", "Result", "TestCase"]
@@ -51,7 +51,7 @@ class TestCaseEvaluationAPIResource(BaseModel):
 
     failure_category: Optional[FailureCategory] = None
 
-    output: Optional[ModelOutput] = None
+    output: Optional[AgentOutput] = None
 
     results: List[Result]
 

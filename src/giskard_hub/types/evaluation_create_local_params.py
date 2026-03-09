@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import Union, Literal, Iterable, Optional, TypeAlias, TypedDict
 from typing_extensions import Required
 
-from .minimal_model_param import MinimalModelParam
-from .dataset_subset_param import DatasetSubsetParam
+from ..types import MinimalAgentParam, DatasetSubsetParam
 
 __all__ = ["EvaluationCreateLocalParams", "Criterion", "CriterionEvaluationDataset"]
 
@@ -12,7 +11,7 @@ __all__ = ["EvaluationCreateLocalParams", "Criterion", "CriterionEvaluationDatas
 class EvaluationCreateLocalParams(TypedDict, total=False):
     criteria: Required[Iterable[Criterion]]
 
-    model: Required[MinimalModelParam]
+    model: Required[MinimalAgentParam]
 
     name: Optional[str]
 
