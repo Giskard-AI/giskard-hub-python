@@ -121,7 +121,7 @@ class TestAsyncAudit:
     @parametrize
     async def test_method_search_with_all_params(self, async_client: AsyncHubClient) -> None:
         audit = await async_client.audit.search(
-            filters={"action": {"selected_options": ["created"], "match_logic": "any"}},
+            filters={"action": {"selected_options": ["insert"], "match_logic": "any"}},
             limit=10,
             offset=0,
         )
