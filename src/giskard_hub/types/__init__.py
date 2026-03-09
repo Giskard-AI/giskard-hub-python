@@ -39,6 +39,8 @@ from .evaluations import (
     TaskState as TaskState,
     FailureCategory as FailureCategory,
     ResultListParams as ResultListParams,
+    ResultFiltersParam as ResultFiltersParam,
+    ResultOrderByParam as ResultOrderByParam,
     ResultSearchParams as ResultSearchParams,
     ResultUpdateParams as ResultUpdateParams,
     FailureCategoryParam as FailureCategoryParam,

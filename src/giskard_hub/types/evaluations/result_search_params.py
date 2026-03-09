@@ -1,18 +1,25 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Literal, Optional, TypedDict
+from typing import Dict, List, Literal, Optional, TypedDict
 
-from giskard_hub._types import SequenceNotStr
+from ..filter_param import FilterValueParam
+from ..order_by_param import OrderByParam
 
-__all__ = ["ResultSearchParams"]
+__all__ = ["ResultSearchParams", "ResultOrderByParam", "ResultFiltersParam"]
+
+ResultSortColumn = Literal["failure_category_name", "id", "sample_success", "status", "visibility"]
+ResultFilterColumn = Literal["failure_category_name", "metrics", "sample_success", "status", "tags", "visibility"]
+
+ResultOrderByParam = OrderByParam[ResultSortColumn]
+ResultFiltersParam = Dict[ResultFilterColumn, FilterValueParam]
 
 
 class ResultSearchParams(TypedDict, total=False):
     search: Optional[str]
 
-    order_by: SequenceNotStr[Dict[str, Any]]
+    order_by: Optional[List[ResultOrderByParam]]
 
-    filters: Dict[str, Dict[str, Any]]
+    filters: Optional[ResultFiltersParam]
 
     limit: int
 

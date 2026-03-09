@@ -3,7 +3,11 @@ from __future__ import annotations
 from .task_state import TaskState as TaskState
 from .failure_category import FailureCategory as FailureCategory
 from .result_list_params import ResultListParams as ResultListParams
-from .result_search_params import ResultSearchParams as ResultSearchParams
+from .result_search_params import (
+    ResultFiltersParam as ResultFiltersParam,
+    ResultOrderByParam as ResultOrderByParam,
+    ResultSearchParams as ResultSearchParams,
+)
 from .result_update_params import ResultUpdateParams as ResultUpdateParams
 from .failure_category_param import FailureCategoryParam as FailureCategoryParam
 from .result_retrieve_params import ResultRetrieveParams as ResultRetrieveParams

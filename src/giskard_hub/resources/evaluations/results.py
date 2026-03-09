@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Literal, Optional
+from typing import List, Literal, Optional
 
 import httpx
 
-from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
@@ -17,6 +17,8 @@ from ..._response import (
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedResponse, APIResponseWithIncluded
 from ...types.evaluations import (
+    ResultFiltersParam,
+    ResultOrderByParam,
     TestCaseEvaluationAPIResource,
     result_list_params,
     result_search_params,
@@ -283,8 +285,8 @@ class ResultsResource(SyncAPIResource):
         evaluation_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         include: Optional[List[Literal["test_case"]]] | Omit = omit,
@@ -649,8 +651,8 @@ class AsyncResultsResource(AsyncAPIResource):
         evaluation_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         include: Optional[List[Literal["test_case"]]] | Omit = omit,
