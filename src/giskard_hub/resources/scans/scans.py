@@ -405,7 +405,7 @@ class AsyncScansResource(AsyncAPIResource):
 
           knowledge_base_id: Knowledge Base ID to use for the scan
 
-          tags: List of tags to apply to the scan
+          tags: List of category tags to apply to the scan; use `list_categories` to get the available categories.
 
           extra_headers: Send extra headers
 
