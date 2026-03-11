@@ -121,7 +121,9 @@ class HubClient(SyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("GISKARD_HUB_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            raise HubClientError(
+                "No base_url provided. Pass base_url to the client or set the GISKARD_HUB_BASE_URL environment variable."
+            )
         if isinstance(base_url, (str, httpx.URL)):
             base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
 
@@ -315,7 +317,9 @@ class AsyncHubClient(AsyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("GISKARD_HUB_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            raise HubClientError(
+                "No base_url provided. Pass base_url to the client or set the GISKARD_HUB_BASE_URL environment variable."
+            )
         if isinstance(base_url, (str, httpx.URL)):
             base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
 
