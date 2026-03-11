@@ -52,6 +52,15 @@ __all__ = [
     "AsyncClient",
 ]
 
+_API_SUFFIX = "/_api"
+
+
+def _normalize_base_url(base_url: str, *, auto_add_api_suffix: bool) -> str:
+    base_url = base_url.rstrip("/")
+    if auto_add_api_suffix and not base_url.endswith(_API_SUFFIX):
+        base_url += _API_SUFFIX
+    return base_url
+
 
 class HubClient(SyncAPIClient):
     audit: audit.AuditResource
@@ -77,6 +86,7 @@ class HubClient(SyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
         default_headers: Mapping[str, str] | None = None,
@@ -94,6 +104,7 @@ class HubClient(SyncAPIClient):
         """Construct a new synchronous HubClient client instance.
 
         This automatically infers the `api_key` argument from the `GISKARD_HUB_API_KEY` environment variable if it is not provided.
+        The `base_url` will have `/_api` appended automatically unless it is already present or `auto_add_api_suffix=False`.
         """
         if api_key is None:
             api_key = os.environ.get("GISKARD_HUB_API_KEY")
@@ -106,7 +117,11 @@ class HubClient(SyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("GISKARD_HUB_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            raise HubClientError(
+                "No base_url provided. Pass base_url to the client or set the GISKARD_HUB_BASE_URL environment variable."
+            )
+        if isinstance(base_url, (str, httpx.URL)):
+            base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
 
         super().__init__(
             version=__version__,
@@ -263,6 +278,7 @@ class AsyncHubClient(AsyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
         default_headers: Mapping[str, str] | None = None,
@@ -280,6 +296,7 @@ class AsyncHubClient(AsyncAPIClient):
         """Construct a new async AsyncHubClient client instance.
 
         This automatically infers the `api_key` argument from the `GISKARD_HUB_API_KEY` environment variable if it is not provided.
+        The `base_url` will have `/_api` appended automatically unless it is already present or `auto_add_api_suffix=False`.
         """
         if api_key is None:
             api_key = os.environ.get("GISKARD_HUB_API_KEY")
@@ -292,7 +309,11 @@ class AsyncHubClient(AsyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("GISKARD_HUB_BASE_URL")
         if base_url is None:
-            base_url = f"https://api.example.com"
+            raise HubClientError(
+                "No base_url provided. Pass base_url to the client or set the GISKARD_HUB_BASE_URL environment variable."
+            )
+        if isinstance(base_url, (str, httpx.URL)):
+            base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
 
         super().__init__(
             version=__version__,
