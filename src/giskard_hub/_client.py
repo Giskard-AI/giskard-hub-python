@@ -316,8 +316,8 @@ class AsyncHubClient(AsyncAPIClient):
             base_url = os.environ.get("GISKARD_HUB_BASE_URL")
         if base_url is None:
             base_url = f"https://api.example.com"
-        if isinstance(base_url, str):
-            base_url = _normalize_base_url(base_url, auto_add_api_suffix=auto_add_api_suffix)
+        if isinstance(base_url, (str, httpx.URL)):
+            base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
 
         super().__init__(
             version=__version__,
