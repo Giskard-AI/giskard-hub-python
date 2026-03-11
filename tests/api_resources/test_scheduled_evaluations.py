@@ -208,7 +208,7 @@ class TestScheduledEvaluations:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
+            APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -224,7 +224,7 @@ class TestScheduledEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scheduled_evaluation = response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
+            APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -240,7 +240,7 @@ class TestScheduledEvaluations:
 
             scheduled_evaluation = response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
+                APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
                 scheduled_evaluation,
                 path=["response"],
             )
@@ -333,7 +333,7 @@ class TestScheduledEvaluations:
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -349,7 +349,7 @@ class TestScheduledEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scheduled_evaluation = response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -365,7 +365,7 @@ class TestScheduledEvaluations:
 
             scheduled_evaluation = response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+                APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
                 scheduled_evaluation,
                 path=["response"],
             )
@@ -575,7 +575,7 @@ class TestAsyncScheduledEvaluations:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
+            APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -591,7 +591,7 @@ class TestAsyncScheduledEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scheduled_evaluation = await response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
+            APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -607,7 +607,7 @@ class TestAsyncScheduledEvaluations:
 
             scheduled_evaluation = await response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[List[ScheduledEvaluation], List[EvaluationAPIResource]],
+                APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
                 scheduled_evaluation,
                 path=["response"],
             )
@@ -700,7 +700,7 @@ class TestAsyncScheduledEvaluations:
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -716,7 +716,7 @@ class TestAsyncScheduledEvaluations:
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scheduled_evaluation = await response.parse()
         assert_matches_type(
-            APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
             scheduled_evaluation,
             path=["response"],
         )
@@ -732,7 +732,7 @@ class TestAsyncScheduledEvaluations:
 
             scheduled_evaluation = await response.parse()
             assert_matches_type(
-                APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+                APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
                 scheduled_evaluation,
                 path=["response"],
             )

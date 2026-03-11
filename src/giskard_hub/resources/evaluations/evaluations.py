@@ -94,11 +94,16 @@ class EvaluationsResource(SyncAPIResource):
 
           project_id: The ID of the project to create the evaluation for
 
-          criteria: The criteria to use for the evaluation
+          criteria: A dataset subset that defines which test cases are included in the
+              evaluation. Specify a `dataset_id` to draw test cases from a particular
+              dataset, and optionally supply `tags` to restrict the subset to test cases
+              carrying those tags. Exactly one of `criteria` or `old_evaluation_id` must
+              be provided.
 
           name: The name of the evaluation
 
-          old_evaluation_id: The ID of the old evaluation to create the evaluation for
+          old_evaluation_id: The ID of a previous evaluation whose test cases should be
+              reused. Exactly one of `old_evaluation_id` or `criteria` must be provided.
 
           run_count: The number of times to run each test case
 
@@ -141,7 +146,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset]:
+    ) -> APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]]:
         """
         Retrieve Evaluation
 
@@ -169,7 +174,7 @@ class EvaluationsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, evaluation_retrieve_params.EvaluationRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset],
+            cast_to=APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]],
         )
 
     def update(
@@ -222,7 +227,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]]:
         """
         List Evaluations
 
@@ -254,7 +259,7 @@ class EvaluationsResource(SyncAPIResource):
                     evaluation_list_params.EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
         )
 
     def delete(
@@ -348,7 +353,11 @@ class EvaluationsResource(SyncAPIResource):
         Create Local Evaluation
 
         Args:
-          criteria: The criteria to use for the evaluation
+          criteria: One or more data sources from which test cases are drawn for this
+              evaluation. Each entry is either a `DatasetSubsetParam` (referencing a
+              dataset by ID, with optional tag filters) or a
+              `CriterionEvaluationDataset` (referencing a previous evaluation by ID to
+              reuse its test cases).
 
           agent: The agent information to use for the evaluation
 
@@ -517,11 +526,16 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           project_id: The ID of the project to create the evaluation for
 
-          criteria: The criteria to use for the evaluation
+          criteria: A dataset subset that defines which test cases are included in the
+              evaluation. Specify a `dataset_id` to draw test cases from a particular
+              dataset, and optionally supply `tags` to restrict the subset to test cases
+              carrying those tags. Exactly one of `criteria` or `old_evaluation_id` must
+              be provided.
 
           name: The name of the evaluation
 
-          old_evaluation_id: The ID of the old evaluation to create the evaluation for
+          old_evaluation_id: The ID of a previous evaluation whose test cases should be
+              reused. Exactly one of `old_evaluation_id` or `criteria` must be provided.
 
           run_count: The number of times to run each test case
 
@@ -564,7 +578,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset]:
+    ) -> APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]]:
         """
         Retrieve Evaluation
 
@@ -594,7 +608,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     {"include": include}, evaluation_retrieve_params.EvaluationRetrieveParams
                 ),
             ),
-            cast_to=APIResponseWithIncluded[EvaluationAPIResource, Agent | Dataset],
+            cast_to=APIResponseWithIncluded[EvaluationAPIResource, APIResponse[Agent | Dataset]],
         )
 
     async def update(
@@ -647,7 +661,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset]:
+    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]]:
         """
         List Evaluations
 
@@ -679,7 +693,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     evaluation_list_params.EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], Agent | Dataset],
+            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
         )
 
     async def delete(
@@ -773,7 +787,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Create Local Evaluation
 
         Args:
-          criteria: The criteria to use for the evaluation
+          criteria: One or more data sources from which test cases are drawn for this
+              evaluation. Each entry is either a `DatasetSubsetParam` (referencing a
+              dataset by ID, with optional tag filters) or a
+              `CriterionEvaluationDataset` (referencing a previous evaluation by ID to
+              reuse its test cases).
 
           agent: The agent information to use for the evaluation
 

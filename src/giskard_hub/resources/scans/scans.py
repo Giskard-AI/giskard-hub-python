@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Union, Literal, Optional
+from typing import List, Literal, Optional
 
 import httpx
 
@@ -100,7 +100,7 @@ class ScansResource(SyncAPIResource):
 
           knowledge_base_id: Knowledge Base ID to use for the scan
 
-          tags: List of tags to apply to the scan
+          tags: List of category tags to apply to the scan; use `list_categories` to get the available categories.
 
           extra_headers: Send extra headers
 
@@ -138,7 +138,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]]:
+    ) -> APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]]:
         """
         Retrieve Scan
 
@@ -166,7 +166,7 @@ class ScansResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, scan_retrieve_params.ScanRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
         )
 
     def list(
@@ -180,7 +180,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]]:
+    ) -> APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]]:
         """
         List Scans
 
@@ -212,7 +212,7 @@ class ScansResource(SyncAPIResource):
                     scan_list_params.ScanListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
         )
 
     def delete(
@@ -405,7 +405,7 @@ class AsyncScansResource(AsyncAPIResource):
 
           knowledge_base_id: Knowledge Base ID to use for the scan
 
-          tags: List of tags to apply to the scan
+          tags: List of category tags to apply to the scan; use `list_categories` to get the available categories.
 
           extra_headers: Send extra headers
 
@@ -443,7 +443,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]]:
+    ) -> APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]]:
         """
         Retrieve Scan
 
@@ -471,7 +471,7 @@ class AsyncScansResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, scan_retrieve_params.ScanRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[ScanResult, Union[Agent, KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
         )
 
     async def list(
@@ -485,7 +485,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]]:
+    ) -> APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]]:
         """
         List Scans
 
@@ -517,7 +517,7 @@ class AsyncScansResource(AsyncAPIResource):
                     scan_list_params.ScanListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScanResult], Union[Agent, KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
         )
 
     async def delete(

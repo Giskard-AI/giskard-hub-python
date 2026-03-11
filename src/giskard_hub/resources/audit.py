@@ -1,17 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 import httpx
 
 from ..types import (
     AuditAPIResource,
+    AuditFiltersParam,
+    AuditOrderByParam,
+    AuditSearchParams,
     APIPaginatedResponse,
     AuditDisplayAPIResource,
-    audit_search_params,
     audit_list_entity_params,
 )
-from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -50,8 +52,8 @@ class AuditResource(SyncAPIResource):
         self,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
-        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: List[AuditOrderByParam] | Omit = omit,
+        filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -60,7 +62,7 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[AuditAPIResource], None]:
+    ) -> APIPaginatedResponse[AuditAPIResource, None]:
         """
         Search Audit Logs By Filters
 
@@ -91,7 +93,7 @@ class AuditResource(SyncAPIResource):
                     "order_by": order_by,
                     "search": search,
                 },
-                audit_search_params.AuditSearchParams,
+                AuditSearchParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -103,10 +105,10 @@ class AuditResource(SyncAPIResource):
                         "limit": limit,
                         "offset": offset,
                     },
-                    audit_search_params.AuditSearchParams,
+                    AuditSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[AuditAPIResource], None],
+            cast_to=APIPaginatedResponse[AuditAPIResource, None],
         )
 
     def list_entities(
@@ -190,8 +192,8 @@ class AsyncAuditResource(AsyncAPIResource):
         self,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
-        filters: Dict[str, Dict[str, Any]] | Omit = omit,
+        order_by: Optional[List[AuditOrderByParam]] | Omit = omit,
+        filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -200,7 +202,7 @@ class AsyncAuditResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[AuditAPIResource], None]:
+    ) -> APIPaginatedResponse[AuditAPIResource, None]:
         """
         Search Audit Logs By Filters
 
@@ -231,7 +233,7 @@ class AsyncAuditResource(AsyncAPIResource):
                     "order_by": order_by,
                     "search": search,
                 },
-                audit_search_params.AuditSearchParams,
+                AuditSearchParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -243,10 +245,10 @@ class AsyncAuditResource(AsyncAPIResource):
                         "limit": limit,
                         "offset": offset,
                     },
-                    audit_search_params.AuditSearchParams,
+                    AuditSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[AuditAPIResource], None],
+            cast_to=APIPaginatedResponse[AuditAPIResource, None],
         )
 
     async def list_entities(

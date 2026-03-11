@@ -1,16 +1,18 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Mapping, Optional, cast
+from typing import List, Mapping, Optional, cast
 
 import httpx
 
 from ..types import (
+    TestCaseFiltersParam,
+    TestCaseOrderByParam,
+    DatasetSearchTestCasesParams,
     dataset_list_params,
     dataset_create_params,
     dataset_import_params,
     dataset_update_params,
     dataset_bulk_delete_params,
-    dataset_search_test_cases_params,
     dataset_generate_document_based_params,
     dataset_generate_scenario_based_params,
 )
@@ -560,8 +562,8 @@ class DatasetsResource(SyncAPIResource):
         dataset_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -605,7 +607,7 @@ class DatasetsResource(SyncAPIResource):
                     "order_by": order_by,
                     "search": search,
                 },
-                dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+                DatasetSearchTestCasesParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -614,7 +616,7 @@ class DatasetsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"limit": limit, "offset": offset},
-                    dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+                    DatasetSearchTestCasesParams,
                 ),
             ),
             cast_to=APIPaginatedResponse[TestCase, None],
@@ -1147,8 +1149,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         dataset_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        filters: Dict[str, Dict[str, Any]] | Omit = omit,
-        order_by: SequenceNotStr[Dict[str, Any]] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1192,7 +1194,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "order_by": order_by,
                     "search": search,
                 },
-                dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+                DatasetSearchTestCasesParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1201,7 +1203,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"limit": limit, "offset": offset},
-                    dataset_search_test_cases_params.DatasetSearchTestCasesParams,
+                    DatasetSearchTestCasesParams,
                 ),
             ),
             cast_to=APIPaginatedResponse[TestCase, None],

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Literal, Optional
+from typing import List, Literal, Optional
 
 import httpx
 
-from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
@@ -17,6 +17,8 @@ from ..._response import (
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedResponse, APIResponseWithIncluded
 from ...types.evaluations import (
+    ResultFiltersParam,
+    ResultOrderByParam,
     TestCaseEvaluationAPIResource,
     result_list_params,
     result_search_params,
@@ -64,7 +66,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Retrieve Evaluation Result
 
@@ -96,7 +98,7 @@ class ResultsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     def update(
@@ -154,7 +156,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase]:
+    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]]:
         """
         List Evaluation Results
 
@@ -182,7 +184,7 @@ class ResultsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, result_list_params.ResultListParams),
             ),
-            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase],
+            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]],
         )
 
     def rerun_test_case(
@@ -283,8 +285,8 @@ class ResultsResource(SyncAPIResource):
         evaluation_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         include: Optional[List[Literal["test_case"]]] | Omit = omit,
@@ -294,7 +296,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Search Evaluation Results By Filters
 
@@ -342,7 +344,7 @@ class ResultsResource(SyncAPIResource):
                     result_search_params.ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     def update_visibility(
@@ -428,7 +430,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Retrieve Evaluation Result
 
@@ -460,7 +462,7 @@ class AsyncResultsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     async def update(
@@ -520,7 +522,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase]:
+    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]]:
         """
         List Evaluation Results
 
@@ -548,7 +550,7 @@ class AsyncResultsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, result_list_params.ResultListParams),
             ),
-            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], TestCase],
+            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]],
         )
 
     async def rerun_test_case(
@@ -649,8 +651,8 @@ class AsyncResultsResource(AsyncAPIResource):
         evaluation_id: str,
         *,
         search: Optional[str] | Omit = omit,
-        order_by: Optional[SequenceNotStr[Dict[str, Any]]] | Omit = omit,
-        filters: Optional[Dict[str, Dict[str, Any]]] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
         include: Optional[List[Literal["test_case"]]] | Omit = omit,
@@ -660,7 +662,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase]:
+    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
         """
         Search Evaluation Results By Filters
 
@@ -708,7 +710,7 @@ class AsyncResultsResource(AsyncAPIResource):
                     result_search_params.ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, TestCase],
+            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
         )
 
     async def update_visibility(

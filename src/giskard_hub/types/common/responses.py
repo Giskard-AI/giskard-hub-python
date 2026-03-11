@@ -6,7 +6,8 @@ These generic types can replace many resource-specific API response classes.
 
 from __future__ import annotations
 
-from typing import Dict, List, Generic, Literal, TypeVar, Optional
+from typing import Dict, List, Generic, TypeVar, Optional
+from typing_extensions import override
 
 from ..._models import BaseModel
 
@@ -26,17 +27,25 @@ class APIResponse(BaseModel, Generic[T]):
 
     data: T
 
+    @override
+    def __repr__(self) -> str:
+        return f"APIResponse[{type(self.data).__name__}](data={self.data!r})"
+
 
 class APIResponseWithIncluded(BaseModel, Generic[T, TIncluded]):
     """Generic API response wrapper with included related resources.
 
     Used when the API returns a resource along with related data
-    in an 'included' field (following JSON:API spec pattern).
+    in an 'included' field.
+
+    TIncluded is the type at included[main_resource_id][included_resource_name], typically:
+        - APIResponse[Resource]               for a single included resource
+        - List[APIResponse[Resource]]         for a list of included resources
     """
 
     data: T
 
-    included: Optional[Dict[str, Dict[str, Dict[Literal["data"], TIncluded]]]] = None
+    included: Optional[Dict[str, Dict[str, TIncluded]]] = None
 
 
 class APIPaginatedMetadata(BaseModel):
@@ -55,10 +64,14 @@ class APIPaginatedResponse(BaseModel, Generic[T, TIncluded]):
     """Generic API response wrapper for paginated lists.
 
     Includes pagination metadata alongside the data.
+
+    TIncluded is the type at included[main_resource_id][included_resource_name], typically:
+        - APIResponse[Resource]               for a single included resource
+        - List[APIResponse[Resource]]         for a list of included resources
     """
 
     data: List[T]
 
-    included: Optional[Dict[str, Dict[str, Dict[Literal["data"], TIncluded]]]] = None
+    included: Optional[Dict[str, Dict[str, TIncluded]]] = None
 
     metadata: APIPaginatedMetadata

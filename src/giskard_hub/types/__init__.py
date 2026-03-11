@@ -12,7 +12,7 @@ This module provides all type definitions used throughout the SDK, organized by 
 from __future__ import annotations
 
 from .user import User as User, UserReference as UserReference
-from .agent import Agent as Agent, AgentOutput as AgentOutput
+from .agent import Agent as Agent
 from .scans import (
     Severity as Severity,
     ReviewStatus as ReviewStatus,
@@ -39,6 +39,8 @@ from .evaluations import (
     TaskState as TaskState,
     FailureCategory as FailureCategory,
     ResultListParams as ResultListParams,
+    ResultFiltersParam as ResultFiltersParam,
+    ResultOrderByParam as ResultOrderByParam,
     ResultSearchParams as ResultSearchParams,
     ResultUpdateParams as ResultUpdateParams,
     FailureCategoryParam as FailureCategoryParam,
@@ -50,13 +52,19 @@ from .evaluations import (
 from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
 from .task_status import TaskStatus as TaskStatus
 from .chat_message import ChatMessage as ChatMessage
+from .filter_param import (
+    FilterValueParam as FilterValueParam,
+    ListFilterValueParam as ListFilterValueParam,
+    DateRangeFilterValueParam as DateRangeFilterValueParam,
+)
 from .header_param import HeaderParam as HeaderParam
-from .model_output import ModelOutput as ModelOutput
-from .minimal_model import MinimalModel as MinimalModel
+from .model_output import AgentOutput as AgentOutput
+from .minimal_model import MinimalAgent as MinimalAgent
 from .task_priority import TaskPriority as TaskPriority
 from .task_progress import TaskProgress as TaskProgress
 from .dataset_subset import DatasetSubset as DatasetSubset
 from .knowledge_base import KnowledgeBase as KnowledgeBase
+from .order_by_param import OrderByParam as OrderByParam
 from .audit_diff_item import AuditDiffItem as AuditDiffItem
 from .audit_diff_kind import AuditDiffKind as AuditDiffKind
 from .execution_error import ExecutionError as ExecutionError
@@ -73,7 +81,7 @@ from .audit_api_resource import AuditAPIResource as AuditAPIResource
 from .chat_message_param import ChatMessageParam as ChatMessageParam
 from .check_api_resource import CheckAPIResource as CheckAPIResource
 from .correctness_params import CorrectnessParams as CorrectnessParams
-from .model_output_param import ModelOutputParam as ModelOutputParam
+from .model_output_param import AgentOutputParam as AgentOutputParam
 from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
 from .scan_create_params import ScanCreateParams as ScanCreateParams
 from .task_create_params import TaskCreateParams as TaskCreateParams
@@ -82,12 +90,16 @@ from .user_api_reference import UserAPIReference as UserAPIReference
 from .agent_api_reference import AgentAPIReference as AgentAPIReference
 from .agent_create_params import AgentCreateParams as AgentCreateParams
 from .agent_update_params import AgentUpdateParams as AgentUpdateParams
-from .audit_search_params import AuditSearchParams as AuditSearchParams
+from .audit_search_params import (
+    AuditFiltersParam as AuditFiltersParam,
+    AuditOrderByParam as AuditOrderByParam,
+    AuditSearchParams as AuditSearchParams,
+)
 from .check_create_params import CheckCreateParams as CheckCreateParams
 from .check_update_params import CheckUpdateParams as CheckUpdateParams
 from .dataset_list_params import DatasetListParams as DatasetListParams
 from .groundedness_params import GroundednessParams as GroundednessParams
-from .minimal_model_param import MinimalModelParam as MinimalModelParam
+from .minimal_model_param import MinimalAgentParam as MinimalAgentParam
 from .string_match_params import StringMatchParams as StringMatchParams
 from .task_progress_param import TaskProgressParam as TaskProgressParam
 from .test_case_reference import TestCaseReferencence as TestCaseReferencence
@@ -95,6 +107,7 @@ from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
 from .project_api_resource import ProjectAPIResource as ProjectAPIResource
 from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
 from .scheduled_evaluation import ScheduledEvaluation as ScheduledEvaluation
+from .dataset_api_reference import DatasetAPIReference as DatasetAPIReference
 from .dataset_create_params import DatasetCreateParams as DatasetCreateParams
 from .dataset_import_params import DatasetImportParams as DatasetImportParams
 from .dataset_update_params import DatasetUpdateParams as DatasetUpdateParams
@@ -151,7 +164,11 @@ from .test_case_evaluation_reference import TestCaseEvaluationReference as TestC
 from .playground_chat_retrieve_params import PlaygroundChatRetrieveParams as PlaygroundChatRetrieveParams
 from .agent_generate_completion_params import AgentGenerateCompletionParams as AgentGenerateCompletionParams
 from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
-from .dataset_search_test_cases_params import DatasetSearchTestCasesParams as DatasetSearchTestCasesParams
+from .dataset_search_test_cases_params import (
+    TestCaseFiltersParam as TestCaseFiltersParam,
+    TestCaseOrderByParam as TestCaseOrderByParam,
+    DatasetSearchTestCasesParams as DatasetSearchTestCasesParams,
+)
 from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
 from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
 from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
@@ -168,6 +185,8 @@ from .dataset_generate_scenario_based_params import (
     DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
 )
 from .knowledge_base_search_documents_params import (
+    KnowledgeBaseDocumentFiltersParam as KnowledgeBaseDocumentFiltersParam,
+    KnowledgeBaseDocumentOrderByParam as KnowledgeBaseDocumentOrderByParam,
     KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
 )
 from .scheduled_evaluation_bulk_delete_params import (
@@ -188,7 +207,6 @@ __all__ = [
     "User",
     "UserReference",
     "Agent",
-    "AgentOutput",
     # Scan probe types
     "Severity",
     "ReviewStatus",
@@ -229,8 +247,8 @@ __all__ = [
     # Shared component types
     "ChatMessage",
     "HeaderParam",
-    "ModelOutput",
-    "MinimalModel",
+    "AgentOutput",
+    "MinimalAgent",
     "TaskPriority",
     "TaskProgress",
     "DatasetSubset",
@@ -253,7 +271,7 @@ __all__ = [
     "ChatMessageParam",
     "CheckAPIResource",
     "CorrectnessParams",
-    "ModelOutputParam",
+    "AgentOutputParam",
     "PaginatedMetadata",
     # Scan types
     "ScanCreateParams",
@@ -267,12 +285,18 @@ __all__ = [
     "AgentCreateParams",
     "AgentUpdateParams",
     "AuditSearchParams",
+    "AuditOrderByParam",
+    "AuditFiltersParam",
+    "OrderByParam",
+    "ListFilterValueParam",
+    "DateRangeFilterValueParam",
+    "FilterValueParam",
     # Check types
     "CheckCreateParams",
     "CheckUpdateParams",
     "DatasetListParams",
     "GroundednessParams",
-    "MinimalModelParam",
+    "MinimalAgentParam",
     "StringMatchParams",
     "TaskProgressParam",
     "TestCaseReferencence",
@@ -281,6 +305,7 @@ __all__ = [
     "ScanRetrieveParams",
     "ScheduledEvaluation",
     # Dataset types
+    "DatasetAPIReference",
     "DatasetCreateParams",
     "DatasetImportParams",
     "DatasetUpdateParams",
@@ -345,6 +370,8 @@ __all__ = [
     "AgentGenerateCompletionParams",
     "ChatMessageWithMetadataParam",
     "DatasetSearchTestCasesParams",
+    "TestCaseOrderByParam",
+    "TestCaseFiltersParam",
     "ScheduledEvaluationListParams",
     "SemanticSimilarityParamsParam",
     "AgentAutofillDescriptionParams",
@@ -358,6 +385,8 @@ __all__ = [
     "DatasetGenerateDocumentBasedParams",
     "DatasetGenerateScenarioBasedParams",
     "KnowledgeBaseSearchDocumentsParams",
+    "KnowledgeBaseDocumentOrderByParam",
+    "KnowledgeBaseDocumentFiltersParam",
     "ScheduledEvaluationBulkDeleteParams",
     "KnowledgeBaseDocumentRowAPIResource",
     "KnowledgeBaseDocumentDetailAPIResource",

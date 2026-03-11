@@ -88,12 +88,8 @@ class HubClient(SyncAPIClient):
         # Enable or disable schema validation for data returned by the API.
         # When enabled an error APIResponseValidationError is raised
         # if the API responds with invalid data for the expected schema.
-        #
-        # This parameter may be removed or changed in the future.
-        # If you rely on this feature, please open a GitHub issue
-        # outlining your use-case to help us decide if it should be
-        # part of our public interface in the future.
-        _strict_response_validation: bool = False,
+        # When debugging, you can set this to False to ignore validation errors.
+        _strict_response_validation: bool = True,
     ) -> None:
         """Construct a new synchronous HubClient client instance.
 
@@ -278,12 +274,8 @@ class AsyncHubClient(AsyncAPIClient):
         # Enable or disable schema validation for data returned by the API.
         # When enabled an error APIResponseValidationError is raised
         # if the API responds with invalid data for the expected schema.
-        #
-        # This parameter may be removed or changed in the future.
-        # If you rely on this feature, please open a GitHub issue
-        # outlining your use-case to help us decide if it should be
-        # part of our public interface in the future.
-        _strict_response_validation: bool = False,
+        # When debugging, you can set this to False to ignore validation errors.
+        _strict_response_validation: bool = True,
     ) -> None:
         """Construct a new async AsyncHubClient client instance.
 

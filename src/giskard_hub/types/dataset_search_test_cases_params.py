@@ -2,11 +2,19 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, TypedDict
+from typing import Dict, List, Literal, Optional, TypedDict
 
-from .._types import SequenceNotStr
+from .filter_param import FilterValueParam
+from .order_by_param import OrderByParam
 
-__all__ = ["DatasetSearchTestCasesParams"]
+__all__ = ["DatasetSearchTestCasesParams", "TestCaseOrderByParam", "TestCaseFiltersParam"]
+
+
+TestCaseSortColumn = Literal["created_at", "id", "status", "updated_at"]
+TestCaseFilterColumn = Literal["metrics", "status", "tags"]
+
+TestCaseOrderByParam = OrderByParam[TestCaseSortColumn]
+TestCaseFiltersParam = Dict[TestCaseFilterColumn, FilterValueParam]
 
 
 class DatasetSearchTestCasesParams(TypedDict, total=False):
@@ -14,9 +22,9 @@ class DatasetSearchTestCasesParams(TypedDict, total=False):
 
     search: Optional[str]
 
-    order_by: SequenceNotStr[Dict[str, Any]]
+    order_by: Optional[List[TestCaseOrderByParam]]
 
-    filters: Dict[str, Dict[str, Any]]
+    filters: Optional[TestCaseFiltersParam]
 
     limit: int
 
