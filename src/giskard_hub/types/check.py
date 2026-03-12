@@ -15,8 +15,8 @@ __all__ = [
     "CheckResult",
     "CheckConfig",
     "CheckConfigParam",
-    "Assertion",
-    "AssertionParam",
+    "CheckType",
+    "CheckTypeParam",
     "ConformityParams",
     "ConformityParamsParam",
     "CorrectnessParams",
@@ -83,7 +83,7 @@ class MetadataParams(BaseModel):
     type: Optional[Literal["metadata"]] = None
 
 
-Assertion: TypeAlias = Union[
+CheckType: TypeAlias = Union[
     CorrectnessParams,
     ConformityParams,
     GroundednessParams,
@@ -135,7 +135,7 @@ class MetadataParamsParam(TypedDict, total=False):
     type: Literal["metadata"]
 
 
-AssertionParam: TypeAlias = Union[
+CheckTypeParam: TypeAlias = Union[
     CorrectnessParamsParam,
     ConformityParamsParam,
     GroundednessParamsParam,
@@ -165,14 +165,25 @@ class OutputAnnotation(BaseModel):
 
 class Check(BaseModel):
     id: str
-    assertions: Optional[List[Assertion]] = None
     built_in: bool
     created_at: datetime
     description: Optional[str] = None
     identifier: str
     name: str
+    params: Dict[str, Any] = {}
     project_id: str
     updated_at: datetime
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _convert_assertions(cls, data: Any) -> Any:  # noqa: ANN401
+        if not isinstance(data, dict):
+            return data
+        d = cast(Dict[str, Any], data)
+        if "params" in d:
+            return d
+        assertions: list[Any] = d.get("assertions") or []
+        return {**d, "params": assertions[0] if assertions else {}}
 
 
 class CheckResult(BaseModel):
@@ -193,13 +204,13 @@ class CheckResult(BaseModel):
 class TestCaseCheckConfig(BaseModel):
     __test__ = False
     identifier: str
-    assertions: Optional[List[Assertion]] = None
+    assertions: Optional[List[CheckType]] = None
     enabled: Optional[bool] = None
 
 
 class TestCaseCheckConfigParam(TypedDict, total=False):
     identifier: Required[str]
-    assertions: Optional[Iterable[AssertionParam]]
+    assertions: Optional[Iterable[CheckTypeParam]]
     enabled: bool
 
 
@@ -274,7 +285,7 @@ class CheckListParams(TypedDict, total=False):
 
 
 class CheckCreateParams(TypedDict, total=False):
-    assertions: Required[Iterable[AssertionParam]]
+    assertions: Required[Iterable[CheckTypeParam]]
     description: Optional[str]
     identifier: Required[str]
     name: Required[str]
@@ -282,7 +293,7 @@ class CheckCreateParams(TypedDict, total=False):
 
 
 class CheckUpdateParams(TypedDict, total=False):
-    assertions: Optional[Iterable[AssertionParam]]
+    assertions: Optional[Iterable[CheckTypeParam]]
     description: Optional[str]
     identifier: Optional[str]
     name: Optional[str]
