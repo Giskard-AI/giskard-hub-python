@@ -139,7 +139,7 @@ class PlaygroundChatsResource(SyncAPIResource):
             cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, APIResponse[Agent]],
         )
 
-    async def delete(
+    def delete(
         self,
         chat_id: str,
         *,
