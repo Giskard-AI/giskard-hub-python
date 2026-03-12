@@ -1,8 +1,10 @@
 """Check, assertion, and annotation types."""
 
-from typing import List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
 from datetime import datetime
 from typing_extensions import Required
+
+import pydantic
 
 from .common import TaskState
 from .._types import SequenceNotStr
@@ -11,6 +13,8 @@ from .._models import BaseModel
 __all__ = [
     "Check",
     "CheckResult",
+    "CheckConfig",
+    "CheckConfigParam",
     "Assertion",
     "AssertionParam",
     "ConformityParams",
@@ -197,6 +201,66 @@ class TestCaseCheckConfigParam(TypedDict, total=False):
     identifier: Required[str]
     assertions: Optional[Iterable[AssertionParam]]
     enabled: bool
+
+
+# ---------------------------------------------------------------------------
+# User-facing check config (simplified format with params instead of assertions)
+# ---------------------------------------------------------------------------
+
+
+def _extract_check_params(check: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract params from the first assertion, stripping the ``type`` key."""
+    assertions: list[Any] = check.get("assertions") or []
+    if not assertions:
+        return {}
+    first: Any = assertions[0]
+    if isinstance(first, BaseModel):
+        return first.model_dump(exclude={"type"}, exclude_none=True)
+    if isinstance(first, dict):
+        return {k: v for k, v in cast(Dict[str, Any], first).items() if k != "type"}
+    return {}
+
+
+class CheckConfig(BaseModel):
+    """Simplified check configuration with ``params`` instead of raw ``assertions``."""
+
+    identifier: str
+    enabled: Optional[bool] = None
+    params: Dict[str, Any] = {}
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _convert_assertions(cls, data: Any) -> Any:  # noqa: ANN401
+        if not isinstance(data, dict):
+            return data
+        d = cast(Dict[str, Any], data)
+        if "params" in d:
+            return d
+        return {**d, "params": _extract_check_params(d)}
+
+
+class CheckConfigParam(TypedDict, total=False):
+    identifier: Required[str]
+    enabled: bool
+    params: Dict[str, Any]
+
+
+def _check_params_to_api(  # pyright: ignore[reportUnusedFunction]
+    checks: Iterable[CheckConfigParam],
+) -> list[Dict[str, Any]]:
+    """Convert user-facing CheckParam dicts to the API assertions format."""
+    return [
+        {
+            "enabled": True,
+            **check,
+            **(
+                {"assertions": [{"type": check["identifier"], **check.get("params", {})}]}
+                if check.get("params")
+                else {}
+            ),
+        }
+        for check in checks
+    ]
 
 
 # ---------------------------------------------------------------------------
