@@ -133,7 +133,7 @@ Methods:
 Types:
 
 ```python
-from giskard_hub.types.evaluations import (
+from giskard_hub.types.evaluation import (
     FailureCategory,
     TaskState,
     TestCaseEvaluation,
@@ -254,7 +254,7 @@ Methods:
 Types:
 
 ```python
-from giskard_hub.types.scans import (
+from giskard_hub.types.scan import (
     ScanProbeResult,
     ScanProbeAttempt,
 )
@@ -271,7 +271,7 @@ Methods:
 Types:
 
 ```python
-from giskard_hub.types.scans import (
+from giskard_hub.types.scan import (
     ReviewStatus,
     ScanProbeAttempt,
     Severity,
