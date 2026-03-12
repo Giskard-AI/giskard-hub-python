@@ -124,7 +124,7 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[AuditDisplayAPIResource], None]:
+    ) -> APIPaginatedResponse[AuditDisplayAPIResource, None]:
         """
         List Entity Audit Display Logs
 
@@ -164,7 +164,7 @@ class AuditResource(SyncAPIResource):
                     audit_list_entity_params.AuditListEntityParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[AuditDisplayAPIResource], None],
+            cast_to=APIPaginatedResponse[AuditDisplayAPIResource, None],
         )
 
 
@@ -264,7 +264,7 @@ class AsyncAuditResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[List[AuditDisplayAPIResource], None]:
+    ) -> APIPaginatedResponse[AuditDisplayAPIResource, None]:
         """
         List Entity Audit Display Logs
 
@@ -304,7 +304,7 @@ class AsyncAuditResource(AsyncAPIResource):
                     audit_list_entity_params.AuditListEntityParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[List[AuditDisplayAPIResource], None],
+            cast_to=APIPaginatedResponse[AuditDisplayAPIResource, None],
         )
 
 
