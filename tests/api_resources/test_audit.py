@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 import os
-from typing import Any, List, cast
+from typing import Any, cast
 
 import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
-    AuditAPIResource,
+    Audit,
+    AuditDisplay,
     APIPaginatedResponse,
-    AuditDisplayAPIResource,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -25,7 +25,7 @@ class TestAudit:
     @parametrize
     def test_method_search(self, client: HubClient) -> None:
         audit = client.audit.search()
-        assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -35,7 +35,7 @@ class TestAudit:
             limit=10,
             offset=0,
         )
-        assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -45,7 +45,7 @@ class TestAudit:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         audit = response.parse()
-        assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -55,7 +55,7 @@ class TestAudit:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             audit = response.parse()
-            assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+            assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -66,7 +66,7 @@ class TestAudit:
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
-        assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -77,7 +77,7 @@ class TestAudit:
             limit=10,
             offset=0,
         )
-        assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -90,7 +90,7 @@ class TestAudit:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         audit = response.parse()
-        assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -103,7 +103,7 @@ class TestAudit:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             audit = response.parse()
-            assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+            assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -115,7 +115,7 @@ class TestAsyncAudit:
     @parametrize
     async def test_method_search(self, async_client: AsyncHubClient) -> None:
         audit = await async_client.audit.search()
-        assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -125,7 +125,7 @@ class TestAsyncAudit:
             limit=10,
             offset=0,
         )
-        assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -135,7 +135,7 @@ class TestAsyncAudit:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         audit = await response.parse()
-        assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -145,7 +145,7 @@ class TestAsyncAudit:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             audit = await response.parse()
-            assert_matches_type(APIPaginatedResponse[List[AuditAPIResource], None], audit, path=["response"])
+            assert_matches_type(APIPaginatedResponse[Audit, None], audit, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -156,7 +156,7 @@ class TestAsyncAudit:
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
-        assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -167,7 +167,7 @@ class TestAsyncAudit:
             limit=10,
             offset=0,
         )
-        assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -180,7 +180,7 @@ class TestAsyncAudit:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         audit = await response.parse()
-        assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+        assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -193,6 +193,6 @@ class TestAsyncAudit:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             audit = await response.parse()
-            assert_matches_type(APIPaginatedResponse[List[AuditDisplayAPIResource], None], audit, path=["response"])
+            assert_matches_type(APIPaginatedResponse[AuditDisplay, None], audit, path=["response"])
 
         assert cast(Any, response.is_closed) is True

@@ -15,15 +15,9 @@ from .probes import (
 from ...types import (
     Agent,
     ScanResult,
-    APIResponse,
     ScanCategory,
     KnowledgeBase,
     ScanProbeResult,
-    APIResponseWithIncluded,
-    scan_list_params,
-    scan_create_params,
-    scan_retrieve_params,
-    scan_bulk_delete_params,
 )
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
@@ -43,7 +37,14 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ...types.scan import (
+    ScanListParams,
+    ScanCreateParams,
+    ScanRetrieveParams,
+    ScanBulkDeleteParams,
+)
 from ..._base_client import make_request_options
+from ...types.common import APIResponse, APIResponseWithIncluded
 
 __all__ = ["ScansResource", "AsyncScansResource"]
 
@@ -119,7 +120,7 @@ class ScansResource(SyncAPIResource):
                     "knowledge_base_id": knowledge_base_id,
                     "tags": tags,
                 },
-                scan_create_params.ScanCreateParams,
+                ScanCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -164,7 +165,7 @@ class ScansResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"include": include}, scan_retrieve_params.ScanRetrieveParams),
+                query=maybe_transform({"include": include}, ScanRetrieveParams),
             ),
             cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
         )
@@ -209,7 +210,7 @@ class ScansResource(SyncAPIResource):
                         "include": include,
                         "project_id": project_id,
                     },
-                    scan_list_params.ScanListParams,
+                    ScanListParams,
                 ),
             ),
             cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
@@ -282,7 +283,7 @@ class ScansResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"scan_ids": scan_ids}, scan_bulk_delete_params.ScanBulkDeleteParams),
+                query=maybe_transform({"scan_ids": scan_ids}, ScanBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -424,7 +425,7 @@ class AsyncScansResource(AsyncAPIResource):
                     "knowledge_base_id": knowledge_base_id,
                     "tags": tags,
                 },
-                scan_create_params.ScanCreateParams,
+                ScanCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -469,7 +470,7 @@ class AsyncScansResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"include": include}, scan_retrieve_params.ScanRetrieveParams),
+                query=await async_maybe_transform({"include": include}, ScanRetrieveParams),
             ),
             cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
         )
@@ -514,7 +515,7 @@ class AsyncScansResource(AsyncAPIResource):
                         "include": include,
                         "project_id": project_id,
                     },
-                    scan_list_params.ScanListParams,
+                    ScanListParams,
                 ),
             ),
             cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
@@ -587,7 +588,7 @@ class AsyncScansResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"scan_ids": scan_ids}, scan_bulk_delete_params.ScanBulkDeleteParams),
+                query=await async_maybe_transform({"scan_ids": scan_ids}, ScanBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )

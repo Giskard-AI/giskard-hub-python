@@ -1,394 +1,447 @@
 """Type definitions for the Giskard Hub API.
 
-This module provides all type definitions used throughout the SDK, organized by category:
-- Common types: Generic response wrappers and shared types
-- Core models: Main domain objects (Agent, Dataset, Project, etc.)
-- API resources: API-specific resource representations
-- Parameters: Input parameters for API operations (Create, Update, List, etc.)
-- Responses: Response types for specific operations
-- Enums: Enumerated types and literals
+Types are organized by domain into consolidated modules:
+
+- common: Generic response wrappers, filter/order helpers, TaskState, TaskProgress
+- chat: ChatMessage, Header and their param variants
+- user: User, UserReference
+- execution: ExecutionError, execution status types
+- agent: Agent, AgentOutput, MinimalAgent and params
+- check: Check, assertions, annotations and params
+- audit: Audit, AuditDisplay and params
+- task: Task, TaskStatus, TaskPriority, references and params
+- dataset: Dataset, DatasetSubset and params
+- knowledge_base: KnowledgeBase, document types and params
+- evaluation: Evaluation, Metric, TestCaseEvaluation, result params
+- scan: ScanResult, ScanCategory, ScanProbe types and params
+- scenario: Scenario, ScenarioPreview and params
+- scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
+- test_case: TestCase, TestCaseComment, comment params
+- playground_chat: PlaygroundChat and params
+- project: Project and params
 """
 
-from __future__ import annotations
-
-from .user import User as User, UserReference as UserReference
-from .agent import Agent as Agent
-from .scans import (
-    Severity as Severity,
-    ReviewStatus as ReviewStatus,
-    ScanProbeResult as ScanProbeResult,
-    ScanProbeAttempt as ScanProbeAttempt,
-    AttemptUpdateParams as AttemptUpdateParams,
-)
-from .common import (
+# -- common ----------------------------------------------------------------
+from .common import (  # noqa: I001
     APIResponse as APIResponse,
     APIPaginatedMetadata as APIPaginatedMetadata,
     APIPaginatedResponse as APIPaginatedResponse,
     APIResponseWithIncluded as APIResponseWithIncluded,
-)
-from .header import Header as Header
-from .metric import Metric as Metric
-from .dataset import Dataset as Dataset
-from .test_case import TestCase as TestCase, TestCaseComment as TestCaseComment
-from .test_cases import (
-    CommentAddParams as CommentAddParams,
-    CommentEditParams as CommentEditParams,
-)
-from .action_type import ActionType as ActionType
-from .evaluations import (
-    TaskState as TaskState,
-    FailureCategory as FailureCategory,
-    ResultListParams as ResultListParams,
-    ResultFiltersParam as ResultFiltersParam,
-    ResultOrderByParam as ResultOrderByParam,
-    ResultSearchParams as ResultSearchParams,
-    ResultUpdateParams as ResultUpdateParams,
-    FailureCategoryParam as FailureCategoryParam,
-    ResultRetrieveParams as ResultRetrieveParams,
-    ResultUpdateVisibilityParams as ResultUpdateVisibilityParams,
-    ResultSubmitLocalOutputParams as ResultSubmitLocalOutputParams,
-    TestCaseEvaluationAPIResource as TestCaseEvaluationAPIResource,
-)
-from .scan_result import ScanResult as ScanResult, ScanCategory as ScanCategory
-from .task_status import TaskStatus as TaskStatus
-from .chat_message import ChatMessage as ChatMessage
-from .filter_param import (
+    DateRangeFilterValueParam as DateRangeFilterValueParam,
     FilterValueParam as FilterValueParam,
     ListFilterValueParam as ListFilterValueParam,
-    DateRangeFilterValueParam as DateRangeFilterValueParam,
+    OrderByParam as OrderByParam,
+    PaginatedMetadata as PaginatedMetadata,
+    TaskProgress as TaskProgress,
+    TaskProgressParam as TaskProgressParam,
+    TaskState as TaskState,
 )
-from .header_param import HeaderParam as HeaderParam
-from .model_output import AgentOutput as AgentOutput
-from .minimal_model import MinimalAgent as MinimalAgent
-from .task_priority import TaskPriority as TaskPriority
-from .task_progress import TaskProgress as TaskProgress
-from .dataset_subset import DatasetSubset as DatasetSubset
-from .knowledge_base import KnowledgeBase as KnowledgeBase
-from .order_by_param import OrderByParam as OrderByParam
-from .audit_diff_item import AuditDiffItem as AuditDiffItem
-from .audit_diff_kind import AuditDiffKind as AuditDiffKind
-from .execution_error import ExecutionError as ExecutionError
-from .metadata_params import MetadataParams as MetadataParams
-from .frequency_option import FrequencyOption as FrequencyOption
-from .scan_list_params import ScanListParams as ScanListParams
-from .task_list_params import TaskListParams as TaskListParams
-from .agent_list_params import AgentListParams as AgentListParams
-from .check_list_params import CheckListParams as CheckListParams
-from .conformity_params import ConformityParams as ConformityParams
-from .output_annotation import OutputAnnotation as OutputAnnotation
-from .task_api_resource import TaskAPIResource as TaskAPIResource
-from .audit_api_resource import AuditAPIResource as AuditAPIResource
-from .chat_message_param import ChatMessageParam as ChatMessageParam
-from .check_api_resource import CheckAPIResource as CheckAPIResource
-from .correctness_params import CorrectnessParams as CorrectnessParams
-from .model_output_param import AgentOutputParam as AgentOutputParam
-from .paginated_metadata import PaginatedMetadata as PaginatedMetadata
-from .scan_create_params import ScanCreateParams as ScanCreateParams
-from .task_create_params import TaskCreateParams as TaskCreateParams
-from .task_update_params import TaskUpdateParams as TaskUpdateParams
-from .user_api_reference import UserAPIReference as UserAPIReference
-from .agent_api_reference import AgentAPIReference as AgentAPIReference
-from .agent_create_params import AgentCreateParams as AgentCreateParams
-from .agent_update_params import AgentUpdateParams as AgentUpdateParams
-from .audit_search_params import (
+
+# -- chat ------------------------------------------------------------------
+from .chat import (
+    ChatMessage as ChatMessage,
+    ChatMessageParam as ChatMessageParam,
+    ChatMessageWithMetadata as ChatMessageWithMetadata,
+    ChatMessageWithMetadataParam as ChatMessageWithMetadataParam,
+    Header as Header,
+    HeaderParam as HeaderParam,
+)
+
+# -- user ------------------------------------------------------------------
+from .user import (
+    User as User,
+    UserReference as UserReference,
+)
+
+# -- execution -------------------------------------------------------------
+from .execution import (
+    ErrorExecutionStatus as ErrorExecutionStatus,
+    ErrorExecutionStatusParam as ErrorExecutionStatusParam,
+    ExecutionError as ExecutionError,
+    ExecutionErrorParam as ExecutionErrorParam,
+    SuccessExecutionStatus as SuccessExecutionStatus,
+    SuccessExecutionStatusParam as SuccessExecutionStatusParam,
+)
+
+# -- agent -----------------------------------------------------------------
+from .agent import (
+    Agent as Agent,
+    AgentAutofillDescriptionParams as AgentAutofillDescriptionParams,
+    AgentBulkDeleteParams as AgentBulkDeleteParams,
+    AgentCreateParams as AgentCreateParams,
+    AgentGenerateCompletionParams as AgentGenerateCompletionParams,
+    AgentListParams as AgentListParams,
+    AgentOutput as AgentOutput,
+    AgentOutputParam as AgentOutputParam,
+    AgentReference as AgentReference,
+    AgentTestConnectionParams as AgentTestConnectionParams,
+    AgentUpdateParams as AgentUpdateParams,
+    MinimalAgent as MinimalAgent,
+    MinimalAgentParam as MinimalAgentParam,
+)
+
+# -- check -----------------------------------------------------------------
+from .check import (
+    Assertion as Assertion,
+    AssertionParam as AssertionParam,
+    Check as Check,
+    CheckBulkDeleteParams as CheckBulkDeleteParams,
+    CheckCreateParams as CheckCreateParams,
+    CheckListParams as CheckListParams,
+    CheckResult as CheckResult,
+    CheckUpdateParams as CheckUpdateParams,
+    ConformityParams as ConformityParams,
+    ConformityParamsParam as ConformityParamsParam,
+    CorrectnessParams as CorrectnessParams,
+    CorrectnessParamsParam as CorrectnessParamsParam,
+    GroundednessParams as GroundednessParams,
+    GroundednessParamsParam as GroundednessParamsParam,
+    MetadataParams as MetadataParams,
+    MetadataParamsParam as MetadataParamsParam,
+    OutputAnnotation as OutputAnnotation,
+    SemanticSimilarityParams as SemanticSimilarityParams,
+    SemanticSimilarityParamsParam as SemanticSimilarityParamsParam,
+    StringMatchParams as StringMatchParams,
+    StringMatchParamsParam as StringMatchParamsParam,
+    TestCaseCheckConfig as TestCaseCheckConfig,
+    TestCaseCheckConfigParam as TestCaseCheckConfigParam,
+)
+
+# -- audit -----------------------------------------------------------------
+from .audit import (
+    ActionType as ActionType,
+    Audit as Audit,
+    AuditDiffItem as AuditDiffItem,
+    AuditDiffKind as AuditDiffKind,
+    AuditDisplay as AuditDisplay,
     AuditFiltersParam as AuditFiltersParam,
+    AuditListEntityParams as AuditListEntityParams,
     AuditOrderByParam as AuditOrderByParam,
     AuditSearchParams as AuditSearchParams,
 )
-from .check_create_params import CheckCreateParams as CheckCreateParams
-from .check_update_params import CheckUpdateParams as CheckUpdateParams
-from .dataset_list_params import DatasetListParams as DatasetListParams
-from .groundedness_params import GroundednessParams as GroundednessParams
-from .minimal_model_param import MinimalAgentParam as MinimalAgentParam
-from .string_match_params import StringMatchParams as StringMatchParams
-from .task_progress_param import TaskProgressParam as TaskProgressParam
-from .test_case_reference import TestCaseReferencence as TestCaseReferencence
-from .dataset_subset_param import DatasetSubsetParam as DatasetSubsetParam
-from .project_api_resource import ProjectAPIResource as ProjectAPIResource
-from .scan_retrieve_params import ScanRetrieveParams as ScanRetrieveParams
-from .scheduled_evaluation import ScheduledEvaluation as ScheduledEvaluation
-from .dataset_api_reference import DatasetAPIReference as DatasetAPIReference
-from .dataset_create_params import DatasetCreateParams as DatasetCreateParams
-from .dataset_import_params import DatasetImportParams as DatasetImportParams
-from .dataset_update_params import DatasetUpdateParams as DatasetUpdateParams
-from .execution_error_param import ExecutionErrorParam as ExecutionErrorParam
-from .metadata_params_param import MetadataParamsParam as MetadataParamsParam
-from .project_create_params import ProjectCreateParams as ProjectCreateParams
-from .project_update_params import ProjectUpdateParams as ProjectUpdateParams
-from .scenario_api_resource import ScenarioAPIResource as ScenarioAPIResource
-from .error_execution_status import ErrorExecutionStatus as ErrorExecutionStatus
-from .evaluation_list_params import EvaluationListParams as EvaluationListParams
-from .scenario_create_params import ScenarioCreateParams as ScenarioCreateParams
-from .scenario_update_params import ScenarioUpdateParams as ScenarioUpdateParams
-from .test_case_check_config import TestCaseCheckConfig as TestCaseCheckConfig
-from .conformity_params_param import ConformityParamsParam as ConformityParamsParam
-from .evaluation_api_resource import EvaluationAPIResource as EvaluationAPIResource
-from .probe_attempt_reference import ProbeAttemptReference as ProbeAttemptReference
-from .scan_bulk_delete_params import ScanBulkDeleteParams as ScanBulkDeleteParams
-from .scenario_preview_params import ScenarioPreviewParams as ScenarioPreviewParams
-from .task_bulk_delete_params import TaskBulkDeleteParams as TaskBulkDeleteParams
-from .test_case_create_params import TestCaseCreateParams as TestCaseCreateParams
-from .test_case_update_params import TestCaseUpdateParams as TestCaseUpdateParams
-from .agent_bulk_delete_params import AgentBulkDeleteParams as AgentBulkDeleteParams
-from .audit_list_entity_params import AuditListEntityParams as AuditListEntityParams
-from .check_bulk_delete_params import CheckBulkDeleteParams as CheckBulkDeleteParams
-from .correctness_params_param import CorrectnessParamsParam as CorrectnessParamsParam
-from .evaluation_create_params import EvaluationCreateParams as EvaluationCreateParams
-from .evaluation_update_params import EvaluationUpdateParams as EvaluationUpdateParams
-from .success_execution_status import SuccessExecutionStatus as SuccessExecutionStatus
-from .groundedness_params_param import GroundednessParamsParam as GroundednessParamsParam
-from .string_match_params_param import StringMatchParamsParam as StringMatchParamsParam
-from .audit_display_api_resource import AuditDisplayAPIResource as AuditDisplayAPIResource
-from .chat_message_with_metadata import ChatMessageWithMetadata as ChatMessageWithMetadata
-from .dataset_bulk_delete_params import DatasetBulkDeleteParams as DatasetBulkDeleteParams
-from .evaluation_retrieve_params import EvaluationRetrieveParams as EvaluationRetrieveParams
-from .knowledge_base_list_params import KnowledgeBaseListParams as KnowledgeBaseListParams
-from .project_bulk_delete_params import ProjectBulkDeleteParams as ProjectBulkDeleteParams
-from .semantic_similarity_params import SemanticSimilarityParams as SemanticSimilarityParams
-from .bulk_move_test_cases_params import BulkMoveTestCasesParams as BulkMoveTestCasesParams
-from .playground_chat_list_params import PlaygroundChatListParams as PlaygroundChatListParams
-from .agent_test_connection_params import AgentTestConnectionParams as AgentTestConnectionParams
-from .error_execution_status_param import ErrorExecutionStatusParam as ErrorExecutionStatusParam
-from .evaluation_run_single_params import EvaluationRunSingleParams as EvaluationRunSingleParams
-from .knowledge_base_create_params import KnowledgeBaseCreateParams as KnowledgeBaseCreateParams
-from .knowledge_base_update_params import KnowledgeBaseUpdateParams as KnowledgeBaseUpdateParams
-from .playground_chat_api_resource import PlaygroundChatAPIResource as PlaygroundChatAPIResource
-from .test_case_bulk_delete_params import TestCaseBulkDeleteParams as TestCaseBulkDeleteParams
-from .test_case_bulk_update_params import TestCaseBulkUpdateParams as TestCaseBulkUpdateParams
-from .test_case_check_config_param import TestCaseCheckConfigParam as TestCaseCheckConfigParam
-from .evaluation_bulk_delete_params import EvaluationBulkDeleteParams as EvaluationBulkDeleteParams
-from .scenario_preview_api_resource import ScenarioPreviewAPIResource as ScenarioPreviewAPIResource
-from .evaluation_create_local_params import EvaluationCreateLocalParams as EvaluationCreateLocalParams
-from .success_execution_status_param import SuccessExecutionStatusParam as SuccessExecutionStatusParam
-from .test_case_evaluation_reference import TestCaseEvaluationReference as TestCaseEvaluationReference
-from .playground_chat_retrieve_params import PlaygroundChatRetrieveParams as PlaygroundChatRetrieveParams
-from .agent_generate_completion_params import AgentGenerateCompletionParams as AgentGenerateCompletionParams
-from .chat_message_with_metadata_param import ChatMessageWithMetadataParam as ChatMessageWithMetadataParam
-from .dataset_search_test_cases_params import (
-    TestCaseFiltersParam as TestCaseFiltersParam,
-    TestCaseOrderByParam as TestCaseOrderByParam,
-    DatasetSearchTestCasesParams as DatasetSearchTestCasesParams,
-)
-from .scheduled_evaluation_list_params import ScheduledEvaluationListParams as ScheduledEvaluationListParams
-from .semantic_similarity_params_param import SemanticSimilarityParamsParam as SemanticSimilarityParamsParam
-from .agent_autofill_description_params import AgentAutofillDescriptionParams as AgentAutofillDescriptionParams
-from .knowledge_base_bulk_delete_params import KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams
-from .playground_chat_bulk_delete_params import PlaygroundChatBulkDeleteParams as PlaygroundChatBulkDeleteParams
-from .scheduled_evaluation_create_params import ScheduledEvaluationCreateParams as ScheduledEvaluationCreateParams
-from .scheduled_evaluation_update_params import ScheduledEvaluationUpdateParams as ScheduledEvaluationUpdateParams
-from .dataset_generate_adversarial_params import DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams
-from .scheduled_evaluation_retrieve_params import ScheduledEvaluationRetrieveParams as ScheduledEvaluationRetrieveParams
-from .dataset_generate_document_based_params import (
-    DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
-)
-from .dataset_generate_scenario_based_params import (
-    DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
-)
-from .knowledge_base_search_documents_params import (
-    KnowledgeBaseDocumentFiltersParam as KnowledgeBaseDocumentFiltersParam,
-    KnowledgeBaseDocumentOrderByParam as KnowledgeBaseDocumentOrderByParam,
-    KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
-)
-from .scheduled_evaluation_bulk_delete_params import (
-    ScheduledEvaluationBulkDeleteParams as ScheduledEvaluationBulkDeleteParams,
-)
-from .knowledge_base_document_row_api_resource import (
-    KnowledgeBaseDocumentRowAPIResource as KnowledgeBaseDocumentRowAPIResource,
-)
-from .knowledge_base_document_detail_api_resource import (
-    KnowledgeBaseDocumentDetailAPIResource as KnowledgeBaseDocumentDetailAPIResource,
-)
-from .scheduled_evaluation_list_evaluations_params import (
-    ScheduledEvaluationListEvaluationsParams as ScheduledEvaluationListEvaluationsParams,
+
+# -- task ------------------------------------------------------------------
+from .task import (
+    ProbeAttemptReference as ProbeAttemptReference,
+    Task as Task,
+    TaskBulkDeleteParams as TaskBulkDeleteParams,
+    TaskCreateParams as TaskCreateParams,
+    TaskListParams as TaskListParams,
+    TaskPriority as TaskPriority,
+    TaskStatus as TaskStatus,
+    TaskUpdateParams as TaskUpdateParams,
+    TestCaseEvaluationReference as TestCaseEvaluationReference,
+    TestCaseReference as TestCaseReference,
 )
 
+# -- dataset ---------------------------------------------------------------
+from .dataset import (
+    Dataset as Dataset,
+    DatasetBulkDeleteParams as DatasetBulkDeleteParams,
+    DatasetCreateParams as DatasetCreateParams,
+    DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams,
+    DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
+    DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
+    DatasetImportParams as DatasetImportParams,
+    DatasetListParams as DatasetListParams,
+    DatasetReference as DatasetReference,
+    DatasetSearchTestCasesParams as DatasetSearchTestCasesParams,
+    DatasetSubset as DatasetSubset,
+    DatasetSubsetParam as DatasetSubsetParam,
+    DatasetUpdateParams as DatasetUpdateParams,
+    TestCaseFiltersParam as TestCaseFiltersParam,
+    TestCaseOrderByParam as TestCaseOrderByParam,
+)
+
+# -- knowledge_base --------------------------------------------------------
+from .knowledge_base import (
+    KnowledgeBase as KnowledgeBase,
+    KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams,
+    KnowledgeBaseCreateParams as KnowledgeBaseCreateParams,
+    KnowledgeBaseDocumentDetail as KnowledgeBaseDocumentDetail,
+    KnowledgeBaseDocumentFiltersParam as KnowledgeBaseDocumentFiltersParam,
+    KnowledgeBaseDocumentOrderByParam as KnowledgeBaseDocumentOrderByParam,
+    KnowledgeBaseDocumentRow as KnowledgeBaseDocumentRow,
+    KnowledgeBaseListParams as KnowledgeBaseListParams,
+    KnowledgeBaseSearchDocumentsParams as KnowledgeBaseSearchDocumentsParams,
+    KnowledgeBaseUpdateParams as KnowledgeBaseUpdateParams,
+    Topic as Topic,
+)
+
+# -- evaluation ------------------------------------------------------------
+from .evaluation import (
+    Evaluation as Evaluation,
+    EvaluationBulkDeleteParams as EvaluationBulkDeleteParams,
+    EvaluationCreateLocalParams as EvaluationCreateLocalParams,
+    EvaluationCreateParams as EvaluationCreateParams,
+    EvaluationListParams as EvaluationListParams,
+    EvaluationRetrieveParams as EvaluationRetrieveParams,
+    EvaluationRunSingleParams as EvaluationRunSingleParams,
+    EvaluationUpdateParams as EvaluationUpdateParams,
+    FailureCategory as FailureCategory,
+    FailureCategoryParam as FailureCategoryParam,
+    Metric as Metric,
+    ResultFiltersParam as ResultFiltersParam,
+    ResultListParams as ResultListParams,
+    ResultOrderByParam as ResultOrderByParam,
+    ResultRetrieveParams as ResultRetrieveParams,
+    ResultSearchParams as ResultSearchParams,
+    ResultSubmitLocalOutputParams as ResultSubmitLocalOutputParams,
+    ResultUpdateParams as ResultUpdateParams,
+    ResultUpdateVisibilityParams as ResultUpdateVisibilityParams,
+    TestCaseEvaluation as TestCaseEvaluation,
+)
+
+# -- scan ------------------------------------------------------------------
+from .scan import (
+    AttemptUpdateParams as AttemptUpdateParams,
+    ReviewStatus as ReviewStatus,
+    ScanBulkDeleteParams as ScanBulkDeleteParams,
+    ScanCategory as ScanCategory,
+    ScanCreateParams as ScanCreateParams,
+    ScanListParams as ScanListParams,
+    ScanProbeAttempt as ScanProbeAttempt,
+    ScanProbeResult as ScanProbeResult,
+    ScanResult as ScanResult,
+    ScanRetrieveParams as ScanRetrieveParams,
+    Severity as Severity,
+)
+
+# -- scenario --------------------------------------------------------------
+from .scenario import (
+    Scenario as Scenario,
+    ScenarioCreateParams as ScenarioCreateParams,
+    ScenarioPreview as ScenarioPreview,
+    ScenarioPreviewParams as ScenarioPreviewParams,
+    ScenarioUpdateParams as ScenarioUpdateParams,
+)
+
+# -- scheduled_evaluation --------------------------------------------------
+from .scheduled_evaluation import (
+    FrequencyOption as FrequencyOption,
+    ScheduledEvaluation as ScheduledEvaluation,
+    ScheduledEvaluationBulkDeleteParams as ScheduledEvaluationBulkDeleteParams,
+    ScheduledEvaluationCreateParams as ScheduledEvaluationCreateParams,
+    ScheduledEvaluationListEvaluationsParams as ScheduledEvaluationListEvaluationsParams,
+    ScheduledEvaluationListParams as ScheduledEvaluationListParams,
+    ScheduledEvaluationRetrieveParams as ScheduledEvaluationRetrieveParams,
+    ScheduledEvaluationUpdateParams as ScheduledEvaluationUpdateParams,
+)
+
+# -- test_case -------------------------------------------------------------
+from .test_case import (
+    BulkMoveTestCasesParams as BulkMoveTestCasesParams,
+    CommentAddParams as CommentAddParams,
+    CommentEditParams as CommentEditParams,
+    TestCase as TestCase,
+    TestCaseBulkDeleteParams as TestCaseBulkDeleteParams,
+    TestCaseBulkUpdateParams as TestCaseBulkUpdateParams,
+    TestCaseComment as TestCaseComment,
+    TestCaseCreateParams as TestCaseCreateParams,
+    TestCaseUpdateParams as TestCaseUpdateParams,
+)
+
+# -- playground_chat -------------------------------------------------------
+from .playground_chat import (
+    PlaygroundChat as PlaygroundChat,
+    PlaygroundChatBulkDeleteParams as PlaygroundChatBulkDeleteParams,
+    PlaygroundChatListParams as PlaygroundChatListParams,
+    PlaygroundChatRetrieveParams as PlaygroundChatRetrieveParams,
+)
+
+# -- project ---------------------------------------------------------------
+from .project import (
+    Project as Project,
+    ProjectBulkDeleteParams as ProjectBulkDeleteParams,
+    ProjectCreateParams as ProjectCreateParams,
+    ProjectUpdateParams as ProjectUpdateParams,
+)
+
+
 __all__ = [
-    # User and agent core models
+    # common
+    "APIResponse",
+    "APIPaginatedMetadata",
+    "APIPaginatedResponse",
+    "APIResponseWithIncluded",
+    "PaginatedMetadata",
+    "TaskState",
+    "TaskProgress",
+    "TaskProgressParam",
+    "FilterValueParam",
+    "ListFilterValueParam",
+    "DateRangeFilterValueParam",
+    "OrderByParam",
+    # chat
+    "ChatMessage",
+    "ChatMessageParam",
+    "ChatMessageWithMetadata",
+    "ChatMessageWithMetadataParam",
+    "Header",
+    "HeaderParam",
+    # user
     "User",
     "UserReference",
+    # execution
+    "ExecutionError",
+    "ExecutionErrorParam",
+    "ErrorExecutionStatus",
+    "ErrorExecutionStatusParam",
+    "SuccessExecutionStatus",
+    "SuccessExecutionStatusParam",
+    # agent
     "Agent",
-    # Scan probe types
+    "AgentReference",
+    "AgentOutput",
+    "AgentOutputParam",
+    "MinimalAgent",
+    "MinimalAgentParam",
+    "AgentListParams",
+    "AgentCreateParams",
+    "AgentUpdateParams",
+    "AgentBulkDeleteParams",
+    "AgentTestConnectionParams",
+    "AgentGenerateCompletionParams",
+    "AgentAutofillDescriptionParams",
+    # check
+    "Check",
+    "CheckResult",
+    "Assertion",
+    "AssertionParam",
+    "ConformityParams",
+    "ConformityParamsParam",
+    "CorrectnessParams",
+    "CorrectnessParamsParam",
+    "GroundednessParams",
+    "GroundednessParamsParam",
+    "StringMatchParams",
+    "StringMatchParamsParam",
+    "SemanticSimilarityParams",
+    "SemanticSimilarityParamsParam",
+    "MetadataParams",
+    "MetadataParamsParam",
+    "OutputAnnotation",
+    "TestCaseCheckConfig",
+    "TestCaseCheckConfigParam",
+    "CheckListParams",
+    "CheckCreateParams",
+    "CheckUpdateParams",
+    "CheckBulkDeleteParams",
+    # audit
+    "ActionType",
+    "AuditDiffKind",
+    "AuditDiffItem",
+    "Audit",
+    "AuditDisplay",
+    "AuditListEntityParams",
+    "AuditSearchParams",
+    "AuditOrderByParam",
+    "AuditFiltersParam",
+    # task
+    "Task",
+    "TaskStatus",
+    "TaskPriority",
+    "TestCaseReference",
+    "ProbeAttemptReference",
+    "TestCaseEvaluationReference",
+    "TaskListParams",
+    "TaskCreateParams",
+    "TaskUpdateParams",
+    "TaskBulkDeleteParams",
+    # dataset
+    "Dataset",
+    "DatasetReference",
+    "DatasetSubset",
+    "DatasetSubsetParam",
+    "DatasetListParams",
+    "DatasetCreateParams",
+    "DatasetImportParams",
+    "DatasetUpdateParams",
+    "DatasetBulkDeleteParams",
+    "DatasetSearchTestCasesParams",
+    "TestCaseOrderByParam",
+    "TestCaseFiltersParam",
+    "DatasetGenerateAdversarialParams",
+    "DatasetGenerateDocumentBasedParams",
+    "DatasetGenerateScenarioBasedParams",
+    # knowledge base
+    "KnowledgeBase",
+    "Topic",
+    "KnowledgeBaseDocumentRow",
+    "KnowledgeBaseDocumentDetail",
+    "KnowledgeBaseListParams",
+    "KnowledgeBaseCreateParams",
+    "KnowledgeBaseUpdateParams",
+    "KnowledgeBaseBulkDeleteParams",
+    "KnowledgeBaseSearchDocumentsParams",
+    "KnowledgeBaseDocumentOrderByParam",
+    "KnowledgeBaseDocumentFiltersParam",
+    # evaluation
+    "Metric",
+    "Evaluation",
+    "EvaluationListParams",
+    "EvaluationCreateParams",
+    "EvaluationUpdateParams",
+    "EvaluationRetrieveParams",
+    "EvaluationRunSingleParams",
+    "EvaluationCreateLocalParams",
+    "EvaluationBulkDeleteParams",
+    "FailureCategory",
+    "FailureCategoryParam",
+    "TestCaseEvaluation",
+    "ResultListParams",
+    "ResultSearchParams",
+    "ResultUpdateParams",
+    "ResultRetrieveParams",
+    "ResultUpdateVisibilityParams",
+    "ResultSubmitLocalOutputParams",
+    "ResultFiltersParam",
+    "ResultOrderByParam",
+    # scan
+    "ScanResult",
+    "ScanCategory",
+    "ScanListParams",
+    "ScanCreateParams",
+    "ScanRetrieveParams",
+    "ScanBulkDeleteParams",
     "Severity",
     "ReviewStatus",
     "ScanProbeResult",
     "ScanProbeAttempt",
     "AttemptUpdateParams",
-    # Common response wrappers
-    "APIResponse",
-    "APIPaginatedMetadata",
-    "APIPaginatedResponse",
-    "APIResponseWithIncluded",
-    # Core domain models
-    "Header",
-    "Metric",
-    "Dataset",
-    "TestCase",
-    "TestCaseComment",
-    # Test case comment params
-    "CommentAddParams",
-    "CommentEditParams",
-    # Enums
-    "ActionType",
-    # Evaluation results types
-    "TaskState",
-    "FailureCategory",
-    "ResultListParams",
-    "ResultSearchParams",
-    "ResultUpdateParams",
-    "FailureCategoryParam",
-    "ResultRetrieveParams",
-    "ResultUpdateVisibilityParams",
-    "ResultSubmitLocalOutputParams",
-    "TestCaseEvaluationAPIResource",
-    # Scan result types
-    "ScanResult",
-    "ScanCategory",
-    "TaskStatus",
-    # Shared component types
-    "ChatMessage",
-    "HeaderParam",
-    "AgentOutput",
-    "MinimalAgent",
-    "TaskPriority",
-    "TaskProgress",
-    "DatasetSubset",
-    "KnowledgeBase",
-    "AuditDiffItem",
-    "AuditDiffKind",
-    "ExecutionError",
-    "MetadataParams",
-    "FrequencyOption",
-    "ScanListParams",
-    "TaskListParams",
-    "AgentListParams",
-    "CheckListParams",
-    # Check/evaluation configuration
-    "ConformityParams",
-    "OutputAnnotation",
-    "TaskAPIResource",
-    # API resources and params
-    "AuditAPIResource",
-    "ChatMessageParam",
-    "CheckAPIResource",
-    "CorrectnessParams",
-    "AgentOutputParam",
-    "PaginatedMetadata",
-    # Scan types
-    "ScanCreateParams",
-    # Task types
-    "TaskCreateParams",
-    "TaskUpdateParams",
-    # Reference types
-    "UserAPIReference",
-    "AgentAPIReference",
-    # Agent types
-    "AgentCreateParams",
-    "AgentUpdateParams",
-    "AuditSearchParams",
-    "AuditOrderByParam",
-    "AuditFiltersParam",
-    "OrderByParam",
-    "ListFilterValueParam",
-    "DateRangeFilterValueParam",
-    "FilterValueParam",
-    # Check types
-    "CheckCreateParams",
-    "CheckUpdateParams",
-    "DatasetListParams",
-    "GroundednessParams",
-    "MinimalAgentParam",
-    "StringMatchParams",
-    "TaskProgressParam",
-    "TestCaseReferencence",
-    "DatasetSubsetParam",
-    "ProjectAPIResource",
-    "ScanRetrieveParams",
-    "ScheduledEvaluation",
-    # Dataset types
-    "DatasetAPIReference",
-    "DatasetCreateParams",
-    "DatasetImportParams",
-    "DatasetUpdateParams",
-    "ExecutionErrorParam",
-    "MetadataParamsParam",
-    # Project types
-    "ProjectCreateParams",
-    "ProjectUpdateParams",
-    "ScenarioAPIResource",
-    "ErrorExecutionStatus",
-    "EvaluationListParams",
-    # Scenario types
+    # scenario
+    "Scenario",
+    "ScenarioPreview",
     "ScenarioCreateParams",
     "ScenarioUpdateParams",
-    "TestCaseCheckConfig",
-    "ConformityParamsParam",
-    "EvaluationAPIResource",
-    "ProbeAttemptReference",
-    "ScanBulkDeleteParams",
     "ScenarioPreviewParams",
-    "TaskBulkDeleteParams",
-    # Test case types
-    "TestCaseCreateParams",
-    "TestCaseUpdateParams",
-    "AgentBulkDeleteParams",
-    # Audit types
-    "AuditListEntityParams",
-    "CheckBulkDeleteParams",
-    "CorrectnessParamsParam",
-    # Evaluation types
-    "EvaluationCreateParams",
-    "EvaluationUpdateParams",
-    "SuccessExecutionStatus",
-    "GroundednessParamsParam",
-    "StringMatchParamsParam",
-    "AuditDisplayAPIResource",
-    "ChatMessageWithMetadata",
-    "DatasetBulkDeleteParams",
-    "EvaluationRetrieveParams",
-    "KnowledgeBaseListParams",
-    "ProjectBulkDeleteParams",
-    "SemanticSimilarityParams",
-    "BulkMoveTestCasesParams",
-    "PlaygroundChatListParams",
-    "AgentTestConnectionParams",
-    "ErrorExecutionStatusParam",
-    "EvaluationRunSingleParams",
-    # Knowledge base types
-    "KnowledgeBaseCreateParams",
-    "KnowledgeBaseUpdateParams",
-    # Playground chat types
-    "PlaygroundChatAPIResource",
-    "TestCaseBulkDeleteParams",
-    "TestCaseBulkUpdateParams",
-    "TestCaseCheckConfigParam",
-    "EvaluationBulkDeleteParams",
-    "ScenarioPreviewAPIResource",
-    "EvaluationCreateLocalParams",
-    "SuccessExecutionStatusParam",
-    "TestCaseEvaluationReference",
-    "PlaygroundChatRetrieveParams",
-    "AgentGenerateCompletionParams",
-    "ChatMessageWithMetadataParam",
-    "DatasetSearchTestCasesParams",
-    "TestCaseOrderByParam",
-    "TestCaseFiltersParam",
+    # scheduled evaluation
+    "FrequencyOption",
+    "ScheduledEvaluation",
     "ScheduledEvaluationListParams",
-    "SemanticSimilarityParamsParam",
-    "AgentAutofillDescriptionParams",
-    "KnowledgeBaseBulkDeleteParams",
-    "PlaygroundChatBulkDeleteParams",
-    # Scheduled evaluation types
     "ScheduledEvaluationCreateParams",
     "ScheduledEvaluationUpdateParams",
-    "DatasetGenerateAdversarialParams",
     "ScheduledEvaluationRetrieveParams",
-    "DatasetGenerateDocumentBasedParams",
-    "DatasetGenerateScenarioBasedParams",
-    "KnowledgeBaseSearchDocumentsParams",
-    "KnowledgeBaseDocumentOrderByParam",
-    "KnowledgeBaseDocumentFiltersParam",
     "ScheduledEvaluationBulkDeleteParams",
-    "KnowledgeBaseDocumentRowAPIResource",
-    "KnowledgeBaseDocumentDetailAPIResource",
     "ScheduledEvaluationListEvaluationsParams",
+    # test case
+    "TestCase",
+    "TestCaseComment",
+    "BulkMoveTestCasesParams",
+    "TestCaseCreateParams",
+    "TestCaseUpdateParams",
+    "TestCaseBulkDeleteParams",
+    "TestCaseBulkUpdateParams",
+    "CommentAddParams",
+    "CommentEditParams",
+    # playground chat
+    "PlaygroundChat",
+    "PlaygroundChatListParams",
+    "PlaygroundChatRetrieveParams",
+    "PlaygroundChatBulkDeleteParams",
+    # project
+    "Project",
+    "ProjectCreateParams",
+    "ProjectUpdateParams",
+    "ProjectBulkDeleteParams",
 ]

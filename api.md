@@ -30,16 +30,16 @@ Types:
 
 ```python
 from giskard_hub.types import (
-    AuditAPIResource,
-    AuditDisplayAPIResource,
+    Audit,
+    AuditDisplay,
     APIPaginatedResponse,
 )
 ```
 
 Methods:
 
-- <code title="post /v2/audit/search">client.audit.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit_search_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[List[<a href="./src/giskard_hub/types/audit_api_resource.py">AuditAPIResource</a>], None]</code>
-- <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit_list_entity_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[List[<a href="./src/giskard_hub/types/audit_display_api_resource.py">AuditDisplayAPIResource</a>], None]</code>
+- <code title="post /v2/audit/search">client.audit.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit_search_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/audit.py">Audit</a>, None]</code>
+- <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit_list_entity_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>, None]</code>
 
 # Checks
 
@@ -47,7 +47,7 @@ Types:
 
 ```python
 from giskard_hub.types import (
-    CheckAPIResource,
+    Check,
     ConformityParams,
     CorrectnessParams,
     GroundednessParams,
@@ -60,10 +60,10 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">create</a>(\*\*<a href="src/giskard_hub/types/check_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/check_api_resource.py">CheckAPIResource</a>]</code>
-- <code title="get /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">retrieve</a>(check_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/check_api_resource.py">CheckAPIResource</a>]</code>
-- <code title="patch /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">update</a>(check_id, \*\*<a href="src/giskard_hub/types/check_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/check_api_resource.py">CheckAPIResource</a>]</code>
-- <code title="get /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">list</a>(\*\*<a href="src/giskard_hub/types/check_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/check_api_resource.py">CheckAPIResource</a>]]</code>
+- <code title="post /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">create</a>(\*\*<a href="src/giskard_hub/types/check_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/check.py">Check</a>]</code>
+- <code title="get /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">retrieve</a>(check_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/check.py">Check</a>]</code>
+- <code title="patch /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">update</a>(check_id, \*\*<a href="src/giskard_hub/types/check_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/check.py">Check</a>]</code>
+- <code title="get /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">list</a>(\*\*<a href="src/giskard_hub/types/check_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/check.py">Check</a>]]</code>
 - <code title="delete /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">delete</a>(check_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/check_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 
@@ -106,8 +106,8 @@ from giskard_hub.types import (
     AgentOutput,
     Dataset,
     DatasetSubset,
-    EvaluationAPIResource,
-    CheckAPIResource,
+    Evaluation,
+    Check,
     Metric,
     MinimalAgent,
     OutputAnnotation,
@@ -118,25 +118,25 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create</a>(\*\*<a href="src/giskard_hub/types/evaluation_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>]</code>
-- <code title="get /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">retrieve</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a> | <a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
-- <code title="patch /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">update</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>]</code>
-- <code title="get /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">list</a>(\*\*<a href="src/giskard_hub/types/evaluation_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a> | <a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
+- <code title="post /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create</a>(\*\*<a href="src/giskard_hub/types/evaluation_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]</code>
+- <code title="get /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">retrieve</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a> | <a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
+- <code title="patch /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">update</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]</code>
+- <code title="get /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">list</a>(\*\*<a href="src/giskard_hub/types/evaluation_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a> | <a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
 - <code title="delete /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">delete</a>(evaluation_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/evaluation_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
-- <code title="post /v2/evaluations/create-local">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create_local</a>(\*\*<a href="src/giskard_hub/types/evaluation_create_local_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>]</code>
-- <code title="post /v2/evaluations/{evaluation_id}/rerun-errored-results">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">rerun_errored_results</a>(evaluation_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>]</code>
-- <code title="post /v2/evaluations/run-single">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">run_single</a>(\*\*<a href="src/giskard_hub/types/evaluation_run_single_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/check_api_resource.py">CheckAPIResource</a>]]</code>
+- <code title="post /v2/evaluations/create-local">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create_local</a>(\*\*<a href="src/giskard_hub/types/evaluation_create_local_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]</code>
+- <code title="post /v2/evaluations/{evaluation_id}/rerun-errored-results">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">rerun_errored_results</a>(evaluation_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]</code>
+- <code title="post /v2/evaluations/run-single">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">run_single</a>(\*\*<a href="src/giskard_hub/types/evaluation_run_single_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/check.py">Check</a>]]</code>
 
 ## Results
 
 Types:
 
 ```python
-from giskard_hub.types.evaluations import (
+from giskard_hub.types.evaluation import (
     FailureCategory,
     TaskState,
-    TestCaseEvaluationAPIResource,
+    TestCaseEvaluation,
 )
 from giskard_hub.types import (
     TestCase,
@@ -148,13 +148,13 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="get /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">retrieve</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
-- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>]</code>
-- <code title="get /v2/evaluations/{evaluation_id}/results">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">list</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
-- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_test_case</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>]</code>
-- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">submit_local_output</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_submit_local_output_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>]</code>
-- <code title="post /v2/evaluations/{evaluation_id}/results/search">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">search</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_search_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
-- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}/visibility">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update_visibility</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_update_visibility_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/test_case_evaluation_api_resource.py">TestCaseEvaluationAPIResource</a>]</code>
+- <code title="get /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">retrieve</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
+- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>]</code>
+- <code title="get /v2/evaluations/{evaluation_id}/results">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">list</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_test_case</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>]</code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">submit_local_output</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_submit_local_output_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>]</code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/search">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">search</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_search_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]]</code>
+- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}/visibility">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update_visibility</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluations/result_update_visibility_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluations/evaluations/__init__.py">TestCaseEvaluation</a>]</code>
 
 # KnowledgeBases
 
@@ -163,8 +163,8 @@ Types:
 ```python
 from giskard_hub.types import (
     KnowledgeBase,
-    KnowledgeBaseDocumentRowAPIResource,
-    KnowledgeBaseDocumentDetailAPIResource,
+    KnowledgeBaseDocumentRow,
+    KnowledgeBaseDocumentDetail,
     APIResponse,
     APIPaginatedResponse,
 )
@@ -178,8 +178,8 @@ Methods:
 - <code title="get /v2/knowledge-bases">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">list</a>(\*\*<a href="src/giskard_hub/types/knowledge_base_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBase</a>]]</code>
 - <code title="delete /v2/knowledge-bases/{knowledge_base_id}">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">delete</a>(knowledge_base_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/knowledge-bases">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/knowledge_base_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
-- <code title="post /v2/knowledge-bases/{knowledge_base_id}/documents/search">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">search_documents</a>(knowledge_base_id, \*\*<a href="src/giskard_hub/types/knowledge_base_search_documents_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[List[<a href="./src/giskard_hub/types/knowledge_base_document_row_api_resource.py">KnowledgeBaseDocumentRowAPIResource</a>], None]</code>
-- <code title="get /v2/knowledge-bases/{knowledge_base_id}/documents/{document_id}">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">retrieve_document</a>(knowledge_base_id, document_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/knowledge_base_document_detail_api_resource.py">KnowledgeBaseDocumentDetailAPIResource</a>]</code>
+- <code title="post /v2/knowledge-bases/{knowledge_base_id}/documents/search">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">search_documents</a>(knowledge_base_id, \*\*<a href="src/giskard_hub/types/knowledge_base_search_documents_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[List[<a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBaseDocumentRow</a>], None]</code>
+- <code title="get /v2/knowledge-bases/{knowledge_base_id}/documents/{document_id}">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">retrieve_document</a>(knowledge_base_id, document_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBaseDocumentDetail</a>]</code>
 
 # Projects
 
@@ -187,17 +187,17 @@ Types:
 
 ```python
 from giskard_hub.types import (
-    ProjectAPIResource,
+    Project,
     APIResponse,
 )
 ```
 
 Methods:
 
-- <code title="post /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">create</a>(\*\*<a href="src/giskard_hub/types/project_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/project_api_resource.py">ProjectAPIResource</a>]</code>
-- <code title="get /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">retrieve</a>(project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/project_api_resource.py">ProjectAPIResource</a>]</code>
-- <code title="patch /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">update</a>(project_id, \*\*<a href="src/giskard_hub/types/project_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/project_api_resource.py">ProjectAPIResource</a>]</code>
-- <code title="get /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">list</a>() -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/project_api_resource.py">ProjectAPIResource</a>]]</code>
+- <code title="post /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">create</a>(\*\*<a href="src/giskard_hub/types/project_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/project.py">Project</a>]</code>
+- <code title="get /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">retrieve</a>(project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/project.py">Project</a>]</code>
+- <code title="patch /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">update</a>(project_id, \*\*<a href="src/giskard_hub/types/project_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/project.py">Project</a>]</code>
+- <code title="get /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">list</a>() -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/project.py">Project</a>]]</code>
 - <code title="delete /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">delete</a>(project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/project_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 
@@ -207,20 +207,20 @@ Types:
 
 ```python
 from giskard_hub.types import (
-    ScenarioAPIResource,
-    ScenarioPreviewAPIResource,
+    Scenario,
+    ScenarioPreview,
     APIResponse,
 )
 ```
 
 Methods:
 
-- <code title="post /v2/projects/{project_id}/scenarios">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario_api_resource.py">ScenarioAPIResource</a>]</code>
-- <code title="get /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">retrieve</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario_api_resource.py">ScenarioAPIResource</a>]</code>
-- <code title="patch /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">update</a>(scenario_id, \*, project_id, \*\*<a href="src/giskard_hub/types/scenario_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario_api_resource.py">ScenarioAPIResource</a>]</code>
-- <code title="get /v2/projects/{project_id}/scenarios">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">list</a>(project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/scenario_api_resource.py">ScenarioAPIResource</a>]]</code>
+- <code title="post /v2/projects/{project_id}/scenarios">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="get /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">retrieve</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="patch /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">update</a>(scenario_id, \*, project_id, \*\*<a href="src/giskard_hub/types/scenario_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="get /v2/projects/{project_id}/scenarios">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">list</a>(project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]]</code>
 - <code title="delete /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">delete</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
-- <code title="post /v2/projects/{project_id}/scenarios/preview">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario_preview_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario_preview_api_resource.py">ScenarioPreviewAPIResource</a>]</code>
+- <code title="post /v2/projects/{project_id}/scenarios/preview">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario_preview_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scenario.py">ScenarioPreview</a>]</code>
 
 # Scans
 
@@ -229,7 +229,7 @@ Types:
 ```python
 from giskard_hub.types import (
     Agent,
-    AgentAPIReference,
+    AgentReference,
     KnowledgeBase,
     ScanResult,
     ScanCategory,
@@ -254,7 +254,7 @@ Methods:
 Types:
 
 ```python
-from giskard_hub.types.scans import (
+from giskard_hub.types.scan import (
     ScanProbeResult,
     ScanProbeAttempt,
 )
@@ -271,7 +271,7 @@ Methods:
 Types:
 
 ```python
-from giskard_hub.types.scans import (
+from giskard_hub.types.scan import (
     ReviewStatus,
     ScanProbeAttempt,
     Severity,
@@ -292,7 +292,7 @@ from giskard_hub.types import (
     Agent,
     Dataset,
     ScheduledEvaluation,
-    EvaluationAPIResource,
+    Evaluation,
     ErrorExecutionStatus,
     FrequencyOption,
     SuccessExecutionStatus,
@@ -304,12 +304,12 @@ from giskard_hub.types import (
 Methods:
 
 - <code title="post /v2/scheduled-evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">create</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scheduled_evaluation.py">ScheduledEvaluation</a>]</code>
-- <code title="get /v2/scheduled-evaluations/{scheduled_evaluation_id}">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">retrieve</a>(scheduled_evaluation_id, \*\*<a href="src/giskard_hub/types/scheduled_evaluation_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/scheduled_evaluation.py">ScheduledEvaluation</a>, List[<a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>]]]</code>
+- <code title="get /v2/scheduled-evaluations/{scheduled_evaluation_id}">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">retrieve</a>(scheduled_evaluation_id, \*\*<a href="src/giskard_hub/types/scheduled_evaluation_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/scheduled_evaluation.py">ScheduledEvaluation</a>, List[<a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]]]</code>
 - <code title="patch /v2/scheduled-evaluations/{scheduled_evaluation_id}">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">update</a>(scheduled_evaluation_id, \*\*<a href="src/giskard_hub/types/scheduled_evaluation_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/scheduled_evaluation.py">ScheduledEvaluation</a>]</code>
-- <code title="get /v2/scheduled-evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/scheduled_evaluation.py">ScheduledEvaluation</a>], List[<a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>]]]</code>
+- <code title="get /v2/scheduled-evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/scheduled_evaluation.py">ScheduledEvaluation</a>], List[<a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]]]</code>
 - <code title="delete /v2/scheduled-evaluations/{scheduled_evaluation_id}">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">delete</a>(scheduled_evaluation_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/scheduled-evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
-- <code title="get /v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list_evaluations</a>(scheduled_evaluation_id, \*\*<a href="src/giskard_hub/types/scheduled_evaluation_list_evaluations_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/evaluation_api_resource.py">EvaluationAPIResource</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a> | <a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
+- <code title="get /v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list_evaluations</a>(scheduled_evaluation_id, \*\*<a href="src/giskard_hub/types/scheduled_evaluation_list_evaluations_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a> | <a href="./src/giskard_hub/types/dataset.py">Dataset</a>]]</code>
 
 # TestCases
 
@@ -358,7 +358,7 @@ Types:
 
 ```python
 from giskard_hub.types import (
-    TaskAPIResource,
+    Task,
     TaskStatus,
     TaskPriority,
     APIResponse,
@@ -367,10 +367,10 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">create</a>(\*\*<a href="src/giskard_hub/types/task_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]</code>
-- <code title="get /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">retrieve</a>(task_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]</code>
-- <code title="patch /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">update</a>(task_id, \*\*<a href="src/giskard_hub/types/task_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]</code>
-- <code title="get /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">list</a>(\*\*<a href="src/giskard_hub/types/task_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/task_api_resource.py">TaskAPIResource</a>]]</code>
+- <code title="post /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">create</a>(\*\*<a href="src/giskard_hub/types/task_create_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task.py">Task</a>]</code>
+- <code title="get /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">retrieve</a>(task_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task.py">Task</a>]</code>
+- <code title="patch /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">update</a>(task_id, \*\*<a href="src/giskard_hub/types/task_update_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/task.py">Task</a>]</code>
+- <code title="get /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">list</a>(\*\*<a href="src/giskard_hub/types/task_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[List[<a href="./src/giskard_hub/types/task.py">Task</a>]]</code>
 - <code title="delete /v2/tasks/{task_id}">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">delete</a>(task_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/tasks">client.tasks.<a href="./src/giskard_hub/resources/tasks.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/task_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 
@@ -381,7 +381,7 @@ Types:
 ```python
 from giskard_hub.types import (
     Agent,
-    PlaygroundChatAPIResource,
+    PlaygroundChat,
     APIResponse,
     APIResponseWithIncluded,
 )
@@ -389,7 +389,7 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="get /v2/playground-chats">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">list</a>(\*\*<a href="src/giskard_hub/types/playground_chat_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/playground_chat_api_resource.py">PlaygroundChatAPIResource</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a>]]</code>
-- <code title="get /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">retrieve</a>(chat_id, \*\*<a href="src/giskard_hub/types/playground_chat_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/playground_chat_api_resource.py">PlaygroundChatAPIResource</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a>]]</code>
+- <code title="get /v2/playground-chats">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">list</a>(\*\*<a href="src/giskard_hub/types/playground_chat_list_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[List[<a href="./src/giskard_hub/types/playground_chat.py">PlaygroundChat</a>], <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a>]]</code>
+- <code title="get /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">retrieve</a>(chat_id, \*\*<a href="src/giskard_hub/types/playground_chat_retrieve_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponseWithIncluded</a>[<a href="./src/giskard_hub/types/playground_chat.py">PlaygroundChat</a>, <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[<a href="./src/giskard_hub/types/agent.py">Agent</a>]]</code>
 - <code title="delete /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">delete</a>(chat_id) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>
 - <code title="delete /v2/playground-chats">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/playground_chat_bulk_delete_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIResponse</a>[None]</code>

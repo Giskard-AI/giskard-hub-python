@@ -4,7 +4,6 @@ from typing import List, Optional
 
 import httpx
 
-from ..types import task_list_params, task_create_params, task_update_params, task_bulk_delete_params
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -15,11 +14,17 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..types.task import (
+    Task,
+    TaskStatus,
+    TaskPriority,
+    TaskListParams,
+    TaskCreateParams,
+    TaskUpdateParams,
+    TaskBulkDeleteParams,
+)
 from .._base_client import make_request_options
 from ..types.common import APIResponse
-from ..types.task_status import TaskStatus
-from ..types.task_priority import TaskPriority
-from ..types.task_api_resource import TaskAPIResource
 
 __all__ = ["TasksResource", "AsyncTasksResource"]
 
@@ -63,7 +68,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TaskAPIResource]:
+    ) -> APIResponse[Task]:
         """
         Create Task
 
@@ -111,12 +116,12 @@ class TasksResource(SyncAPIResource):
                     "disable_test": disable_test,
                     "hide_result": hide_result,
                 },
-                task_create_params.TaskCreateParams,
+                TaskCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TaskAPIResource],
+            cast_to=APIResponse[Task],
         )
 
     def retrieve(
@@ -129,7 +134,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TaskAPIResource]:
+    ) -> APIResponse[Task]:
         """
         Retrieve Task
 
@@ -151,7 +156,7 @@ class TasksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TaskAPIResource],
+            cast_to=APIResponse[Task],
         )
 
     def update(
@@ -169,7 +174,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TaskAPIResource]:
+    ) -> APIResponse[Task]:
         """
         Update Task
 
@@ -206,12 +211,12 @@ class TasksResource(SyncAPIResource):
                     "assignee_ids": assignee_ids,
                     "set_test_case_status": set_test_case_status,
                 },
-                task_update_params.TaskUpdateParams,
+                TaskUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TaskAPIResource],
+            cast_to=APIResponse[Task],
         )
 
     def list(
@@ -224,7 +229,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[TaskAPIResource]]:
+    ) -> APIResponse[List[Task]]:
         """
         List Tasks
 
@@ -250,10 +255,10 @@ class TasksResource(SyncAPIResource):
                     {
                         "project_id": project_id,
                     },
-                    task_list_params.TaskListParams,
+                    TaskListParams,
                 ),
             ),
-            cast_to=APIResponse[List[TaskAPIResource]],
+            cast_to=APIResponse[List[Task]],
         )
 
     def delete(
@@ -323,7 +328,7 @@ class TasksResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"task_ids": task_ids}, task_bulk_delete_params.TaskBulkDeleteParams),
+                query=maybe_transform({"task_ids": task_ids}, TaskBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -368,7 +373,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TaskAPIResource]:
+    ) -> APIResponse[Task]:
         """
         Create Task
 
@@ -416,12 +421,12 @@ class AsyncTasksResource(AsyncAPIResource):
                     "disable_test": disable_test,
                     "hide_result": hide_result,
                 },
-                task_create_params.TaskCreateParams,
+                TaskCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TaskAPIResource],
+            cast_to=APIResponse[Task],
         )
 
     async def retrieve(
@@ -434,7 +439,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TaskAPIResource]:
+    ) -> APIResponse[Task]:
         """
         Retrieve Task
 
@@ -456,7 +461,7 @@ class AsyncTasksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TaskAPIResource],
+            cast_to=APIResponse[Task],
         )
 
     async def update(
@@ -474,7 +479,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TaskAPIResource]:
+    ) -> APIResponse[Task]:
         """
         Update Task
 
@@ -511,12 +516,12 @@ class AsyncTasksResource(AsyncAPIResource):
                     "assignee_ids": assignee_ids,
                     "set_test_case_status": set_test_case_status,
                 },
-                task_update_params.TaskUpdateParams,
+                TaskUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TaskAPIResource],
+            cast_to=APIResponse[Task],
         )
 
     async def list(
@@ -529,7 +534,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[TaskAPIResource]]:
+    ) -> APIResponse[List[Task]]:
         """
         List Tasks
 
@@ -555,10 +560,10 @@ class AsyncTasksResource(AsyncAPIResource):
                     {
                         "project_id": project_id,
                     },
-                    task_list_params.TaskListParams,
+                    TaskListParams,
                 ),
             ),
-            cast_to=APIResponse[List[TaskAPIResource]],
+            cast_to=APIResponse[List[Task]],
         )
 
     async def delete(
@@ -628,7 +633,7 @@ class AsyncTasksResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"task_ids": task_ids}, task_bulk_delete_params.TaskBulkDeleteParams),
+                query=await async_maybe_transform({"task_ids": task_ids}, TaskBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )

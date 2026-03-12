@@ -4,16 +4,7 @@ from typing import Dict, List, Iterable, Optional
 
 import httpx
 
-from ..types import (
-    AgentOutput,
-    agent_list_params,
-    agent_create_params,
-    agent_update_params,
-    agent_bulk_delete_params,
-    agent_test_connection_params,
-    agent_generate_completion_params,
-    agent_autofill_description_params,
-)
+from ..types import AgentOutput
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -24,11 +15,19 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..types.agent import Agent
+from ..types.chat import HeaderParam, ChatMessageParam
+from ..types.agent import (
+    Agent,
+    AgentListParams,
+    AgentCreateParams,
+    AgentUpdateParams,
+    AgentBulkDeleteParams,
+    AgentTestConnectionParams,
+    AgentGenerateCompletionParams,
+    AgentAutofillDescriptionParams,
+)
 from .._base_client import make_request_options
 from ..types.common import APIResponse
-from ..types.header_param import HeaderParam
-from ..types.chat_message_param import ChatMessageParam
 
 __all__ = ["AgentsResource", "AsyncAgentsResource"]
 
@@ -104,7 +103,7 @@ class AgentsResource(SyncAPIResource):
                     "url": url,
                     "description": description,
                 },
-                agent_create_params.AgentCreateParams,
+                AgentCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -199,7 +198,7 @@ class AgentsResource(SyncAPIResource):
                     "supported_languages": supported_languages,
                     "url": url,
                 },
-                agent_update_params.AgentUpdateParams,
+                AgentUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -239,7 +238,7 @@ class AgentsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"project_id": project_id}, agent_list_params.AgentListParams),
+                query=maybe_transform({"project_id": project_id}, AgentListParams),
             ),
             cast_to=APIResponse[List[Agent]],
         )
@@ -311,7 +310,7 @@ class AgentsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"agent_ids": agent_ids}, agent_bulk_delete_params.AgentBulkDeleteParams),
+                query=maybe_transform({"agent_ids": agent_ids}, AgentBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -348,9 +347,7 @@ class AgentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         return self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=maybe_transform(
-                {"messages": messages}, agent_generate_completion_params.AgentGenerateCompletionParams
-            ),
+            body=maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -392,7 +389,7 @@ class AgentsResource(SyncAPIResource):
                     "url": url,
                     "headers": headers,
                 },
-                agent_test_connection_params.AgentTestConnectionParams,
+                AgentTestConnectionParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -429,7 +426,7 @@ class AgentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         return self._post(
             f"/v2/agents/{agent_id}/autofill-description",
-            body=maybe_transform({}, agent_autofill_description_params.AgentAutofillDescriptionParams),
+            body=maybe_transform({}, AgentAutofillDescriptionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -508,7 +505,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                     "url": url,
                     "description": description,
                 },
-                agent_create_params.AgentCreateParams,
+                AgentCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -603,7 +600,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                     "supported_languages": supported_languages,
                     "url": url,
                 },
-                agent_update_params.AgentUpdateParams,
+                AgentUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -643,7 +640,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"project_id": project_id}, agent_list_params.AgentListParams),
+                query=await async_maybe_transform({"project_id": project_id}, AgentListParams),
             ),
             cast_to=APIResponse[List[Agent]],
         )
@@ -715,9 +712,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"agent_ids": agent_ids}, agent_bulk_delete_params.AgentBulkDeleteParams
-                ),
+                query=await async_maybe_transform({"agent_ids": agent_ids}, AgentBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -754,9 +749,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         return await self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=await async_maybe_transform(
-                {"messages": messages}, agent_generate_completion_params.AgentGenerateCompletionParams
-            ),
+            body=await async_maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -798,7 +791,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                     "url": url,
                     "headers": headers,
                 },
-                agent_test_connection_params.AgentTestConnectionParams,
+                AgentTestConnectionParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -835,7 +828,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         return await self._post(
             f"/v2/agents/{agent_id}/autofill-description",
-            body=await async_maybe_transform({}, agent_autofill_description_params.AgentAutofillDescriptionParams),
+            body=await async_maybe_transform({}, AgentAutofillDescriptionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

@@ -22,7 +22,7 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse, APIResponseWithIncluded
-from ..types.playground_chat_api_resource import PlaygroundChatAPIResource
+from ..types.playground_chat import PlaygroundChat
 
 __all__ = ["PlaygroundChatsResource", "AsyncPlaygroundChatsResource"]
 
@@ -58,7 +58,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[PlaygroundChatAPIResource], APIResponse[Agent]]:
+    ) -> APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]]:
         """
         List Playground Chats
 
@@ -96,7 +96,7 @@ class PlaygroundChatsResource(SyncAPIResource):
                     PlaygroundChatListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[PlaygroundChatAPIResource], APIResponse[Agent]],
+            cast_to=APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
         )
 
     def retrieve(
@@ -108,7 +108,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[PlaygroundChatAPIResource, APIResponse[Agent]]:
+    ) -> APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]]:
         """
         Get Playground Chat
 
@@ -136,10 +136,10 @@ class PlaygroundChatsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, PlaygroundChatRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, APIResponse[Agent]],
+            cast_to=APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]],
         )
 
-    async def delete(
+    def delete(
         self,
         chat_id: str,
         *,
@@ -228,7 +228,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[PlaygroundChatAPIResource], APIResponse[Agent]]:
+    ) -> APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]]:
         """
         List Playground Chats
 
@@ -266,7 +266,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
                     PlaygroundChatListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[PlaygroundChatAPIResource], APIResponse[Agent]],
+            cast_to=APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
         )
 
     async def retrieve(
@@ -278,7 +278,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[PlaygroundChatAPIResource, APIResponse[Agent]]:
+    ) -> APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]]:
         """
         Get Playground Chat
 
@@ -306,7 +306,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, PlaygroundChatRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[PlaygroundChatAPIResource, APIResponse[Agent]],
+            cast_to=APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]],
         )
 
     async def delete(
