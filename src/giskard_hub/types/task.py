@@ -1,6 +1,6 @@
 """Task domain types."""
 
-from typing import Union, Optional, TypedDict
+from typing import Union, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Literal, Required
 
@@ -13,7 +13,6 @@ __all__ = [
     "TaskStatus",
     "TaskPriority",
     "TestCaseReference",
-    "TestCaseReferencence",
     "ProbeAttemptReference",
     "TestCaseEvaluationReference",
     "TaskListParams",
@@ -27,8 +26,8 @@ __all__ = [
 # Enums
 # ---------------------------------------------------------------------------
 
-TaskStatus: type = Literal["open", "in_progress", "completed"]
-TaskPriority: type = Literal["low", "medium", "high"]
+TaskStatus: TypeAlias = Literal["open", "in_progress", "completed"]
+TaskPriority: TypeAlias = Literal["low", "medium", "high"]
 
 
 # ---------------------------------------------------------------------------

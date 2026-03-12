@@ -16,6 +16,8 @@ from .execution import (
 
 __all__ = [
     "FrequencyOption",
+    "LastExecutionStatus",
+    "LastExecutionStatusParam",
     "ScheduledEvaluation",
     "ScheduledEvaluationListParams",
     "ScheduledEvaluationCreateParams",

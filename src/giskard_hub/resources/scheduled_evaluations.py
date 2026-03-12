@@ -26,6 +26,7 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.scheduled_evaluation import (
+    LastExecutionStatusParam,
     ScheduledEvaluationListParams,
     ScheduledEvaluationCreateParams,
     ScheduledEvaluationUpdateParams,
@@ -189,7 +190,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         day_of_week: Optional[int] | Omit = omit,
         day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
-        last_execution_status: Optional[ScheduledEvaluationUpdateParams.LastExecutionStatus] | Omit = omit,
+        last_execution_status: Optional[LastExecutionStatusParam] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -581,7 +582,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         day_of_week: Optional[int] | Omit = omit,
         day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
-        last_execution_status: Optional[ScheduledEvaluationUpdateParams.LastExecutionStatus] | Omit = omit,
+        last_execution_status: Optional[LastExecutionStatusParam] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
