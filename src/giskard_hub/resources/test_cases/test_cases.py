@@ -24,7 +24,7 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
-from ...types.check import TestCaseCheckConfigParam
+from ...types.check import CheckConfigParam, _check_params_to_api
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
 from ...types.test_case import (
@@ -69,7 +69,7 @@ class TestCasesResource(SyncAPIResource):
         *,
         dataset_id: str,
         messages: Iterable[ChatMessageParam],
-        checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
+        checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
@@ -88,7 +88,8 @@ class TestCasesResource(SyncAPIResource):
 
           messages: Messages to add to the test case
 
-          checks: Checks to add to the test case
+          checks: Checks to add to the test case. Each check should have an ``identifier``
+              and optionally ``params`` (check-specific fields) and ``enabled``.
 
           demo_output: Agent output
 
@@ -104,13 +105,14 @@ class TestCasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         return self._post(
             "/v2/test-cases",
             body=maybe_transform(
                 {
                     "dataset_id": dataset_id,
                     "messages": messages,
-                    "checks": checks,
+                    "checks": api_checks,
                     "demo_output": demo_output,
                     "status": status,
                     "tags": tags,
@@ -162,7 +164,7 @@ class TestCasesResource(SyncAPIResource):
         self,
         test_case_id: str,
         *,
-        checks: Optional[Iterable[TestCaseCheckConfigParam]] | Omit = omit,
+        checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
@@ -181,7 +183,8 @@ class TestCasesResource(SyncAPIResource):
         Args:
           test_case_id: Test Case ID to update
 
-          checks: Checks to update the test case
+          checks: Checks to update the test case. Each check should have an ``identifier``
+              and optionally ``params`` (check-specific fields) and ``enabled``.
 
           dataset_id: Dataset ID to update the test case
 
@@ -203,11 +206,16 @@ class TestCasesResource(SyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        api_checks: Iterable[object] | Omit | None
+        if checks is None or isinstance(checks, Omit):
+            api_checks = checks  # type: ignore[assignment]
+        else:
+            api_checks = _check_params_to_api(checks)
         return self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=maybe_transform(
                 {
-                    "checks": checks,
+                    "checks": api_checks,
                     "dataset_id": dataset_id,
                     "demo_output": demo_output,
                     "messages": messages,
@@ -428,7 +436,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         *,
         dataset_id: str,
         messages: Iterable[ChatMessageParam],
-        checks: Iterable[TestCaseCheckConfigParam] | Omit = omit,
+        checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
@@ -447,7 +455,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           messages: Messages to add to the test case
 
-          checks: Checks to add to the test case
+          checks: Checks to add to the test case. Each check should have an ``identifier``
+              and optionally ``params`` (check-specific fields) and ``enabled``.
 
           demo_output: Agent output
 
@@ -463,13 +472,14 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         return await self._post(
             "/v2/test-cases",
             body=await async_maybe_transform(
                 {
                     "dataset_id": dataset_id,
                     "messages": messages,
-                    "checks": checks,
+                    "checks": api_checks,
                     "demo_output": demo_output,
                     "status": status,
                     "tags": tags,
@@ -521,7 +531,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         self,
         test_case_id: str,
         *,
-        checks: Optional[Iterable[TestCaseCheckConfigParam]] | Omit = omit,
+        checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
@@ -540,7 +550,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Args:
           test_case_id: Test Case ID to update
 
-          checks: Checks to update the test case
+          checks: Checks to update the test case. Each check should have an ``identifier``
+              and optionally ``params`` (check-specific fields) and ``enabled``.
 
           dataset_id: Dataset ID to update the test case
 
@@ -562,11 +573,16 @@ class AsyncTestCasesResource(AsyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        api_checks: Iterable[object] | Omit | None
+        if checks is None or isinstance(checks, Omit):
+            api_checks = checks  # type: ignore[assignment]
+        else:
+            api_checks = _check_params_to_api(checks)
         return await self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=await async_maybe_transform(
                 {
-                    "checks": checks,
+                    "checks": api_checks,
                     "dataset_id": dataset_id,
                     "demo_output": demo_output,
                     "messages": messages,

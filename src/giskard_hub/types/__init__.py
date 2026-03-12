@@ -82,13 +82,15 @@ from .agent import (
 
 # -- check -----------------------------------------------------------------
 from .check import (
-    Assertion as Assertion,
-    AssertionParam as AssertionParam,
     Check as Check,
     CheckBulkDeleteParams as CheckBulkDeleteParams,
+    CheckConfig as CheckConfig,
+    CheckConfigParam as CheckConfigParam,
     CheckCreateParams as CheckCreateParams,
     CheckListParams as CheckListParams,
     CheckResult as CheckResult,
+    CheckType as CheckType,
+    CheckTypeParam as CheckTypeParam,
     CheckUpdateParams as CheckUpdateParams,
     ConformityParams as ConformityParams,
     ConformityParamsParam as ConformityParamsParam,
@@ -306,8 +308,8 @@ __all__ = [
     # check
     "Check",
     "CheckResult",
-    "Assertion",
-    "AssertionParam",
+    "CheckType",
+    "CheckTypeParam",
     "ConformityParams",
     "ConformityParamsParam",
     "CorrectnessParams",
@@ -321,6 +323,8 @@ __all__ = [
     "MetadataParams",
     "MetadataParamsParam",
     "OutputAnnotation",
+    "CheckConfig",
+    "CheckConfigParam",
     "TestCaseCheckConfig",
     "TestCaseCheckConfigParam",
     "CheckListParams",

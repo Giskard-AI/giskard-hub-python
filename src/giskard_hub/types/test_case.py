@@ -6,7 +6,7 @@ from typing_extensions import Required
 
 from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadata, ChatMessageWithMetadataParam
 from .user import UserReference
-from .check import TestCaseCheckConfig, TestCaseCheckConfigParam
+from .check import CheckConfig, TestCaseCheckConfigParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -40,7 +40,7 @@ class TestCaseComment(BaseModel):
 class TestCase(BaseModel):
     __test__ = False
     id: str
-    checks: List[TestCaseCheckConfig]
+    checks: List[CheckConfig]
     comments: List[TestCaseComment]
     created_at: datetime
     dataset_id: str

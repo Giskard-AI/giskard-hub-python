@@ -47,13 +47,10 @@ class TestTestCases:
             ],
             checks=[
                 {
-                    "identifier": "identifier",
-                    "assertions": [
-                        {
-                            "reference": "reference",
-                            "type": "correctness",
-                        }
-                    ],
+                    "identifier": "correctness",
+                    "params": {
+                        "reference": "reference",
+                    },
                     "enabled": True,
                 }
             ],
@@ -165,13 +162,10 @@ class TestTestCases:
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[
                 {
-                    "identifier": "identifier",
-                    "assertions": [
-                        {
-                            "reference": "reference",
-                            "type": "correctness",
-                        }
-                    ],
+                    "identifier": "correctness",
+                    "params": {
+                        "reference": "reference",
+                    },
                     "enabled": True,
                 }
             ],
@@ -435,13 +429,10 @@ class TestAsyncTestCases:
             ],
             checks=[
                 {
-                    "identifier": "identifier",
-                    "assertions": [
-                        {
-                            "reference": "reference",
-                            "type": "correctness",
-                        }
-                    ],
+                    "identifier": "correctness",
+                    "params": {
+                        "reference": "reference",
+                    },
                     "enabled": True,
                 }
             ],
@@ -553,13 +544,10 @@ class TestAsyncTestCases:
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[
                 {
-                    "identifier": "identifier",
-                    "assertions": [
-                        {
-                            "reference": "reference",
-                            "type": "correctness",
-                        }
-                    ],
+                    "identifier": "correctness",
+                    "params": {
+                        "reference": "reference",
+                    },
                     "enabled": True,
                 }
             ],
