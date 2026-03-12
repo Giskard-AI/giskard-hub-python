@@ -264,7 +264,11 @@ def _check_params_to_api(  # pyright: ignore[reportUnusedFunction]
         {
             "identifier": check["identifier"],
             "enabled": check.get("enabled", True),
-            **({"assertions": [{"type": check["identifier"], **check["params"]}]} if check.get("params") else {}),
+            **(
+                {"assertions": [{"type": check["identifier"], **check.get("params", {})}]}
+                if check.get("params")
+                else {}
+            ),
         }
         for check in checks
     ]
