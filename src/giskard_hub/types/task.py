@@ -26,7 +26,7 @@ __all__ = [
 # Enums
 # ---------------------------------------------------------------------------
 
-TaskStatus: TypeAlias = Literal["open", "in_progress", "completed"]
+TaskStatus: TypeAlias = Literal["open", "in_progress", "resolved"]
 TaskPriority: TypeAlias = Literal["low", "medium", "high"]
 
 
