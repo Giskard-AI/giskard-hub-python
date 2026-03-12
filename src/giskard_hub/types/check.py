@@ -262,13 +262,9 @@ def _check_params_to_api(  # pyright: ignore[reportUnusedFunction]
     """Convert user-facing CheckParam dicts to the API assertions format."""
     return [
         {
-            "enabled": True,
-            **check,
-            **(
-                {"assertions": [{"type": check["identifier"], **check.get("params", {})}]}
-                if check.get("params")
-                else {}
-            ),
+            "identifier": check["identifier"],
+            "enabled": check.get("enabled", True),
+            **({"assertions": [{"type": check["identifier"], **check["params"]}]} if check.get("params") else {}),
         }
         for check in checks
     ]
