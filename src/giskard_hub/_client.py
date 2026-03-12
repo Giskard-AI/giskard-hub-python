@@ -208,7 +208,7 @@ class HubClient(SyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
-            auto_add_api_suffix=auto_add_api_suffix,
+            auto_add_api_suffix=auto_add_api_suffix if base_url is not None else False,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
             max_retries=max_retries if is_given(max_retries) else self.max_retries,
@@ -403,7 +403,7 @@ class AsyncHubClient(AsyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
-            auto_add_api_suffix=auto_add_api_suffix,
+            auto_add_api_suffix=auto_add_api_suffix if base_url is not None else False,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
             max_retries=max_retries if is_given(max_retries) else self.max_retries,
