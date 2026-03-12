@@ -173,6 +173,7 @@ class HubClient(SyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.Client | None = None,
         max_retries: int | NotGiven = not_given,
@@ -207,6 +208,7 @@ class HubClient(SyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
+            auto_add_api_suffix=auto_add_api_suffix if base_url is not None else False,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
             max_retries=max_retries if is_given(max_retries) else self.max_retries,
@@ -366,6 +368,7 @@ class AsyncHubClient(AsyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.AsyncClient | None = None,
         max_retries: int | NotGiven = not_given,
@@ -400,6 +403,7 @@ class AsyncHubClient(AsyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
+            auto_add_api_suffix=auto_add_api_suffix if base_url is not None else False,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
             max_retries=max_retries if is_given(max_retries) else self.max_retries,
