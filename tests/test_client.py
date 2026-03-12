@@ -115,7 +115,6 @@ class TestHubClient:
         client = HubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_headers={"X-Foo": "bar"},
         )
@@ -154,7 +153,6 @@ class TestHubClient:
         client = HubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_query={"foo": "bar"},
         )
@@ -287,7 +285,6 @@ class TestHubClient:
         client = HubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             timeout=httpx.Timeout(0),
         )
@@ -304,7 +301,6 @@ class TestHubClient:
             client = HubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=http_client,
             )
@@ -320,7 +316,6 @@ class TestHubClient:
             client = HubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=http_client,
             )
@@ -336,7 +331,6 @@ class TestHubClient:
             client = HubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=http_client,
             )
@@ -353,7 +347,6 @@ class TestHubClient:
                 HubClient(
                     base_url=base_url,
                     api_key=api_key,
-                    auto_add_api_suffix=False,
                     _strict_response_validation=True,
                     http_client=cast(Any, http_client),
                 )
@@ -362,7 +355,6 @@ class TestHubClient:
         test_client = HubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_headers={"X-Foo": "bar"},
         )
@@ -373,7 +365,6 @@ class TestHubClient:
         test_client2 = HubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -388,24 +379,19 @@ class TestHubClient:
         test_client2.close()
 
     def test_validate_headers(self) -> None:
-        client = HubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("X-API-Key") == api_key
 
         with pytest.raises(HubClientError):
             with update_env(**{"GISKARD_HUB_API_KEY": Omit()}):
-                client2 = HubClient(
-                    base_url=base_url, api_key=None, auto_add_api_suffix=False, _strict_response_validation=True
-                )
+                client2 = HubClient(base_url=base_url, api_key=None, _strict_response_validation=True)
             _ = client2
 
     def test_default_query_option(self) -> None:
         client = HubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_query={"query_param": "bar"},
         )
@@ -612,7 +598,6 @@ class TestHubClient:
         client = HubClient(
             base_url="https://example.com/from_init",
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
         )
         assert client.base_url == "https://example.com/from_init/"
@@ -625,7 +610,7 @@ class TestHubClient:
 
     def test_base_url_env(self) -> None:
         with update_env(GISKARD_HUB_BASE_URL="http://localhost:5000/from/env"):
-            client = HubClient(api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True)
+            client = HubClient(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
     @pytest.mark.parametrize(
@@ -634,13 +619,11 @@ class TestHubClient:
             HubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
             ),
             HubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -664,13 +647,11 @@ class TestHubClient:
             HubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
             ),
             HubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -694,13 +675,11 @@ class TestHubClient:
             HubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
             ),
             HubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -719,9 +698,7 @@ class TestHubClient:
         client.close()
 
     def test_copied_client_does_not_close_http(self) -> None:
-        test_client = HubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        test_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not test_client.is_closed()
 
         copied = test_client.copy()
@@ -732,9 +709,7 @@ class TestHubClient:
         assert not test_client.is_closed()
 
     def test_client_context_manager(self) -> None:
-        test_client = HubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        test_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         with test_client as c2:
             assert c2 is test_client
             assert not c2.is_closed()
@@ -758,7 +733,6 @@ class TestHubClient:
             HubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 max_retries=cast(Any, None),
             )
@@ -770,16 +744,12 @@ class TestHubClient:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = HubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        strict_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             strict_client.get("/foo", cast_to=Model)
 
-        non_strict_client = HubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=False
-        )
+        non_strict_client = HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = non_strict_client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -1040,7 +1010,6 @@ class TestAsyncHubClient:
         client = AsyncHubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_headers={"X-Foo": "bar"},
         )
@@ -1079,7 +1048,6 @@ class TestAsyncHubClient:
         client = AsyncHubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_query={"foo": "bar"},
         )
@@ -1214,7 +1182,6 @@ class TestAsyncHubClient:
         client = AsyncHubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             timeout=httpx.Timeout(0),
         )
@@ -1231,7 +1198,6 @@ class TestAsyncHubClient:
             client = AsyncHubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=http_client,
             )
@@ -1247,7 +1213,6 @@ class TestAsyncHubClient:
             client = AsyncHubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=http_client,
             )
@@ -1263,7 +1228,6 @@ class TestAsyncHubClient:
             client = AsyncHubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=http_client,
             )
@@ -1280,7 +1244,6 @@ class TestAsyncHubClient:
                 AsyncHubClient(
                     base_url=base_url,
                     api_key=api_key,
-                    auto_add_api_suffix=False,
                     _strict_response_validation=True,
                     http_client=cast(Any, http_client),
                 )
@@ -1289,7 +1252,6 @@ class TestAsyncHubClient:
         test_client = AsyncHubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_headers={"X-Foo": "bar"},
         )
@@ -1300,7 +1262,6 @@ class TestAsyncHubClient:
         test_client2 = AsyncHubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -1315,24 +1276,19 @@ class TestAsyncHubClient:
         await test_client2.close()
 
     def test_validate_headers(self) -> None:
-        client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("X-API-Key") == api_key
 
         with pytest.raises(HubClientError):
             with update_env(**{"GISKARD_HUB_API_KEY": Omit()}):
-                client2 = AsyncHubClient(
-                    base_url=base_url, api_key=None, auto_add_api_suffix=False, _strict_response_validation=True
-                )
+                client2 = AsyncHubClient(base_url=base_url, api_key=None, _strict_response_validation=True)
             _ = client2
 
     async def test_default_query_option(self) -> None:
         client = AsyncHubClient(
             base_url=base_url,
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
             default_query={"query_param": "bar"},
         )
@@ -1541,7 +1497,6 @@ class TestAsyncHubClient:
         client = AsyncHubClient(
             base_url="https://example.com/from_init",
             api_key=api_key,
-            auto_add_api_suffix=False,
             _strict_response_validation=True,
         )
         assert client.base_url == "https://example.com/from_init/"
@@ -1554,7 +1509,7 @@ class TestAsyncHubClient:
 
     async def test_base_url_env(self) -> None:
         with update_env(GISKARD_HUB_BASE_URL="http://localhost:5000/from/env"):
-            client = AsyncHubClient(api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True)
+            client = AsyncHubClient(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
     @pytest.mark.parametrize(
@@ -1563,13 +1518,11 @@ class TestAsyncHubClient:
             AsyncHubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
             ),
             AsyncHubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1593,13 +1546,11 @@ class TestAsyncHubClient:
             AsyncHubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
             ),
             AsyncHubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1623,13 +1574,11 @@ class TestAsyncHubClient:
             AsyncHubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
             ),
             AsyncHubClient(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1648,9 +1597,7 @@ class TestAsyncHubClient:
         await client.close()
 
     async def test_copied_client_does_not_close_http(self) -> None:
-        test_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        test_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not test_client.is_closed()
 
         copied = test_client.copy()
@@ -1662,9 +1609,7 @@ class TestAsyncHubClient:
         assert not test_client.is_closed()
 
     async def test_client_context_manager(self) -> None:
-        test_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        test_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         async with test_client as c2:
             assert c2 is test_client
             assert not c2.is_closed()
@@ -1688,7 +1633,6 @@ class TestAsyncHubClient:
             AsyncHubClient(
                 base_url=base_url,
                 api_key=api_key,
-                auto_add_api_suffix=False,
                 _strict_response_validation=True,
                 max_retries=cast(Any, None),
             )
@@ -1700,16 +1644,12 @@ class TestAsyncHubClient:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True
-        )
+        strict_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             await strict_client.get("/foo", cast_to=Model)
 
-        non_strict_client = AsyncHubClient(
-            base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=False
-        )
+        non_strict_client = AsyncHubClient(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = await non_strict_client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
