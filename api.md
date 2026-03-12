@@ -38,8 +38,8 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/audit/search">client.audit.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit_search_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[List[<a href="./src/giskard_hub/types/audit_api_resource.py">AuditAPIResource</a>], None]</code>
-- <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit_list_entity_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[List[<a href="./src/giskard_hub/types/audit_display_api_resource.py">AuditDisplayAPIResource</a>], None]</code>
+- <code title="post /v2/audit/search">client.audit.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit_search_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/audit_api_resource.py">AuditAPIResource</a>, None]</code>
+- <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit_list_entity_params.py">params</a>) -> <a href="./src/giskard_hub/types/common/responses.py">APIPaginatedResponse</a>[<a href="./src/giskard_hub/types/audit_display_api_resource.py">AuditDisplayAPIResource</a>, None]</code>
 
 # Checks
 
