@@ -15,7 +15,7 @@ from ..._response import (
 )
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.test_cases import comment_add_params, comment_edit_params
+from ...types.test_case import CommentAddParams, CommentEditParams
 
 __all__ = ["CommentsResource", "AsyncCommentsResource"]
 
@@ -112,7 +112,7 @@ class CommentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         return self._post(
             f"/v2/test-cases/{test_case_id}/comments",
-            body=maybe_transform({"comment": comment}, comment_add_params.CommentAddParams),
+            body=maybe_transform({"comment": comment}, CommentAddParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -156,7 +156,7 @@ class CommentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         return self._patch(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
-            body=maybe_transform({"comment": comment}, comment_edit_params.CommentEditParams),
+            body=maybe_transform({"comment": comment}, CommentEditParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -256,7 +256,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         return await self._post(
             f"/v2/test-cases/{test_case_id}/comments",
-            body=await async_maybe_transform({"comment": comment}, comment_add_params.CommentAddParams),
+            body=await async_maybe_transform({"comment": comment}, CommentAddParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -300,7 +300,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         return await self._patch(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
-            body=await async_maybe_transform({"comment": comment}, comment_edit_params.CommentEditParams),
+            body=await async_maybe_transform({"comment": comment}, CommentEditParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

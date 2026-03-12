@@ -14,10 +14,9 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...types.scans import Severity, ReviewStatus, attempt_update_params
+from ...types.scan import Severity, ReviewStatus, ScanProbeAttempt, AttemptUpdateParams
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.scans.scan_probe_attempt import ScanProbeAttempt
 
 __all__ = ["AttemptsResource", "AsyncAttemptsResource"]
 
@@ -86,7 +85,7 @@ class AttemptsResource(SyncAPIResource):
                     "severity": severity,
                     "successful": successful,
                 },
-                attempt_update_params.AttemptUpdateParams,
+                AttemptUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -159,7 +158,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
                     "severity": severity,
                     "successful": successful,
                 },
-                attempt_update_params.AttemptUpdateParams,
+                AttemptUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout

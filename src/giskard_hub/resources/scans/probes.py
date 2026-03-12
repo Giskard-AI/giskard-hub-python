@@ -13,7 +13,7 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...types.scans import ScanProbeResult, ScanProbeAttempt
+from ...types.scan import ScanProbeResult, ScanProbeAttempt
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
 

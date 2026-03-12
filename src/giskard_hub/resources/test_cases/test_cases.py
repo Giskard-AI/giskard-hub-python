@@ -4,13 +4,7 @@ from typing import List, Literal, Iterable, Optional
 
 import httpx
 
-from ...types import (
-    BulkMoveTestCasesParams,
-    test_case_create_params,
-    test_case_update_params,
-    test_case_bulk_delete_params,
-    test_case_bulk_update_params,
-)
+from ...types import BulkMoveTestCasesParams
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from .comments import (
@@ -29,12 +23,17 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
+from ...types.check import TestCaseCheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.test_case import TestCase
-from ...types.chat_message_param import ChatMessageParam
-from ...types.test_case_check_config_param import TestCaseCheckConfigParam
-from ...types.chat_message_with_metadata_param import ChatMessageWithMetadataParam
+from ...types.test_case import (
+    TestCase,
+    TestCaseCreateParams,
+    TestCaseUpdateParams,
+    TestCaseBulkDeleteParams,
+    TestCaseBulkUpdateParams,
+)
 
 __all__ = ["TestCasesResource", "AsyncTestCasesResource"]
 
@@ -116,7 +115,7 @@ class TestCasesResource(SyncAPIResource):
                     "status": status,
                     "tags": tags,
                 },
-                test_case_create_params.TestCaseCreateParams,
+                TestCaseCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -215,7 +214,7 @@ class TestCasesResource(SyncAPIResource):
                     "tags": tags,
                     "status": status,
                 },
-                test_case_update_params.TestCaseUpdateParams,
+                TestCaseUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -290,9 +289,7 @@ class TestCasesResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform(
-                    {"test_case_ids": test_case_ids}, test_case_bulk_delete_params.TestCaseBulkDeleteParams
-                ),
+                query=maybe_transform({"test_case_ids": test_case_ids}, TestCaseBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -348,7 +345,7 @@ class TestCasesResource(SyncAPIResource):
                     "removed_tags": removed_tags,
                     "status": status,
                 },
-                test_case_bulk_update_params.TestCaseBulkUpdateParams,
+                TestCaseBulkUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -477,7 +474,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "status": status,
                     "tags": tags,
                 },
-                test_case_create_params.TestCaseCreateParams,
+                TestCaseCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -576,7 +573,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "tags": tags,
                     "status": status,
                 },
-                test_case_update_params.TestCaseUpdateParams,
+                TestCaseUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -651,9 +648,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"test_case_ids": test_case_ids}, test_case_bulk_delete_params.TestCaseBulkDeleteParams
-                ),
+                query=await async_maybe_transform({"test_case_ids": test_case_ids}, TestCaseBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -709,7 +704,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "removed_tags": removed_tags,
                     "status": status,
                 },
-                test_case_bulk_update_params.TestCaseBulkUpdateParams,
+                TestCaseBulkUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout

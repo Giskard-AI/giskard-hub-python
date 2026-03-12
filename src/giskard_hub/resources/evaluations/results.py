@@ -14,22 +14,22 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ...types.agent import AgentOutputParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedResponse, APIResponseWithIncluded
-from ...types.evaluations import (
+from ...types.evaluation import (
+    TestCase,
+    ResultListParams,
     ResultFiltersParam,
     ResultOrderByParam,
-    TestCaseEvaluationAPIResource,
-    result_list_params,
-    result_search_params,
-    result_update_params,
-    result_retrieve_params,
-    result_update_visibility_params,
-    result_submit_local_output_params,
+    ResultSearchParams,
+    ResultUpdateParams,
+    TestCaseEvaluation,
+    FailureCategoryParam,
+    ResultRetrieveParams,
+    ResultUpdateVisibilityParams,
+    ResultSubmitLocalOutputParams,
 )
-from ...types.model_output_param import AgentOutputParam
-from ...types.evaluations.failure_category_param import FailureCategoryParam
-from ...types.evaluations.test_case_evaluation_api_resource import TestCase
 
 __all__ = ["ResultsResource", "AsyncResultsResource"]
 
@@ -66,7 +66,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
+    ) -> APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]]:
         """
         Retrieve Evaluation Result
 
@@ -96,9 +96,9 @@ class ResultsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
+                query=maybe_transform({"include": include}, ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
+            cast_to=APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]],
         )
 
     def update(
@@ -113,7 +113,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Update Evaluation Result
 
@@ -138,11 +138,11 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
         return self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}",
-            body=maybe_transform({"failure_category": failure_category}, result_update_params.ResultUpdateParams),
+            body=maybe_transform({"failure_category": failure_category}, ResultUpdateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
     def list(
@@ -156,7 +156,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]]:
+    ) -> APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]]:
         """
         List Evaluation Results
 
@@ -182,9 +182,9 @@ class ResultsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"include": include}, result_list_params.ResultListParams),
+                query=maybe_transform({"include": include}, ResultListParams),
             ),
-            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]],
+            cast_to=APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]],
         )
 
     def rerun_test_case(
@@ -198,7 +198,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Rerun Test Case Evaluation
 
@@ -224,7 +224,7 @@ class ResultsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
     def submit_local_output(
@@ -240,7 +240,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Submit Local Evaluation Result Output
 
@@ -272,12 +272,12 @@ class ResultsResource(SyncAPIResource):
                     "error": error,
                     "output": output,
                 },
-                result_submit_local_output_params.ResultSubmitLocalOutputParams,
+                ResultSubmitLocalOutputParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
     def search(
@@ -296,7 +296,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
+    ) -> APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]]:
         """
         Search Evaluation Results By Filters
 
@@ -327,9 +327,7 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         return self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
-            body=maybe_transform(
-                {"filters": filters, "order_by": order_by, "search": search}, result_search_params.ResultSearchParams
-            ),
+            body=maybe_transform({"filters": filters, "order_by": order_by, "search": search}, ResultSearchParams),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -341,10 +339,10 @@ class ResultsResource(SyncAPIResource):
                         "offset": offset,
                         "include": include,
                     },
-                    result_search_params.ResultSearchParams,
+                    ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
+            cast_to=APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]],
         )
 
     def update_visibility(
@@ -360,7 +358,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Update Evaluation Result Visibility
 
@@ -389,12 +387,12 @@ class ResultsResource(SyncAPIResource):
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=maybe_transform(
                 {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
-                result_update_visibility_params.ResultUpdateVisibilityParams,
+                ResultUpdateVisibilityParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
 
@@ -430,7 +428,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
+    ) -> APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]]:
         """
         Retrieve Evaluation Result
 
@@ -460,9 +458,9 @@ class AsyncResultsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"include": include}, result_retrieve_params.ResultRetrieveParams),
+                query=await async_maybe_transform({"include": include}, ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
+            cast_to=APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]],
         )
 
     async def update(
@@ -477,7 +475,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Update Evaluation Result
 
@@ -502,13 +500,11 @@ class AsyncResultsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
         return await self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}",
-            body=await async_maybe_transform(
-                {"failure_category": failure_category}, result_update_params.ResultUpdateParams
-            ),
+            body=await async_maybe_transform({"failure_category": failure_category}, ResultUpdateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
     async def list(
@@ -522,7 +518,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]]:
+    ) -> APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]]:
         """
         List Evaluation Results
 
@@ -548,9 +544,9 @@ class AsyncResultsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"include": include}, result_list_params.ResultListParams),
+                query=await async_maybe_transform({"include": include}, ResultListParams),
             ),
-            cast_to=APIResponseWithIncluded[List[TestCaseEvaluationAPIResource], APIResponse[TestCase]],
+            cast_to=APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]],
         )
 
     async def rerun_test_case(
@@ -564,7 +560,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Rerun Test Case Evaluation
 
@@ -590,7 +586,7 @@ class AsyncResultsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
     async def submit_local_output(
@@ -606,7 +602,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Submit Local Evaluation Result Output
 
@@ -638,12 +634,12 @@ class AsyncResultsResource(AsyncAPIResource):
                     "error": error,
                     "output": output,
                 },
-                result_submit_local_output_params.ResultSubmitLocalOutputParams,
+                ResultSubmitLocalOutputParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
     async def search(
@@ -662,7 +658,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]]:
+    ) -> APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]]:
         """
         Search Evaluation Results By Filters
 
@@ -694,7 +690,7 @@ class AsyncResultsResource(AsyncAPIResource):
         return await self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
             body=await async_maybe_transform(
-                {"filters": filters, "order_by": order_by, "search": search}, result_search_params.ResultSearchParams
+                {"filters": filters, "order_by": order_by, "search": search}, ResultSearchParams
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -707,10 +703,10 @@ class AsyncResultsResource(AsyncAPIResource):
                         "offset": offset,
                         "include": include,
                     },
-                    result_search_params.ResultSearchParams,
+                    ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluationAPIResource, APIResponse[TestCase]],
+            cast_to=APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]],
         )
 
     async def update_visibility(
@@ -726,7 +722,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluationAPIResource]:
+    ) -> APIResponse[TestCaseEvaluation]:
         """
         Update Evaluation Result Visibility
 
@@ -755,12 +751,12 @@ class AsyncResultsResource(AsyncAPIResource):
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=await async_maybe_transform(
                 {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
-                result_update_visibility_params.ResultUpdateVisibilityParams,
+                ResultUpdateVisibilityParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluationAPIResource],
+            cast_to=APIResponse[TestCaseEvaluation],
         )
 
 

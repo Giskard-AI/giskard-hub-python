@@ -4,7 +4,6 @@ from typing import List, Iterable, Optional
 
 import httpx
 
-from ...types import project_create_params, project_update_params, project_bulk_delete_params
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
@@ -25,8 +24,8 @@ from ..._response import (
 )
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.project_api_resource import ProjectAPIResource
-from ...types.evaluations.failure_category_param import FailureCategoryParam
+from ...types.project import Project, ProjectCreateParams, ProjectUpdateParams, ProjectBulkDeleteParams
+from ...types.evaluation import FailureCategoryParam
 
 __all__ = ["ProjectsResource", "AsyncProjectsResource"]
 
@@ -66,7 +65,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ProjectAPIResource]:
+    ) -> APIResponse[Project]:
         """
         Create Project
 
@@ -90,12 +89,12 @@ class ProjectsResource(SyncAPIResource):
                     "name": name,
                     "description": description,
                 },
-                project_create_params.ProjectCreateParams,
+                ProjectCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ProjectAPIResource],
+            cast_to=APIResponse[Project],
         )
 
     def retrieve(
@@ -108,7 +107,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ProjectAPIResource]:
+    ) -> APIResponse[Project]:
         """
         Retrieve Project
 
@@ -130,7 +129,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ProjectAPIResource],
+            cast_to=APIResponse[Project],
         )
 
     def update(
@@ -146,7 +145,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ProjectAPIResource]:
+    ) -> APIResponse[Project]:
         """
         Update Project
 
@@ -177,12 +176,12 @@ class ProjectsResource(SyncAPIResource):
                     "failure_categories": failure_categories,
                     "name": name,
                 },
-                project_update_params.ProjectUpdateParams,
+                ProjectUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ProjectAPIResource],
+            cast_to=APIResponse[Project],
         )
 
     def list(
@@ -194,7 +193,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ProjectAPIResource]]:
+    ) -> APIResponse[List[Project]]:
         """
         List Projects
 
@@ -212,7 +211,7 @@ class ProjectsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ProjectAPIResource]],
+            cast_to=APIResponse[List[Project]],
         )
 
     def delete(
@@ -282,7 +281,7 @@ class ProjectsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams),
+                query=maybe_transform({"project_ids": project_ids}, ProjectBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -323,7 +322,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ProjectAPIResource]:
+    ) -> APIResponse[Project]:
         """
         Create Project
 
@@ -347,12 +346,12 @@ class AsyncProjectsResource(AsyncAPIResource):
                     "name": name,
                     "description": description,
                 },
-                project_create_params.ProjectCreateParams,
+                ProjectCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ProjectAPIResource],
+            cast_to=APIResponse[Project],
         )
 
     async def retrieve(
@@ -365,7 +364,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ProjectAPIResource]:
+    ) -> APIResponse[Project]:
         """
         Retrieve Project
 
@@ -387,7 +386,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ProjectAPIResource],
+            cast_to=APIResponse[Project],
         )
 
     async def update(
@@ -403,7 +402,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ProjectAPIResource]:
+    ) -> APIResponse[Project]:
         """
         Update Project
 
@@ -434,12 +433,12 @@ class AsyncProjectsResource(AsyncAPIResource):
                     "failure_categories": failure_categories,
                     "name": name,
                 },
-                project_update_params.ProjectUpdateParams,
+                ProjectUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ProjectAPIResource],
+            cast_to=APIResponse[Project],
         )
 
     async def list(
@@ -451,7 +450,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ProjectAPIResource]]:
+    ) -> APIResponse[List[Project]]:
         """
         List Projects
 
@@ -469,7 +468,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ProjectAPIResource]],
+            cast_to=APIResponse[List[Project]],
         )
 
     async def delete(
@@ -539,9 +538,7 @@ class AsyncProjectsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"project_ids": project_ids}, project_bulk_delete_params.ProjectBulkDeleteParams
-                ),
+                query=await async_maybe_transform({"project_ids": project_ids}, ProjectBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )

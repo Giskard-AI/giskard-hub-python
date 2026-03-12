@@ -8,17 +8,11 @@ import httpx
 from ..types import (
     Agent,
     Dataset,
+    Evaluation,
     APIResponse,
     FrequencyOption,
     ScheduledEvaluation,
-    EvaluationAPIResource,
     APIResponseWithIncluded,
-    scheduled_evaluation_list_params,
-    scheduled_evaluation_create_params,
-    scheduled_evaluation_update_params,
-    scheduled_evaluation_retrieve_params,
-    scheduled_evaluation_bulk_delete_params,
-    scheduled_evaluation_list_evaluations_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
@@ -31,6 +25,14 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ..types.scheduled_evaluation import (
+    ScheduledEvaluationListParams,
+    ScheduledEvaluationCreateParams,
+    ScheduledEvaluationUpdateParams,
+    ScheduledEvaluationRetrieveParams,
+    ScheduledEvaluationBulkDeleteParams,
+    ScheduledEvaluationListEvaluationsParams,
+)
 
 __all__ = ["ScheduledEvaluationsResource", "AsyncScheduledEvaluationsResource"]
 
@@ -124,7 +126,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                     "run_count": run_count,
                     "tags": tags,
                 },
-                scheduled_evaluation_create_params.ScheduledEvaluationCreateParams,
+                ScheduledEvaluationCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -143,7 +145,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[EvaluationAPIResource]]]:
+    ) -> APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[Evaluation]]]:
         """
         Retrieve Scheduled Evaluation
 
@@ -167,15 +169,13 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         return self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}",
             options=make_request_options(
-                query=maybe_transform(
-                    {"include": include}, scheduled_evaluation_retrieve_params.ScheduledEvaluationRetrieveParams
-                ),
+                query=maybe_transform({"include": include}, ScheduledEvaluationRetrieveParams),
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[EvaluationAPIResource]]],
+            cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[Evaluation]]],
         )
 
     def update(
@@ -189,7 +189,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         day_of_week: Optional[int] | Omit = omit,
         day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
-        last_execution_status: Optional[scheduled_evaluation_update_params.LastExecutionStatus] | Omit = omit,
+        last_execution_status: Optional[ScheduledEvaluationUpdateParams.LastExecutionStatus] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -250,7 +250,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                     "run_count": run_count,
                     "time": time,
                 },
-                scheduled_evaluation_update_params.ScheduledEvaluationUpdateParams,
+                ScheduledEvaluationUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -270,7 +270,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]]:
+    ) -> APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[Evaluation]]]:
         """
         List Scheduled Evaluations
 
@@ -298,10 +298,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"project_id": project_id, "include": include, "last_days": last_days},
-                    scheduled_evaluation_list_params.ScheduledEvaluationListParams,
+                    ScheduledEvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
+            cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[Evaluation]]],
         )
 
     def delete(
@@ -375,7 +375,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"scheduled_evaluation_ids": scheduled_evaluation_ids},
-                    scheduled_evaluation_bulk_delete_params.ScheduledEvaluationBulkDeleteParams,
+                    ScheduledEvaluationBulkDeleteParams,
                 ),
             ),
             cast_to=APIResponse[None],
@@ -392,7 +392,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]]:
+    ) -> APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]]:
         """
         List Scheduled Evaluation Evaluations
 
@@ -422,10 +422,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"include": include},
-                    scheduled_evaluation_list_evaluations_params.ScheduledEvaluationListEvaluationsParams,
+                    ScheduledEvaluationListEvaluationsParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
         )
 
 
@@ -518,7 +518,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                     "run_count": run_count,
                     "tags": tags,
                 },
-                scheduled_evaluation_create_params.ScheduledEvaluationCreateParams,
+                ScheduledEvaluationCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -537,7 +537,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[EvaluationAPIResource]]]:
+    ) -> APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[Evaluation]]]:
         """
         Retrieve Scheduled Evaluation
 
@@ -561,15 +561,13 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         return await self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}",
             options=make_request_options(
-                query=maybe_transform(
-                    {"include": include}, scheduled_evaluation_retrieve_params.ScheduledEvaluationRetrieveParams
-                ),
+                query=maybe_transform({"include": include}, ScheduledEvaluationRetrieveParams),
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[EvaluationAPIResource]]],
+            cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[Evaluation]]],
         )
 
     async def update(
@@ -583,7 +581,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         day_of_week: Optional[int] | Omit = omit,
         day_of_month: Optional[int] | Omit = omit,
         last_execution_at: Union[str, datetime, None] | Omit = omit,
-        last_execution_status: Optional[scheduled_evaluation_update_params.LastExecutionStatus] | Omit = omit,
+        last_execution_status: Optional[ScheduledEvaluationUpdateParams.LastExecutionStatus] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -644,7 +642,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                     "run_count": run_count,
                     "time": time,
                 },
-                scheduled_evaluation_update_params.ScheduledEvaluationUpdateParams,
+                ScheduledEvaluationUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -664,7 +662,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]]:
+    ) -> APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[Evaluation]]]:
         """
         List Scheduled Evaluations
 
@@ -692,10 +690,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"project_id": project_id, "include": include, "last_days": last_days},
-                    scheduled_evaluation_list_params.ScheduledEvaluationListParams,
+                    ScheduledEvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[EvaluationAPIResource]]],
+            cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[Evaluation]]],
         )
 
     async def delete(
@@ -769,7 +767,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"scheduled_evaluation_ids": scheduled_evaluation_ids},
-                    scheduled_evaluation_bulk_delete_params.ScheduledEvaluationBulkDeleteParams,
+                    ScheduledEvaluationBulkDeleteParams,
                 ),
             ),
             cast_to=APIResponse[None],
@@ -786,7 +784,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]]:
+    ) -> APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]]:
         """
         List Scheduled Evaluation Evaluations
 
@@ -816,10 +814,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"include": include},
-                    scheduled_evaluation_list_evaluations_params.ScheduledEvaluationListEvaluationsParams,
+                    ScheduledEvaluationListEvaluationsParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[EvaluationAPIResource], APIResponse[Agent | Dataset]],
+            cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
         )
 
 

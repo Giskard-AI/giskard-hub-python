@@ -10,7 +10,7 @@ import pytest
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import APIResponse
-from giskard_hub.types.scans import ScanProbeResult, ScanProbeAttempt
+from giskard_hub.types.scan import ScanProbeResult, ScanProbeAttempt
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 

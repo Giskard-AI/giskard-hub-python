@@ -6,14 +6,10 @@ import httpx
 
 from ..types import (
     APIPaginatedResponse,
+    KnowledgeBaseDocumentRow,
     KnowledgeBaseDocumentFiltersParam,
     KnowledgeBaseDocumentOrderByParam,
     KnowledgeBaseSearchDocumentsParams,
-    KnowledgeBaseDocumentRowAPIResource,
-    knowledge_base_list_params,
-    knowledge_base_create_params,
-    knowledge_base_update_params,
-    knowledge_base_bulk_delete_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
@@ -26,10 +22,15 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.common import APIResponse
-from ..types.knowledge_base import KnowledgeBase
-from ..types.task_progress_param import TaskProgressParam
-from ..types.knowledge_base_document_detail_api_resource import KnowledgeBaseDocumentDetailAPIResource
+from ..types.common import APIResponse, TaskProgressParam
+from ..types.knowledge_base import (
+    KnowledgeBase,
+    KnowledgeBaseListParams,
+    KnowledgeBaseCreateParams,
+    KnowledgeBaseUpdateParams,
+    KnowledgeBaseDocumentDetail,
+    KnowledgeBaseBulkDeleteParams,
+)
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
 
@@ -111,7 +112,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return self._post(
             "/v2/knowledge-bases",
-            body=maybe_transform(body, knowledge_base_create_params.KnowledgeBaseCreateParams),
+            body=maybe_transform(body, KnowledgeBaseCreateParams),
             files=files,
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -200,7 +201,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                     "project_id": project_id,
                     "status": status,
                 },
-                knowledge_base_update_params.KnowledgeBaseUpdateParams,
+                KnowledgeBaseUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -240,7 +241,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams),
+                query=maybe_transform({"project_id": project_id}, KnowledgeBaseListParams),
             ),
             cast_to=APIResponse[List[KnowledgeBase]],
         )
@@ -314,7 +315,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"knowledge_base_ids": knowledge_base_ids},
-                    knowledge_base_bulk_delete_params.KnowledgeBaseBulkDeleteParams,
+                    KnowledgeBaseBulkDeleteParams,
                 ),
             ),
             cast_to=APIResponse[None],
@@ -335,7 +336,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None]:
+    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRow, None]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -378,7 +379,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                     KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None],
+            cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRow, None],
         )
 
     def retrieve_document(
@@ -392,7 +393,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBaseDocumentDetailAPIResource]:
+    ) -> APIResponse[KnowledgeBaseDocumentDetail]:
         """
         Retrieve Knowledge Base Document
 
@@ -418,7 +419,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[KnowledgeBaseDocumentDetailAPIResource],
+            cast_to=APIResponse[KnowledgeBaseDocumentDetail],
         )
 
 
@@ -499,7 +500,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return await self._post(
             "/v2/knowledge-bases",
-            body=await async_maybe_transform(body, knowledge_base_create_params.KnowledgeBaseCreateParams),
+            body=await async_maybe_transform(body, KnowledgeBaseCreateParams),
             files=files,
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -588,7 +589,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     "project_id": project_id,
                     "status": status,
                 },
-                knowledge_base_update_params.KnowledgeBaseUpdateParams,
+                KnowledgeBaseUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -628,9 +629,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"project_id": project_id}, knowledge_base_list_params.KnowledgeBaseListParams
-                ),
+                query=await async_maybe_transform({"project_id": project_id}, KnowledgeBaseListParams),
             ),
             cast_to=APIResponse[List[KnowledgeBase]],
         )
@@ -704,7 +703,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"knowledge_base_ids": knowledge_base_ids},
-                    knowledge_base_bulk_delete_params.KnowledgeBaseBulkDeleteParams,
+                    KnowledgeBaseBulkDeleteParams,
                 ),
             ),
             cast_to=APIResponse[None],
@@ -725,7 +724,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None]:
+    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRow, None]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -768,7 +767,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                     KnowledgeBaseSearchDocumentsParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRowAPIResource, None],
+            cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRow, None],
         )
 
     async def retrieve_document(
@@ -782,7 +781,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBaseDocumentDetailAPIResource]:
+    ) -> APIResponse[KnowledgeBaseDocumentDetail]:
         """
         Retrieve Knowledge Base Document
 
@@ -808,7 +807,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[KnowledgeBaseDocumentDetailAPIResource],
+            cast_to=APIResponse[KnowledgeBaseDocumentDetail],
         )
 
 

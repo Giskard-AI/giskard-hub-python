@@ -4,7 +4,6 @@ from typing import List, Iterable, Optional
 
 import httpx
 
-from ..types import check_list_params, check_create_params, check_update_params, check_bulk_delete_params
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -15,9 +14,15 @@ from .._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..types.check import (
+    Check,
+    CheckListParams,
+    CheckCreateParams,
+    CheckUpdateParams,
+    CheckBulkDeleteParams,
+)
 from .._base_client import make_request_options
 from ..types.common import APIResponse
-from ..types.check_api_resource import CheckAPIResource
 
 __all__ = ["ChecksResource", "AsyncChecksResource"]
 
@@ -45,7 +50,7 @@ class ChecksResource(SyncAPIResource):
     def create(
         self,
         *,
-        assertions: Iterable[check_create_params.Assertion],
+        assertions: Iterable[CheckCreateParams.Assertion],
         identifier: str,
         name: str,
         project_id: str,
@@ -56,7 +61,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[CheckAPIResource]:
+    ) -> APIResponse[Check]:
         """
         Create Check
 
@@ -89,12 +94,12 @@ class ChecksResource(SyncAPIResource):
                     "name": name,
                     "project_id": project_id,
                 },
-                check_create_params.CheckCreateParams,
+                CheckCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[CheckAPIResource],
+            cast_to=APIResponse[Check],
         )
 
     def retrieve(
@@ -107,7 +112,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[CheckAPIResource]:
+    ) -> APIResponse[Check]:
         """
         Retrieve Check
 
@@ -129,14 +134,14 @@ class ChecksResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[CheckAPIResource],
+            cast_to=APIResponse[Check],
         )
 
     def update(
         self,
         check_id: str,
         *,
-        assertions: Optional[Iterable[check_update_params.Assertion]] | Omit = omit,
+        assertions: Optional[Iterable[CheckUpdateParams.Assertion]] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -146,7 +151,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[CheckAPIResource]:
+    ) -> APIResponse[Check]:
         """
         Update Check
 
@@ -180,12 +185,12 @@ class ChecksResource(SyncAPIResource):
                     "identifier": identifier,
                     "name": name,
                 },
-                check_update_params.CheckUpdateParams,
+                CheckUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[CheckAPIResource],
+            cast_to=APIResponse[Check],
         )
 
     def list(
@@ -199,7 +204,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[CheckAPIResource]]:
+    ) -> APIResponse[List[Check]]:
         """
         List Checks
 
@@ -228,10 +233,10 @@ class ChecksResource(SyncAPIResource):
                         "project_id": project_id,
                         "filter_builtin": filter_builtin,
                     },
-                    check_list_params.CheckListParams,
+                    CheckListParams,
                 ),
             ),
-            cast_to=APIResponse[List[CheckAPIResource]],
+            cast_to=APIResponse[List[Check]],
         )
 
     def delete(
@@ -301,7 +306,7 @@ class ChecksResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"check_ids": check_ids}, check_bulk_delete_params.CheckBulkDeleteParams),
+                query=maybe_transform({"check_ids": check_ids}, CheckBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -330,7 +335,7 @@ class AsyncChecksResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        assertions: Iterable[check_create_params.Assertion],
+        assertions: Iterable[CheckCreateParams.Assertion],
         identifier: str,
         name: str,
         project_id: str,
@@ -341,7 +346,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[CheckAPIResource]:
+    ) -> APIResponse[Check]:
         """
         Create Check
 
@@ -374,12 +379,12 @@ class AsyncChecksResource(AsyncAPIResource):
                     "name": name,
                     "project_id": project_id,
                 },
-                check_create_params.CheckCreateParams,
+                CheckCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[CheckAPIResource],
+            cast_to=APIResponse[Check],
         )
 
     async def retrieve(
@@ -392,7 +397,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[CheckAPIResource]:
+    ) -> APIResponse[Check]:
         """
         Retrieve Check
 
@@ -414,14 +419,14 @@ class AsyncChecksResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[CheckAPIResource],
+            cast_to=APIResponse[Check],
         )
 
     async def update(
         self,
         check_id: str,
         *,
-        assertions: Optional[Iterable[check_update_params.Assertion]] | Omit = omit,
+        assertions: Optional[Iterable[CheckUpdateParams.Assertion]] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -431,7 +436,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[CheckAPIResource]:
+    ) -> APIResponse[Check]:
         """
         Update Check
 
@@ -465,12 +470,12 @@ class AsyncChecksResource(AsyncAPIResource):
                     "identifier": identifier,
                     "name": name,
                 },
-                check_update_params.CheckUpdateParams,
+                CheckUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[CheckAPIResource],
+            cast_to=APIResponse[Check],
         )
 
     async def list(
@@ -484,7 +489,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[CheckAPIResource]]:
+    ) -> APIResponse[List[Check]]:
         """
         List Checks
 
@@ -513,10 +518,10 @@ class AsyncChecksResource(AsyncAPIResource):
                         "project_id": project_id,
                         "filter_builtin": filter_builtin,
                     },
-                    check_list_params.CheckListParams,
+                    CheckListParams,
                 ),
             ),
-            cast_to=APIResponse[List[CheckAPIResource]],
+            cast_to=APIResponse[List[Check]],
         )
 
     async def delete(
@@ -586,9 +591,7 @@ class AsyncChecksResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"check_ids": check_ids}, check_bulk_delete_params.CheckBulkDeleteParams
-                ),
+                query=await async_maybe_transform({"check_ids": check_ids}, CheckBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )

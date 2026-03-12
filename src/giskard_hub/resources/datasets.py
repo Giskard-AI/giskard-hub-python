@@ -8,13 +8,6 @@ from ..types import (
     TestCaseFiltersParam,
     TestCaseOrderByParam,
     DatasetSearchTestCasesParams,
-    dataset_list_params,
-    dataset_create_params,
-    dataset_import_params,
-    dataset_update_params,
-    dataset_bulk_delete_params,
-    dataset_generate_document_based_params,
-    dataset_generate_scenario_based_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
@@ -27,10 +20,18 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.common import APIResponse, APIPaginatedResponse
-from ..types.dataset import Dataset
+from ..types.common import APIResponse, TaskProgressParam, APIPaginatedResponse
+from ..types.dataset import (
+    Dataset,
+    DatasetListParams,
+    DatasetCreateParams,
+    DatasetImportParams,
+    DatasetUpdateParams,
+    DatasetBulkDeleteParams,
+    DatasetGenerateDocumentBasedParams,
+    DatasetGenerateScenarioBasedParams,
+)
 from ..types.test_case import TestCase
-from ..types.task_progress_param import TaskProgressParam
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -94,7 +95,7 @@ class DatasetsResource(SyncAPIResource):
                     "project_id": project_id,
                     "description": description,
                 },
-                dataset_create_params.DatasetCreateParams,
+                DatasetCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -146,7 +147,7 @@ class DatasetsResource(SyncAPIResource):
 
         return self._post(
             "/v2/datasets/import",
-            body=maybe_transform(body, dataset_import_params.DatasetImportParams),
+            body=maybe_transform(body, DatasetImportParams),
             files=files,
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -159,7 +160,7 @@ class DatasetsResource(SyncAPIResource):
                         "dataset_id": dataset_id,
                         "name": name,
                     },
-                    dataset_import_params.DatasetImportParams,
+                    DatasetImportParams,
                 ),
             ),
             cast_to=APIResponse[Dataset],
@@ -244,7 +245,7 @@ class DatasetsResource(SyncAPIResource):
                     "name": name,
                     "status": status,
                 },
-                dataset_update_params.DatasetUpdateParams,
+                DatasetUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -284,7 +285,7 @@ class DatasetsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"project_id": project_id}, dataset_list_params.DatasetListParams),
+                query=maybe_transform({"project_id": project_id}, DatasetListParams),
             ),
             cast_to=APIResponse[List[Dataset]],
         )
@@ -356,7 +357,7 @@ class DatasetsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"dataset_ids": dataset_ids}, dataset_bulk_delete_params.DatasetBulkDeleteParams),
+                query=maybe_transform({"dataset_ids": dataset_ids}, DatasetBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -416,7 +417,7 @@ class DatasetsResource(SyncAPIResource):
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
                 },
-                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
+                DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -479,7 +480,7 @@ class DatasetsResource(SyncAPIResource):
                     "n_examples": n_examples,
                     "topic_ids": topic_ids,
                 },
-                dataset_generate_document_based_params.DatasetGenerateDocumentBasedParams,
+                DatasetGenerateDocumentBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -682,7 +683,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "project_id": project_id,
                     "description": description,
                 },
-                dataset_create_params.DatasetCreateParams,
+                DatasetCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -731,7 +732,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return await self._post(
             "/v2/datasets/import",
-            body=await async_maybe_transform(body, dataset_import_params.DatasetImportParams),
+            body=await async_maybe_transform(body, DatasetImportParams),
             files=files,
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -744,7 +745,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                         "dataset_id": dataset_id,
                         "name": name,
                     },
-                    dataset_import_params.DatasetImportParams,
+                    DatasetImportParams,
                 ),
             ),
             cast_to=APIResponse[Dataset],
@@ -829,7 +830,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "name": name,
                     "status": status,
                 },
-                dataset_update_params.DatasetUpdateParams,
+                DatasetUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -869,7 +870,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"project_id": project_id}, dataset_list_params.DatasetListParams),
+                query=await async_maybe_transform({"project_id": project_id}, DatasetListParams),
             ),
             cast_to=APIResponse[List[Dataset]],
         )
@@ -941,9 +942,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"dataset_ids": dataset_ids}, dataset_bulk_delete_params.DatasetBulkDeleteParams
-                ),
+                query=await async_maybe_transform({"dataset_ids": dataset_ids}, DatasetBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -1003,7 +1002,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
                 },
-                dataset_generate_scenario_based_params.DatasetGenerateScenarioBasedParams,
+                DatasetGenerateScenarioBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -1066,7 +1065,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "n_examples": n_examples,
                     "topic_ids": topic_ids,
                 },
-                dataset_generate_document_based_params.DatasetGenerateDocumentBasedParams,
+                DatasetGenerateDocumentBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout

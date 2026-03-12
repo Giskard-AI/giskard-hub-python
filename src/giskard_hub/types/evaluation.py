@@ -1,0 +1,228 @@
+"""Evaluation domain types."""
+
+from datetime import datetime  # noqa: I001
+from typing import Dict, Iterable, List, Literal, Optional, TypeAlias, TypedDict, Union
+
+from typing_extensions import Required
+
+from .._models import BaseModel
+from .._types import SequenceNotStr
+from .agent import AgentOutput, AgentOutputParam, AgentReference, MinimalAgent, MinimalAgentParam
+from .chat import ChatMessageParam
+from .check import OutputAnnotation
+from .common import FilterValueParam, OrderByParam, TaskProgress, TaskState
+from .dataset import DatasetReference, DatasetSubset, DatasetSubsetParam
+
+__all__ = [
+    "Metric",
+    "Evaluation",
+    "EvaluationListParams",
+    "EvaluationCreateParams",
+    "EvaluationUpdateParams",
+    "EvaluationRetrieveParams",
+    "EvaluationRunSingleParams",
+    "EvaluationCreateLocalParams",
+    "EvaluationBulkDeleteParams",
+    "Criterion",
+    "CriterionEvaluationDataset",
+    "FailureCategory",
+    "FailureCategoryParam",
+    "TestCaseEvaluation",
+    "ResultListParams",
+    "ResultRetrieveParams",
+    "ResultSearchParams",
+    "ResultOrderByParam",
+    "ResultFiltersParam",
+    "ResultUpdateParams",
+    "ResultUpdateVisibilityParams",
+    "ResultSubmitLocalOutputParams",
+]
+
+
+# ---------------------------------------------------------------------------
+# Models
+# ---------------------------------------------------------------------------
+
+
+class Metric(BaseModel):
+    name: str
+    display_name: Optional[str] = None
+    errored: Optional[int] = None
+    failed: Optional[int] = None
+    passed: Optional[int] = None
+    total: Optional[int] = None
+
+
+class Evaluation(BaseModel):
+    id: str
+    agent: AgentReference | MinimalAgent
+    created_at: datetime
+    criteria: Optional[DatasetSubset] = None
+    dataset: DatasetReference
+    failure_categories: Dict[str, int]
+    local: bool
+    metrics: List[Metric]
+    name: str
+    old_evaluation_id: Optional[str] = None
+    project_id: str
+    scheduled_evaluation_id: Optional[str] = None
+    status: TaskProgress
+    tags: List[Metric]
+    updated_at: datetime
+
+
+# ---------------------------------------------------------------------------
+# Failure category
+# ---------------------------------------------------------------------------
+
+
+class FailureCategory(BaseModel):
+    description: str
+    identifier: str
+    title: str
+
+
+class FailureCategoryParam(TypedDict, total=False):
+    description: Required[str]
+    identifier: Required[str]
+    title: Required[str]
+
+
+# ---------------------------------------------------------------------------
+# Test case evaluation
+# ---------------------------------------------------------------------------
+
+
+class _FailureCategoryResult(BaseModel):
+    category: Optional[FailureCategory] = None
+    error: Optional[str] = None
+    status: Optional[TaskState] = None
+
+
+class Result(BaseModel):
+    name: str
+    annotations: Optional[List[OutputAnnotation]] = None
+    display_name: Optional[str] = None
+    error: Optional[str] = None
+    passed: Optional[bool] = None
+    reason: Optional[str] = None
+    status: Optional[TaskState] = None
+
+
+class _TestCaseRef(BaseModel):
+    __test__ = False
+    id: str
+
+
+TestCase = _TestCaseRef
+
+
+class TestCaseEvaluation(BaseModel):
+    __test__ = False
+    id: str
+    created_at: datetime
+    error: Optional[str] = None
+    evaluation_id: str
+    failure_category: Optional[_FailureCategoryResult] = None
+    output: Optional[AgentOutput] = None
+    results: List[Result]
+    state: TaskState
+    test_case: _TestCaseRef
+    updated_at: datetime
+
+
+# ---------------------------------------------------------------------------
+# Evaluation params
+# ---------------------------------------------------------------------------
+
+
+class EvaluationListParams(TypedDict, total=False):
+    project_id: Required[str]
+    include: Optional[List[Literal["agent", "dataset"]]]
+
+
+class EvaluationCreateParams(TypedDict, total=False):
+    agent_id: Required[str]
+    project_id: Required[str]
+    criteria: Optional[DatasetSubsetParam]
+    name: str
+    old_evaluation_id: Optional[str]
+    run_count: Optional[int]
+    scheduled_evaluation_id: Optional[str]
+
+
+class EvaluationUpdateParams(TypedDict, total=False):
+    name: Required[str]
+
+
+class EvaluationRetrieveParams(TypedDict, total=False):
+    include: Optional[List[Literal["agent", "dataset"]]]
+
+
+class EvaluationRunSingleParams(TypedDict, total=False):
+    checks: Required[Iterable[Dict[str, object]]]
+    messages: Required[Iterable[ChatMessageParam]]
+    model_output: Required[AgentOutputParam]
+    model_description: str
+    project_id: Optional[str]
+
+
+class CriterionEvaluationDataset(TypedDict, total=False):
+    evaluation_id: Required[str]
+    target_type: Literal["evaluation"]
+
+
+Criterion: TypeAlias = Union[DatasetSubsetParam, CriterionEvaluationDataset]
+
+
+class EvaluationCreateLocalParams(TypedDict, total=False):
+    criteria: Required[Iterable[Criterion]]
+    model: Required[MinimalAgentParam]
+    name: Optional[str]
+
+
+class EvaluationBulkDeleteParams(TypedDict, total=False):
+    evaluation_ids: Required[SequenceNotStr[str]]
+
+
+# ---------------------------------------------------------------------------
+# Result params
+# ---------------------------------------------------------------------------
+
+
+ResultSortColumn = Literal["failure_category_name", "id", "sample_success", "status", "visibility"]
+ResultFilterColumn = Literal["failure_category_name", "metrics", "sample_success", "status", "tags", "visibility"]
+
+ResultOrderByParam = OrderByParam[ResultSortColumn]
+ResultFiltersParam = Dict[ResultFilterColumn, FilterValueParam]
+
+
+class ResultListParams(TypedDict, total=False):
+    include: Optional[List[Literal["test_case"]]]
+
+
+class ResultRetrieveParams(TypedDict, total=False):
+    include: Optional[List[Literal["test_case"]]]
+
+
+class ResultSearchParams(TypedDict, total=False):
+    search: Optional[str]
+    order_by: Optional[List[ResultOrderByParam]]
+    filters: Optional[ResultFiltersParam]
+    limit: int
+    offset: int
+    include: Optional[List[Literal["test_case"]]]
+
+
+class ResultUpdateParams(TypedDict, total=False):
+    failure_category: Optional[FailureCategoryParam]
+
+
+class ResultUpdateVisibilityParams(TypedDict, total=False):
+    hidden: Required[bool]
+    set_test_case_draft: Optional[bool]
+
+
+class ResultSubmitLocalOutputParams(TypedDict, total=False):
+    error: Optional[str]
+    output: Optional[AgentOutputParam]
