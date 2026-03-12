@@ -16,6 +16,7 @@ from .._response import (
 )
 from ..types.check import (
     Check,
+    AssertionParam,
     CheckListParams,
     CheckCreateParams,
     CheckUpdateParams,
@@ -50,7 +51,7 @@ class ChecksResource(SyncAPIResource):
     def create(
         self,
         *,
-        assertions: Iterable[CheckCreateParams.Assertion],
+        assertions: Iterable[AssertionParam],
         identifier: str,
         name: str,
         project_id: str,
@@ -141,7 +142,7 @@ class ChecksResource(SyncAPIResource):
         self,
         check_id: str,
         *,
-        assertions: Optional[Iterable[CheckUpdateParams.Assertion]] | Omit = omit,
+        assertions: Optional[Iterable[AssertionParam]] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -335,7 +336,7 @@ class AsyncChecksResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        assertions: Iterable[CheckCreateParams.Assertion],
+        assertions: Iterable[AssertionParam],
         identifier: str,
         name: str,
         project_id: str,
@@ -426,7 +427,7 @@ class AsyncChecksResource(AsyncAPIResource):
         self,
         check_id: str,
         *,
-        assertions: Optional[Iterable[CheckUpdateParams.Assertion]] | Omit = omit,
+        assertions: Optional[Iterable[AssertionParam]] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
