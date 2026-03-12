@@ -56,7 +56,9 @@ def client(request: FixtureRequest) -> Iterator[HubClient]:
     if not isinstance(strict, bool):
         raise TypeError(f"Unexpected fixture parameter type {type(strict)}, expected {bool}")
 
-    with HubClient(base_url=base_url, api_key=api_key, _strict_response_validation=strict) as client:
+    with HubClient(
+        base_url=base_url, api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=strict
+    ) as client:
         yield client
 
 
@@ -83,6 +85,7 @@ async def async_client(request: FixtureRequest) -> AsyncIterator[AsyncHubClient]
     async with AsyncHubClient(
         base_url=base_url,
         api_key=api_key,
+        auto_add_api_suffix=False,
         _strict_response_validation=strict,
         http_client=http_client,
     ) as client:
