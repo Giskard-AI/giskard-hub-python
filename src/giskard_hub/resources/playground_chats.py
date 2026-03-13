@@ -13,6 +13,7 @@ from ..types import (
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
+from ._included import embed_included_list, embed_included_single
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
     to_raw_response_wrapper,
@@ -79,7 +80,7 @@ class PlaygroundChatsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/playground-chats",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -98,6 +99,11 @@ class PlaygroundChatsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
+
+        return response
 
     def retrieve(
         self,
@@ -127,7 +133,8 @@ class PlaygroundChatsResource(SyncAPIResource):
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
-        return self._get(
+
+        response = self._get(
             f"/v2/playground-chats/{chat_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -138,6 +145,11 @@ class PlaygroundChatsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
+
+        return response
 
     def delete(
         self,
@@ -249,7 +261,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/playground-chats",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -268,6 +280,11 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
+
+        return response
 
     async def retrieve(
         self,
@@ -297,7 +314,8 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
-        return await self._get(
+
+        response = await self._get(
             f"/v2/playground-chats/{chat_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -308,6 +326,11 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
+
+        return response
 
     async def delete(
         self,
