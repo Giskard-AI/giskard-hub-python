@@ -12,6 +12,7 @@ from .._models import BaseModel
 
 __all__ = [
     "TestCase",
+    "TestCaseReference",
     "TestCaseComment",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
@@ -35,6 +36,11 @@ class TestCaseComment(BaseModel):
     created_at: datetime
     updated_at: datetime
     user: UserReference
+
+
+class TestCaseReference(BaseModel):
+    __test__ = False
+    id: str
 
 
 class TestCase(BaseModel):

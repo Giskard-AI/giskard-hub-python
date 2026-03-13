@@ -12,6 +12,7 @@ from .._models import BaseModel
 from .knowledge_base import KnowledgeBase, KnowledgeBaseReference
 
 __all__ = [
+    "ScanProbeAttemptReference",
     "ScanResult",
     "ScanCategory",
     "ScanListParams",
@@ -76,6 +77,10 @@ class ScanProbeResult(BaseModel):
 
 class ScanProbeAttemptError(BaseModel):
     message: str
+
+
+class ScanProbeAttemptReference(BaseModel):
+    id: str
 
 
 class ScanProbeAttempt(BaseModel):

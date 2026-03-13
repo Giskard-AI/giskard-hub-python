@@ -132,8 +132,6 @@ from .task import (
     TaskPriority as TaskPriority,
     TaskStatus as TaskStatus,
     TaskUpdateParams as TaskUpdateParams,
-    TestCaseEvaluationReference as TestCaseEvaluationReference,
-    TestCaseReference as TestCaseReference,
 )
 
 # -- dataset ---------------------------------------------------------------
@@ -194,6 +192,7 @@ from .evaluation import (
     ResultUpdateParams as ResultUpdateParams,
     ResultUpdateVisibilityParams as ResultUpdateVisibilityParams,
     TestCaseEvaluation as TestCaseEvaluation,
+    TestCaseEvaluationReference as TestCaseEvaluationReference,
 )
 
 # -- scan ------------------------------------------------------------------
@@ -205,6 +204,7 @@ from .scan import (
     ScanCreateParams as ScanCreateParams,
     ScanListParams as ScanListParams,
     ScanProbeAttempt as ScanProbeAttempt,
+    ScanProbeAttemptReference as ScanProbeAttemptReference,
     ScanProbeResult as ScanProbeResult,
     ScanResult as ScanResult,
     ScanRetrieveParams as ScanRetrieveParams,
@@ -238,6 +238,7 @@ from .test_case import (
     CommentAddParams as CommentAddParams,
     CommentEditParams as CommentEditParams,
     TestCase as TestCase,
+    TestCaseReference as TestCaseReference,
     TestCaseBulkDeleteParams as TestCaseBulkDeleteParams,
     TestCaseBulkUpdateParams as TestCaseBulkUpdateParams,
     TestCaseComment as TestCaseComment,
@@ -347,9 +348,6 @@ __all__ = [
     "Task",
     "TaskStatus",
     "TaskPriority",
-    "TestCaseReference",
-    "ProbeAttemptReference",
-    "TestCaseEvaluationReference",
     "TaskListParams",
     "TaskCreateParams",
     "TaskUpdateParams",
@@ -397,6 +395,7 @@ __all__ = [
     "FailureCategory",
     "FailureCategoryParam",
     "TestCaseEvaluation",
+    "TestCaseEvaluationReference",
     "ResultListParams",
     "ResultSearchParams",
     "ResultUpdateParams",
@@ -416,6 +415,7 @@ __all__ = [
     "ReviewStatus",
     "ScanProbeResult",
     "ScanProbeAttempt",
+    "ScanProbeAttemptReference",
     "AttemptUpdateParams",
     # scenario
     "Scenario",
@@ -434,6 +434,7 @@ __all__ = [
     "ScheduledEvaluationListEvaluationsParams",
     # test case
     "TestCase",
+    "TestCaseReference",
     "TestCaseComment",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",

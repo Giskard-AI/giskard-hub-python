@@ -4,17 +4,17 @@ from typing import Union, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Literal, Required
 
+from .scan import ScanProbeAttemptReference
 from .user import User
 from .._types import SequenceNotStr
 from .._models import BaseModel
+from .test_case import TestCaseReference
+from .evaluation import TestCaseEvaluationReference
 
 __all__ = [
     "Task",
     "TaskStatus",
     "TaskPriority",
-    "TestCaseReference",
-    "ProbeAttemptReference",
-    "TestCaseEvaluationReference",
     "TaskListParams",
     "TaskCreateParams",
     "TaskUpdateParams",
@@ -31,23 +31,6 @@ TaskPriority: TypeAlias = Literal["low", "medium", "high"]
 
 
 # ---------------------------------------------------------------------------
-# Reference models
-# ---------------------------------------------------------------------------
-
-
-class TestCaseReference(BaseModel):
-    id: str
-
-
-class ProbeAttemptReference(BaseModel):
-    id: str
-
-
-class TestCaseEvaluationReference(BaseModel):
-    id: str
-
-
-# ---------------------------------------------------------------------------
 # Task model
 # ---------------------------------------------------------------------------
 
@@ -60,7 +43,7 @@ class Task(BaseModel):
     description: str
     created_by: User
     assignees: SequenceNotStr[User]
-    references: SequenceNotStr[Union[TestCaseEvaluationReference, ProbeAttemptReference, TestCaseReference]]
+    references: SequenceNotStr[Union[TestCaseEvaluationReference, ScanProbeAttemptReference, TestCaseReference]]
     created_at: datetime
     updated_at: datetime
 

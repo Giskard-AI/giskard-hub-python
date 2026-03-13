@@ -7,6 +7,7 @@ import httpx
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
+from .._included import embed_included_list, embed_included_single
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -17,8 +18,8 @@ from ..._response import (
 from ...types.agent import AgentOutputParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedResponse, APIResponseWithIncluded
+from ...types.test_case import TestCase
 from ...types.evaluation import (
-    TestCase,
     ResultListParams,
     ResultFiltersParam,
     ResultOrderByParam,
@@ -87,9 +88,11 @@ class ResultsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return self._get(
+
+        response = self._get(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -100,6 +103,11 @@ class ResultsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda result: result.id)
+
+        return response
 
     def update(
         self,
@@ -175,7 +183,8 @@ class ResultsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._get(
+
+        response = self._get(
             f"/v2/evaluations/{evaluation_id}/results",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -186,6 +195,11 @@ class ResultsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda result: result.id)
+
+        return response
 
     def rerun_test_case(
         self,
@@ -325,7 +339,8 @@ class ResultsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._post(
+
+        response = self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
             body=maybe_transform({"filters": filters, "order_by": order_by, "search": search}, ResultSearchParams),
             options=make_request_options(
@@ -344,6 +359,11 @@ class ResultsResource(SyncAPIResource):
             ),
             cast_to=APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda result: result.id)
+
+        return response
 
     def update_visibility(
         self,
@@ -449,9 +469,11 @@ class AsyncResultsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return await self._get(
+
+        response = await self._get(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -462,6 +484,11 @@ class AsyncResultsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda result: result.id)
+
+        return response
 
     async def update(
         self,
@@ -537,7 +564,8 @@ class AsyncResultsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._get(
+
+        response = await self._get(
             f"/v2/evaluations/{evaluation_id}/results",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -548,6 +576,11 @@ class AsyncResultsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda result: result.id)
+
+        return response
 
     async def rerun_test_case(
         self,
@@ -687,7 +720,8 @@ class AsyncResultsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._post(
+
+        response = await self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
             body=await async_maybe_transform(
                 {"filters": filters, "order_by": order_by, "search": search}, ResultSearchParams
@@ -708,6 +742,11 @@ class AsyncResultsResource(AsyncAPIResource):
             ),
             cast_to=APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda result: result.id)
+
+        return response
 
     async def update_visibility(
         self,
