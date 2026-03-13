@@ -62,7 +62,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Check]:
+    ) -> Check:
         """
         Create Check
 
@@ -85,7 +85,7 @@ class ChecksResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/checks",
             body=maybe_transform(
                 {
@@ -103,6 +103,8 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
+        return response.data
+
     def retrieve(
         self,
         check_id: str,
@@ -113,7 +115,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Check]:
+    ) -> Check:
         """
         Retrieve Check
 
@@ -130,13 +132,15 @@ class ChecksResource(SyncAPIResource):
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/checks/{check_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Check],
         )
+
+        return response.data
 
     def update(
         self,
@@ -152,7 +156,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Check]:
+    ) -> Check:
         """
         Update Check
 
@@ -182,7 +186,7 @@ class ChecksResource(SyncAPIResource):
             api_assertions = params  # type: ignore[assignment]
         else:
             api_assertions = [params]
-        return self._patch(
+        response = self._patch(
             f"/v2/checks/{check_id}",
             body=maybe_transform(
                 {
@@ -199,6 +203,8 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
+        return response.data
+
     def list(
         self,
         *,
@@ -210,7 +216,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Check]]:
+    ) -> List[Check]:
         """
         List Checks
 
@@ -227,7 +233,7 @@ class ChecksResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/checks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -245,6 +251,8 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[List[Check]],
         )
 
+        return response.data
+
     def delete(
         self,
         check_id: str,
@@ -255,7 +263,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Check
 
@@ -272,13 +280,15 @@ class ChecksResource(SyncAPIResource):
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/checks/{check_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     def bulk_delete(
         self,
@@ -290,7 +300,7 @@ class ChecksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Checks
 
@@ -305,7 +315,7 @@ class ChecksResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/checks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -316,6 +326,8 @@ class ChecksResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
 
 class AsyncChecksResource(AsyncAPIResource):
@@ -352,7 +364,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Check]:
+    ) -> Check:
         """
         Create Check
 
@@ -375,7 +387,7 @@ class AsyncChecksResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/checks",
             body=await async_maybe_transform(
                 {
@@ -393,6 +405,8 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
+        return response.data
+
     async def retrieve(
         self,
         check_id: str,
@@ -403,7 +417,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Check]:
+    ) -> Check:
         """
         Retrieve Check
 
@@ -420,13 +434,15 @@ class AsyncChecksResource(AsyncAPIResource):
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/checks/{check_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Check],
         )
+
+        return response.data
 
     async def update(
         self,
@@ -442,7 +458,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Check]:
+    ) -> Check:
         """
         Update Check
 
@@ -472,7 +488,7 @@ class AsyncChecksResource(AsyncAPIResource):
             api_assertions = params  # type: ignore[assignment]
         else:
             api_assertions = [params]
-        return await self._patch(
+        response = await self._patch(
             f"/v2/checks/{check_id}",
             body=await async_maybe_transform(
                 {
@@ -489,6 +505,8 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
+        return response.data
+
     async def list(
         self,
         *,
@@ -500,7 +518,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Check]]:
+    ) -> List[Check]:
         """
         List Checks
 
@@ -517,7 +535,7 @@ class AsyncChecksResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/checks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -535,6 +553,8 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[List[Check]],
         )
 
+        return response.data
+
     async def delete(
         self,
         check_id: str,
@@ -545,7 +565,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Check
 
@@ -562,13 +582,15 @@ class AsyncChecksResource(AsyncAPIResource):
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/checks/{check_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     async def bulk_delete(
         self,
@@ -580,7 +602,7 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Checks
 
@@ -595,7 +617,7 @@ class AsyncChecksResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/checks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -606,6 +628,8 @@ class AsyncChecksResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
 
 class ChecksResourceWithRawResponse:
