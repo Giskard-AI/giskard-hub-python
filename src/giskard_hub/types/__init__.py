@@ -124,7 +124,6 @@ from .audit import (
 
 # -- task ------------------------------------------------------------------
 from .task import (
-    ProbeAttemptReference as ProbeAttemptReference,
     Task as Task,
     TaskBulkDeleteParams as TaskBulkDeleteParams,
     TaskCreateParams as TaskCreateParams,
@@ -132,8 +131,6 @@ from .task import (
     TaskPriority as TaskPriority,
     TaskStatus as TaskStatus,
     TaskUpdateParams as TaskUpdateParams,
-    TestCaseEvaluationReference as TestCaseEvaluationReference,
-    TestCaseReference as TestCaseReference,
 )
 
 # -- dataset ---------------------------------------------------------------
@@ -158,6 +155,7 @@ from .dataset import (
 # -- knowledge_base --------------------------------------------------------
 from .knowledge_base import (
     KnowledgeBase as KnowledgeBase,
+    KnowledgeBaseReference as KnowledgeBaseReference,
     KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams,
     KnowledgeBaseCreateParams as KnowledgeBaseCreateParams,
     KnowledgeBaseDocumentDetail as KnowledgeBaseDocumentDetail,
@@ -173,6 +171,7 @@ from .knowledge_base import (
 # -- evaluation ------------------------------------------------------------
 from .evaluation import (
     Evaluation as Evaluation,
+    EvaluationReference as EvaluationReference,
     EvaluationBulkDeleteParams as EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams as EvaluationCreateLocalParams,
     EvaluationCreateParams as EvaluationCreateParams,
@@ -192,6 +191,7 @@ from .evaluation import (
     ResultUpdateParams as ResultUpdateParams,
     ResultUpdateVisibilityParams as ResultUpdateVisibilityParams,
     TestCaseEvaluation as TestCaseEvaluation,
+    TestCaseEvaluationReference as TestCaseEvaluationReference,
 )
 
 # -- scan ------------------------------------------------------------------
@@ -203,6 +203,7 @@ from .scan import (
     ScanCreateParams as ScanCreateParams,
     ScanListParams as ScanListParams,
     ScanProbeAttempt as ScanProbeAttempt,
+    ScanProbeAttemptReference as ScanProbeAttemptReference,
     ScanProbeResult as ScanProbeResult,
     ScanResult as ScanResult,
     ScanRetrieveParams as ScanRetrieveParams,
@@ -236,6 +237,7 @@ from .test_case import (
     CommentAddParams as CommentAddParams,
     CommentEditParams as CommentEditParams,
     TestCase as TestCase,
+    TestCaseReference as TestCaseReference,
     TestCaseBulkDeleteParams as TestCaseBulkDeleteParams,
     TestCaseBulkUpdateParams as TestCaseBulkUpdateParams,
     TestCaseComment as TestCaseComment,
@@ -345,9 +347,6 @@ __all__ = [
     "Task",
     "TaskStatus",
     "TaskPriority",
-    "TestCaseReference",
-    "ProbeAttemptReference",
-    "TestCaseEvaluationReference",
     "TaskListParams",
     "TaskCreateParams",
     "TaskUpdateParams",
@@ -370,6 +369,7 @@ __all__ = [
     "DatasetGenerateScenarioBasedParams",
     # knowledge base
     "KnowledgeBase",
+    "KnowledgeBaseReference",
     "Topic",
     "KnowledgeBaseDocumentRow",
     "KnowledgeBaseDocumentDetail",
@@ -383,6 +383,7 @@ __all__ = [
     # evaluation
     "Metric",
     "Evaluation",
+    "EvaluationReference",
     "EvaluationListParams",
     "EvaluationCreateParams",
     "EvaluationUpdateParams",
@@ -393,6 +394,7 @@ __all__ = [
     "FailureCategory",
     "FailureCategoryParam",
     "TestCaseEvaluation",
+    "TestCaseEvaluationReference",
     "ResultListParams",
     "ResultSearchParams",
     "ResultUpdateParams",
@@ -412,6 +414,7 @@ __all__ = [
     "ReviewStatus",
     "ScanProbeResult",
     "ScanProbeAttempt",
+    "ScanProbeAttemptReference",
     "AttemptUpdateParams",
     # scenario
     "Scenario",
@@ -430,6 +433,7 @@ __all__ = [
     "ScheduledEvaluationListEvaluationsParams",
     # test case
     "TestCase",
+    "TestCaseReference",
     "TestCaseComment",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",

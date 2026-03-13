@@ -6,7 +6,7 @@ from typing_extensions import Required
 
 from .chat import ChatMessageWithMetadata
 from .user import UserReference
-from .agent import AgentReference
+from .agent import Agent, AgentReference
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -29,7 +29,7 @@ class PlaygroundChat(BaseModel):
     created_at: datetime
     updated_at: datetime
     user: Optional[UserReference] = None
-    agent: Optional[AgentReference] = None
+    agent: Optional[AgentReference | Agent] = None
     messages: List[ChatMessageWithMetadata]
 
 

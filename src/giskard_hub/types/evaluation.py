@@ -7,15 +7,17 @@ from typing_extensions import Required
 
 from .._models import BaseModel
 from .._types import SequenceNotStr
-from .agent import AgentOutput, AgentOutputParam, AgentReference, MinimalAgent, MinimalAgentParam
+from .agent import Agent, AgentOutput, AgentOutputParam, AgentReference, MinimalAgent, MinimalAgentParam
 from .chat import ChatMessageParam
 from .check import OutputAnnotation
 from .common import FilterValueParam, OrderByParam, TaskProgress, TaskState
-from .dataset import DatasetReference, DatasetSubset, DatasetSubsetParam
+from .dataset import Dataset, DatasetReference, DatasetSubset, DatasetSubsetParam
+from .test_case import TestCaseReference, TestCase
 
 __all__ = [
     "Metric",
     "Evaluation",
+    "EvaluationReference",
     "EvaluationListParams",
     "EvaluationCreateParams",
     "EvaluationUpdateParams",
@@ -28,6 +30,7 @@ __all__ = [
     "FailureCategory",
     "FailureCategoryParam",
     "TestCaseEvaluation",
+    "TestCaseEvaluationReference",
     "ResultListParams",
     "ResultRetrieveParams",
     "ResultSearchParams",
@@ -53,12 +56,17 @@ class Metric(BaseModel):
     total: Optional[int] = None
 
 
+class EvaluationReference(BaseModel):
+    id: str
+    name: str
+
+
 class Evaluation(BaseModel):
     id: str
-    agent: AgentReference | MinimalAgent
+    agent: AgentReference | MinimalAgent | Agent
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
-    dataset: DatasetReference
+    dataset: Dataset | DatasetReference
     failure_categories: Dict[str, int]
     local: bool
     metrics: List[Metric]
@@ -93,7 +101,7 @@ class FailureCategoryParam(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 
 
-class _FailureCategoryResult(BaseModel):
+class FailureCategoryResult(BaseModel):
     category: Optional[FailureCategory] = None
     error: Optional[str] = None
     status: Optional[TaskState] = None
@@ -109,12 +117,8 @@ class Result(BaseModel):
     status: Optional[TaskState] = None
 
 
-class _TestCaseRef(BaseModel):
-    __test__ = False
+class TestCaseEvaluationReference(BaseModel):
     id: str
-
-
-TestCase = _TestCaseRef
 
 
 class TestCaseEvaluation(BaseModel):
@@ -123,11 +127,11 @@ class TestCaseEvaluation(BaseModel):
     created_at: datetime
     error: Optional[str] = None
     evaluation_id: str
-    failure_category: Optional[_FailureCategoryResult] = None
+    failure_category: Optional[FailureCategoryResult] = None
     output: Optional[AgentOutput] = None
     results: List[Result]
     state: TaskState
-    test_case: _TestCaseRef
+    test_case: TestCaseReference | TestCase
     updated_at: datetime
 
 

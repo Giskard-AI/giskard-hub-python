@@ -30,6 +30,7 @@ from .attempts import (
     AsyncAttemptsResourceWithStreamingResponse,
 )
 from ..._compat import cached_property
+from .._included import embed_included_list, embed_included_single
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -158,7 +159,7 @@ class ScansResource(SyncAPIResource):
         """
         if not scan_result_id:
             raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/scans/{scan_result_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -169,6 +170,11 @@ class ScansResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
+
+        return response
 
     def list(
         self,
@@ -198,7 +204,7 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/scans",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -215,6 +221,11 @@ class ScansResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
+
+        return response
 
     def delete(
         self,
@@ -463,7 +474,8 @@ class AsyncScansResource(AsyncAPIResource):
         """
         if not scan_result_id:
             raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
-        return await self._get(
+
+        response = await self._get(
             f"/v2/scans/{scan_result_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -474,6 +486,11 @@ class AsyncScansResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
+
+        return response
 
     async def list(
         self,
@@ -503,7 +520,7 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/scans",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -520,6 +537,11 @@ class AsyncScansResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
+
+        return response
 
     async def delete(
         self,

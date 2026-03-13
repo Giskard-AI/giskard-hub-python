@@ -16,6 +16,7 @@ from .results import (
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
+from .._included import embed_included_list, embed_included_single
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -163,7 +164,8 @@ class EvaluationsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._get(
+
+        response = self._get(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -174,6 +176,11 @@ class EvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
+
+        return response
 
     def update(
         self,
@@ -242,7 +249,7 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -259,6 +266,11 @@ class EvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+
+        return response
 
     def delete(
         self,
@@ -593,7 +605,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._get(
+
+        response = await self._get(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -604,6 +617,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
+
+        return response
 
     async def update(
         self,
@@ -672,7 +690,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -689,6 +707,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+
+        return response
 
     async def delete(
         self,
