@@ -122,3 +122,29 @@ async def test_wait_for_completion_async_error_state_raises() -> None:
             error_states={"error"},
             raise_on_error=True,
         )
+
+
+def test_wait_for_completion_sync_timeout() -> None:
+    helper = DummySyncHelpers(DummySyncResource(["running"] * 3))
+    entity = DummyStateful("id-1", "running")
+
+    with pytest.raises(RuntimeError):
+        helper.wait_for_completion(
+            entity,
+            poll_interval=0,
+            max_retries=2,
+        )
+
+
+def test_wait_for_completion_sync_error_no_raise() -> None:
+    helper = DummySyncHelpers(DummySyncResource(["running", "error"]))
+    entity = DummyStateful("id-1", "running")
+
+    result = helper.wait_for_completion(
+        entity,
+        poll_interval=0,
+        max_retries=3,
+        error_states={"error"},
+        raise_on_error=False,
+    )
+    assert result.state == "error"

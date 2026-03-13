@@ -1,6 +1,6 @@
 import time
 import asyncio
-from typing import TYPE_CHECKING, Any, TypeVar, Protocol, Collection, cast, runtime_checkable
+from typing import TYPE_CHECKING, TypeVar, Protocol, Collection, cast, runtime_checkable
 
 from .._models import BaseModel
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -23,6 +23,14 @@ class StatefulEntity(Protocol):
 
     id: str
     state: TaskState
+
+
+class RetrievableResource(Protocol):
+    def retrieve(self, id: str) -> StatefulEntity: ...
+
+
+class AsyncRetrievableResource(Protocol):
+    async def retrieve(self, id: str) -> StatefulEntity: ...
 
 
 TStateful = TypeVar("TStateful", bound=StatefulEntity)
@@ -139,7 +147,8 @@ class HelpersResource(SyncAPIResource):
             If the entity does not complete within the allotted number of retries.
         """
 
-        resource = cast(Any, self._map_entity_to_resource(cast(BaseModel, entity)))
+        resource = cast(RetrievableResource, self._map_entity_to_resource(cast(BaseModel, entity)))
+
         current: TStateful = entity
 
         for _ in range(max_retries):
@@ -225,7 +234,8 @@ class AsyncHelpersResource(AsyncAPIResource):
             If the entity does not complete within the allotted number of retries.
         """
 
-        resource = cast(Any, self._map_entity_to_resource(cast(BaseModel, entity)))
+        resource = cast(AsyncRetrievableResource, self._map_entity_to_resource(cast(BaseModel, entity)))
+
         current: TStateful = entity
 
         for _ in range(max_retries):
