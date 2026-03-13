@@ -5,15 +5,15 @@ from datetime import datetime
 from typing_extensions import Required
 
 from .chat import ChatMessageWithMetadata
-from .agent import AgentReference
+from .agent import Agent, AgentReference
 from .common import TaskProgress
 from .._types import SequenceNotStr
 from .._models import BaseModel
+from .knowledge_base import KnowledgeBase, KnowledgeBaseReference
 
 __all__ = [
     "ScanResult",
     "ScanCategory",
-    "KnowledgeBaseAPIReference",
     "ScanListParams",
     "ScanCreateParams",
     "ScanRetrieveParams",
@@ -39,17 +39,12 @@ ReviewStatus: TypeAlias = Literal["pending", "ignored", "acknowledged", "correct
 # ---------------------------------------------------------------------------
 
 
-class KnowledgeBaseAPIReference(BaseModel):
-    id: str
-    name: str
-
-
 class ScanResult(BaseModel):
     id: str
-    agent: AgentReference
+    agent: AgentReference | Agent
     created_at: datetime
     grade: Optional[Literal["A", "B", "C", "D"]] = None
-    knowledge_base: Optional[KnowledgeBaseAPIReference] = None
+    knowledge_base: Optional[KnowledgeBaseReference | KnowledgeBase] = None
     project_id: str
     status: TaskProgress
     updated_at: datetime

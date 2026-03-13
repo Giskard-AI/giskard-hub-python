@@ -10,6 +10,7 @@ from .._models import BaseModel
 
 __all__ = [
     "KnowledgeBase",
+    "KnowledgeBaseReference",
     "Topic",
     "KnowledgeBaseDocumentRow",
     "KnowledgeBaseDocumentDetail",
@@ -35,6 +36,11 @@ class Topic(BaseModel):
     name: str
     updated_at: datetime
     document_count: Optional[int] = None
+
+
+class KnowledgeBaseReference(BaseModel):
+    id: str
+    name: str
 
 
 class KnowledgeBase(BaseModel):

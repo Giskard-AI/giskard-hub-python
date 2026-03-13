@@ -158,6 +158,7 @@ from .dataset import (
 # -- knowledge_base --------------------------------------------------------
 from .knowledge_base import (
     KnowledgeBase as KnowledgeBase,
+    KnowledgeBaseReference as KnowledgeBaseReference,
     KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams,
     KnowledgeBaseCreateParams as KnowledgeBaseCreateParams,
     KnowledgeBaseDocumentDetail as KnowledgeBaseDocumentDetail,
@@ -371,6 +372,7 @@ __all__ = [
     "DatasetGenerateScenarioBasedParams",
     # knowledge base
     "KnowledgeBase",
+    "KnowledgeBaseReference",
     "Topic",
     "KnowledgeBaseDocumentRow",
     "KnowledgeBaseDocumentDetail",
