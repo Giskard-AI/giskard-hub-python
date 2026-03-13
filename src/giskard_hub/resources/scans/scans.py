@@ -129,7 +129,7 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[ScanResult],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -176,7 +176,7 @@ class ScansResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -227,7 +227,7 @@ class ScansResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -264,7 +264,7 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -303,7 +303,7 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list_categories(
         self,
@@ -335,7 +335,7 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[List[ScanCategory]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list_probes(
         self,
@@ -372,7 +372,7 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[List[ScanProbeResult]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncScansResource(AsyncAPIResource):
@@ -454,7 +454,7 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[ScanResult],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -502,7 +502,7 @@ class AsyncScansResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -553,7 +553,7 @@ class AsyncScansResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -590,7 +590,7 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -629,7 +629,7 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list_categories(
         self,
@@ -661,7 +661,7 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[List[ScanCategory]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list_probes(
         self,
@@ -698,7 +698,7 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[List[ScanProbeResult]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ScansResourceWithRawResponse:

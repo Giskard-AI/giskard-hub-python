@@ -103,7 +103,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -149,7 +149,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -219,7 +219,7 @@ class PlaygroundChatsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncPlaygroundChatsResource(AsyncAPIResource):
@@ -286,7 +286,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -332,7 +332,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -402,7 +402,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class PlaygroundChatsResourceWithRawResponse:

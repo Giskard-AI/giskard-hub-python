@@ -75,7 +75,7 @@ class ProbesResource(SyncAPIResource):
             cast_to=APIResponse[ScanProbeResult],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list_attempts(
         self,
@@ -112,7 +112,7 @@ class ProbesResource(SyncAPIResource):
             cast_to=APIResponse[List[ScanProbeAttempt]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncProbesResource(AsyncAPIResource):
@@ -170,7 +170,7 @@ class AsyncProbesResource(AsyncAPIResource):
             cast_to=APIResponse[ScanProbeResult],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list_attempts(
         self,
@@ -207,7 +207,7 @@ class AsyncProbesResource(AsyncAPIResource):
             cast_to=APIResponse[List[ScanProbeAttempt]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ProbesResourceWithRawResponse:

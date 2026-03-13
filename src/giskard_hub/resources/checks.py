@@ -103,7 +103,7 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -140,7 +140,7 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -203,7 +203,7 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -251,7 +251,7 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[List[Check]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -288,7 +288,7 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -327,7 +327,7 @@ class ChecksResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncChecksResource(AsyncAPIResource):
@@ -405,7 +405,7 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -442,7 +442,7 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -505,7 +505,7 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[Check],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -553,7 +553,7 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[List[Check]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -590,7 +590,7 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -629,7 +629,7 @@ class AsyncChecksResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ChecksResourceWithRawResponse:

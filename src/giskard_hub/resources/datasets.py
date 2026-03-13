@@ -103,7 +103,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def upload(
         self,
@@ -168,7 +168,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -205,7 +205,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -259,7 +259,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -298,7 +298,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[List[Dataset]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -335,7 +335,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -374,7 +374,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def generate_scenario_based(
         self,
@@ -439,7 +439,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def generate_document_based(
         self,
@@ -504,7 +504,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list_tags(
         self,
@@ -541,7 +541,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[List[str]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list_test_cases(
         self,
@@ -578,7 +578,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     @overload
     def search_test_cases(
@@ -680,10 +680,7 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIPaginatedResponse[TestCase, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
 
 class AsyncDatasetsResource(AsyncAPIResource):
@@ -753,7 +750,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def upload(
         self,
@@ -815,7 +812,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -852,7 +849,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -906,7 +903,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -945,7 +942,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[List[Dataset]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -982,7 +979,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -1021,7 +1018,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def generate_scenario_based(
         self,
@@ -1086,7 +1083,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def generate_document_based(
         self,
@@ -1151,7 +1148,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list_tags(
         self,
@@ -1188,7 +1185,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[List[str]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list_test_cases(
         self,
@@ -1225,7 +1222,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     @overload
     async def search_test_cases(
@@ -1327,10 +1324,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[TestCase, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
 
 class DatasetsResourceWithRawResponse:

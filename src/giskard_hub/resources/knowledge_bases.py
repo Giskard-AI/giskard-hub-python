@@ -120,7 +120,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -157,7 +157,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -213,7 +213,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -252,7 +252,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[List[KnowledgeBase]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -289,7 +289,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -331,7 +331,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     @overload
     def search_documents(
@@ -429,10 +429,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRow, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
     def retrieve_document(
         self,
@@ -474,7 +471,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[KnowledgeBaseDocumentDetail],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncKnowledgeBasesResource(AsyncAPIResource):
@@ -562,7 +559,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -599,7 +596,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -655,7 +652,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -694,7 +691,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[List[KnowledgeBase]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -731,7 +728,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -773,7 +770,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     @overload
     async def search_documents(
@@ -871,10 +868,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRow, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
     async def retrieve_document(
         self,
@@ -916,7 +910,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[KnowledgeBaseDocumentDetail],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class KnowledgeBasesResourceWithRawResponse:

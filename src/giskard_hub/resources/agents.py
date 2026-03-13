@@ -111,7 +111,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -148,7 +148,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -210,7 +210,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -249,7 +249,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[List[Agent]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -286,7 +286,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -325,7 +325,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def generate_completion(
         self,
@@ -366,7 +366,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[AgentOutput],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def test_connection(
         self,
@@ -411,7 +411,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[AgentOutput],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def autofill_description(
         self,
@@ -449,7 +449,7 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[str],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncAgentsResource(AsyncAPIResource):
@@ -531,7 +531,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -568,7 +568,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -630,7 +630,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -669,7 +669,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[List[Agent]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -706,7 +706,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -745,7 +745,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def generate_completion(
         self,
@@ -786,7 +786,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[AgentOutput],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def test_connection(
         self,
@@ -831,7 +831,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[AgentOutput],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def autofill_description(
         self,
@@ -869,7 +869,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[str],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AgentsResourceWithRawResponse:

@@ -93,7 +93,7 @@ class AttemptsResource(SyncAPIResource):
             cast_to=APIResponse[ScanProbeAttempt],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncAttemptsResource(AsyncAPIResource):
@@ -168,7 +168,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
             cast_to=APIResponse[ScanProbeAttempt],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AttemptsResourceWithRawResponse:

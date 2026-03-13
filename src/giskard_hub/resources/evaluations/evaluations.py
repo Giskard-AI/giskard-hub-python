@@ -134,7 +134,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -182,7 +182,7 @@ class EvaluationsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -223,7 +223,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -274,7 +274,7 @@ class EvaluationsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -311,7 +311,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -350,7 +350,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def create_local(
         self,
@@ -403,7 +403,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def rerun_errored_results(
         self,
@@ -440,7 +440,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def run_single(
         self,
@@ -497,7 +497,7 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[List[CheckResult]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncEvaluationsResource(AsyncAPIResource):
@@ -589,7 +589,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -637,7 +637,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -678,7 +678,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -729,7 +729,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -766,7 +766,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -805,7 +805,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def create_local(
         self,
@@ -858,7 +858,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def rerun_errored_results(
         self,
@@ -895,7 +895,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def run_single(
         self,
@@ -952,7 +952,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[List[CheckResult]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class EvaluationsResourceWithRawResponse:

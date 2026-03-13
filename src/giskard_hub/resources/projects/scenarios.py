@@ -99,7 +99,7 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -141,7 +141,7 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -200,7 +200,7 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -237,7 +237,7 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[List[Scenario]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -279,7 +279,7 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def preview(
         self,
@@ -336,7 +336,7 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[ScenarioPreview],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncScenariosResource(AsyncAPIResource):
@@ -411,7 +411,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -453,7 +453,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -512,7 +512,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -549,7 +549,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[List[Scenario]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -591,7 +591,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def preview(
         self,
@@ -648,7 +648,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[ScenarioPreview],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ScenariosResourceWithRawResponse:

@@ -80,7 +80,7 @@ class CommentsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def add(
         self,
@@ -121,7 +121,7 @@ class CommentsResource(SyncAPIResource):
             cast_to=APIResponse[TestCaseComment],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def edit(
         self,
@@ -167,7 +167,7 @@ class CommentsResource(SyncAPIResource):
             cast_to=APIResponse[TestCaseComment],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncCommentsResource(AsyncAPIResource):
@@ -230,7 +230,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def add(
         self,
@@ -271,7 +271,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             cast_to=APIResponse[TestCaseComment],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def edit(
         self,
@@ -317,7 +317,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             cast_to=APIResponse[TestCaseComment],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class CommentsResourceWithRawResponse:

@@ -124,7 +124,7 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -161,7 +161,7 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -223,7 +223,7 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -267,7 +267,7 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[List[Task]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -304,7 +304,7 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -343,7 +343,7 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncTasksResource(AsyncAPIResource):
@@ -441,7 +441,7 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -478,7 +478,7 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -540,7 +540,7 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -584,7 +584,7 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[List[Task]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -621,7 +621,7 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -660,7 +660,7 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class TasksResourceWithRawResponse:

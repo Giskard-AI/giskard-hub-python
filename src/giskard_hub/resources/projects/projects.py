@@ -97,7 +97,7 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -134,7 +134,7 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -188,7 +188,7 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -220,7 +220,7 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[List[Project]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -257,7 +257,7 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -296,7 +296,7 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncProjectsResource(AsyncAPIResource):
@@ -366,7 +366,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -403,7 +403,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -457,7 +457,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -489,7 +489,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[List[Project]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -526,7 +526,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -565,7 +565,7 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ProjectsResourceWithRawResponse:

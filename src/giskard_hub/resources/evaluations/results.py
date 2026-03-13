@@ -107,7 +107,7 @@ class ResultsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda result: result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -153,7 +153,7 @@ class ResultsResource(SyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -201,7 +201,7 @@ class ResultsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda result: result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def rerun_test_case(
         self,
@@ -243,7 +243,7 @@ class ResultsResource(SyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def submit_local_output(
         self,
@@ -298,7 +298,7 @@ class ResultsResource(SyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     @overload
     def search(
@@ -406,10 +406,7 @@ class ResultsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_paginated(response, id_getter=lambda result: result.id)
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
     def update_visibility(
         self,
@@ -461,7 +458,7 @@ class ResultsResource(SyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncResultsResource(AsyncAPIResource):
@@ -536,7 +533,7 @@ class AsyncResultsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda result: result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -582,7 +579,7 @@ class AsyncResultsResource(AsyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -630,7 +627,7 @@ class AsyncResultsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda result: result.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def rerun_test_case(
         self,
@@ -672,7 +669,7 @@ class AsyncResultsResource(AsyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def submit_local_output(
         self,
@@ -727,7 +724,7 @@ class AsyncResultsResource(AsyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     @overload
     async def search(
@@ -837,10 +834,7 @@ class AsyncResultsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_paginated(response, id_getter=lambda result: result.id)
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
     async def update_visibility(
         self,
@@ -892,7 +886,7 @@ class AsyncResultsResource(AsyncAPIResource):
             cast_to=APIResponse[TestCaseEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ResultsResourceWithRawResponse:

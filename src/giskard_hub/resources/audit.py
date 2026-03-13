@@ -145,10 +145,7 @@ class AuditResource(SyncAPIResource):
             cast_to=APIPaginatedResponse[Audit, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
     @overload
     def list_entities(
@@ -237,10 +234,7 @@ class AuditResource(SyncAPIResource):
             cast_to=APIPaginatedResponse[AuditDisplay, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
 
 class AsyncAuditResource(AsyncAPIResource):
@@ -359,10 +353,7 @@ class AsyncAuditResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[Audit, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
     @overload
     async def list_entities(
@@ -451,10 +442,7 @@ class AsyncAuditResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[AuditDisplay, None],
         )
 
-        if include_metadata:
-            return response.data, response.metadata
-
-        return response.data
+        return self._unwrap_paginated(response, include_metadata)
 
 
 class AuditResourceWithRawResponse:

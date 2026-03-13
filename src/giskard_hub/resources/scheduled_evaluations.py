@@ -136,7 +136,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[ScheduledEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -185,7 +185,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda scheduled: scheduled.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -267,7 +267,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[ScheduledEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list(
         self,
@@ -318,7 +318,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda scheduled: scheduled.id)
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -357,7 +357,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -399,7 +399,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def list_evaluations(
         self,
@@ -452,7 +452,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncScheduledEvaluationsResource(AsyncAPIResource):
@@ -552,7 +552,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[ScheduledEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -601,7 +601,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_single(response, id_getter=lambda scheduled: scheduled.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -683,7 +683,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[ScheduledEvaluation],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -734,7 +734,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda scheduled: scheduled.id)
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -773,7 +773,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -815,7 +815,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def list_evaluations(
         self,
@@ -868,7 +868,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         if include is not omit and include:
             response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response.data
+        return self._unwrap(response)
 
 
 class ScheduledEvaluationsResourceWithRawResponse:
