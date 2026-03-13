@@ -160,22 +160,6 @@ class HelpersResource(SyncAPIResource):
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
 
-    def print_metrics(self, entity: BaseModel) -> None:
-        """
-        Pretty-print metrics for the given entity.
-
-        Implementation is intentionally left for future versions.
-        """
-        pass
-
-    def evaluate(self, *args: object, **kwargs: object) -> None:
-        """
-        Run a combined remote and local evaluation.
-
-        Implementation is intentionally left for future versions.
-        """
-        pass
-
 
 class AsyncHelpersResource(AsyncAPIResource):
     def _map_entity_to_resource(self, entity: BaseModel) -> AsyncAPIResource:
@@ -261,15 +245,3 @@ class AsyncHelpersResource(AsyncAPIResource):
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
-
-    async def print_metrics(self, entity: BaseModel) -> None:
-        """
-        Async variant of ``HelpersResource.print_metrics``.
-        """
-        pass
-
-    async def evaluate(self, *args: object, **kwargs: object) -> None:
-        """
-        Async variant of ``HelpersResource.evaluate``.
-        """
-        pass
