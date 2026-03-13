@@ -7,15 +7,16 @@ from typing_extensions import Required
 
 from .._models import BaseModel
 from .._types import SequenceNotStr
-from .agent import AgentOutput, AgentOutputParam, AgentReference, MinimalAgent, MinimalAgentParam
+from .agent import Agent, AgentOutput, AgentOutputParam, AgentReference, MinimalAgent, MinimalAgentParam
 from .chat import ChatMessageParam
 from .check import OutputAnnotation
 from .common import FilterValueParam, OrderByParam, TaskProgress, TaskState
-from .dataset import DatasetReference, DatasetSubset, DatasetSubsetParam
+from .dataset import Dataset, DatasetReference, DatasetSubset, DatasetSubsetParam
 
 __all__ = [
     "Metric",
     "Evaluation",
+    "EvaluationReference",
     "EvaluationListParams",
     "EvaluationCreateParams",
     "EvaluationUpdateParams",
@@ -53,12 +54,17 @@ class Metric(BaseModel):
     total: Optional[int] = None
 
 
+class EvaluationReference(BaseModel):
+    id: str
+    name: str
+
+
 class Evaluation(BaseModel):
     id: str
-    agent: AgentReference | MinimalAgent
+    agent: AgentReference | MinimalAgent | Agent
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
-    dataset: DatasetReference
+    dataset: Dataset | DatasetReference
     failure_categories: Dict[str, int]
     local: bool
     metrics: List[Metric]

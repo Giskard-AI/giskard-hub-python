@@ -4,8 +4,10 @@ from typing import List, Union, Literal, Optional, Annotated, TypeAlias, TypedDi
 from datetime import datetime
 from typing_extensions import Required
 
+from .agent import AgentReference
 from .._types import SequenceNotStr
 from .._utils import PropertyInfo
+from .dataset import DatasetReference
 from .._models import BaseModel
 from .execution import (
     ErrorExecutionStatus,
@@ -13,6 +15,7 @@ from .execution import (
     ErrorExecutionStatusParam,
     SuccessExecutionStatusParam,
 )
+from .evaluation import EvaluationReference
 
 __all__ = [
     "FrequencyOption",
@@ -44,21 +47,24 @@ LastExecutionStatus: TypeAlias = Union[SuccessExecutionStatus, ErrorExecutionSta
 
 class ScheduledEvaluation(BaseModel):
     id: str
-    agent_id: str
+    project_id: str
     created_at: datetime
+    updated_at: datetime
+    name: str
+    agent_id: str
     dataset_id: str
-    day_of_month: Optional[int] = None
-    day_of_week: Optional[int] = None
+    agent: AgentReference
+    dataset: DatasetReference
+    tags: List[str]
+    run_count: int
     frequency: FrequencyOption
+    time: str
+    day_of_week: Optional[int] = None
+    day_of_month: Optional[int] = None
     last_execution_at: Optional[datetime] = None
     last_execution_status: Optional[LastExecutionStatus] = None
-    name: str
     paused: bool
-    project_id: str
-    run_count: int
-    tags: List[str]
-    time: str
-    updated_at: datetime
+    evaluations: List[EvaluationReference]
 
 
 # ---------------------------------------------------------------------------

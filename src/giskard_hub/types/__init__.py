@@ -173,6 +173,7 @@ from .knowledge_base import (
 # -- evaluation ------------------------------------------------------------
 from .evaluation import (
     Evaluation as Evaluation,
+    EvaluationReference as EvaluationReference,
     EvaluationBulkDeleteParams as EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams as EvaluationCreateLocalParams,
     EvaluationCreateParams as EvaluationCreateParams,
@@ -383,6 +384,7 @@ __all__ = [
     # evaluation
     "Metric",
     "Evaluation",
+    "EvaluationReference",
     "EvaluationListParams",
     "EvaluationCreateParams",
     "EvaluationUpdateParams",

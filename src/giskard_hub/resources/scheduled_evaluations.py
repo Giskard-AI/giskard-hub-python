@@ -17,6 +17,7 @@ from ..types import (
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
+from ._included import embed_included_list, embed_included_single
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
     to_raw_response_wrapper,
@@ -167,7 +168,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             raise ValueError(
                 f"Expected a non-empty value for `scheduled_evaluation_id` but received {scheduled_evaluation_id!r}"
             )
-        return self._get(
+        response = self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}",
             options=make_request_options(
                 query=maybe_transform({"include": include}, ScheduledEvaluationRetrieveParams),
@@ -178,6 +179,11 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[Evaluation]]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda scheduled: scheduled.id)
+
+        return response
 
     def update(
         self,
@@ -290,7 +296,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/scheduled-evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -304,6 +310,11 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[Evaluation]]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda scheduled: scheduled.id)
+
+        return response
 
     def delete(
         self,
@@ -414,7 +425,8 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             raise ValueError(
                 f"Expected a non-empty value for `scheduled_evaluation_id` but received {scheduled_evaluation_id!r}"
             )
-        return self._get(
+
+        response = self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -428,6 +440,11 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+
+        return response
 
 
 class AsyncScheduledEvaluationsResource(AsyncAPIResource):
@@ -559,7 +576,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             raise ValueError(
                 f"Expected a non-empty value for `scheduled_evaluation_id` but received {scheduled_evaluation_id!r}"
             )
-        return await self._get(
+        response = await self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}",
             options=make_request_options(
                 query=maybe_transform({"include": include}, ScheduledEvaluationRetrieveParams),
@@ -570,6 +587,11 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[ScheduledEvaluation, List[APIResponse[Evaluation]]],
         )
+
+        if include is not omit and include:
+            return embed_included_single(response, id_getter=lambda scheduled: scheduled.id)
+
+        return response
 
     async def update(
         self,
@@ -682,7 +704,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/scheduled-evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -696,6 +718,11 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[ScheduledEvaluation], List[APIResponse[Evaluation]]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda scheduled: scheduled.id)
+
+        return response
 
     async def delete(
         self,
@@ -806,7 +833,8 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             raise ValueError(
                 f"Expected a non-empty value for `scheduled_evaluation_id` but received {scheduled_evaluation_id!r}"
             )
-        return await self._get(
+
+        response = await self._get(
             f"/v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -820,6 +848,11 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
         )
+
+        if include is not omit and include:
+            return embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+
+        return response
 
 
 class ScheduledEvaluationsResourceWithRawResponse:
