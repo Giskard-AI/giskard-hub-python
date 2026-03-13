@@ -85,7 +85,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """Create Evaluation
 
         Args:
@@ -114,7 +114,7 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/evaluations",
             body=maybe_transform(
                 {
@@ -134,6 +134,8 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
+        return response.data
+
     def retrieve(
         self,
         evaluation_id: str,
@@ -145,7 +147,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]]:
+    ) -> Evaluation:
         """
         Retrieve Evaluation
 
@@ -178,9 +180,9 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response
+        return response.data
 
     def update(
         self,
@@ -193,7 +195,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """
         Update Evaluation
 
@@ -212,7 +214,7 @@ class EvaluationsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/evaluations/{evaluation_id}",
             body=maybe_transform({"name": name}, EvaluationUpdateParams),
             options=make_request_options(
@@ -220,6 +222,8 @@ class EvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[Evaluation],
         )
+
+        return response.data
 
     def list(
         self,
@@ -232,7 +236,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]]:
+    ) -> List[Evaluation]:
         """
         List Evaluations
 
@@ -268,9 +272,9 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response
+        return response.data
 
     def delete(
         self,
@@ -282,7 +286,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Evaluation
 
@@ -299,13 +303,15 @@ class EvaluationsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     def bulk_delete(
         self,
@@ -317,7 +323,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Evaluations
 
@@ -332,7 +338,7 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -343,6 +349,8 @@ class EvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     def create_local(
         self,
@@ -356,7 +364,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """
         Create Local Evaluation
 
@@ -379,7 +387,7 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/evaluations/create-local",
             body=maybe_transform(
                 {
@@ -395,6 +403,8 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
+        return response.data
+
     def rerun_errored_results(
         self,
         evaluation_id: str,
@@ -405,7 +415,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """
         Rerun Errored Evaluation Results
 
@@ -422,13 +432,15 @@ class EvaluationsResource(SyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/evaluations/{evaluation_id}/rerun-errored-results",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Evaluation],
         )
+
+        return response.data
 
     def run_single(
         self,
@@ -444,7 +456,7 @@ class EvaluationsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[CheckResult]]:
+    ) -> List[CheckResult]:
         """
         Run Single Evaluation
 
@@ -467,7 +479,7 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/evaluations/run-single",
             body=maybe_transform(
                 {
@@ -484,6 +496,8 @@ class EvaluationsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[List[CheckResult]],
         )
+
+        return response.data
 
 
 class AsyncEvaluationsResource(AsyncAPIResource):
@@ -526,7 +540,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """Create Evaluation
 
         Args:
@@ -555,7 +569,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/evaluations",
             body=await async_maybe_transform(
                 {
@@ -575,6 +589,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
+        return response.data
+
     async def retrieve(
         self,
         evaluation_id: str,
@@ -586,7 +602,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]]:
+    ) -> Evaluation:
         """
         Retrieve Evaluation
 
@@ -619,9 +635,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response
+        return response.data
 
     async def update(
         self,
@@ -634,7 +650,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """
         Update Evaluation
 
@@ -653,7 +669,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/evaluations/{evaluation_id}",
             body=await async_maybe_transform({"name": name}, EvaluationUpdateParams),
             options=make_request_options(
@@ -661,6 +677,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[Evaluation],
         )
+
+        return response.data
 
     async def list(
         self,
@@ -673,7 +691,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]]:
+    ) -> List[Evaluation]:
         """
         List Evaluations
 
@@ -709,9 +727,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
-        return response
+        return response.data
 
     async def delete(
         self,
@@ -723,7 +741,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Evaluation
 
@@ -740,13 +758,15 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     async def bulk_delete(
         self,
@@ -758,7 +778,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Evaluations
 
@@ -773,7 +793,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/evaluations",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -784,6 +804,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     async def create_local(
         self,
@@ -797,7 +819,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """
         Create Local Evaluation
 
@@ -820,7 +842,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/evaluations/create-local",
             body=await async_maybe_transform(
                 {
@@ -836,6 +858,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
+        return response.data
+
     async def rerun_errored_results(
         self,
         evaluation_id: str,
@@ -846,7 +870,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Evaluation]:
+    ) -> Evaluation:
         """
         Rerun Errored Evaluation Results
 
@@ -863,13 +887,15 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/evaluations/{evaluation_id}/rerun-errored-results",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Evaluation],
         )
+
+        return response.data
 
     async def run_single(
         self,
@@ -885,7 +911,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[CheckResult]]:
+    ) -> List[CheckResult]:
         """
         Run Single Evaluation
 
@@ -908,7 +934,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/evaluations/run-single",
             body=await async_maybe_transform(
                 {
@@ -925,6 +951,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[List[CheckResult]],
         )
+
+        return response.data
 
 
 class EvaluationsResourceWithRawResponse:
