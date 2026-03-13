@@ -124,7 +124,6 @@ from .audit import (
 
 # -- task ------------------------------------------------------------------
 from .task import (
-    ProbeAttemptReference as ProbeAttemptReference,
     Task as Task,
     TaskBulkDeleteParams as TaskBulkDeleteParams,
     TaskCreateParams as TaskCreateParams,
