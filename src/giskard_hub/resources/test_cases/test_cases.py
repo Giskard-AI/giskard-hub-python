@@ -125,7 +125,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -162,7 +162,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def update(
         self,
@@ -234,7 +234,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -271,7 +271,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -310,7 +310,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_update(
         self,
@@ -371,7 +371,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     def bulk_move(
         self,
@@ -418,7 +418,7 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class AsyncTestCasesResource(AsyncAPIResource):
@@ -506,7 +506,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -543,7 +543,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -615,7 +615,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -652,7 +652,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -691,7 +691,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_update(
         self,
@@ -752,7 +752,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
-        return response.data
+        return self._unwrap(response)
 
     async def bulk_move(
         self,
@@ -799,7 +799,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
-        return response.data
+        return self._unwrap(response)
 
 
 class TestCasesResourceWithRawResponse:
