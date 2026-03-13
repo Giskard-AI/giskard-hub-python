@@ -60,7 +60,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Scenario]:
+    ) -> Scenario:
         """
         Create Scenario
 
@@ -83,7 +83,7 @@ class ScenariosResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/projects/{project_id}/scenarios",
             body=maybe_transform(
                 {
@@ -99,6 +99,8 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
+        return self._unwrap(response)
+
     def retrieve(
         self,
         scenario_id: str,
@@ -110,7 +112,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Scenario]:
+    ) -> Scenario:
         """
         Retrieve Scenario
 
@@ -131,13 +133,15 @@ class ScenariosResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         if not scenario_id:
             raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Scenario],
         )
+
+        return self._unwrap(response)
 
     def update(
         self,
@@ -153,7 +157,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Scenario]:
+    ) -> Scenario:
         """
         Update Scenario
 
@@ -180,7 +184,7 @@ class ScenariosResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         if not scenario_id:
             raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             body=maybe_transform(
                 {
@@ -196,6 +200,8 @@ class ScenariosResource(SyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
+        return self._unwrap(response)
+
     def list(
         self,
         project_id: str,
@@ -206,7 +212,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Scenario]]:
+    ) -> List[Scenario]:
         """
         List Scenarios
 
@@ -223,13 +229,15 @@ class ScenariosResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/projects/{project_id}/scenarios",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[Scenario]],
         )
+
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -242,7 +250,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Scenario
 
@@ -263,13 +271,15 @@ class ScenariosResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         if not scenario_id:
             raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def preview(
         self,
@@ -284,7 +294,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScenarioPreview]:
+    ) -> ScenarioPreview:
         """
         Preview Scenario
 
@@ -307,7 +317,7 @@ class ScenariosResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/projects/{project_id}/scenarios/preview",
             body=maybe_transform(
                 {
@@ -325,6 +335,8 @@ class ScenariosResource(SyncAPIResource):
             ),
             cast_to=APIResponse[ScenarioPreview],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncScenariosResource(AsyncAPIResource):
@@ -360,7 +372,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Scenario]:
+    ) -> Scenario:
         """
         Create Scenario
 
@@ -383,7 +395,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/projects/{project_id}/scenarios",
             body=await async_maybe_transform(
                 {
@@ -399,6 +411,8 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
+        return self._unwrap(response)
+
     async def retrieve(
         self,
         scenario_id: str,
@@ -410,7 +424,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Scenario]:
+    ) -> Scenario:
         """
         Retrieve Scenario
 
@@ -431,13 +445,15 @@ class AsyncScenariosResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         if not scenario_id:
             raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Scenario],
         )
+
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -453,7 +469,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Scenario]:
+    ) -> Scenario:
         """
         Update Scenario
 
@@ -480,7 +496,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         if not scenario_id:
             raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             body=await async_maybe_transform(
                 {
@@ -496,6 +512,8 @@ class AsyncScenariosResource(AsyncAPIResource):
             cast_to=APIResponse[Scenario],
         )
 
+        return self._unwrap(response)
+
     async def list(
         self,
         project_id: str,
@@ -506,7 +524,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Scenario]]:
+    ) -> List[Scenario]:
         """
         List Scenarios
 
@@ -523,13 +541,15 @@ class AsyncScenariosResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/projects/{project_id}/scenarios",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[Scenario]],
         )
+
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -542,7 +562,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Scenario
 
@@ -563,13 +583,15 @@ class AsyncScenariosResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         if not scenario_id:
             raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/projects/{project_id}/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def preview(
         self,
@@ -584,7 +606,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScenarioPreview]:
+    ) -> ScenarioPreview:
         """
         Preview Scenario
 
@@ -607,7 +629,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/projects/{project_id}/scenarios/preview",
             body=await async_maybe_transform(
                 {
@@ -625,6 +647,8 @@ class AsyncScenariosResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[ScenarioPreview],
         )
+
+        return self._unwrap(response)
 
 
 class ScenariosResourceWithRawResponse:

@@ -65,7 +65,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Project]:
+    ) -> Project:
         """
         Create Project
 
@@ -82,7 +82,7 @@ class ProjectsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/projects",
             body=maybe_transform(
                 {
@@ -97,6 +97,8 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
+        return self._unwrap(response)
+
     def retrieve(
         self,
         project_id: str,
@@ -107,7 +109,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Project]:
+    ) -> Project:
         """
         Retrieve Project
 
@@ -124,13 +126,15 @@ class ProjectsResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/projects/{project_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Project],
         )
+
+        return self._unwrap(response)
 
     def update(
         self,
@@ -145,7 +149,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Project]:
+    ) -> Project:
         """
         Update Project
 
@@ -168,7 +172,7 @@ class ProjectsResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/projects/{project_id}",
             body=maybe_transform(
                 {
@@ -184,6 +188,8 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
+        return self._unwrap(response)
+
     def list(
         self,
         *,
@@ -193,7 +199,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Project]]:
+    ) -> List[Project]:
         """
         List Projects
 
@@ -206,13 +212,15 @@ class ProjectsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/projects",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[Project]],
         )
+
+        return self._unwrap(response)
 
     def delete(
         self,
@@ -224,7 +232,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Project
 
@@ -241,13 +249,15 @@ class ProjectsResource(SyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/projects/{project_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -259,7 +269,7 @@ class ProjectsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Projects
 
@@ -274,7 +284,7 @@ class ProjectsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/projects",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -285,6 +295,8 @@ class ProjectsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncProjectsResource(AsyncAPIResource):
@@ -322,7 +334,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Project]:
+    ) -> Project:
         """
         Create Project
 
@@ -339,7 +351,7 @@ class AsyncProjectsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/projects",
             body=await async_maybe_transform(
                 {
@@ -354,6 +366,8 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
+        return self._unwrap(response)
+
     async def retrieve(
         self,
         project_id: str,
@@ -364,7 +378,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Project]:
+    ) -> Project:
         """
         Retrieve Project
 
@@ -381,13 +395,15 @@ class AsyncProjectsResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/projects/{project_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Project],
         )
+
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -402,7 +418,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Project]:
+    ) -> Project:
         """
         Update Project
 
@@ -425,7 +441,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/projects/{project_id}",
             body=await async_maybe_transform(
                 {
@@ -441,6 +457,8 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
+        return self._unwrap(response)
+
     async def list(
         self,
         *,
@@ -450,7 +468,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Project]]:
+    ) -> List[Project]:
         """
         List Projects
 
@@ -463,13 +481,15 @@ class AsyncProjectsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/projects",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[Project]],
         )
+
+        return self._unwrap(response)
 
     async def delete(
         self,
@@ -481,7 +501,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Project
 
@@ -498,13 +518,15 @@ class AsyncProjectsResource(AsyncAPIResource):
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/projects/{project_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -516,7 +538,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Projects
 
@@ -531,7 +553,7 @@ class AsyncProjectsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/projects",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -542,6 +564,8 @@ class AsyncProjectsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
 
 class ProjectsResourceWithRawResponse:

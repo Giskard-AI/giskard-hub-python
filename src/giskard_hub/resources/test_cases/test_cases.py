@@ -79,7 +79,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCase]:
+    ) -> TestCase:
         """
         Create Test Case
 
@@ -106,7 +106,7 @@ class TestCasesResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
-        return self._post(
+        response = self._post(
             "/v2/test-cases",
             body=maybe_transform(
                 {
@@ -125,6 +125,8 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
+        return self._unwrap(response)
+
     def retrieve(
         self,
         test_case_id: str,
@@ -135,7 +137,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCase]:
+    ) -> TestCase:
         """
         Retrieve Test Case
 
@@ -152,13 +154,15 @@ class TestCasesResource(SyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[TestCase],
         )
+
+        return self._unwrap(response)
 
     def update(
         self,
@@ -176,7 +180,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCase]:
+    ) -> TestCase:
         """
         Update Test Case
 
@@ -211,7 +215,7 @@ class TestCasesResource(SyncAPIResource):
             api_checks = checks  # type: ignore[assignment]
         else:
             api_checks = _check_params_to_api(checks)
-        return self._patch(
+        response = self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=maybe_transform(
                 {
@@ -230,6 +234,8 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
+        return self._unwrap(response)
+
     def delete(
         self,
         test_case_id: str,
@@ -240,7 +246,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Test Case
 
@@ -257,13 +263,15 @@ class TestCasesResource(SyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -275,7 +283,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Test Cases
 
@@ -290,7 +298,7 @@ class TestCasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/test-cases",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -301,6 +309,8 @@ class TestCasesResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def bulk_update(
         self,
@@ -317,7 +327,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[TestCase]]:
+    ) -> List[TestCase]:
         """
         Bulk Update Test Cases
 
@@ -342,7 +352,7 @@ class TestCasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._patch(
+        response = self._patch(
             "/v2/test-cases",
             body=maybe_transform(
                 {
@@ -361,6 +371,8 @@ class TestCasesResource(SyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
+        return self._unwrap(response)
+
     def bulk_move(
         self,
         *,
@@ -371,7 +383,7 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Move Test Cases
 
@@ -390,7 +402,7 @@ class TestCasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/test-cases/bulk-move",
             body=maybe_transform(
                 {
@@ -405,6 +417,8 @@ class TestCasesResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncTestCasesResource(AsyncAPIResource):
@@ -446,7 +460,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCase]:
+    ) -> TestCase:
         """
         Create Test Case
 
@@ -473,7 +487,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
-        return await self._post(
+        response = await self._post(
             "/v2/test-cases",
             body=await async_maybe_transform(
                 {
@@ -492,6 +506,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
+        return self._unwrap(response)
+
     async def retrieve(
         self,
         test_case_id: str,
@@ -502,7 +518,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCase]:
+    ) -> TestCase:
         """
         Retrieve Test Case
 
@@ -519,13 +535,15 @@ class AsyncTestCasesResource(AsyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[TestCase],
         )
+
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -543,7 +561,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCase]:
+    ) -> TestCase:
         """
         Update Test Case
 
@@ -578,7 +596,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             api_checks = checks  # type: ignore[assignment]
         else:
             api_checks = _check_params_to_api(checks)
-        return await self._patch(
+        response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=await async_maybe_transform(
                 {
@@ -597,6 +615,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[TestCase],
         )
 
+        return self._unwrap(response)
+
     async def delete(
         self,
         test_case_id: str,
@@ -607,7 +627,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Test Case
 
@@ -624,13 +644,15 @@ class AsyncTestCasesResource(AsyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -642,7 +664,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Test Cases
 
@@ -657,7 +679,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/test-cases",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -668,6 +690,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def bulk_update(
         self,
@@ -684,7 +708,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[TestCase]]:
+    ) -> List[TestCase]:
         """
         Bulk Update Test Cases
 
@@ -709,7 +733,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._patch(
+        response = await self._patch(
             "/v2/test-cases",
             body=await async_maybe_transform(
                 {
@@ -728,6 +752,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
             cast_to=APIResponse[List[TestCase]],
         )
 
+        return self._unwrap(response)
+
     async def bulk_move(
         self,
         *,
@@ -738,7 +764,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Move Test Cases
 
@@ -757,7 +783,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/test-cases/bulk-move",
             body=await async_maybe_transform(
                 {
@@ -772,6 +798,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
 
 class TestCasesResourceWithRawResponse:

@@ -67,7 +67,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Agent]:
+    ) -> Agent:
         """
         Create Agent
 
@@ -92,7 +92,7 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/agents",
             body=maybe_transform(
                 {
@@ -111,6 +111,8 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
+        return self._unwrap(response)
+
     def retrieve(
         self,
         agent_id: str,
@@ -121,7 +123,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Agent]:
+    ) -> Agent:
         """
         Retrieve Agent
 
@@ -138,13 +140,15 @@ class AgentsResource(SyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/agents/{agent_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Agent],
         )
+
+        return self._unwrap(response)
 
     def update(
         self,
@@ -161,7 +165,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Agent]:
+    ) -> Agent:
         """
         Update Agent
 
@@ -188,7 +192,7 @@ class AgentsResource(SyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/agents/{agent_id}",
             body=maybe_transform(
                 {
@@ -206,6 +210,8 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
+        return self._unwrap(response)
+
     def list(
         self,
         *,
@@ -216,7 +222,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Agent]]:
+    ) -> List[Agent]:
         """
         List Agents
 
@@ -231,7 +237,7 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/agents",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -243,6 +249,8 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[List[Agent]],
         )
 
+        return self._unwrap(response)
+
     def delete(
         self,
         agent_id: str,
@@ -253,7 +261,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Agent
 
@@ -270,13 +278,15 @@ class AgentsResource(SyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/agents/{agent_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -288,7 +298,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Agents
 
@@ -303,7 +313,7 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/agents",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -314,6 +324,8 @@ class AgentsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def generate_completion(
         self,
@@ -326,7 +338,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[AgentOutput]:
+    ) -> AgentOutput:
         """
         Generate Agent Completion
 
@@ -345,7 +357,7 @@ class AgentsResource(SyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/agents/{agent_id}/generate-completion",
             body=maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
             options=make_request_options(
@@ -353,6 +365,8 @@ class AgentsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[AgentOutput],
         )
+
+        return self._unwrap(response)
 
     def test_connection(
         self,
@@ -365,7 +379,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[AgentOutput]:
+    ) -> AgentOutput:
         """
         Test Agent Connection
 
@@ -382,7 +396,7 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/agents/test-connection",
             body=maybe_transform(
                 {
@@ -397,6 +411,8 @@ class AgentsResource(SyncAPIResource):
             cast_to=APIResponse[AgentOutput],
         )
 
+        return self._unwrap(response)
+
     def autofill_description(
         self,
         agent_id: str,
@@ -407,7 +423,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[str]:
+    ) -> str:
         """
         Autofill Agent Description
 
@@ -424,7 +440,7 @@ class AgentsResource(SyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/agents/{agent_id}/autofill-description",
             body=maybe_transform({}, AgentAutofillDescriptionParams),
             options=make_request_options(
@@ -432,6 +448,8 @@ class AgentsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[str],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncAgentsResource(AsyncAPIResource):
@@ -469,7 +487,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Agent]:
+    ) -> Agent:
         """
         Create Agent
 
@@ -494,7 +512,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/agents",
             body=await async_maybe_transform(
                 {
@@ -513,6 +531,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
+        return self._unwrap(response)
+
     async def retrieve(
         self,
         agent_id: str,
@@ -523,7 +543,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Agent]:
+    ) -> Agent:
         """
         Retrieve Agent
 
@@ -540,13 +560,15 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/agents/{agent_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Agent],
         )
+
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -563,7 +585,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Agent]:
+    ) -> Agent:
         """
         Update Agent
 
@@ -590,7 +612,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/agents/{agent_id}",
             body=await async_maybe_transform(
                 {
@@ -608,6 +630,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[Agent],
         )
 
+        return self._unwrap(response)
+
     async def list(
         self,
         *,
@@ -618,7 +642,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Agent]]:
+    ) -> List[Agent]:
         """
         List Agents
 
@@ -633,7 +657,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/agents",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -645,6 +669,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[List[Agent]],
         )
 
+        return self._unwrap(response)
+
     async def delete(
         self,
         agent_id: str,
@@ -655,7 +681,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Agent
 
@@ -672,13 +698,15 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/agents/{agent_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -690,7 +718,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Agents
 
@@ -705,7 +733,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/agents",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -716,6 +744,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def generate_completion(
         self,
@@ -728,7 +758,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[AgentOutput]:
+    ) -> AgentOutput:
         """
         Generate Agent Completion
 
@@ -747,7 +777,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/agents/{agent_id}/generate-completion",
             body=await async_maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
             options=make_request_options(
@@ -755,6 +785,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[AgentOutput],
         )
+
+        return self._unwrap(response)
 
     async def test_connection(
         self,
@@ -767,7 +799,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[AgentOutput]:
+    ) -> AgentOutput:
         """
         Test Agent Connection
 
@@ -784,7 +816,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/agents/test-connection",
             body=await async_maybe_transform(
                 {
@@ -799,6 +831,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=APIResponse[AgentOutput],
         )
 
+        return self._unwrap(response)
+
     async def autofill_description(
         self,
         agent_id: str,
@@ -809,7 +843,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[str]:
+    ) -> str:
         """
         Autofill Agent Description
 
@@ -826,7 +860,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/agents/{agent_id}/autofill-description",
             body=await async_maybe_transform({}, AgentAutofillDescriptionParams),
             options=make_request_options(
@@ -834,6 +868,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[str],
         )
+
+        return self._unwrap(response)
 
 
 class AgentsResourceWithRawResponse:

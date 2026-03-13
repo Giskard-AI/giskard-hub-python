@@ -39,7 +39,7 @@ client = HubClient(
 )
 
 projects = client.projects.list()
-print(projects.data)
+print(projects)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -63,7 +63,7 @@ client = AsyncHubClient(
 
 async def main() -> None:
     projects = await client.projects.list()
-    print(projects.data)
+    print(projects)
 
 
 asyncio.run(main())
@@ -124,7 +124,7 @@ updated_dataset = client.datasets.update(
     dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
     status={"total": 0},
 )
-print(updated_dataset.data.status)
+print(updated_dataset.status)
 ```
 
 ## File uploads
@@ -273,7 +273,7 @@ response = client.projects.with_raw_response.list()
 print(response.headers.get('X-My-Header'))
 
 projects = response.parse()  # get the object that `projects.list()` would have returned
-print(projects.data)
+print(projects)
 ```
 
 These methods return an [`APIResponse`](https://github.com/stainless-sdks/giskard-hub-python/tree/main/src/giskard_hub/_response.py) object.

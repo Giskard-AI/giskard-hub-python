@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Tuple, Literal, Optional, overload
 
 import httpx
 
@@ -24,6 +24,7 @@ from .._response import (
 )
 from ..types.audit import AuditListEntityParams
 from .._base_client import make_request_options
+from ..types.common import APIPaginatedMetadata
 
 __all__ = ["AuditResource", "AsyncAuditResource"]
 
@@ -48,6 +49,38 @@ class AuditResource(SyncAPIResource):
         """
         return AuditResourceWithStreamingResponse(self)
 
+    @overload
+    def search(
+        self,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: List[AuditOrderByParam] | Omit = omit,
+        filters: AuditFiltersParam | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[Audit]: ...
+
+    @overload
+    def search(
+        self,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: List[AuditOrderByParam] | Omit = omit,
+        filters: AuditFiltersParam | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[Audit], APIPaginatedMetadata]: ...
+
     def search(
         self,
         *,
@@ -62,7 +95,8 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[Audit, None]:
+        include_metadata: bool = False,
+    ) -> List[Audit] | Tuple[List[Audit], APIPaginatedMetadata]:
         """
         Search Audit Logs By Filters
 
@@ -85,7 +119,7 @@ class AuditResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/audit/search",
             body=maybe_transform(
                 {
@@ -111,6 +145,38 @@ class AuditResource(SyncAPIResource):
             cast_to=APIPaginatedResponse[Audit, None],
         )
 
+        return self._unwrap_paginated(response, include_metadata)
+
+    @overload
+    def list_entities(
+        self,
+        entity_id: str,
+        entity_type: str,
+        *,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[AuditDisplay]: ...
+
+    @overload
+    def list_entities(
+        self,
+        entity_id: str,
+        entity_type: str,
+        *,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[AuditDisplay], APIPaginatedMetadata]: ...
+
     def list_entities(
         self,
         entity_id: str,
@@ -124,7 +190,8 @@ class AuditResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[AuditDisplay, None]:
+        include_metadata: bool = False,
+    ) -> List[AuditDisplay] | Tuple[List[AuditDisplay], APIPaginatedMetadata]:
         """
         List Entity Audit Display Logs
 
@@ -149,7 +216,7 @@ class AuditResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
         if not entity_id:
             raise ValueError(f"Expected a non-empty value for `entity_id` but received {entity_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/audit/{entity_type}/{entity_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -166,6 +233,8 @@ class AuditResource(SyncAPIResource):
             ),
             cast_to=APIPaginatedResponse[AuditDisplay, None],
         )
+
+        return self._unwrap_paginated(response, include_metadata)
 
 
 class AsyncAuditResource(AsyncAPIResource):
@@ -188,6 +257,38 @@ class AsyncAuditResource(AsyncAPIResource):
         """
         return AsyncAuditResourceWithStreamingResponse(self)
 
+    @overload
+    async def search(
+        self,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[AuditOrderByParam]] | Omit = omit,
+        filters: Optional[AuditFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[Audit]: ...
+
+    @overload
+    async def search(
+        self,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[AuditOrderByParam]] | Omit = omit,
+        filters: Optional[AuditFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[Audit], APIPaginatedMetadata]: ...
+
     async def search(
         self,
         *,
@@ -202,7 +303,8 @@ class AsyncAuditResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[Audit, None]:
+        include_metadata: bool = False,
+    ) -> List[Audit] | Tuple[List[Audit], APIPaginatedMetadata]:
         """
         Search Audit Logs By Filters
 
@@ -225,7 +327,7 @@ class AsyncAuditResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/audit/search",
             body=await async_maybe_transform(
                 {
@@ -251,6 +353,38 @@ class AsyncAuditResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[Audit, None],
         )
 
+        return self._unwrap_paginated(response, include_metadata)
+
+    @overload
+    async def list_entities(
+        self,
+        entity_id: str,
+        entity_type: str,
+        *,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[AuditDisplay]: ...
+
+    @overload
+    async def list_entities(
+        self,
+        entity_id: str,
+        entity_type: str,
+        *,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[AuditDisplay], APIPaginatedMetadata]: ...
+
     async def list_entities(
         self,
         entity_id: str,
@@ -264,7 +398,8 @@ class AsyncAuditResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[AuditDisplay, None]:
+        include_metadata: bool = False,
+    ) -> List[AuditDisplay] | Tuple[List[AuditDisplay], APIPaginatedMetadata]:
         """
         List Entity Audit Display Logs
 
@@ -289,7 +424,7 @@ class AsyncAuditResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
         if not entity_id:
             raise ValueError(f"Expected a non-empty value for `entity_id` but received {entity_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/audit/{entity_type}/{entity_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -306,6 +441,8 @@ class AsyncAuditResource(AsyncAPIResource):
             ),
             cast_to=APIPaginatedResponse[AuditDisplay, None],
         )
+
+        return self._unwrap_paginated(response, include_metadata)
 
 
 class AuditResourceWithRawResponse:

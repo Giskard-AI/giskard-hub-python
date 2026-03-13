@@ -54,7 +54,7 @@ class AttemptsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScanProbeAttempt]:
+    ) -> ScanProbeAttempt:
         """
         Update Scan Probe Attempt
 
@@ -77,7 +77,7 @@ class AttemptsResource(SyncAPIResource):
         """
         if not probe_attempt_id:
             raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/scan-attempts/{probe_attempt_id}",
             body=maybe_transform(
                 {
@@ -92,6 +92,8 @@ class AttemptsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[ScanProbeAttempt],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncAttemptsResource(AsyncAPIResource):
@@ -127,7 +129,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScanProbeAttempt]:
+    ) -> ScanProbeAttempt:
         """
         Update Scan Probe Attempt
 
@@ -150,7 +152,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
         """
         if not probe_attempt_id:
             raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/scan-attempts/{probe_attempt_id}",
             body=await async_maybe_transform(
                 {
@@ -165,6 +167,8 @@ class AsyncAttemptsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[ScanProbeAttempt],
         )
+
+        return self._unwrap(response)
 
 
 class AttemptsResourceWithRawResponse:

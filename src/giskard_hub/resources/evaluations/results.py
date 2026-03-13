@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from typing import List, Tuple, Literal, Optional, overload
 
 import httpx
 
@@ -17,7 +17,7 @@ from ..._response import (
 )
 from ...types.agent import AgentOutputParam
 from ..._base_client import make_request_options
-from ...types.common import APIResponse, APIPaginatedResponse, APIResponseWithIncluded
+from ...types.common import APIResponse, APIPaginatedMetadata, APIPaginatedResponse, APIResponseWithIncluded
 from ...types.test_case import TestCase
 from ...types.evaluation import (
     ResultListParams,
@@ -67,7 +67,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]]:
+    ) -> TestCaseEvaluation:
         """
         Retrieve Evaluation Result
 
@@ -105,9 +105,9 @@ class ResultsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda result: result.id)
+            response = embed_included_single(response, id_getter=lambda result: result.id)
 
-        return response
+        return self._unwrap(response)
 
     def update(
         self,
@@ -121,7 +121,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Update Evaluation Result
 
@@ -144,7 +144,7 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}",
             body=maybe_transform({"failure_category": failure_category}, ResultUpdateParams),
             options=make_request_options(
@@ -152,6 +152,8 @@ class ResultsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
 
     def list(
         self,
@@ -164,7 +166,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]]:
+    ) -> List[TestCaseEvaluation]:
         """
         List Evaluation Results
 
@@ -197,9 +199,9 @@ class ResultsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda result: result.id)
+            response = embed_included_list(response, id_getter=lambda result: result.id)
 
-        return response
+        return self._unwrap(response)
 
     def rerun_test_case(
         self,
@@ -212,7 +214,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Rerun Test Case Evaluation
 
@@ -233,13 +235,15 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
 
     def submit_local_output(
         self,
@@ -254,7 +258,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Submit Local Evaluation Result Output
 
@@ -279,7 +283,7 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output",
             body=maybe_transform(
                 {
@@ -293,6 +297,44 @@ class ResultsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
+
+    @overload
+    def search(
+        self,
+        evaluation_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[False] = False,
+    ) -> List[TestCaseEvaluation]: ...
+
+    @overload
+    def search(
+        self,
+        evaluation_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]: ...
 
     def search(
         self,
@@ -310,7 +352,8 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]]:
+        include_metadata: bool = False,
+    ) -> List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]:
         """
         Search Evaluation Results By Filters
 
@@ -361,9 +404,9 @@ class ResultsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_paginated(response, id_getter=lambda result: result.id)
+            response = embed_included_paginated(response, id_getter=lambda result: result.id)
 
-        return response
+        return self._unwrap_paginated(response, include_metadata)
 
     def update_visibility(
         self,
@@ -378,7 +421,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Update Evaluation Result Visibility
 
@@ -403,7 +446,7 @@ class ResultsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=maybe_transform(
                 {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
@@ -414,6 +457,8 @@ class ResultsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncResultsResource(AsyncAPIResource):
@@ -448,7 +493,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]]:
+    ) -> TestCaseEvaluation:
         """
         Retrieve Evaluation Result
 
@@ -486,9 +531,9 @@ class AsyncResultsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda result: result.id)
+            response = embed_included_single(response, id_getter=lambda result: result.id)
 
-        return response
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -502,7 +547,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Update Evaluation Result
 
@@ -525,7 +570,7 @@ class AsyncResultsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}",
             body=await async_maybe_transform({"failure_category": failure_category}, ResultUpdateParams),
             options=make_request_options(
@@ -533,6 +578,8 @@ class AsyncResultsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
 
     async def list(
         self,
@@ -545,7 +592,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[TestCaseEvaluation], APIResponse[TestCase]]:
+    ) -> List[TestCaseEvaluation]:
         """
         List Evaluation Results
 
@@ -578,9 +625,9 @@ class AsyncResultsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda result: result.id)
+            response = embed_included_list(response, id_getter=lambda result: result.id)
 
-        return response
+        return self._unwrap(response)
 
     async def rerun_test_case(
         self,
@@ -593,7 +640,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Rerun Test Case Evaluation
 
@@ -614,13 +661,15 @@ class AsyncResultsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
 
     async def submit_local_output(
         self,
@@ -635,7 +684,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Submit Local Evaluation Result Output
 
@@ -660,7 +709,7 @@ class AsyncResultsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output",
             body=await async_maybe_transform(
                 {
@@ -674,6 +723,44 @@ class AsyncResultsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
+
+    @overload
+    async def search(
+        self,
+        evaluation_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[False] = False,
+    ) -> List[TestCaseEvaluation]: ...
+
+    @overload
+    async def search(
+        self,
+        evaluation_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: Optional[int] | Omit = omit,
+        offset: Optional[int] | Omit = omit,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]: ...
 
     async def search(
         self,
@@ -691,7 +778,8 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]]:
+        include_metadata: bool = False,
+    ) -> List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]:
         """
         Search Evaluation Results By Filters
 
@@ -744,9 +832,9 @@ class AsyncResultsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_paginated(response, id_getter=lambda result: result.id)
+            response = embed_included_paginated(response, id_getter=lambda result: result.id)
 
-        return response
+        return self._unwrap_paginated(response, include_metadata)
 
     async def update_visibility(
         self,
@@ -761,7 +849,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseEvaluation]:
+    ) -> TestCaseEvaluation:
         """
         Update Evaluation Result Visibility
 
@@ -786,7 +874,7 @@ class AsyncResultsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=await async_maybe_transform(
                 {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
@@ -797,6 +885,8 @@ class AsyncResultsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseEvaluation],
         )
+
+        return self._unwrap(response)
 
 
 class ResultsResourceWithRawResponse:

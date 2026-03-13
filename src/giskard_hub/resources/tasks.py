@@ -68,7 +68,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Task]:
+    ) -> Task:
         """
         Create Task
 
@@ -101,7 +101,7 @@ class TasksResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/tasks",
             body=maybe_transform(
                 {
@@ -124,6 +124,8 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
+        return self._unwrap(response)
+
     def retrieve(
         self,
         task_id: str,
@@ -134,7 +136,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Task]:
+    ) -> Task:
         """
         Retrieve Task
 
@@ -151,13 +153,15 @@ class TasksResource(SyncAPIResource):
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/tasks/{task_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Task],
         )
+
+        return self._unwrap(response)
 
     def update(
         self,
@@ -174,7 +178,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Task]:
+    ) -> Task:
         """
         Update Task
 
@@ -201,7 +205,7 @@ class TasksResource(SyncAPIResource):
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/tasks/{task_id}",
             body=maybe_transform(
                 {
@@ -219,6 +223,8 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
+        return self._unwrap(response)
+
     def list(
         self,
         *,
@@ -229,7 +235,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Task]]:
+    ) -> List[Task]:
         """
         List Tasks
 
@@ -244,7 +250,7 @@ class TasksResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/tasks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -261,6 +267,8 @@ class TasksResource(SyncAPIResource):
             cast_to=APIResponse[List[Task]],
         )
 
+        return self._unwrap(response)
+
     def delete(
         self,
         task_id: str,
@@ -271,7 +279,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Task
 
@@ -288,13 +296,15 @@ class TasksResource(SyncAPIResource):
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/tasks/{task_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -306,7 +316,7 @@ class TasksResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Tasks
 
@@ -321,7 +331,7 @@ class TasksResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/tasks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -332,6 +342,8 @@ class TasksResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncTasksResource(AsyncAPIResource):
@@ -373,7 +385,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Task]:
+    ) -> Task:
         """
         Create Task
 
@@ -406,7 +418,7 @@ class AsyncTasksResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/tasks",
             body=await async_maybe_transform(
                 {
@@ -429,6 +441,8 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
+        return self._unwrap(response)
+
     async def retrieve(
         self,
         task_id: str,
@@ -439,7 +453,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Task]:
+    ) -> Task:
         """
         Retrieve Task
 
@@ -456,13 +470,15 @@ class AsyncTasksResource(AsyncAPIResource):
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/tasks/{task_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Task],
         )
+
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -479,7 +495,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Task]:
+    ) -> Task:
         """
         Update Task
 
@@ -506,7 +522,7 @@ class AsyncTasksResource(AsyncAPIResource):
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/tasks/{task_id}",
             body=await async_maybe_transform(
                 {
@@ -524,6 +540,8 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[Task],
         )
 
+        return self._unwrap(response)
+
     async def list(
         self,
         *,
@@ -534,7 +552,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Task]]:
+    ) -> List[Task]:
         """
         List Tasks
 
@@ -549,7 +567,7 @@ class AsyncTasksResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/tasks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -566,6 +584,8 @@ class AsyncTasksResource(AsyncAPIResource):
             cast_to=APIResponse[List[Task]],
         )
 
+        return self._unwrap(response)
+
     async def delete(
         self,
         task_id: str,
@@ -576,7 +596,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Task
 
@@ -593,13 +613,15 @@ class AsyncTasksResource(AsyncAPIResource):
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/tasks/{task_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -611,7 +633,7 @@ class AsyncTasksResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Tasks
 
@@ -626,7 +648,7 @@ class AsyncTasksResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/tasks",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -637,6 +659,8 @@ class AsyncTasksResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
 
 class TasksResourceWithRawResponse:

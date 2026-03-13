@@ -51,7 +51,7 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Test Case Comment
 
@@ -72,13 +72,15 @@ class CommentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def add(
         self,
@@ -91,7 +93,7 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseComment]:
+    ) -> TestCaseComment:
         """
         Add Test Case Comment
 
@@ -110,7 +112,7 @@ class CommentsResource(SyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/test-cases/{test_case_id}/comments",
             body=maybe_transform({"comment": comment}, CommentAddParams),
             options=make_request_options(
@@ -118,6 +120,8 @@ class CommentsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseComment],
         )
+
+        return self._unwrap(response)
 
     def edit(
         self,
@@ -131,7 +135,7 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseComment]:
+    ) -> TestCaseComment:
         """
         Edit Test Case Comment
 
@@ -154,7 +158,7 @@ class CommentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
             body=maybe_transform({"comment": comment}, CommentEditParams),
             options=make_request_options(
@@ -162,6 +166,8 @@ class CommentsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseComment],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncCommentsResource(AsyncAPIResource):
@@ -195,7 +201,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Test Case Comment
 
@@ -216,13 +222,15 @@ class AsyncCommentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def add(
         self,
@@ -235,7 +243,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseComment]:
+    ) -> TestCaseComment:
         """
         Add Test Case Comment
 
@@ -254,7 +262,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/test-cases/{test_case_id}/comments",
             body=await async_maybe_transform({"comment": comment}, CommentAddParams),
             options=make_request_options(
@@ -262,6 +270,8 @@ class AsyncCommentsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseComment],
         )
+
+        return self._unwrap(response)
 
     async def edit(
         self,
@@ -275,7 +285,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[TestCaseComment]:
+    ) -> TestCaseComment:
         """
         Edit Test Case Comment
 
@@ -298,7 +308,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
             body=await async_maybe_transform({"comment": comment}, CommentEditParams),
             options=make_request_options(
@@ -306,6 +316,8 @@ class AsyncCommentsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[TestCaseComment],
         )
+
+        return self._unwrap(response)
 
 
 class CommentsResourceWithRawResponse:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Mapping, Optional, cast
+from typing import List, Tuple, Literal, Mapping, Optional, cast, overload
 
 import httpx
 
@@ -22,7 +22,7 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.common import APIResponse, TaskProgressParam
+from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
 from ..types.knowledge_base import (
     KnowledgeBase,
     KnowledgeBaseListParams,
@@ -70,7 +70,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBase]:
+    ) -> KnowledgeBase:
         """
         Create Knowledge Base
 
@@ -110,7 +110,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         # sent to the server will contain a `boundary` parameter, e.g.
         # multipart/form-data; boundary=---abc--
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
-        return self._post(
+        response = self._post(
             "/v2/knowledge-bases",
             body=maybe_transform(body, KnowledgeBaseCreateParams),
             files=files,
@@ -119,6 +119,8 @@ class KnowledgeBasesResource(SyncAPIResource):
             ),
             cast_to=APIResponse[KnowledgeBase],
         )
+
+        return self._unwrap(response)
 
     def retrieve(
         self,
@@ -130,7 +132,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBase]:
+    ) -> KnowledgeBase:
         """
         Retrieve Knowledge Base
 
@@ -147,13 +149,15 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/knowledge-bases/{knowledge_base_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[KnowledgeBase],
         )
+
+        return self._unwrap(response)
 
     def update(
         self,
@@ -169,7 +173,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBase]:
+    ) -> KnowledgeBase:
         """
         Update Knowledge Base
 
@@ -192,7 +196,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/knowledge-bases/{knowledge_base_id}",
             body=maybe_transform(
                 {
@@ -209,6 +213,8 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
+        return self._unwrap(response)
+
     def list(
         self,
         *,
@@ -219,7 +225,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[KnowledgeBase]]:
+    ) -> List[KnowledgeBase]:
         """
         List Knowledge Bases
 
@@ -234,7 +240,7 @@ class KnowledgeBasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/knowledge-bases",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -246,6 +252,8 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIResponse[List[KnowledgeBase]],
         )
 
+        return self._unwrap(response)
+
     def delete(
         self,
         knowledge_base_id: str,
@@ -256,7 +264,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Knowledge Base
 
@@ -273,13 +281,15 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/knowledge-bases/{knowledge_base_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     def bulk_delete(
         self,
@@ -291,7 +301,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Knowledge Bases
 
@@ -306,7 +316,7 @@ class KnowledgeBasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/knowledge-bases",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -320,6 +330,42 @@ class KnowledgeBasesResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
+
+    @overload
+    def search_documents(
+        self,
+        knowledge_base_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
+        filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[KnowledgeBaseDocumentRow]: ...
+
+    @overload
+    def search_documents(
+        self,
+        knowledge_base_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
+        filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]: ...
 
     def search_documents(
         self,
@@ -336,7 +382,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRow, None]:
+        include_metadata: bool = False,
+    ) -> List[KnowledgeBaseDocumentRow] | Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -363,7 +410,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=maybe_transform(
                 {"filters": filters, "order_by": order_by, "search": search},
@@ -382,6 +429,8 @@ class KnowledgeBasesResource(SyncAPIResource):
             cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRow, None],
         )
 
+        return self._unwrap_paginated(response, include_metadata)
+
     def retrieve_document(
         self,
         knowledge_base_id: str,
@@ -393,7 +442,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBaseDocumentDetail]:
+    ) -> KnowledgeBaseDocumentDetail:
         """
         Retrieve Knowledge Base Document
 
@@ -414,13 +463,15 @@ class KnowledgeBasesResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
         if not document_id:
             raise ValueError(f"Expected a non-empty value for `document_id` but received {document_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/{document_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[KnowledgeBaseDocumentDetail],
         )
+
+        return self._unwrap(response)
 
 
 class AsyncKnowledgeBasesResource(AsyncAPIResource):
@@ -458,7 +509,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBase]:
+    ) -> KnowledgeBase:
         """
         Create Knowledge Base
 
@@ -498,7 +549,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         # sent to the server will contain a `boundary` parameter, e.g.
         # multipart/form-data; boundary=---abc--
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
-        return await self._post(
+        response = await self._post(
             "/v2/knowledge-bases",
             body=await async_maybe_transform(body, KnowledgeBaseCreateParams),
             files=files,
@@ -507,6 +558,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[KnowledgeBase],
         )
+
+        return self._unwrap(response)
 
     async def retrieve(
         self,
@@ -518,7 +571,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBase]:
+    ) -> KnowledgeBase:
         """
         Retrieve Knowledge Base
 
@@ -535,13 +588,15 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/knowledge-bases/{knowledge_base_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[KnowledgeBase],
         )
+
+        return self._unwrap(response)
 
     async def update(
         self,
@@ -557,7 +612,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBase]:
+    ) -> KnowledgeBase:
         """
         Update Knowledge Base
 
@@ -580,7 +635,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/knowledge-bases/{knowledge_base_id}",
             body=await async_maybe_transform(
                 {
@@ -597,6 +652,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[KnowledgeBase],
         )
 
+        return self._unwrap(response)
+
     async def list(
         self,
         *,
@@ -607,7 +664,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[KnowledgeBase]]:
+    ) -> List[KnowledgeBase]:
         """
         List Knowledge Bases
 
@@ -622,7 +679,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/knowledge-bases",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -634,6 +691,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIResponse[List[KnowledgeBase]],
         )
 
+        return self._unwrap(response)
+
     async def delete(
         self,
         knowledge_base_id: str,
@@ -644,7 +703,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Knowledge Base
 
@@ -661,13 +720,15 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/knowledge-bases/{knowledge_base_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
 
     async def bulk_delete(
         self,
@@ -679,7 +740,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Knowledge Bases
 
@@ -694,7 +755,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/knowledge-bases",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -708,6 +769,42 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return self._unwrap(response)
+
+    @overload
+    async def search_documents(
+        self,
+        knowledge_base_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
+        filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[KnowledgeBaseDocumentRow]: ...
+
+    @overload
+    async def search_documents(
+        self,
+        knowledge_base_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
+        filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]: ...
 
     async def search_documents(
         self,
@@ -724,7 +821,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[KnowledgeBaseDocumentRow, None]:
+        include_metadata: bool = False,
+    ) -> List[KnowledgeBaseDocumentRow] | Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]:
         """
         Search Knowledge Base Documents By Filters
 
@@ -751,7 +849,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=await async_maybe_transform(
                 {"filters": filters, "order_by": order_by, "search": search},
@@ -770,6 +868,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             cast_to=APIPaginatedResponse[KnowledgeBaseDocumentRow, None],
         )
 
+        return self._unwrap_paginated(response, include_metadata)
+
     async def retrieve_document(
         self,
         knowledge_base_id: str,
@@ -781,7 +881,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[KnowledgeBaseDocumentDetail]:
+    ) -> KnowledgeBaseDocumentDetail:
         """
         Retrieve Knowledge Base Document
 
@@ -802,13 +902,15 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
         if not document_id:
             raise ValueError(f"Expected a non-empty value for `document_id` but received {document_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/{document_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[KnowledgeBaseDocumentDetail],
         )
+
+        return self._unwrap(response)
 
 
 class KnowledgeBasesResourceWithRawResponse:
