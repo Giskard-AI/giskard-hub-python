@@ -38,6 +38,10 @@ from .checks import (
     ChecksResourceWithStreamingResponse,
     AsyncChecksResourceWithStreamingResponse,
 )
+from .helpers import (
+    HelpersResource,
+    AsyncHelpersResource,
+)
 from .datasets import (
     DatasetsResource,
     AsyncDatasetsResource,
@@ -154,4 +158,6 @@ __all__ = [
     "AsyncScheduledEvaluationsResourceWithRawResponse",
     "ScheduledEvaluationsResourceWithStreamingResponse",
     "AsyncScheduledEvaluationsResourceWithStreamingResponse",
+    "HelpersResource",
+    "AsyncHelpersResource",
 ]

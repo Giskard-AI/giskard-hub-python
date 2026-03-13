@@ -94,14 +94,14 @@ TaskState: TypeAlias = Literal["skipped", "finished", "error", "running", "cance
 
 
 class TaskProgress(BaseModel):
+    state: TaskState
+    current: int
     total: int
-    current: Optional[int] = None
     error: Optional[str] = None
-    state: Optional[TaskState] = None
 
 
 class TaskProgressParam(TypedDict, total=False):
-    total: Required[int]
-    current: int
-    error: Optional[str]
     state: TaskState
+    current: int
+    total: int
+    error: Optional[str]

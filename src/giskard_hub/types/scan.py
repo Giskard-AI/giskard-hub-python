@@ -4,9 +4,11 @@ from typing import Dict, List, Literal, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
+from pydantic import computed_field
+
 from .chat import ChatMessageWithMetadata
 from .agent import Agent, AgentReference
-from .common import TaskProgress
+from .common import TaskState, TaskProgress
 from .._types import SequenceNotStr
 from .._models import BaseModel
 from .knowledge_base import KnowledgeBase, KnowledgeBaseReference
@@ -50,6 +52,10 @@ class ScanResult(BaseModel):
     status: TaskProgress
     updated_at: datetime
 
+    @computed_field
+    def state(self) -> TaskState:
+        return self.status.state
+
 
 class ScanCategory(BaseModel):
     id: str
@@ -73,6 +79,10 @@ class ScanProbeResult(BaseModel):
     probe_tags: List[str]
     scan_result_id: str
     status: TaskProgress
+
+    @computed_field
+    def state(self) -> TaskState:
+        return self.status.state
 
 
 class ScanProbeAttemptError(BaseModel):

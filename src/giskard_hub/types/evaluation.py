@@ -3,6 +3,7 @@
 from datetime import datetime  # noqa: I001
 from typing import Dict, Iterable, List, Literal, Optional, TypeAlias, TypedDict, Union
 
+from pydantic import computed_field
 from typing_extensions import Required
 
 from .._models import BaseModel
@@ -77,6 +78,10 @@ class Evaluation(BaseModel):
     status: TaskProgress
     tags: List[Metric]
     updated_at: datetime
+
+    @computed_field
+    def state(self) -> TaskState:
+        return self.status.state
 
 
 # ---------------------------------------------------------------------------

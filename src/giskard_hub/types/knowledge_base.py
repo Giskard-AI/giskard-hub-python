@@ -4,7 +4,9 @@ from typing import Dict, List, Literal, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
-from .common import OrderByParam, TaskProgress, FilterValueParam, TaskProgressParam
+from pydantic import computed_field
+
+from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam, TaskProgressParam
 from .._types import FileTypes, SequenceNotStr
 from .._models import BaseModel
 
@@ -54,6 +56,10 @@ class KnowledgeBase(BaseModel):
     status: TaskProgress
     topics: List[Topic]
     updated_at: datetime
+
+    @computed_field
+    def state(self) -> TaskState:
+        return self.status.state
 
 
 class KnowledgeBaseDocumentRow(BaseModel):
