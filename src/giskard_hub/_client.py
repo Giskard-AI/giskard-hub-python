@@ -24,6 +24,7 @@ from .resources import (
     tasks,
     agents,
     checks,
+    helpers,
     datasets,
     projects,
     knowledge_bases,
@@ -68,6 +69,7 @@ class HubClient(SyncAPIClient):
     checks: checks.ChecksResource
     datasets: datasets.DatasetsResource
     evaluations: evaluations.EvaluationsResource
+    helpers: "helpers.HelpersResource"
     knowledge_bases: knowledge_bases.KnowledgeBasesResource
     playground_chats: playground_chats.PlaygroundChatsResource
     projects: projects.ProjectsResource
@@ -138,6 +140,7 @@ class HubClient(SyncAPIClient):
         self.checks = checks.ChecksResource(self)
         self.datasets = datasets.DatasetsResource(self)
         self.evaluations = evaluations.EvaluationsResource(self)
+        self.helpers = helpers.HelpersResource(self)
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResource(self)
         self.playground_chats = playground_chats.PlaygroundChatsResource(self)
         self.projects = projects.ProjectsResource(self)
@@ -261,6 +264,7 @@ class AsyncHubClient(AsyncAPIClient):
     checks: checks.AsyncChecksResource
     datasets: datasets.AsyncDatasetsResource
     evaluations: evaluations.AsyncEvaluationsResource
+    helpers: "helpers.AsyncHelpersResource"
     knowledge_bases: knowledge_bases.AsyncKnowledgeBasesResource
     playground_chats: playground_chats.AsyncPlaygroundChatsResource
     projects: projects.AsyncProjectsResource
@@ -331,6 +335,7 @@ class AsyncHubClient(AsyncAPIClient):
         self.checks = checks.AsyncChecksResource(self)
         self.datasets = datasets.AsyncDatasetsResource(self)
         self.evaluations = evaluations.AsyncEvaluationsResource(self)
+        self.helpers = helpers.AsyncHelpersResource(self)
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResource(self)
         self.playground_chats = playground_chats.AsyncPlaygroundChatsResource(self)
         self.projects = projects.AsyncProjectsResource(self)
@@ -466,6 +471,7 @@ class HubClientWithRawResponse:
         )
         self.tasks = tasks.TasksResourceWithRawResponse(client.tasks)
         self.test_cases = test_cases.TestCasesResourceWithRawResponse(client.test_cases)
+        self.helpers = helpers.HelpersResource(client)
 
 
 class AsyncHubClientWithRawResponse:
@@ -484,6 +490,7 @@ class AsyncHubClientWithRawResponse:
         )
         self.tasks = tasks.AsyncTasksResourceWithRawResponse(client.tasks)
         self.test_cases = test_cases.AsyncTestCasesResourceWithRawResponse(client.test_cases)
+        self.helpers = helpers.AsyncHelpersResource(client)
 
 
 class HubClientWithStreamedResponse:
@@ -502,6 +509,7 @@ class HubClientWithStreamedResponse:
         )
         self.tasks = tasks.TasksResourceWithStreamingResponse(client.tasks)
         self.test_cases = test_cases.TestCasesResourceWithStreamingResponse(client.test_cases)
+        self.helpers = helpers.HelpersResource(client)
 
 
 class AsyncHubClientWithStreamedResponse:
@@ -522,6 +530,7 @@ class AsyncHubClientWithStreamedResponse:
         )
         self.tasks = tasks.AsyncTasksResourceWithStreamingResponse(client.tasks)
         self.test_cases = test_cases.AsyncTestCasesResourceWithStreamingResponse(client.test_cases)
+        self.helpers = helpers.AsyncHelpersResource(client)
 
 
 Client = HubClient
