@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, TypeVar, Callable
+from typing import Any, Dict, List, TypeVar, Callable, cast
 
-from ..types.common import APIResponse, APIResponseWithIncluded
+from ..types.common import APIResponse, APIPaginatedResponse, APIResponseWithIncluded
 
 T = TypeVar("T")
-URelated = TypeVar("URelated")
 
 
-def _apply_included_to_item(item: T, included_for_item: Dict[str, Any]) -> None:
+def _apply_included_to_item(item: object, included_for_item: Dict[str, Any]) -> None:
     """
     Replace reference fields on `item` with fully included resources.
 
@@ -25,14 +24,17 @@ def _apply_included_to_item(item: T, included_for_item: Dict[str, Any]) -> None:
             continue
 
         if isinstance(related, APIResponse):
-            setattr(item, field_name, related.data)
+            typed_related = cast(APIResponse[Any], related)
+            setattr(item, field_name, typed_related.data)
         elif isinstance(related, list):
             # Handle lists of APIResponse objects, falling back to the raw
             # element if it isn't an APIResponse instance.
             values: List[Any] = []
-            for element in related:
+            related_list = cast(List[object], related)
+            for element in related_list:
                 if isinstance(element, APIResponse):
-                    values.append(element.data)
+                    typed_element = cast(APIResponse[Any], element)
+                    values.append(typed_element.data)
                 else:
                     values.append(element)
             setattr(item, field_name, values)
@@ -41,10 +43,10 @@ def _apply_included_to_item(item: T, included_for_item: Dict[str, Any]) -> None:
 
 
 def embed_included_single(
-    response: APIResponseWithIncluded[T, APIResponse[URelated]],
+    response: APIResponseWithIncluded[T, Any],
     *,
     id_getter: Callable[[T], str],
-) -> APIResponseWithIncluded[T, APIResponse[URelated]]:
+) -> APIResponseWithIncluded[T, Any]:
     """
     Embed included resources into a single primary object.
 
@@ -64,12 +66,37 @@ def embed_included_single(
 
 
 def embed_included_list(
-    response: APIResponseWithIncluded[List[T], APIResponse[URelated]],
+    response: APIResponseWithIncluded[List[T], Any],
     *,
     id_getter: Callable[[T], str],
-) -> APIResponseWithIncluded[List[T], APIResponse[URelated]]:
+) -> APIResponseWithIncluded[List[T], Any]:
     """
     Embed included resources into each primary object in a list.
+
+    This mutates and returns the same `response` instance.
+    """
+
+    if not response.included:
+        return response
+
+    for item in response.data:
+        item_id = id_getter(item)
+        included_for_item = response.included.get(item_id)
+        if not included_for_item:
+            continue
+
+        _apply_included_to_item(item, included_for_item)
+
+    return response
+
+
+def embed_included_paginated(
+    response: APIPaginatedResponse[T, Any],
+    *,
+    id_getter: Callable[[T], str],
+) -> APIPaginatedResponse[T, Any]:
+    """
+    Embed included resources into each primary object in a paginated response.
 
     This mutates and returns the same `response` instance.
     """

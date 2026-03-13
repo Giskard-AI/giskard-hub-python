@@ -7,7 +7,7 @@ import httpx
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
-from .._included import embed_included_list, embed_included_single
+from .._included import embed_included_list, embed_included_single, embed_included_paginated
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -361,7 +361,7 @@ class ResultsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda result: result.id)
+            return embed_included_paginated(response, id_getter=lambda result: result.id)
 
         return response
 
@@ -744,7 +744,7 @@ class AsyncResultsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda result: result.id)
+            return embed_included_paginated(response, id_getter=lambda result: result.id)
 
         return response
 
