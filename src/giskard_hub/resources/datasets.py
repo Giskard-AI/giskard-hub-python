@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Mapping, Optional, cast
+from typing import List, Tuple, Literal, Mapping, Optional, cast, overload
 
 import httpx
 
@@ -20,7 +20,7 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.common import APIResponse, TaskProgressParam, APIPaginatedResponse
+from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
 from ..types.dataset import (
     Dataset,
     DatasetListParams,
@@ -68,7 +68,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Create Dataset
 
@@ -87,7 +87,7 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/datasets",
             body=maybe_transform(
                 {
@@ -103,6 +103,8 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     def upload(
         self,
         *,
@@ -114,7 +116,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Upload dataset from a file
 
@@ -145,7 +147,7 @@ class DatasetsResource(SyncAPIResource):
 
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
 
-        return self._post(
+        response = self._post(
             "/v2/datasets/import",
             body=maybe_transform(body, DatasetImportParams),
             files=files,
@@ -166,6 +168,8 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     def retrieve(
         self,
         dataset_id: str,
@@ -176,7 +180,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Retrieve Dataset
 
@@ -193,13 +197,15 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/datasets/{dataset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Dataset],
         )
+
+        return response.data
 
     def update(
         self,
@@ -214,7 +220,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Update Dataset
 
@@ -237,7 +243,7 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._patch(
+        response = self._patch(
             f"/v2/datasets/{dataset_id}",
             body=maybe_transform(
                 {
@@ -253,6 +259,8 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     def list(
         self,
         *,
@@ -263,7 +271,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Dataset]]:
+    ) -> List[Dataset]:
         """
         List Datasets
 
@@ -278,7 +286,7 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/datasets",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -290,6 +298,8 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[List[Dataset]],
         )
 
+        return response.data
+
     def delete(
         self,
         dataset_id: str,
@@ -300,7 +310,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Dataset
 
@@ -317,13 +327,15 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/datasets/{dataset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     def bulk_delete(
         self,
@@ -335,7 +347,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Datasets
 
@@ -350,7 +362,7 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/datasets",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -361,6 +373,8 @@ class DatasetsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     def generate_scenario_based(
         self,
@@ -377,7 +391,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Generate Scenario Based Dataset
 
@@ -406,7 +420,7 @@ class DatasetsResource(SyncAPIResource):
         if dataset_id is omit and dataset_name is omit:
             raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
 
-        return self._post(
+        response = self._post(
             "/v2/datasets/generate-scenario-based",
             body=maybe_transform(
                 {
@@ -425,6 +439,8 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     def generate_document_based(
         self,
         *,
@@ -441,7 +457,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Generate Document Based Dataset
 
@@ -468,7 +484,7 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/datasets/generate-document-based",
             body=maybe_transform(
                 {
@@ -488,6 +504,8 @@ class DatasetsResource(SyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     def list_tags(
         self,
         dataset_id: str,
@@ -498,7 +516,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[str]]:
+    ) -> List[str]:
         """
         List Dataset Tags
 
@@ -515,13 +533,15 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/datasets/{dataset_id}/tags",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[str]],
         )
+
+        return response.data
 
     def list_test_cases(
         self,
@@ -533,7 +553,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[TestCase]]:
+    ) -> List[TestCase]:
         """
         List Dataset Test Cases
 
@@ -550,13 +570,49 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/datasets/{dataset_id}/test-cases",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[TestCase]],
         )
+
+        return response.data
+
+    @overload
+    def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[TestCase]: ...
+
+    @overload
+    def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
 
     def search_test_cases(
         self,
@@ -573,7 +629,8 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCase, None]:
+        include_metadata: bool = False,
+    ) -> List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]:
         """
         Search Dataset Test Cases By Filters
 
@@ -600,7 +657,7 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return self._post(
+        response = self._post(
             f"/v2/datasets/{dataset_id}/test-cases/search",
             body=maybe_transform(
                 {
@@ -622,6 +679,11 @@ class DatasetsResource(SyncAPIResource):
             ),
             cast_to=APIPaginatedResponse[TestCase, None],
         )
+
+        if include_metadata:
+            return response.data, response.metadata
+
+        return response.data
 
 
 class AsyncDatasetsResource(AsyncAPIResource):
@@ -656,7 +718,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Create Dataset
 
@@ -675,7 +737,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/datasets",
             body=await async_maybe_transform(
                 {
@@ -691,6 +753,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     async def upload(
         self,
         *,
@@ -702,7 +766,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Upload dataset from a file
 
@@ -730,7 +794,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
         extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
-        return await self._post(
+        response = await self._post(
             "/v2/datasets/import",
             body=await async_maybe_transform(body, DatasetImportParams),
             files=files,
@@ -751,6 +815,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     async def retrieve(
         self,
         dataset_id: str,
@@ -761,7 +827,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Retrieve Dataset
 
@@ -778,13 +844,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/datasets/{dataset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Dataset],
         )
+
+        return response.data
 
     async def update(
         self,
@@ -799,7 +867,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Update Dataset
 
@@ -822,7 +890,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._patch(
+        response = await self._patch(
             f"/v2/datasets/{dataset_id}",
             body=await async_maybe_transform(
                 {
@@ -838,6 +906,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     async def list(
         self,
         *,
@@ -848,7 +918,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[Dataset]]:
+    ) -> List[Dataset]:
         """
         List Datasets
 
@@ -863,7 +933,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/datasets",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -875,6 +945,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[List[Dataset]],
         )
 
+        return response.data
+
     async def delete(
         self,
         dataset_id: str,
@@ -885,7 +957,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Dataset
 
@@ -902,13 +974,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/datasets/{dataset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     async def bulk_delete(
         self,
@@ -920,7 +994,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Datasets
 
@@ -935,7 +1009,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/datasets",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -946,6 +1020,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     async def generate_scenario_based(
         self,
@@ -962,7 +1038,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Generate Scenario Based Dataset
 
@@ -991,7 +1067,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         if dataset_id is omit and dataset_name is omit:
             raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
 
-        return await self._post(
+        response = await self._post(
             "/v2/datasets/generate-scenario-based",
             body=await async_maybe_transform(
                 {
@@ -1010,6 +1086,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     async def generate_document_based(
         self,
         *,
@@ -1026,7 +1104,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[Dataset]:
+    ) -> Dataset:
         """
         Generate Document Based Dataset
 
@@ -1053,7 +1131,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/datasets/generate-document-based",
             body=await async_maybe_transform(
                 {
@@ -1073,6 +1151,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             cast_to=APIResponse[Dataset],
         )
 
+        return response.data
+
     async def list_tags(
         self,
         dataset_id: str,
@@ -1083,7 +1163,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[str]]:
+    ) -> List[str]:
         """
         List Dataset Tags
 
@@ -1100,13 +1180,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/datasets/{dataset_id}/tags",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[str]],
         )
+
+        return response.data
 
     async def list_test_cases(
         self,
@@ -1118,7 +1200,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[TestCase]]:
+    ) -> List[TestCase]:
         """
         List Dataset Test Cases
 
@@ -1135,13 +1217,49 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/datasets/{dataset_id}/test-cases",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[TestCase]],
         )
+
+        return response.data
+
+    @overload
+    async def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[TestCase]: ...
+
+    @overload
+    async def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        search: Optional[str] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
 
     async def search_test_cases(
         self,
@@ -1158,7 +1276,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIPaginatedResponse[TestCase, None]:
+        include_metadata: bool = False,
+    ) -> List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]:
         """
         Search Dataset Test Cases By Filters
 
@@ -1185,7 +1304,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        return await self._post(
+        response = await self._post(
             f"/v2/datasets/{dataset_id}/test-cases/search",
             body=await async_maybe_transform(
                 {
@@ -1207,6 +1326,11 @@ class AsyncDatasetsResource(AsyncAPIResource):
             ),
             cast_to=APIPaginatedResponse[TestCase, None],
         )
+
+        if include_metadata:
+            return response.data, response.metadata
+
+        return response.data
 
 
 class DatasetsResourceWithRawResponse:
