@@ -50,7 +50,7 @@ class ProbesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScanProbeResult]:
+    ) -> ScanProbeResult:
         """
         Retrieve Scan Probe
 
@@ -67,13 +67,15 @@ class ProbesResource(SyncAPIResource):
         """
         if not probe_result_id:
             raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/scan-probes/{probe_result_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[ScanProbeResult],
         )
+
+        return response.data
 
     def list_attempts(
         self,
@@ -85,7 +87,7 @@ class ProbesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ScanProbeAttempt]]:
+    ) -> List[ScanProbeAttempt]:
         """
         List Scan Probe Attempts
 
@@ -102,13 +104,15 @@ class ProbesResource(SyncAPIResource):
         """
         if not probe_result_id:
             raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/scan-probes/{probe_result_id}/attempts",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanProbeAttempt]],
         )
+
+        return response.data
 
 
 class AsyncProbesResource(AsyncAPIResource):
@@ -141,7 +145,7 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScanProbeResult]:
+    ) -> ScanProbeResult:
         """
         Retrieve Scan Probe
 
@@ -158,13 +162,15 @@ class AsyncProbesResource(AsyncAPIResource):
         """
         if not probe_result_id:
             raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/scan-probes/{probe_result_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[ScanProbeResult],
         )
+
+        return response.data
 
     async def list_attempts(
         self,
@@ -176,7 +182,7 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ScanProbeAttempt]]:
+    ) -> List[ScanProbeAttempt]:
         """
         List Scan Probe Attempts
 
@@ -193,13 +199,15 @@ class AsyncProbesResource(AsyncAPIResource):
         """
         if not probe_result_id:
             raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/scan-probes/{probe_result_id}/attempts",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanProbeAttempt]],
         )
+
+        return response.data
 
 
 class ProbesResourceWithRawResponse:

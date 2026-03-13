@@ -91,7 +91,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScanResult]:
+    ) -> ScanResult:
         """
         Create Scan
 
@@ -112,7 +112,7 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._post(
+        response = self._post(
             "/v2/scans",
             body=maybe_transform(
                 {
@@ -129,6 +129,8 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[ScanResult],
         )
 
+        return response.data
+
     def retrieve(
         self,
         scan_result_id: str,
@@ -140,7 +142,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]]:
+    ) -> ScanResult:
         """
         Retrieve Scan
 
@@ -172,9 +174,9 @@ class ScansResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
+            response = embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response
+        return response.data
 
     def list(
         self,
@@ -187,7 +189,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]]:
+    ) -> List[ScanResult]:
         """
         List Scans
 
@@ -223,9 +225,9 @@ class ScansResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
+            response = embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response
+        return response.data
 
     def delete(
         self,
@@ -237,7 +239,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Scan
 
@@ -254,13 +256,15 @@ class ScansResource(SyncAPIResource):
         """
         if not scan_result_id:
             raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
-        return self._delete(
+        response = self._delete(
             f"/v2/scans/{scan_result_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     def bulk_delete(
         self,
@@ -272,7 +276,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Scans
 
@@ -287,7 +291,7 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/scans",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -299,6 +303,8 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[None],
         )
 
+        return response.data
+
     def list_categories(
         self,
         *,
@@ -308,7 +314,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ScanCategory]]:
+    ) -> List[ScanCategory]:
         """
         List Scan Categories
 
@@ -321,13 +327,15 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        response = self._get(
             "/v2/scan-categories",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanCategory]],
         )
+
+        return response.data
 
     def list_probes(
         self,
@@ -339,7 +347,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ScanProbeResult]]:
+    ) -> List[ScanProbeResult]:
         """
         List Scan Probes
 
@@ -356,13 +364,15 @@ class ScansResource(SyncAPIResource):
         """
         if not scan_result_id:
             raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
-        return self._get(
+        response = self._get(
             f"/v2/scans/{scan_result_id}/probes",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanProbeResult]],
         )
+
+        return response.data
 
 
 class AsyncScansResource(AsyncAPIResource):
@@ -406,7 +416,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[ScanResult]:
+    ) -> ScanResult:
         """
         Create Scan
 
@@ -427,7 +437,7 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._post(
+        response = await self._post(
             "/v2/scans",
             body=await async_maybe_transform(
                 {
@@ -444,6 +454,8 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[ScanResult],
         )
 
+        return response.data
+
     async def retrieve(
         self,
         scan_result_id: str,
@@ -455,7 +467,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]]:
+    ) -> ScanResult:
         """
         Retrieve Scan
 
@@ -488,9 +500,9 @@ class AsyncScansResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
+            response = embed_included_single(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response
+        return response.data
 
     async def list(
         self,
@@ -503,7 +515,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]]:
+    ) -> List[ScanResult]:
         """
         List Scans
 
@@ -539,9 +551,9 @@ class AsyncScansResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
+            response = embed_included_list(response, id_getter=lambda scan_result: scan_result.id)
 
-        return response
+        return response.data
 
     async def delete(
         self,
@@ -553,7 +565,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Scan
 
@@ -570,13 +582,15 @@ class AsyncScansResource(AsyncAPIResource):
         """
         if not scan_result_id:
             raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
-        return await self._delete(
+        response = await self._delete(
             f"/v2/scans/{scan_result_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
     async def bulk_delete(
         self,
@@ -588,7 +602,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Bulk Delete Scans
 
@@ -603,7 +617,7 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/scans",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -615,6 +629,8 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[None],
         )
 
+        return response.data
+
     async def list_categories(
         self,
         *,
@@ -624,7 +640,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ScanCategory]]:
+    ) -> List[ScanCategory]:
         """
         List Scan Categories
 
@@ -637,13 +653,15 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        response = await self._get(
             "/v2/scan-categories",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanCategory]],
         )
+
+        return response.data
 
     async def list_probes(
         self,
@@ -655,7 +673,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[List[ScanProbeResult]]:
+    ) -> List[ScanProbeResult]:
         """
         List Scan Probes
 
@@ -672,13 +690,15 @@ class AsyncScansResource(AsyncAPIResource):
         """
         if not scan_result_id:
             raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
-        return await self._get(
+        response = await self._get(
             f"/v2/scans/{scan_result_id}/probes",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanProbeResult]],
         )
+
+        return response.data
 
 
 class ScansResourceWithRawResponse:
