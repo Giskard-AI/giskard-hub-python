@@ -345,7 +345,6 @@ class TestKnowledgeBases:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             knowledge_base = response.parse()
-            knowledge_base = response.parse()
             assert_matches_type(List[KnowledgeBaseDocumentRow], knowledge_base, path=["response"])
 
         assert cast(Any, response.is_closed) is True
