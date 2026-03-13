@@ -7,12 +7,7 @@ import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
-from giskard_hub.types import (
-    Agent,
-    APIResponse,
-    PlaygroundChat,
-    APIResponseWithIncluded,
-)
+from giskard_hub.types import PlaygroundChat
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -26,11 +21,7 @@ class TestPlaygroundChats:
         playground_chat = client.playground_chats.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(
-            APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-            playground_chat,
-            path=["response"],
-        )
+        assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -41,11 +32,7 @@ class TestPlaygroundChats:
             limit=10,
             offset=0,
         )
-        assert_matches_type(
-            APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-            playground_chat,
-            path=["response"],
-        )
+        assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -57,11 +44,7 @@ class TestPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = response.parse()
-        assert_matches_type(
-            APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-            playground_chat,
-            path=["response"],
-        )
+        assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -73,11 +56,7 @@ class TestPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = response.parse()
-            assert_matches_type(
-                APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-                playground_chat,
-                path=["response"],
-            )
+            assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -87,9 +66,7 @@ class TestPlaygroundChats:
         playground_chat = client.playground_chats.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(
-            APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]], playground_chat, path=["response"]
-        )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -98,9 +75,7 @@ class TestPlaygroundChats:
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             include=["agent"],
         )
-        assert_matches_type(
-            APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]], playground_chat, path=["response"]
-        )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -112,9 +87,7 @@ class TestPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = response.parse()
-        assert_matches_type(
-            APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]], playground_chat, path=["response"]
-        )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -126,11 +99,7 @@ class TestPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = response.parse()
-            assert_matches_type(
-                APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]],
-                playground_chat,
-                path=["response"],
-            )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -151,7 +120,7 @@ class TestPlaygroundChats:
         playground_chat = client.playground_chats.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -163,7 +132,7 @@ class TestPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = response.parse()
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -175,7 +144,7 @@ class TestPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = response.parse()
-            assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+            assert_matches_type(None, playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -196,7 +165,7 @@ class TestPlaygroundChats:
         playground_chat = client.playground_chats.bulk_delete(
             chat_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -208,7 +177,7 @@ class TestPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = response.parse()
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -220,7 +189,7 @@ class TestPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = response.parse()
-            assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+            assert_matches_type(None, playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -239,11 +208,7 @@ class TestAsyncPlaygroundChats:
         playground_chat = await async_client.playground_chats.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(
-            APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-            playground_chat,
-            path=["response"],
-        )
+        assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -254,11 +219,7 @@ class TestAsyncPlaygroundChats:
             limit=10,
             offset=0,
         )
-        assert_matches_type(
-            APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-            playground_chat,
-            path=["response"],
-        )
+        assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -270,11 +231,7 @@ class TestAsyncPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = await response.parse()
-        assert_matches_type(
-            APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-            playground_chat,
-            path=["response"],
-        )
+        assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -286,11 +243,7 @@ class TestAsyncPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = await response.parse()
-            assert_matches_type(
-                APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]],
-                playground_chat,
-                path=["response"],
-            )
+            assert_matches_type(List[PlaygroundChat], playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -300,9 +253,7 @@ class TestAsyncPlaygroundChats:
         playground_chat = await async_client.playground_chats.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(
-            APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]], playground_chat, path=["response"]
-        )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -311,9 +262,7 @@ class TestAsyncPlaygroundChats:
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             include=["agent"],
         )
-        assert_matches_type(
-            APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]], playground_chat, path=["response"]
-        )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -325,9 +274,7 @@ class TestAsyncPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = await response.parse()
-        assert_matches_type(
-            APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]], playground_chat, path=["response"]
-        )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -339,11 +286,7 @@ class TestAsyncPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = await response.parse()
-            assert_matches_type(
-                APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]],
-                playground_chat,
-                path=["response"],
-            )
+        assert_matches_type(PlaygroundChat, playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -364,7 +307,7 @@ class TestAsyncPlaygroundChats:
         playground_chat = await async_client.playground_chats.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -376,7 +319,7 @@ class TestAsyncPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = await response.parse()
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -388,7 +331,7 @@ class TestAsyncPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = await response.parse()
-            assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+            assert_matches_type(None, playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -409,7 +352,7 @@ class TestAsyncPlaygroundChats:
         playground_chat = await async_client.playground_chats.bulk_delete(
             chat_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -421,7 +364,7 @@ class TestAsyncPlaygroundChats:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         playground_chat = await response.parse()
-        assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+        assert_matches_type(None, playground_chat, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -433,6 +376,6 @@ class TestAsyncPlaygroundChats:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             playground_chat = await response.parse()
-            assert_matches_type(APIResponse[None], playground_chat, path=["response"])
+            assert_matches_type(None, playground_chat, path=["response"])
 
         assert cast(Any, response.is_closed) is True

@@ -9,7 +9,7 @@ import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
-from giskard_hub.types import APIResponse, TestCaseComment
+from giskard_hub.types import TestCaseComment
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -24,7 +24,7 @@ class TestComments:
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[None], comment, path=["response"])
+        assert_matches_type(None, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -37,7 +37,7 @@ class TestComments:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         comment = response.parse()
-        assert_matches_type(APIResponse[None], comment, path=["response"])
+        assert_matches_type(None, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -50,7 +50,7 @@ class TestComments:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             comment = response.parse()
-            assert_matches_type(APIResponse[None], comment, path=["response"])
+            assert_matches_type(None, comment, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -82,7 +82,7 @@ class TestComments:
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             comment="comment",
         )
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -95,7 +95,7 @@ class TestComments:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         comment = response.parse()
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -108,7 +108,7 @@ class TestComments:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             comment = response.parse()
-            assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+            assert_matches_type(TestCaseComment, comment, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -132,7 +132,7 @@ class TestComments:
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             comment="comment",
         )
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -146,7 +146,7 @@ class TestComments:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         comment = response.parse()
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -160,7 +160,7 @@ class TestComments:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             comment = response.parse()
-            assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+            assert_matches_type(TestCaseComment, comment, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -203,7 +203,7 @@ class TestAsyncComments:
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[None], comment, path=["response"])
+        assert_matches_type(None, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -216,7 +216,7 @@ class TestAsyncComments:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         comment = await response.parse()
-        assert_matches_type(APIResponse[None], comment, path=["response"])
+        assert_matches_type(None, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -229,7 +229,7 @@ class TestAsyncComments:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             comment = await response.parse()
-            assert_matches_type(APIResponse[None], comment, path=["response"])
+            assert_matches_type(None, comment, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -261,7 +261,7 @@ class TestAsyncComments:
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             comment="comment",
         )
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -274,7 +274,7 @@ class TestAsyncComments:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         comment = await response.parse()
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -287,7 +287,7 @@ class TestAsyncComments:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             comment = await response.parse()
-            assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+            assert_matches_type(TestCaseComment, comment, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -311,7 +311,7 @@ class TestAsyncComments:
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             comment="comment",
         )
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -325,7 +325,7 @@ class TestAsyncComments:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         comment = await response.parse()
-        assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+        assert_matches_type(TestCaseComment, comment, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -339,7 +339,7 @@ class TestAsyncComments:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             comment = await response.parse()
-            assert_matches_type(APIResponse[TestCaseComment], comment, path=["response"])
+            assert_matches_type(TestCaseComment, comment, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

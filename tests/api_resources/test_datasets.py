@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, List, cast
+from typing import Any, List, Tuple, cast
 
 import pytest
 
@@ -12,8 +12,7 @@ from tests.utils import assert_matches_type
 from giskard_hub.types import (
     Dataset,
     TestCase,
-    APIResponse,
-    APIPaginatedResponse,
+    APIPaginatedMetadata,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -29,7 +28,7 @@ class TestDatasets:
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -39,7 +38,7 @@ class TestDatasets:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -52,7 +51,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -65,7 +64,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -76,7 +75,7 @@ class TestDatasets:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -87,7 +86,7 @@ class TestDatasets:
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             name="my-dataset",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -100,7 +99,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -113,7 +112,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -123,7 +122,7 @@ class TestDatasets:
         dataset = client.datasets.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -135,7 +134,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -147,7 +146,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -168,7 +167,7 @@ class TestDatasets:
         dataset = client.datasets.update(
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -184,7 +183,7 @@ class TestDatasets:
                 "state": "skipped",
             },
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -196,7 +195,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -208,7 +207,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -227,7 +226,7 @@ class TestDatasets:
     @parametrize
     def test_method_list(self, client: HubClient) -> None:
         dataset = client.datasets.list()
-        assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+        assert_matches_type(List[Dataset], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -235,7 +234,7 @@ class TestDatasets:
         dataset = client.datasets.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+        assert_matches_type(List[Dataset], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -245,7 +244,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+        assert_matches_type(List[Dataset], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -255,7 +254,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+            assert_matches_type(List[Dataset], dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -265,7 +264,7 @@ class TestDatasets:
         dataset = client.datasets.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -277,7 +276,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -289,7 +288,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[None], dataset, path=["response"])
+            assert_matches_type(type(None), dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -310,7 +309,7 @@ class TestDatasets:
         dataset = client.datasets.bulk_delete(
             dataset_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -322,7 +321,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -334,7 +333,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[None], dataset, path=["response"])
+            assert_matches_type(type(None), dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -346,7 +345,7 @@ class TestDatasets:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -359,7 +358,7 @@ class TestDatasets:
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             dataset_name="dataset_name",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -373,7 +372,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -387,7 +386,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -399,7 +398,7 @@ class TestDatasets:
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -413,7 +412,7 @@ class TestDatasets:
             n_examples=0,
             topic_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -427,7 +426,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -441,7 +440,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -451,7 +450,7 @@ class TestDatasets:
         dataset = client.datasets.list_tags(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[List[str]], dataset, path=["response"])
+        assert_matches_type(List[str], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -463,7 +462,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[List[str]], dataset, path=["response"])
+        assert_matches_type(List[str], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -475,7 +474,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[List[str]], dataset, path=["response"])
+            assert_matches_type(List[str], dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -496,7 +495,7 @@ class TestDatasets:
         dataset = client.datasets.list_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[List[TestCase]], dataset, path=["response"])
+        assert_matches_type(List[TestCase], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -508,7 +507,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = response.parse()
-        assert_matches_type(APIResponse[List[TestCase]], dataset, path=["response"])
+        assert_matches_type(List[TestCase], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -520,7 +519,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = response.parse()
-            assert_matches_type(APIResponse[List[TestCase]], dataset, path=["response"])
+            assert_matches_type(List[TestCase], dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -541,7 +540,7 @@ class TestDatasets:
         result = client.datasets.search_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+        assert_matches_type(List[TestCase], result, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -567,7 +566,16 @@ class TestDatasets:
             limit=10,
             offset=0,
         )
-        assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+        assert_matches_type(List[TestCase], result, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_search_test_cases_with_metadata(self, client: HubClient) -> None:
+        result = client.datasets.search_test_cases(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            include_metadata=True,
+        )
+        assert_matches_type(Tuple[List[TestCase], APIPaginatedMetadata], result, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -579,7 +587,7 @@ class TestDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         result = response.parse()
-        assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+        assert_matches_type(List[TestCase], result, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -591,7 +599,7 @@ class TestDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             result = response.parse()
-            assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+            assert_matches_type(List[TestCase], result, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -622,7 +630,7 @@ class TestAsyncDatasets:
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -632,7 +640,7 @@ class TestAsyncDatasets:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -645,7 +653,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -658,7 +666,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -669,7 +677,7 @@ class TestAsyncDatasets:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             file=b"raw file contents",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -680,7 +688,7 @@ class TestAsyncDatasets:
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             name="my-dataset",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -693,7 +701,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -706,7 +714,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -716,7 +724,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -728,7 +736,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -740,7 +748,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -761,7 +769,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.update(
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -777,7 +785,7 @@ class TestAsyncDatasets:
                 "state": "skipped",
             },
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -789,7 +797,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -801,7 +809,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -820,7 +828,7 @@ class TestAsyncDatasets:
     @parametrize
     async def test_method_list(self, async_client: AsyncHubClient) -> None:
         dataset = await async_client.datasets.list()
-        assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+        assert_matches_type(List[Dataset], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -828,7 +836,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+        assert_matches_type(List[Dataset], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -838,7 +846,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+        assert_matches_type(List[Dataset], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -848,7 +856,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[List[Dataset]], dataset, path=["response"])
+            assert_matches_type(List[Dataset], dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -858,7 +866,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.delete(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -870,7 +878,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -882,7 +890,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[None], dataset, path=["response"])
+            assert_matches_type(type(None), dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -903,7 +911,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.bulk_delete(
             dataset_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -915,7 +923,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[None], dataset, path=["response"])
+        assert_matches_type(type(None), dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -927,7 +935,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[None], dataset, path=["response"])
+            assert_matches_type(type(None), dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -939,7 +947,7 @@ class TestAsyncDatasets:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -952,7 +960,7 @@ class TestAsyncDatasets:
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             dataset_name="dataset_name",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -966,7 +974,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -980,7 +988,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -992,7 +1000,7 @@ class TestAsyncDatasets:
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1006,7 +1014,7 @@ class TestAsyncDatasets:
             n_examples=0,
             topic_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
         )
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1020,7 +1028,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+        assert_matches_type(Dataset, dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1034,7 +1042,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[Dataset], dataset, path=["response"])
+            assert_matches_type(Dataset, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -1044,7 +1052,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.list_tags(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[List[str]], dataset, path=["response"])
+        assert_matches_type(List[str], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1056,7 +1064,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[List[str]], dataset, path=["response"])
+        assert_matches_type(List[str], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1068,7 +1076,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[List[str]], dataset, path=["response"])
+            assert_matches_type(List[str], dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -1089,7 +1097,7 @@ class TestAsyncDatasets:
         dataset = await async_client.datasets.list_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIResponse[List[TestCase]], dataset, path=["response"])
+        assert_matches_type(List[TestCase], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1101,7 +1109,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         dataset = await response.parse()
-        assert_matches_type(APIResponse[List[TestCase]], dataset, path=["response"])
+        assert_matches_type(List[TestCase], dataset, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1113,7 +1121,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             dataset = await response.parse()
-            assert_matches_type(APIResponse[List[TestCase]], dataset, path=["response"])
+            assert_matches_type(List[TestCase], dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -1134,7 +1142,7 @@ class TestAsyncDatasets:
         result = await async_client.datasets.search_test_cases(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+        assert_matches_type(List[TestCase], result, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1160,7 +1168,16 @@ class TestAsyncDatasets:
             limit=10,
             offset=0,
         )
-        assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+        assert_matches_type(List[TestCase], result, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_search_test_cases_with_metadata(self, async_client: AsyncHubClient) -> None:
+        result = await async_client.datasets.search_test_cases(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            include_metadata=True,
+        )
+        assert_matches_type(Tuple[List[TestCase], APIPaginatedMetadata], result, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1172,7 +1189,7 @@ class TestAsyncDatasets:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         result = await response.parse()
-        assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+        assert_matches_type(List[TestCase], result, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -1184,7 +1201,7 @@ class TestAsyncDatasets:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             result = await response.parse()
-            assert_matches_type(APIPaginatedResponse[TestCase, None], result, path=["response"])
+            assert_matches_type(List[TestCase], result, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
