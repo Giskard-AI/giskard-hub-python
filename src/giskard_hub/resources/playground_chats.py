@@ -59,7 +59,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]]:
+    ) -> List[PlaygroundChat]:
         """
         List Playground Chats
 
@@ -101,9 +101,9 @@ class PlaygroundChatsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
+            response = embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response
+        return response.data
 
     def retrieve(
         self,
@@ -114,7 +114,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]]:
+    ) -> PlaygroundChat:
         """
         Get Playground Chat
 
@@ -147,9 +147,9 @@ class PlaygroundChatsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
+            response = embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response
+        return response.data
 
     def delete(
         self,
@@ -159,7 +159,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Playground Chat
 
@@ -192,7 +192,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Playground Chats
 
@@ -207,7 +207,7 @@ class PlaygroundChatsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._delete(
+        response = self._delete(
             "/v2/playground-chats",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -218,6 +218,8 @@ class PlaygroundChatsResource(SyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
 
 class AsyncPlaygroundChatsResource(AsyncAPIResource):
@@ -240,7 +242,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[List[PlaygroundChat], APIResponse[Agent]]:
+    ) -> List[PlaygroundChat]:
         """
         List Playground Chats
 
@@ -282,9 +284,9 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
+            response = embed_included_list(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response
+        return response.data
 
     async def retrieve(
         self,
@@ -295,7 +297,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponseWithIncluded[PlaygroundChat, APIResponse[Agent]]:
+    ) -> PlaygroundChat:
         """
         Get Playground Chat
 
@@ -328,9 +330,9 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         )
 
         if include is not omit and include:
-            return embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
+            response = embed_included_single(response, id_getter=lambda playground_chat: playground_chat.id)
 
-        return response
+        return response.data
 
     async def delete(
         self,
@@ -340,7 +342,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Playground Chat
 
@@ -373,7 +375,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> APIResponse[None]:
+    ) -> None:
         """
         Delete Playground Chats
 
@@ -388,7 +390,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._delete(
+        response = await self._delete(
             "/v2/playground-chats",
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -399,6 +401,8 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
             ),
             cast_to=APIResponse[None],
         )
+
+        return response.data
 
 
 class PlaygroundChatsResourceWithRawResponse:
