@@ -476,12 +476,17 @@ class AsyncHelpersResource(AsyncAPIResource):
         )
 
         # Submit outputs
-        for entry in entries:
+        # Submit outputs
+        async def _process_entry(entry):
             test_case = entry.test_case
             if not isinstance(test_case, TestCase):
                 raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
 
-            agent_output_model = _normalize_agent_output(agent(test_case.messages))
+            output = agent(test_case.messages)
+            if inspect.isawaitable(output):
+                output = await output
+
+            agent_output_model = _normalize_agent_output(output)
             agent_output_param = cast(AgentOutputParam, agent_output_model.to_dict())
 
             await self._client.evaluations.results.submit_local_output(
@@ -489,5 +494,7 @@ class AsyncHelpersResource(AsyncAPIResource):
                 evaluation_id=evaluation.id,
                 agent_output=agent_output_param,
             )
+
+        await asyncio.gather(*(_process_entry(entry) for entry in entries))
 
         return evaluation
