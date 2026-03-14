@@ -123,6 +123,35 @@ Methods:
 - <code title="post /v2/evaluations/{evaluation_id}/rerun-errored-results">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">rerun_errored_results</a>(evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
 - <code title="post /v2/evaluations/run-single">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">run_single</a>(\*\*<a href="src/giskard_hub/types/evaluation_run_single_params.py">params</a>) -> List[<a href="./src/giskard_hub/types/check.py">Check</a>]</code>
 
+## Helpers
+
+The `helpers` resource exposes convenience methods for common workflows such as running evaluations and waiting for completion.
+
+Types:
+
+```python
+from giskard_hub.resources.helpers import (
+    HelpersResource,
+    AsyncHelpersResource,
+)
+from giskard_hub.types import (
+    Evaluation,
+    ChatMessage,
+)
+```
+
+Methods:
+
+- `client.helpers.wait_for_completion(entity, *, poll_interval=5.0, max_retries=360, running_states={"running"}, error_states={"error"}, raise_on_error=True) -> TStateful`
+  Waits until a task-like entity (such as an evaluation) leaves a running state or reaches an error state.
+
+- `client.helpers.evaluate(agent, *, dataset, project=None, name=None, tags=None) -> Evaluation`
+  Run an evaluation for a given agent over a dataset. The `agent` can be:
+  - a remote agent identifier (`str` or `Agent`), which creates a regular evaluation, or
+  - a local Python callable with signature `(messages: list[ChatMessage]) -> AgentReturn`, which creates a local evaluation and submits outputs on your behalf.
+
+For asynchronous usage, use the corresponding methods on `async_client.helpers` (for example, `await async_client.helpers.evaluate(...)`).
+
 ## Results
 
 Types:
