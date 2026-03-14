@@ -111,6 +111,33 @@ Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typ
 
 Typed requests and responses provide autocomplete and documentation within your editor. If you would like to see type errors in VS Code to help catch bugs earlier, set `python.analysis.typeCheckingMode` to `basic`.
 
+## Helpers
+
+The SDK exposes convenience helpers on `client.helpers` for common workflows such as running evaluations over a dataset.
+
+For example, to run an evaluation with a local Python callable:
+
+```python
+from giskard_hub import HubClient
+from giskard_hub.types.chat import ChatMessage
+
+client = HubClient()
+
+def my_agent(messages: list[ChatMessage]) -> str:
+    # Your agent logic here; can also return an AgentOutput-like dict
+    return "Hello from my agent"
+
+evaluation = client.helpers.evaluate(
+    agent=my_agent,
+    dataset="dataset-id",
+    name="My local evaluation",
+)
+
+# Optionally wait until the evaluation completes
+completed = client.helpers.wait_for_completion(evaluation)
+print(completed.state)
+```
+
 ## Nested params
 
 Nested parameters are dictionaries, typed using `TypedDict`, for example:
