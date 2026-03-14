@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Literal, Iterable, Optional
+from typing import Dict, List, Literal, Iterable, Optional, cast
 
 import httpx
 
@@ -31,13 +31,13 @@ from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
 from ...types.evaluation import (
-    Criterion,
     Evaluation,
     EvaluationListParams,
     EvaluationCreateParams,
     EvaluationUpdateParams,
     EvaluationRetrieveParams,
     EvaluationRunSingleParams,
+    CriterionEvaluationDataset,
     EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams,
 )
@@ -73,8 +73,8 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        name: str | Omit = omit,
         agent_id: str,
+        name: str | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         old_evaluation_id: Optional[str] | Omit = omit,
@@ -92,9 +92,9 @@ class EvaluationsResource(SyncAPIResource):
         Args:
           project_id: The ID of the project to create the evaluation for
 
-          name: The name of the evaluation
-
           agent_id: The ID of the agent to create the evaluation for
+
+          name: The name of the evaluation
 
           dataset_id: The ID of the dataset to draw test cases from. Exactly one of
               `dataset_id` or `old_evaluation_id` must be provided.
@@ -123,10 +123,13 @@ class EvaluationsResource(SyncAPIResource):
         ):
             raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
 
-        criteria = omit
+        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
 
         if dataset_id is not omit:
-            criteria = DatasetSubsetParam(dataset_id=dataset_id, tags=tags)
+            criteria = DatasetSubsetParam(
+                dataset_id=cast(str, dataset_id),
+                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+            )
 
         response = self._post(
             "/v2/evaluations",
@@ -369,9 +372,11 @@ class EvaluationsResource(SyncAPIResource):
     def create_local(
         self,
         *,
-        criteria: Iterable[Criterion],
-        agent: MinimalAgentParam,
+        agent_info: MinimalAgentParam,
         name: Optional[str] | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        old_evaluation_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -383,15 +388,19 @@ class EvaluationsResource(SyncAPIResource):
         Create Local Evaluation
 
         Args:
-          criteria: One or more data sources from which test cases are drawn for this
-              evaluation. Each entry is either a `DatasetSubsetParam` (referencing a
-              dataset by ID, with optional tag filters) or a
-              `CriterionEvaluationDataset` (referencing a previous evaluation by ID to
-              reuse its test cases).
-
-          agent: The agent information to use for the evaluation
+          agent_info: Minimal agent information (name and optional description) to use
+              for the evaluation.
 
           name: The name of the evaluation
+
+          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
+              `dataset_id` or `old_evaluation_id` must be provided.
+
+          tags: Optional tags to restrict the subset to test cases carrying those tags.
+              Only used when `dataset_id` is provided.
+
+          old_evaluation_id: The ID of a previous evaluation whose test cases should be
+              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
 
           extra_headers: Send extra headers
 
@@ -401,12 +410,27 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if (dataset_id is omit and old_evaluation_id is omit) or (
+            dataset_id is not omit and old_evaluation_id is not omit
+        ):
+            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
+
+        if dataset_id is not omit:
+            criteria = DatasetSubsetParam(
+                dataset_id=cast(str, dataset_id),
+                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+            )
+        elif old_evaluation_id is not omit:
+            criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
+
         response = self._post(
             "/v2/evaluations/create-local",
             body=maybe_transform(
                 {
-                    "criteria": criteria,
-                    "model": agent,
+                    "criteria": [criteria],
+                    "model": agent_info,
                     "name": name,
                 },
                 EvaluationCreateLocalParams,
@@ -542,8 +566,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        name: str | Omit = omit,
         agent_id: str,
+        name: str | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         old_evaluation_id: Optional[str] | Omit = omit,
@@ -561,9 +585,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Args:
           project_id: The ID of the project to create the evaluation for
 
-          name: The name of the evaluation
-
           agent_id: The ID of the agent to create the evaluation for
+
+          name: The name of the evaluation
 
           dataset_id: The ID of the dataset to draw test cases from. Exactly one of
               `dataset_id` or `old_evaluation_id` must be provided.
@@ -592,10 +616,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ):
             raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
 
-        criteria = omit
+        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
 
         if dataset_id is not omit:
-            criteria = DatasetSubsetParam(dataset_id=dataset_id, tags=tags)
+            criteria = DatasetSubsetParam(
+                dataset_id=cast(str, dataset_id),
+                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+            )
 
         response = await self._post(
             "/v2/evaluations",
@@ -838,9 +865,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
     async def create_local(
         self,
         *,
-        criteria: Iterable[Criterion],
-        agent: MinimalAgentParam,
+        agent_info: MinimalAgentParam,
         name: Optional[str] | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        old_evaluation_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -852,15 +881,19 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Create Local Evaluation
 
         Args:
-          criteria: One or more data sources from which test cases are drawn for this
-              evaluation. Each entry is either a `DatasetSubsetParam` (referencing a
-              dataset by ID, with optional tag filters) or a
-              `CriterionEvaluationDataset` (referencing a previous evaluation by ID to
-              reuse its test cases).
-
-          agent: The agent information to use for the evaluation
+          agent_info: Minimal agent information (name and optional description) to use
+              for the evaluation.
 
           name: The name of the evaluation
+
+          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
+              `dataset_id` or `old_evaluation_id` must be provided.
+
+          tags: Optional tags to restrict the subset to test cases carrying those tags.
+              Only used when `dataset_id` is provided.
+
+          old_evaluation_id: The ID of a previous evaluation whose test cases should be
+              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
 
           extra_headers: Send extra headers
 
@@ -870,12 +903,27 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if (dataset_id is omit and old_evaluation_id is omit) or (
+            dataset_id is not omit and old_evaluation_id is not omit
+        ):
+            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
+
+        if dataset_id is not omit:
+            criteria = DatasetSubsetParam(
+                dataset_id=cast(str, dataset_id),
+                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+            )
+        elif old_evaluation_id is not omit:
+            criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
+
         response = await self._post(
             "/v2/evaluations/create-local",
             body=await async_maybe_transform(
                 {
-                    "criteria": criteria,
-                    "model": agent,
+                    "criteria": [criteria],
+                    "model": agent_info,
                     "name": name,
                 },
                 EvaluationCreateLocalParams,
