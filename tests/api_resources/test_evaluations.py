@@ -26,6 +26,7 @@ class TestEvaluations:
         evaluation = client.evaluations.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(Evaluation, evaluation, path=["response"])
 
@@ -35,13 +36,9 @@ class TestEvaluations:
         evaluation = client.evaluations.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            criteria={
-                "dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                "tags": ["string"],
-                "target_type": "dataset",
-            },
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            tags=["string"],
             name="name",
-            old_evaluation_id="old_evaluation_id",
             run_count=1,
             scheduled_evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
@@ -53,6 +50,7 @@ class TestEvaluations:
         response = client.evaluations.with_raw_response.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -66,6 +64,7 @@ class TestEvaluations:
         with client.evaluations.with_streaming_response.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -513,6 +512,7 @@ class TestAsyncEvaluations:
         evaluation = await async_client.evaluations.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(Evaluation, evaluation, path=["response"])
 
@@ -522,13 +522,9 @@ class TestAsyncEvaluations:
         evaluation = await async_client.evaluations.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            criteria={
-                "dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                "tags": ["string"],
-                "target_type": "dataset",
-            },
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            tags=["string"],
             name="name",
-            old_evaluation_id="old_evaluation_id",
             run_count=1,
             scheduled_evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
@@ -540,6 +536,7 @@ class TestAsyncEvaluations:
         response = await async_client.evaluations.with_raw_response.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -553,6 +550,7 @@ class TestAsyncEvaluations:
         async with async_client.evaluations.with_streaming_response.create(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"

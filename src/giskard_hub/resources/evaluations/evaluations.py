@@ -72,10 +72,11 @@ class EvaluationsResource(SyncAPIResource):
     def create(
         self,
         *,
-        agent_id: str,
         project_id: str,
-        criteria: Optional[DatasetSubsetParam] | Omit = omit,
         name: str | Omit = omit,
+        agent_id: str,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
         old_evaluation_id: Optional[str] | Omit = omit,
         run_count: int | Omit = omit,
         scheduled_evaluation_id: Optional[str] | Omit = omit,
@@ -89,22 +90,24 @@ class EvaluationsResource(SyncAPIResource):
         """Create Evaluation
 
         Args:
-          agent_id: The ID of the agent to create the evaluation for
-
           project_id: The ID of the project to create the evaluation for
-
-          criteria: A dataset subset that defines which test cases are included in the
-              evaluation. Specify a `dataset_id` to draw test cases from a particular
-              dataset, and optionally supply `tags` to restrict the subset to test cases
-              carrying those tags. Exactly one of `criteria` or `old_evaluation_id` must
-              be provided.
 
           name: The name of the evaluation
 
+          agent_id: The ID of the agent to create the evaluation for
+
+          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
+              `dataset_id` or `old_evaluation_id` must be provided.
+
+          tags: Optional tags to restrict the subset to test cases carrying those tags.
+              Only used when `dataset_id` is provided.
+
           old_evaluation_id: The ID of a previous evaluation whose test cases should be
-              reused. Exactly one of `old_evaluation_id` or `criteria` must be provided.
+              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
 
           run_count: The number of times to run each test case
+
+          scheduled_evaluation_id: The ID of the scheduled evaluation to associate with
 
           extra_headers: Send extra headers
 
@@ -114,6 +117,17 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+
+        if (dataset_id is omit and old_evaluation_id is omit) or (
+            dataset_id is not omit and old_evaluation_id is not omit
+        ):
+            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+        criteria = omit
+
+        if dataset_id is not omit:
+            criteria = DatasetSubsetParam(dataset_id=dataset_id, tags=tags)
+
         response = self._post(
             "/v2/evaluations",
             body=maybe_transform(
@@ -527,10 +541,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        agent_id: str,
         project_id: str,
-        criteria: Optional[DatasetSubsetParam] | Omit = omit,
         name: str | Omit = omit,
+        agent_id: str,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
         old_evaluation_id: Optional[str] | Omit = omit,
         run_count: int | Omit = omit,
         scheduled_evaluation_id: Optional[str] | Omit = omit,
@@ -544,22 +559,24 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """Create Evaluation
 
         Args:
-          agent_id: The ID of the agent to create the evaluation for
-
           project_id: The ID of the project to create the evaluation for
-
-          criteria: A dataset subset that defines which test cases are included in the
-              evaluation. Specify a `dataset_id` to draw test cases from a particular
-              dataset, and optionally supply `tags` to restrict the subset to test cases
-              carrying those tags. Exactly one of `criteria` or `old_evaluation_id` must
-              be provided.
 
           name: The name of the evaluation
 
+          agent_id: The ID of the agent to create the evaluation for
+
+          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
+              `dataset_id` or `old_evaluation_id` must be provided.
+
+          tags: Optional tags to restrict the subset to test cases carrying those tags.
+              Only used when `dataset_id` is provided.
+
           old_evaluation_id: The ID of a previous evaluation whose test cases should be
-              reused. Exactly one of `old_evaluation_id` or `criteria` must be provided.
+              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
 
           run_count: The number of times to run each test case
+
+          scheduled_evaluation_id: The ID of the scheduled evaluation to associate with
 
           extra_headers: Send extra headers
 
@@ -569,6 +586,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+
+        if (dataset_id is omit and old_evaluation_id is omit) or (
+            dataset_id is not omit and old_evaluation_id is not omit
+        ):
+            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+        criteria = omit
+
+        if dataset_id is not omit:
+            criteria = DatasetSubsetParam(dataset_id=dataset_id, tags=tags)
+
         response = await self._post(
             "/v2/evaluations",
             body=await async_maybe_transform(
