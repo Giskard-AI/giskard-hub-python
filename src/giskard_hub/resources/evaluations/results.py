@@ -251,7 +251,7 @@ class ResultsResource(SyncAPIResource):
         *,
         evaluation_id: str,
         error: Optional[str] | Omit = omit,
-        output: Optional[AgentOutputParam] | Omit = omit,
+        agent_output: Optional[AgentOutputParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -269,7 +269,7 @@ class ResultsResource(SyncAPIResource):
 
           error: The error to submit the local output for
 
-          output: The output to submit the local output for
+          agent_output: The output to submit the local output for
 
           extra_headers: Send extra headers
 
@@ -288,7 +288,7 @@ class ResultsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "error": error,
-                    "output": output,
+                    "output": agent_output,
                 },
                 ResultSubmitLocalOutputParams,
             ),
@@ -677,7 +677,7 @@ class AsyncResultsResource(AsyncAPIResource):
         *,
         evaluation_id: str,
         error: Optional[str] | Omit = omit,
-        output: Optional[AgentOutputParam] | Omit = omit,
+        agent_output: Optional[AgentOutputParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -695,7 +695,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
           error: The error to submit the local output for
 
-          output: The output to submit the local output for
+          agent_output: The output to submit the local output for
 
           extra_headers: Send extra headers
 
@@ -714,7 +714,7 @@ class AsyncResultsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "error": error,
-                    "output": output,
+                    "output": agent_output,
                 },
                 ResultSubmitLocalOutputParams,
             ),

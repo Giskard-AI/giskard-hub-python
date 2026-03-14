@@ -286,7 +286,7 @@ class TestResults:
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             error="error",
-            output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",
@@ -756,7 +756,7 @@ class TestAsyncResults:
             result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             error="error",
-            output={
+            agent_output={
                 "response": {
                     "content": "content",
                     "role": "role",

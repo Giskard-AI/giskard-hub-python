@@ -4,6 +4,8 @@ from typing import Dict, Iterable, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
+from pydantic import Field, AliasChoices
+
 from .chat import Header, ChatMessage, HeaderParam, ChatMessageParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
@@ -49,7 +51,10 @@ class AgentReference(BaseModel):
 
 
 class AgentOutput(BaseModel):
-    response: Optional[ChatMessage] = None
+    response: Optional[ChatMessage] = Field(
+        default=None,
+        validation_alias=AliasChoices("response", "message"),
+    )
     error: Optional[ExecutionError] = None
     metadata: Optional[Dict[str, object]] = None
 
