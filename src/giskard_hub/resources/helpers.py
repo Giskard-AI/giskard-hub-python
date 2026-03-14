@@ -1,3 +1,4 @@
+import math
 import time
 import asyncio
 import inspect
@@ -15,12 +16,14 @@ from typing import (
 )
 
 from pydantic import TypeAdapter
+from rich.table import Table
+from rich.console import Console
 
 from .._types import Omit, SequenceNotStr, omit
 from .._models import BaseModel
 from .._resource import SyncAPIResource, AsyncAPIResource
 from ..types.chat import ChatMessage
-from ..types.scan import ScanResult, ScanProbeResult
+from ..types.scan import Severity, ScanResult, ScanProbeResult, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutput, AgentOutputParam
 from ..types.common import TaskState
 from ..types.dataset import Dataset
@@ -32,7 +35,7 @@ from ..types.knowledge_base import KnowledgeBase
 if TYPE_CHECKING:
     from .._client import HubClient, AsyncHubClient
 
-__all__ = ["HelpersResource", "AsyncHelpersResource"]
+__all__ = ["HelpersResource", "AsyncHelpersResource", "PrintMetricsEntity"]
 
 
 @runtime_checkable
@@ -55,6 +58,140 @@ TStateful = TypeVar("TStateful", bound=StatefulEntity)
 
 AgentReturn = str | ChatMessage | AgentOutput
 agent_return_adapter: TypeAdapter[AgentReturn] = TypeAdapter(AgentReturn)
+
+PrintMetricsEntity = Evaluation | ScanResult
+
+
+def _print_evaluation_metrics_table(entity: Evaluation) -> None:
+    """Print evaluation metrics (name, success rate, details) to the console."""
+    console = Console()
+    table = Table(
+        "Metric",
+        "Result",
+        "Details",
+        title=f"Evaluation Run [bold cyan]{entity.name}[/bold cyan]",
+    )
+    for metric in entity.metrics:
+        success_rate = cast(float, metric.success_rate)
+        if math.isnan(success_rate):
+            continue
+        if success_rate > 0.8:
+            color = "green"
+        elif success_rate > 0.5:
+            color = "yellow"
+        else:
+            color = "red"
+        total = metric.total or 0
+        passed = metric.passed or 0
+        failed = metric.failed or 0
+        errored = metric.errored or 0
+        skipped = total - passed - failed - errored
+        table.add_row(
+            f"[bold]{metric.name.capitalize()}[/bold]",
+            f"[{color}]{success_rate * 100:.2f}%[/{color}]",
+            f"[bright_black]{passed} passed, {failed} failed, {errored} errored, {skipped} not executed[/bright_black]",
+        )
+    console.print(table)
+
+
+def _build_scan_probe_data(
+    category_map: dict[str, str],
+    probe_results: list[ScanProbeResult],
+    attempts_by_probe_id: dict[str, list[ScanProbeAttempt]],
+) -> list[dict[str, Any]]:
+    """Build sorted probe data for scan metrics display."""
+    probe_data: list[dict[str, Any]] = []
+    for probe in probe_results:
+        category_name = category_map.get(probe.category, probe.category)
+        probe_name = probe.name
+        if probe_name.endswith(" Probe"):
+            probe_name = probe_name[:-6]
+        if probe.status.state != "finished":
+            probe_data.append(
+                {
+                    "category": category_name,
+                    "probe_name": probe_name,
+                    "status": probe.status.state,
+                    "severity": None,
+                    "num_issues": None,
+                    "num_attacks": None,
+                }
+            )
+        else:
+            attempts = attempts_by_probe_id.get(probe.id, [])
+            num_attacks = len(attempts)
+            num_issues = sum(1 for attempt in attempts if attempt.severity > Severity.SAFE)
+            max_severity = max((attempt.severity for attempt in attempts), default=Severity.SAFE)
+            probe_data.append(
+                {
+                    "category": category_name,
+                    "probe_name": probe_name,
+                    "status": None,
+                    "severity": max_severity,
+                    "num_issues": num_issues,
+                    "num_attacks": num_attacks,
+                }
+            )
+    probe_data.sort(
+        key=lambda x: (
+            x["category"],
+            -(x["severity"] if x["severity"] is not None else -1),
+            x["probe_name"],
+        )
+    )
+    return probe_data
+
+
+def _print_scan_metrics_table(probe_data: list[dict[str, Any]], entity_id: str) -> None:
+    """Print scan probe metrics table to the console."""
+    console = Console()
+    table = Table(
+        "Category",
+        "Probe Name",
+        "Severity",
+        "Results",
+        title=f"Scan Result [bold cyan]{entity_id}[/bold cyan]",
+    )
+    for data in probe_data:
+        if data["status"] is not None:
+            status_str = str(data["status"]).upper()
+            status_color = "bright_black"
+            severity_text = f"[{status_color}]{status_str}[/{status_color}]"
+            results_text = str(data["status"]).capitalize()
+            table.add_row(
+                data["category"],
+                data["probe_name"],
+                severity_text,
+                results_text,
+            )
+        else:
+            severity_val = data["severity"]
+            if severity_val == Severity.CRITICAL:
+                color = "red"
+            elif severity_val == Severity.MAJOR:
+                color = "yellow"
+            elif severity_val == Severity.MINOR:
+                color = "orange"
+            else:
+                color = "green"
+            num_issues = data["num_issues"]
+            num_attacks = data["num_attacks"]
+            severity_label = Severity(severity_val).name
+            if num_issues == 0:
+                issues_text = "[bold]No issues found[/bold]"
+            elif num_issues == 1:
+                issues_text = "[bold]1 issue[/bold]"
+            else:
+                issues_text = f"[bold]{num_issues} issues[/bold]"
+            attacks_text = "1 attack" if num_attacks == 1 else f"{num_attacks} attacks"
+            results_text = f"{issues_text} / {attacks_text}"
+            table.add_row(
+                data["category"],
+                data["probe_name"],
+                f"[{color}]{severity_label}[/{color}]",
+                results_text,
+            )
+    console.print(table)
 
 
 def _map_entity_to_resource_from_client(
@@ -309,6 +446,34 @@ class HelpersResource(SyncAPIResource):
 
         return evaluation
 
+    def print_metrics(self, entity: PrintMetricsEntity) -> None:
+        """
+        Print metrics for an evaluation or scan result to the console.
+
+        For an evaluation, displays a table of metric names, success rates, and
+        pass/fail/error/skipped counts. For a scan result, displays probe
+        categories, names, severity, and issue/attack counts.
+
+        Parameters
+        ----------
+        entity : Evaluation or ScanResult
+            The evaluation run or scan result whose metrics to display.
+
+        Returns
+        -------
+        None
+        """
+        if isinstance(entity, Evaluation):
+            _print_evaluation_metrics_table(entity)
+        else:
+            category_map = {cat.id: cat.title for cat in self._client.scans.list_categories()}
+            probe_results = self._client.scans.list_probes(scan_result_id=entity.id)
+            attempts_by_probe_id = {
+                probe.id: self._client.scans.probes.list_attempts(probe_result_id=probe.id) for probe in probe_results
+            }
+            probe_data = _build_scan_probe_data(category_map, probe_results, attempts_by_probe_id)
+            _print_scan_metrics_table(probe_data, entity.id)
+
 
 class AsyncHelpersResource(AsyncAPIResource):
     def _map_entity_to_resource(self, entity: BaseModel) -> AsyncAPIResource:
@@ -331,6 +496,34 @@ class AsyncHelpersResource(AsyncAPIResource):
             If the entity type is not supported.
         """
         return cast(AsyncAPIResource, _map_entity_to_resource_from_client(self._client, entity))
+
+    async def print_metrics(self, entity: PrintMetricsEntity) -> None:
+        """
+        Print metrics for an evaluation or scan result to the console (async).
+
+        For an evaluation, displays a table of metric names, success rates, and
+        pass/fail/error/skipped counts. For a scan result, displays probe
+        categories, names, severity, and issue/attack counts.
+
+        Parameters
+        ----------
+        entity : Evaluation or ScanResult
+            The evaluation run or scan result whose metrics to display.
+
+        Returns
+        -------
+        None
+        """
+        if isinstance(entity, Evaluation):
+            _print_evaluation_metrics_table(entity)
+        else:
+            category_map = {cat.id: cat.title for cat in await self._client.scans.list_categories()}
+            probe_results = await self._client.scans.list_probes(scan_result_id=entity.id)
+            attempts_by_probe_id: dict[str, list[ScanProbeAttempt]] = {}
+            for probe in probe_results:
+                attempts_by_probe_id[probe.id] = await self._client.scans.probes.list_attempts(probe_result_id=probe.id)
+            probe_data = _build_scan_probe_data(category_map, probe_results, attempts_by_probe_id)
+            _print_scan_metrics_table(probe_data, entity.id)
 
     async def wait_for_completion(
         self,
