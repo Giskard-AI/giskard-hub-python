@@ -1,6 +1,18 @@
 import time
 import asyncio
-from typing import TYPE_CHECKING, Any, TypeVar, Callable, Optional, Protocol, Collection, cast, runtime_checkable
+import inspect
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeVar,
+    Callable,
+    Optional,
+    Protocol,
+    Awaitable,
+    Collection,
+    cast,
+    runtime_checkable,
+)
 
 from pydantic import TypeAdapter
 
@@ -387,7 +399,7 @@ class AsyncHelpersResource(AsyncAPIResource):
     async def evaluate(
         self,
         *,
-        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn],
+        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]],
         dataset: str | Dataset,
         project: Optional[str | Project] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -476,8 +488,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         )
 
         # Submit outputs
-        # Submit outputs
-        async def _process_entry(entry):
+        async def _process_entry(entry: TestCaseEvaluation) -> None:
             test_case = entry.test_case
             if not isinstance(test_case, TestCase):
                 raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
