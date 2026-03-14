@@ -1,13 +1,19 @@
 import time
 import asyncio
-from typing import TYPE_CHECKING, TypeVar, Protocol, Collection, cast, runtime_checkable
+from typing import TYPE_CHECKING, Any, TypeVar, Callable, Optional, Protocol, Collection, cast, runtime_checkable
 
+from pydantic import TypeAdapter
+
+from .._types import Omit, SequenceNotStr, omit
 from .._models import BaseModel
 from .._resource import SyncAPIResource, AsyncAPIResource
+from ..types.chat import ChatMessage
 from ..types.scan import ScanResult, ScanProbeResult
-from ..types.agent import Agent
+from ..types.agent import Agent, AgentOutput, AgentOutputParam
 from ..types.common import TaskState
 from ..types.dataset import Dataset
+from ..types.project import Project
+from ..types.test_case import TestCase
 from ..types.evaluation import Evaluation, TestCaseEvaluation
 from ..types.knowledge_base import KnowledgeBase
 
@@ -34,6 +40,9 @@ class AsyncRetrievableResource(Protocol):
 
 
 TStateful = TypeVar("TStateful", bound=StatefulEntity)
+
+AgentReturn = str | ChatMessage | AgentOutput
+agent_return_adapter: TypeAdapter[AgentReturn] = TypeAdapter(AgentReturn)
 
 
 def _map_entity_to_resource_from_client(
@@ -80,6 +89,20 @@ def _map_entity_to_resource_from_client(
     if isinstance(entity, TestCaseEvaluation):
         return client.evaluations.results
     raise TypeError(f"Unsupported entity type for wait_for_completion: {type(entity)!r}")
+
+
+def _normalize_agent_output(value: Any) -> AgentOutput:
+    parsed: AgentReturn = agent_return_adapter.validate_python(value)
+
+    match parsed:
+        case AgentOutput():
+            return parsed
+        case ChatMessage():
+            return AgentOutput(response=parsed)
+        case str():
+            return AgentOutput(response=ChatMessage(role="assistant", content=parsed))
+        case _:
+            raise ValueError(f"Invalid agent output: {value!r}")
 
 
 class HelpersResource(SyncAPIResource):
@@ -169,6 +192,111 @@ class HelpersResource(SyncAPIResource):
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
 
+    def evaluate(
+        self,
+        *,
+        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn],
+        dataset: str | Dataset,
+        project: Optional[str | Project] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+    ) -> Evaluation:
+        """
+        Run an evaluation for a given agent over a dataset.
+
+        This helper handles both remote agents (referenced by ID or `Agent`) and
+        local Python callables that take a list of `ChatMessage` and return an
+        `AgentOutput`-compatible value.
+
+        Parameters
+        ----------
+        agent :
+            Either a remote agent identifier (`str` or `Agent`) or a callable
+            with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+        dataset :
+            Dataset identifier or `Dataset` instance containing the test cases
+            to evaluate the agent on.
+        project :
+            Project identifier or `Project` instance. Required when `agent` is a
+            remote agent (string or `Agent`). Ignored for local callable agents.
+        name :
+            Optional name to assign to the created evaluation.
+        tags :
+            Optional list of tags to filter the dataset's test cases when
+            creating the evaluation.
+
+        Returns
+        -------
+        Evaluation
+            The created evaluation, either remote or local depending on the
+            `agent` argument.
+
+        Raises
+        ------
+        ValueError
+            If `project` is not provided when running a remote evaluation.
+        TypeError
+            If the local agent callable returns a value that cannot be
+            normalized into an `AgentOutput`, or if test cases returned by the
+            API do not include full `TestCase` objects during local evaluation.
+        """
+        dataset_id = dataset if isinstance(dataset, str) else dataset.id
+
+        # Remote evaluation
+        if isinstance(agent, str) or isinstance(agent, Agent):
+            if project is omit or project is None:
+                raise ValueError("Project is required when running a remote evaluation")
+
+            if isinstance(project, str):
+                project_id: str = project
+            else:
+                project_model = cast(Project, project)
+                project_id = project_model.id
+
+            agent_id = agent if isinstance(agent, str) else agent.id
+
+            name_arg: str | Omit = omit if name is None else name
+
+            return self._client.evaluations.create(
+                project_id=project_id,
+                agent_id=agent_id,
+                name=name_arg,
+                dataset_id=dataset_id,
+                tags=tags,
+            )
+
+        # Local evaluation
+        # Create evaluation
+        evaluation = self._client.evaluations.create_local(
+            agent_info={
+                "name": agent.__name__,
+                "description": agent.__doc__ or "",
+            },
+            name=name,
+            dataset_id=dataset_id,
+            tags=tags,
+        )
+
+        # Retrieve entries (test case messages)
+        entries = self._client.evaluations.results.list(evaluation_id=evaluation.id, include=["test_case"])
+
+        # Submit outputs
+        for entry in entries:
+            test_case = entry.test_case
+            if not isinstance(test_case, TestCase):
+                raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
+
+            agent_output_model = _normalize_agent_output(agent(test_case.messages))
+            agent_output_param = cast(AgentOutputParam, agent_output_model.to_dict())
+
+            self._client.evaluations.results.submit_local_output(
+                result_id=entry.id,
+                evaluation_id=evaluation.id,
+                agent_output=agent_output_param,
+            )
+
+        return evaluation
+
 
 class AsyncHelpersResource(AsyncAPIResource):
     def _map_entity_to_resource(self, entity: BaseModel) -> AsyncAPIResource:
@@ -255,3 +383,111 @@ class AsyncHelpersResource(AsyncAPIResource):
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
+
+    async def evaluate(
+        self,
+        *,
+        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn],
+        dataset: str | Dataset,
+        project: Optional[str | Project] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+    ) -> Evaluation:
+        """
+        Asynchronously run an evaluation for a given agent over a dataset.
+
+        This helper handles both remote agents (referenced by ID or `Agent`) and
+        local Python callables that take a list of `ChatMessage` and return an
+        `AgentOutput`-compatible value.
+
+        Parameters
+        ----------
+        agent :
+            Either a remote agent identifier (`str` or `Agent`) or a callable
+            with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+        dataset :
+            Dataset identifier or `Dataset` instance containing the test cases
+            to evaluate the agent on.
+        project :
+            Project identifier or `Project` instance. Required when `agent` is a
+            remote agent (string or `Agent`). Ignored for local callable agents.
+        name :
+            Optional name to assign to the created evaluation.
+        tags :
+            Optional list of tags to filter the dataset's test cases when
+            creating the evaluation.
+
+        Returns
+        -------
+        Evaluation
+            The created evaluation, either remote or local depending on the
+            `agent` argument.
+
+        Raises
+        ------
+        ValueError
+            If `project` is not provided when running a remote evaluation.
+        TypeError
+            If the local agent callable returns a value that cannot be
+            normalized into an `AgentOutput`, or if test cases returned by the
+            API do not include full `TestCase` objects during local evaluation.
+        """
+        dataset_id = dataset if isinstance(dataset, str) else dataset.id
+
+        # Remote evaluation
+        if isinstance(agent, str) or isinstance(agent, Agent):
+            if project is omit or project is None:
+                raise ValueError("Project is required when running a remote evaluation")
+
+            if isinstance(project, str):
+                project_id: str = project
+            else:
+                project_model = cast(Project, project)
+                project_id = project_model.id
+
+            agent_id = agent if isinstance(agent, str) else agent.id
+
+            name_arg: str | Omit = omit if name is None else name
+
+            return await self._client.evaluations.create(
+                project_id=project_id,
+                agent_id=agent_id,
+                name=name_arg,
+                dataset_id=dataset_id,
+                tags=tags,
+            )
+
+        # Local evaluation
+        # Create evaluation
+        evaluation = await self._client.evaluations.create_local(
+            agent_info={
+                "name": agent.__name__,
+                "description": agent.__doc__ or "",
+            },
+            name=name,
+            dataset_id=dataset_id,
+            tags=tags,
+        )
+
+        # Retrieve entries (test case messages)
+        entries = await self._client.evaluations.results.list(
+            evaluation_id=evaluation.id,
+            include=["test_case"],
+        )
+
+        # Submit outputs
+        for entry in entries:
+            test_case = entry.test_case
+            if not isinstance(test_case, TestCase):
+                raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
+
+            agent_output_model = _normalize_agent_output(agent(test_case.messages))
+            agent_output_param = cast(AgentOutputParam, agent_output_model.to_dict())
+
+            await self._client.evaluations.results.submit_local_output(
+                result_id=entry.id,
+                evaluation_id=evaluation.id,
+                agent_output=agent_output_param,
+            )
+
+        return evaluation
