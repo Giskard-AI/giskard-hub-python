@@ -45,6 +45,22 @@ from ...types.evaluation import (
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
 
 
+def _validate_dataset_or_old_evaluation(
+    dataset_id: Optional[str] | Omit,
+    old_evaluation_id: Optional[str] | Omit,
+) -> None:
+    """
+    Ensure that exactly one of `dataset_id` or `old_evaluation_id` is provided.
+
+    Raises
+    ------
+    ValueError
+        If both are provided or both are omitted.
+    """
+    if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
+        raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+
 class EvaluationsResource(SyncAPIResource):
     @cached_property
     def results(self) -> ResultsResource:
@@ -118,11 +134,7 @@ class EvaluationsResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
 
-        if (dataset_id is omit and old_evaluation_id is omit) or (
-            dataset_id is not omit and old_evaluation_id is not omit
-        ):
-            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
-
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
 
         if dataset_id is not omit:
@@ -410,11 +422,7 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if (dataset_id is omit and old_evaluation_id is omit) or (
-            dataset_id is not omit and old_evaluation_id is not omit
-        ):
-            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
-
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
 
         if dataset_id is not omit:
@@ -611,11 +619,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
 
-        if (dataset_id is omit and old_evaluation_id is omit) or (
-            dataset_id is not omit and old_evaluation_id is not omit
-        ):
-            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
-
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
 
         if dataset_id is not omit:
@@ -903,11 +907,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if (dataset_id is omit and old_evaluation_id is omit) or (
-            dataset_id is not omit and old_evaluation_id is not omit
-        ):
-            raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
-
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
 
         if dataset_id is not omit:
