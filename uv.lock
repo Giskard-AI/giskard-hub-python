@@ -374,7 +374,7 @@ wheels = [
 
 [[package]]
 name = "giskard-hub"
-version = "3.0.0b4"
+version = "3.0.0b5"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },
