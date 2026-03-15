@@ -73,8 +73,8 @@ def _print_evaluation_metrics_table(entity: Evaluation) -> None:
         title=f"Evaluation Run [bold cyan]{entity.name}[/bold cyan]",
     )
     for metric in entity.metrics:
-        success_rate = cast(float, metric.success_rate)
-        if math.isnan(success_rate):
+        success_rate = metric.success_rate
+        if success_rate is None or math.isnan(success_rate):
             continue
         if success_rate > 0.8:
             color = "green"
@@ -106,7 +106,7 @@ def _build_scan_probe_data(
         category_name = category_map.get(probe.category, probe.category)
         probe_name = probe.name
         if probe_name.endswith(" Probe"):
-            probe_name = probe_name[:-6]
+            probe_name = probe_name.removesuffix("Probe").strip()
         if probe.status.state != "finished":
             probe_data.append(
                 {
@@ -167,14 +167,12 @@ def _print_scan_metrics_table(probe_data: list[dict[str, Any]], entity_id: str) 
             )
         else:
             severity_val = data["severity"]
-            if severity_val == Severity.CRITICAL:
-                color = "red"
-            elif severity_val == Severity.MAJOR:
-                color = "yellow"
-            elif severity_val == Severity.MINOR:
-                color = "orange"
-            else:
-                color = "green"
+            severity_colors = {
+                Severity.CRITICAL: "red",
+                Severity.MAJOR: "orange",
+                Severity.MINOR: "yellow",
+            }
+            color = severity_colors.get(severity_val, "green")
             num_issues = data["num_issues"]
             num_attacks = data["num_attacks"]
             severity_label = Severity(severity_val).name

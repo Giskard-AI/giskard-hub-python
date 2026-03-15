@@ -1,6 +1,5 @@
 """Evaluation domain types."""
 
-import math
 from typing import Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
@@ -56,15 +55,7 @@ class Metric(BaseModel):
     failed: Optional[int] = None
     passed: Optional[int] = None
     total: Optional[int] = None
-
-    @computed_field
-    def success_rate(self) -> float:
-        """Passed / total, or nan if total is missing or zero."""
-        if self.total is None or self.total == 0:
-            return math.nan
-        if self.passed is None:
-            return math.nan
-        return self.passed / self.total
+    success_rate: Optional[float] = None
 
 
 class EvaluationReference(BaseModel):
