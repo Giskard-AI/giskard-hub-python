@@ -10,6 +10,7 @@ from typing import (
     Optional,
     Protocol,
     Awaitable,
+    TypedDict,
     Collection,
     cast,
     runtime_checkable,
@@ -36,7 +37,7 @@ from ..types.knowledge_base import KnowledgeBase
 if TYPE_CHECKING:
     from .._client import HubClient, AsyncHubClient
 
-__all__ = ["HelpersResource", "AsyncHelpersResource", "PrintMetricsEntity"]
+__all__ = ["HelpersResource", "AsyncHelpersResource"]
 
 
 @runtime_checkable
@@ -62,6 +63,15 @@ agent_return_adapter: TypeAdapter[AgentReturn] = TypeAdapter(AgentReturn)
 
 PrintMetricsEntity = Evaluation | ScanResult
 
+_SEVERITY_COLORS = {
+    Severity.CRITICAL: "red",
+    Severity.MAJOR: "orange",
+    Severity.MINOR: "yellow",
+}
+
+SUCCESS_RATE_THRESHOLD_HIGH = 0.8
+SUCCESS_RATE_THRESHOLD_MEDIUM = 0.5
+
 
 def _print_evaluation_metrics_table(entity: Evaluation) -> None:
     """Print evaluation metrics (name, success rate, details) to the console."""
@@ -76,9 +86,9 @@ def _print_evaluation_metrics_table(entity: Evaluation) -> None:
         success_rate = metric.success_rate
         if success_rate is None or math.isnan(success_rate):
             continue
-        if success_rate > 0.8:
+        if success_rate > SUCCESS_RATE_THRESHOLD_HIGH:
             color = "green"
-        elif success_rate > 0.5:
+        elif success_rate > SUCCESS_RATE_THRESHOLD_MEDIUM:
             color = "yellow"
         else:
             color = "red"
@@ -95,13 +105,22 @@ def _print_evaluation_metrics_table(entity: Evaluation) -> None:
     console.print(table)
 
 
+class ProbeData(TypedDict):
+    category: str
+    probe_name: str
+    status: Optional[TaskState]
+    severity: Optional[Severity]
+    num_issues: Optional[int]
+    num_attacks: Optional[int]
+
+
 def _build_scan_probe_data(
     category_map: dict[str, str],
     probe_results: list[ScanProbeResult],
     attempts_by_probe_id: dict[str, list[ScanProbeAttempt]],
-) -> list[dict[str, Any]]:
+) -> list[ProbeData]:
     """Build sorted probe data for scan metrics display."""
-    probe_data: list[dict[str, Any]] = []
+    probe_data: list[ProbeData] = []
     for probe in probe_results:
         category_name = category_map.get(probe.category, probe.category)
         probe_name = probe.name
@@ -143,7 +162,7 @@ def _build_scan_probe_data(
     return probe_data
 
 
-def _print_scan_metrics_table(probe_data: list[dict[str, Any]], entity_id: str) -> None:
+def _print_scan_metrics_table(probe_data: list[ProbeData], entity_id: str) -> None:
     """Print scan probe metrics table to the console."""
     console = Console()
     table = Table(
@@ -167,15 +186,10 @@ def _print_scan_metrics_table(probe_data: list[dict[str, Any]], entity_id: str) 
             )
         else:
             severity_val = data["severity"]
-            severity_colors = {
-                Severity.CRITICAL: "red",
-                Severity.MAJOR: "orange",
-                Severity.MINOR: "yellow",
-            }
-            color = severity_colors.get(severity_val, "green")
+            color: str = _SEVERITY_COLORS.get(severity_val, "green") if severity_val is not None else "green"
             num_issues = data["num_issues"]
             num_attacks = data["num_attacks"]
-            severity_label = Severity(severity_val).name
+            severity_label = Severity(severity_val).name if severity_val is not None else "—"
             if num_issues == 0:
                 issues_text = "[bold]No issues found[/bold]"
             elif num_issues == 1:
