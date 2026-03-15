@@ -14,6 +14,7 @@ from typing import (
     cast,
     runtime_checkable,
 )
+from concurrent.futures import ThreadPoolExecutor
 
 from pydantic import TypeAdapter
 from rich.table import Table
@@ -468,9 +469,12 @@ class HelpersResource(SyncAPIResource):
         else:
             category_map = {cat.id: cat.title for cat in self._client.scans.list_categories()}
             probe_results = self._client.scans.list_probes(scan_result_id=entity.id)
-            attempts_by_probe_id = {
-                probe.id: self._client.scans.probes.list_attempts(probe_result_id=probe.id) for probe in probe_results
-            }
+
+            def fetch_attempts(probe: ScanProbeResult) -> tuple[str, list[ScanProbeAttempt]]:
+                return (probe.id, self._client.scans.probes.list_attempts(probe_result_id=probe.id))
+
+            with ThreadPoolExecutor() as executor:
+                attempts_by_probe_id = dict(executor.map(fetch_attempts, probe_results))
             probe_data = _build_scan_probe_data(category_map, probe_results, attempts_by_probe_id)
             _print_scan_metrics_table(probe_data, entity.id)
 
@@ -519,9 +523,12 @@ class AsyncHelpersResource(AsyncAPIResource):
         else:
             category_map = {cat.id: cat.title for cat in await self._client.scans.list_categories()}
             probe_results = await self._client.scans.list_probes(scan_result_id=entity.id)
-            attempts_by_probe_id: dict[str, list[ScanProbeAttempt]] = {}
-            for probe in probe_results:
-                attempts_by_probe_id[probe.id] = await self._client.scans.probes.list_attempts(probe_result_id=probe.id)
+            attempts_list = await asyncio.gather(
+                *(self._client.scans.probes.list_attempts(probe_result_id=probe.id) for probe in probe_results)
+            )
+            attempts_by_probe_id = {
+                probe.id: attempts for probe, attempts in zip(probe_results, attempts_list, strict=True)
+            }
             probe_data = _build_scan_probe_data(category_map, probe_results, attempts_by_probe_id)
             _print_scan_metrics_table(probe_data, entity.id)
 
