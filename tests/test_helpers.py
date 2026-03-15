@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Any, List, Iterable
 
 import pytest
@@ -7,7 +5,8 @@ import pytest
 from giskard_hub.types.chat import ChatMessage
 from giskard_hub.types.test_case import TestCase
 from giskard_hub.types.evaluation import Evaluation
-from giskard_hub.resources.helpers import StatefulEntity, HelpersResource, AsyncHelpersResource
+from giskard_hub.resources.helpers import HelpersResource, AsyncHelpersResource
+from giskard_hub.resources._helpers_types import StatefulEntity
 
 
 class DummyStateful(StatefulEntity):
