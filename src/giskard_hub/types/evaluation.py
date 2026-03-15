@@ -1,19 +1,19 @@
 """Evaluation domain types."""
 
+from typing import Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
 from datetime import datetime  # noqa: I001
-from typing import Dict, Iterable, List, Literal, Optional, TypeAlias, TypedDict, Union
-
-from pydantic import computed_field
 from typing_extensions import Required
 
-from .._models import BaseModel
-from .._types import SequenceNotStr
-from .agent import Agent, AgentOutput, AgentOutputParam, AgentReference, MinimalAgent, MinimalAgentParam
+from pydantic import computed_field
+
 from .chat import ChatMessageParam
+from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam
 from .check import OutputAnnotation
-from .common import FilterValueParam, OrderByParam, TaskProgress, TaskState
-from .dataset import Dataset, DatasetReference, DatasetSubset, DatasetSubsetParam
-from .test_case import TestCaseReference, TestCase
+from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
+from .._types import SequenceNotStr
+from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
+from .._models import BaseModel
+from .test_case import TestCase, TestCaseReference
 
 __all__ = [
     "Metric",
@@ -55,6 +55,7 @@ class Metric(BaseModel):
     failed: Optional[int] = None
     passed: Optional[int] = None
     total: Optional[int] = None
+    success_rate: Optional[float] = None
 
 
 class EvaluationReference(BaseModel):

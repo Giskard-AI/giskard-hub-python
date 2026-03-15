@@ -1,10 +1,11 @@
 """Scan domain types."""
 
+from enum import IntEnum
 from typing import Dict, List, Literal, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
-from pydantic import computed_field
+from pydantic import Field, computed_field
 
 from .chat import ChatMessageWithMetadata
 from .agent import Agent, AgentReference
@@ -33,7 +34,14 @@ __all__ = [
 # Enums
 # ---------------------------------------------------------------------------
 
-Severity: TypeAlias = Literal[0, 10, 20, 30]
+
+class Severity(IntEnum):
+    SAFE = 0
+    MINOR = 10
+    MAJOR = 20
+    CRITICAL = 30
+
+
 ReviewStatus: TypeAlias = Literal["pending", "ignored", "acknowledged", "corrected"]
 
 
@@ -72,11 +80,11 @@ class ScanProbeMetric(BaseModel):
 class ScanProbeResult(BaseModel):
     id: str
     metrics: Optional[List[ScanProbeMetric]] = None
-    probe_category: str
-    probe_description: str
+    category: str = Field(alias="probe_category")
+    description: str = Field(alias="probe_description")
     probe_lidar_id: str
-    probe_name: str
-    probe_tags: List[str]
+    name: str = Field(alias="probe_name")
+    tags: List[str] = Field(alias="probe_tags")
     scan_result_id: str
     status: TaskProgress
 
