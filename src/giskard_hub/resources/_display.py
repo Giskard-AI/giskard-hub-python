@@ -26,7 +26,7 @@ SUCCESS_RATE_THRESHOLD_MEDIUM = 0.5
 
 _SEVERITY_COLORS = {
     Severity.CRITICAL: "red",
-    Severity.MAJOR: "orange",
+    Severity.MAJOR: "orange3",
     Severity.MINOR: "yellow",
 }
 
