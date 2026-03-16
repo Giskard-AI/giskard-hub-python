@@ -305,7 +305,7 @@ class ResultsResource(SyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
@@ -323,7 +323,7 @@ class ResultsResource(SyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
@@ -340,7 +340,7 @@ class ResultsResource(SyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
@@ -360,7 +360,7 @@ class ResultsResource(SyncAPIResource):
         Args:
           evaluation_id: The ID of the evaluation to search the results for
 
-          search: Search query for evaluation results
+          query: Search query for evaluation results
 
           order_by: Order by criteria for evaluation results
 
@@ -385,7 +385,7 @@ class ResultsResource(SyncAPIResource):
 
         response = self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
-            body=maybe_transform({"filters": filters, "order_by": order_by, "search": search}, ResultSearchParams),
+            body=maybe_transform({"filters": filters, "order_by": order_by, "search": query}, ResultSearchParams),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -731,7 +731,7 @@ class AsyncResultsResource(AsyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
@@ -749,7 +749,7 @@ class AsyncResultsResource(AsyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
@@ -766,7 +766,7 @@ class AsyncResultsResource(AsyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
@@ -786,7 +786,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Args:
           evaluation_id: The ID of the evaluation to search the results for
 
-          search: Search query for evaluation results
+          query: Search query for evaluation results
 
           order_by: Order by criteria for evaluation results
 
@@ -812,7 +812,7 @@ class AsyncResultsResource(AsyncAPIResource):
         response = await self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
             body=await async_maybe_transform(
-                {"filters": filters, "order_by": order_by, "search": search}, ResultSearchParams
+                {"filters": filters, "order_by": order_by, "search": query}, ResultSearchParams
             ),
             options=make_request_options(
                 extra_headers=extra_headers,

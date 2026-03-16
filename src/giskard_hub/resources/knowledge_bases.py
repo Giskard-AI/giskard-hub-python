@@ -22,7 +22,7 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
+from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata
 from ..types.knowledge_base import (
     KnowledgeBase,
     KnowledgeBaseListParams,
@@ -338,7 +338,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
         filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -355,7 +355,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
         filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -371,7 +371,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
         filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -390,7 +390,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         Args:
           knowledge_base_id: ID of the knowledge base
 
-          search: Search query for knowledge base documents
+          query: Search query for knowledge base documents
 
           order_by: Order by criteria for knowledge base documents
 
@@ -413,7 +413,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         response = self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=maybe_transform(
-                {"filters": filters, "order_by": order_by, "search": search},
+                {"filters": filters, "order_by": order_by, "search": query},
                 KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(
@@ -777,7 +777,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
         filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -794,7 +794,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
         filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -810,7 +810,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         self,
         knowledge_base_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit = omit,
         filters: Optional[KnowledgeBaseDocumentFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -829,7 +829,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Args:
           knowledge_base_id: ID of the knowledge base
 
-          search: Search query for knowledge base documents
+          query: Search query for knowledge base documents
 
           order_by: Order by criteria for knowledge base documents
 
@@ -852,7 +852,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         response = await self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=await async_maybe_transform(
-                {"filters": filters, "order_by": order_by, "search": search},
+                {"filters": filters, "order_by": order_by, "search": query},
                 KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(

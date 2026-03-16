@@ -9,7 +9,13 @@ import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
-from giskard_hub.types import KnowledgeBase, APIPaginatedMetadata, KnowledgeBaseDocumentRow, KnowledgeBaseDocumentDetail
+from giskard_hub.types import (
+    KnowledgeBase,
+    APIPaginatedMetadata,
+    KnowledgeBaseDocumentRow,
+    KnowledgeBaseDocumentDetail,
+    KnowledgeBaseDocumentFiltersParam,
+)
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -295,7 +301,7 @@ class TestKnowledgeBases:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search_documents(self, client: HubClient) -> None:
-        knowledge_base = client.knowledge_bases.search_documents(
+        knowledge_base: List[KnowledgeBaseDocumentRow] = client.knowledge_bases.search_documents(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(List[KnowledgeBaseDocumentRow], knowledge_base, path=["response"])
@@ -303,10 +309,10 @@ class TestKnowledgeBases:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search_documents_with_all_params(self, client: HubClient) -> None:
-        knowledge_base = client.knowledge_bases.search_documents(
+        knowledge_base: List[KnowledgeBaseDocumentRow] = client.knowledge_bases.search_documents(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            search="query",
-            filters={},
+            query="query",
+            filters=cast(KnowledgeBaseDocumentFiltersParam, {}),
             limit=20,
             offset=0,
         )
