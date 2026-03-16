@@ -362,7 +362,7 @@ class TestResults:
     def test_method_search_with_all_params(self, client: HubClient) -> None:
         result = client.evaluations.results.search(
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            search="query",
+            query="query",
             filters={},
             limit=20,
             offset=0,
@@ -832,7 +832,7 @@ class TestAsyncResults:
     async def test_method_search_with_all_params(self, async_client: AsyncHubClient) -> None:
         result = await async_client.evaluations.results.search(
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            search="query",
+            query="query",
             filters={},
             limit=20,
             offset=0,

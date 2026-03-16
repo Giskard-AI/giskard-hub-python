@@ -377,7 +377,7 @@ class TestCasesResource(SyncAPIResource):
         self,
         *,
         test_case_ids: List[str],
-        dataset_id: str,
+        target_dataset_id: str,
         duplicate: Optional[bool] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
@@ -390,7 +390,7 @@ class TestCasesResource(SyncAPIResource):
         Args:
           test_case_ids: List of test case IDs to move
 
-          dataset_id: Target dataset ID to move test cases to
+          target_dataset_id: Target dataset ID to move test cases to
 
           duplicate: If true, keep a copy of the test cases in the original dataset. Default is true.
 
@@ -407,7 +407,7 @@ class TestCasesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "chat_test_case_ids": test_case_ids,
-                    "dataset_id": dataset_id,
+                    "dataset_id": target_dataset_id,
                     "duplicate": duplicate,
                 },
                 BulkMoveTestCasesParams,
@@ -758,7 +758,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         self,
         *,
         test_case_ids: List[str],
-        dataset_id: str,
+        target_dataset_id: str,
         duplicate: Optional[bool] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
@@ -771,7 +771,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Args:
           test_case_ids: List of test case IDs to move
 
-          dataset_id: Target dataset ID to move test cases to
+          target_dataset_id: Target dataset ID to move test cases to
 
           duplicate: If true, keep a copy of the test cases in the original dataset. Default is true.
 
@@ -788,7 +788,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "chat_test_case_ids": test_case_ids,
-                    "dataset_id": dataset_id,
+                    "dataset_id": target_dataset_id,
                     "duplicate": duplicate,
                 },
                 BulkMoveTestCasesParams,

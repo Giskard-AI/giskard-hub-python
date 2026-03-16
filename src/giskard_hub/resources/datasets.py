@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Tuple, Literal, Mapping, Optional, cast, overload
+import json
+from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
 
 import httpx
 
@@ -109,7 +110,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        file: FileTypes,
+        file: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -137,6 +138,9 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if isinstance(file, list):
+            file = ("test_cases.json", json.dumps(file).encode("utf-8"))
+
         body = deepcopy_minimal(
             {
                 "file": file,
@@ -585,7 +589,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         dataset_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
         filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -602,7 +606,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         dataset_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
         filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -618,7 +622,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         dataset_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
         filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -637,7 +641,7 @@ class DatasetsResource(SyncAPIResource):
         Args:
           dataset_id: The ID of the dataset to search test cases in
 
-          search: Search query for test cases
+          query: Search query for test cases
 
           order_by: Order by criteria for test cases
 
@@ -663,7 +667,7 @@ class DatasetsResource(SyncAPIResource):
                 {
                     "filters": filters,
                     "order_by": order_by,
-                    "search": search,
+                    "search": query,
                 },
                 DatasetSearchTestCasesParams,
             ),
@@ -756,7 +760,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        file: FileTypes,
+        file: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -784,6 +788,9 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if isinstance(file, list):
+            file = ("test_cases.json", json.dumps(file).encode("utf-8"))
+
         body = deepcopy_minimal(
             {
                 "file": file,
@@ -1229,7 +1236,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         dataset_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
         filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -1246,7 +1253,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         dataset_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
         filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -1262,7 +1269,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         dataset_id: str,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
         filters: Optional[TestCaseFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -1281,7 +1288,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Args:
           dataset_id: The ID of the dataset to search test cases in
 
-          search: Search query for test cases
+          query: Search query for test cases
 
           filters: Search filters to apply
 
@@ -1307,7 +1314,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 {
                     "filters": filters,
                     "order_by": order_by,
-                    "search": search,
+                    "search": query,
                 },
                 DatasetSearchTestCasesParams,
             ),

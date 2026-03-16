@@ -53,7 +53,7 @@ class AuditResource(SyncAPIResource):
     def search(
         self,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: List[AuditOrderByParam] | Omit = omit,
         filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
@@ -69,7 +69,7 @@ class AuditResource(SyncAPIResource):
     def search(
         self,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: List[AuditOrderByParam] | Omit = omit,
         filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
@@ -84,7 +84,7 @@ class AuditResource(SyncAPIResource):
     def search(
         self,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: List[AuditOrderByParam] | Omit = omit,
         filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
@@ -101,7 +101,7 @@ class AuditResource(SyncAPIResource):
         Search Audit Logs By Filters
 
         Args:
-          search: Search query for audit logs
+          query: Search query for audit logs
 
           order_by: Order by criteria for audit logs
 
@@ -125,7 +125,7 @@ class AuditResource(SyncAPIResource):
                 {
                     "filters": filters,
                     "order_by": order_by,
-                    "search": search,
+                    "search": query,
                 },
                 AuditSearchParams,
             ),
@@ -261,7 +261,7 @@ class AsyncAuditResource(AsyncAPIResource):
     async def search(
         self,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[AuditOrderByParam]] | Omit = omit,
         filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -277,7 +277,7 @@ class AsyncAuditResource(AsyncAPIResource):
     async def search(
         self,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[AuditOrderByParam]] | Omit = omit,
         filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -292,7 +292,7 @@ class AsyncAuditResource(AsyncAPIResource):
     async def search(
         self,
         *,
-        search: Optional[str] | Omit = omit,
+        query: Optional[str] | Omit = omit,
         order_by: Optional[List[AuditOrderByParam]] | Omit = omit,
         filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
@@ -309,7 +309,7 @@ class AsyncAuditResource(AsyncAPIResource):
         Search Audit Logs By Filters
 
         Args:
-          search: Search query for audit logs
+          query: Search query for audit logs
 
           order_by: Order by criteria for audit logs
 
@@ -333,7 +333,7 @@ class AsyncAuditResource(AsyncAPIResource):
                 {
                     "filters": filters,
                     "order_by": order_by,
-                    "search": search,
+                    "search": query,
                 },
                 AuditSearchParams,
             ),

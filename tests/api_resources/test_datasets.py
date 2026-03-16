@@ -73,7 +73,7 @@ class TestDatasets:
     def test_method_upload(self, client: HubClient) -> None:
         dataset = client.datasets.upload(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
@@ -82,7 +82,7 @@ class TestDatasets:
     def test_method_upload_with_all_params(self, client: HubClient) -> None:
         dataset = client.datasets.upload(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             name="my-dataset",
         )
@@ -93,7 +93,7 @@ class TestDatasets:
     def test_raw_response_upload(self, client: HubClient) -> None:
         response = client.datasets.with_raw_response.upload(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         )
 
         assert response.is_closed is True
@@ -106,7 +106,7 @@ class TestDatasets:
     def test_streaming_response_upload(self, client: HubClient) -> None:
         with client.datasets.with_streaming_response.upload(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"

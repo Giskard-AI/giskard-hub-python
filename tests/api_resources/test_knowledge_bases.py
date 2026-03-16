@@ -9,7 +9,13 @@ import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
-from giskard_hub.types import KnowledgeBase, APIPaginatedMetadata, KnowledgeBaseDocumentRow, KnowledgeBaseDocumentDetail
+from giskard_hub.types import (
+    KnowledgeBase,
+    APIPaginatedMetadata,
+    KnowledgeBaseDocumentRow,
+    KnowledgeBaseDocumentDetail,
+    KnowledgeBaseDocumentFiltersParam,
+)
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -23,7 +29,7 @@ class TestKnowledgeBases:
         knowledge_base = client.knowledge_bases.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         )
         assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
 
@@ -33,7 +39,7 @@ class TestKnowledgeBases:
         knowledge_base = client.knowledge_bases.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
             description="description",
             document_column="document_column",
             topic_column="topic_column",
@@ -46,7 +52,7 @@ class TestKnowledgeBases:
         response = client.knowledge_bases.with_raw_response.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         )
 
         assert response.is_closed is True
@@ -60,7 +66,7 @@ class TestKnowledgeBases:
         with client.knowledge_bases.with_streaming_response.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -295,7 +301,7 @@ class TestKnowledgeBases:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search_documents(self, client: HubClient) -> None:
-        knowledge_base = client.knowledge_bases.search_documents(
+        knowledge_base: List[KnowledgeBaseDocumentRow] = client.knowledge_bases.search_documents(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(List[KnowledgeBaseDocumentRow], knowledge_base, path=["response"])
@@ -303,10 +309,10 @@ class TestKnowledgeBases:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search_documents_with_all_params(self, client: HubClient) -> None:
-        knowledge_base = client.knowledge_bases.search_documents(
+        knowledge_base: List[KnowledgeBaseDocumentRow] = client.knowledge_bases.search_documents(
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            search="query",
-            filters={},
+            query="query",
+            filters=cast(KnowledgeBaseDocumentFiltersParam, {}),
             limit=20,
             offset=0,
         )
@@ -433,7 +439,7 @@ class TestAsyncKnowledgeBases:
         knowledge_base = await async_client.knowledge_bases.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         )
         assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
 
@@ -443,7 +449,7 @@ class TestAsyncKnowledgeBases:
         knowledge_base = await async_client.knowledge_bases.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
             description="description",
             document_column="document_column",
             topic_column="topic_column",
@@ -456,7 +462,7 @@ class TestAsyncKnowledgeBases:
         response = await async_client.knowledge_bases.with_raw_response.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         )
 
         assert response.is_closed is True
@@ -470,7 +476,7 @@ class TestAsyncKnowledgeBases:
         async with async_client.knowledge_bases.with_streaming_response.create(
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            file=b"raw file contents",
+            file=[{"id": "1", "value": "foo"}],
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
