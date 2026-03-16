@@ -71,6 +71,10 @@ class KnowledgeBaseDocumentRow(BaseModel):
     topic_id: Optional[str] = None
     topic_name: Optional[str] = None
 
+    @computed_field
+    def content(self) -> str:
+        return self.snippet
+
 
 class KnowledgeBaseDocumentDetail(BaseModel):
     id: str
