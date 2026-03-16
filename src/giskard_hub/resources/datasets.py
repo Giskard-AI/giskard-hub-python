@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Tuple, Literal, Mapping, Optional, cast, overload
+import json
+from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
 
 import httpx
 
@@ -109,7 +110,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        file: FileTypes,
+        file: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -137,6 +138,9 @@ class DatasetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if isinstance(file, list):
+            file = ("test_cases.json", json.dumps(file).encode("utf-8"))
+
         body = deepcopy_minimal(
             {
                 "file": file,
@@ -756,7 +760,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        file: FileTypes,
+        file: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -784,6 +788,9 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if isinstance(file, list):
+            file = ("test_cases.json", json.dumps(file).encode("utf-8"))
+
         body = deepcopy_minimal(
             {
                 "file": file,

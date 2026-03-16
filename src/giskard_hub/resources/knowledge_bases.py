@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Tuple, Literal, Mapping, Optional, cast, overload
+import json
+from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
 
 import httpx
 
@@ -60,7 +61,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         *,
         name: str,
         project_id: str,
-        file: FileTypes,
+        file: FileTypes | list[dict[str, Any]],
         description: Optional[str] | Omit = omit,
         document_column: str | Omit = omit,
         topic_column: str | Omit = omit,
@@ -95,6 +96,9 @@ class KnowledgeBasesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if isinstance(file, list):
+            file = ("kb_documents.json", json.dumps(file).encode("utf-8"))
+
         body = deepcopy_minimal(
             {
                 "project_id": project_id,
@@ -499,7 +503,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         *,
         name: str,
         project_id: str,
-        file: FileTypes,
+        file: FileTypes | list[dict[str, Any]],
         description: Optional[str] | Omit = omit,
         document_column: str | Omit = omit,
         topic_column: str | Omit = omit,
@@ -534,6 +538,9 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if isinstance(file, list):
+            file = ("kb_documents.json", json.dumps(file).encode("utf-8"))
+
         body = deepcopy_minimal(
             {
                 "project_id": project_id,
