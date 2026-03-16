@@ -21,12 +21,7 @@ class TestAgents:
     @parametrize
     def test_method_create(self, client: HubClient) -> None:
         agent = client.agents.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -38,12 +33,7 @@ class TestAgents:
     @parametrize
     def test_method_create_with_all_params(self, client: HubClient) -> None:
         agent = client.agents.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -56,12 +46,7 @@ class TestAgents:
     @parametrize
     def test_raw_response_create(self, client: HubClient) -> None:
         response = client.agents.with_raw_response.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -77,12 +62,7 @@ class TestAgents:
     @parametrize
     def test_streaming_response_create(self, client: HubClient) -> None:
         with client.agents.with_streaming_response.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -155,12 +135,7 @@ class TestAgents:
         agent = client.agents.update(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             supported_languages=["string"],
             url="url",
@@ -489,12 +464,7 @@ class TestAsyncAgents:
     @parametrize
     async def test_method_create(self, async_client: AsyncHubClient) -> None:
         agent = await async_client.agents.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -506,12 +476,7 @@ class TestAsyncAgents:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncHubClient) -> None:
         agent = await async_client.agents.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -524,12 +489,7 @@ class TestAsyncAgents:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncHubClient) -> None:
         response = await async_client.agents.with_raw_response.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -545,12 +505,7 @@ class TestAsyncAgents:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.agents.with_streaming_response.create(
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             supported_languages=["string"],
@@ -623,12 +578,7 @@ class TestAsyncAgents:
         agent = await async_client.agents.update(
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
-            headers=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
+            headers={"name": "value"},
             name="name",
             supported_languages=["string"],
             url="url",

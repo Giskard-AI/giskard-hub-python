@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Iterable, Optional
+from typing import Dict, List, Iterable, Optional, cast
 
 import httpx
 
@@ -55,11 +55,11 @@ class AgentsResource(SyncAPIResource):
     def create(
         self,
         *,
-        headers: Iterable[HeaderParam],
         name: str,
         project_id: str,
         supported_languages: SequenceNotStr[str],
         url: str,
+        headers: Dict[str, str] | Omit = omit,
         description: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -72,8 +72,6 @@ class AgentsResource(SyncAPIResource):
         Create Agent
 
         Args:
-          headers: Headers to use for the agent
-
           name: Name of the agent
 
           project_id: Project ID to use for the agent
@@ -81,6 +79,8 @@ class AgentsResource(SyncAPIResource):
           supported_languages: Supported languages for the agent
 
           url: URL of the agent
+
+          headers: Headers to use for the agent
 
           description: Description of the agent
 
@@ -92,12 +92,18 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        headers_api: list[HeaderParam] = []
+
+        if headers is not omit:
+            for header_name, header_value in cast(Dict[str, str], headers).items():
+                headers_api.append(HeaderParam(name=header_name, value=header_value))
+
         response = self._post(
             "/v2/agents",
             body=maybe_transform(
                 {
-                    "headers": headers,
                     "name": name,
+                    "headers": headers_api,
                     "project_id": project_id,
                     "supported_languages": supported_languages,
                     "url": url,
@@ -155,7 +161,7 @@ class AgentsResource(SyncAPIResource):
         agent_id: str,
         *,
         description: Optional[str] | Omit = omit,
-        headers: Optional[Iterable[HeaderParam]] | Omit = omit,
+        headers: Dict[str, str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         supported_languages: Optional[SequenceNotStr[str]] | Omit = omit,
         url: Optional[str] | Omit = omit,
@@ -192,12 +198,22 @@ class AgentsResource(SyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+
+        headers_api: list[HeaderParam] | Omit
+        if headers is omit:
+            headers_api = omit
+        else:
+            headers_api = [
+                HeaderParam(name=header_name, value=header_value)
+                for header_name, header_value in cast(Dict[str, str], headers).items()
+            ]
+
         response = self._patch(
             f"/v2/agents/{agent_id}",
             body=maybe_transform(
                 {
                     "description": description,
-                    "headers": headers,
+                    "headers": headers_api,
                     "name": name,
                     "supported_languages": supported_languages,
                     "url": url,
@@ -475,11 +491,11 @@ class AsyncAgentsResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        headers: Iterable[HeaderParam],
         name: str,
         project_id: str,
         supported_languages: SequenceNotStr[str],
         url: str,
+        headers: Dict[str, str] | Omit = omit,
         description: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -492,8 +508,6 @@ class AsyncAgentsResource(AsyncAPIResource):
         Create Agent
 
         Args:
-          headers: Headers to use for the agent
-
           name: Name of the agent
 
           project_id: Project ID to use for the agent
@@ -501,6 +515,8 @@ class AsyncAgentsResource(AsyncAPIResource):
           supported_languages: Supported languages for the agent
 
           url: URL of the agent
+
+          headers: Headers to use for the agent
 
           description: Description of the agent
 
@@ -512,12 +528,18 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        headers_api: list[HeaderParam] = []
+
+        if headers is not omit:
+            for header_name, header_value in cast(Dict[str, str], headers).items():
+                headers_api.append(HeaderParam(name=header_name, value=header_value))
+
         response = await self._post(
             "/v2/agents",
             body=await async_maybe_transform(
                 {
-                    "headers": headers,
                     "name": name,
+                    "headers": headers_api,
                     "project_id": project_id,
                     "supported_languages": supported_languages,
                     "url": url,
@@ -575,7 +597,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         agent_id: str,
         *,
         description: Optional[str] | Omit = omit,
-        headers: Optional[Iterable[HeaderParam]] | Omit = omit,
+        headers: Dict[str, str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         supported_languages: Optional[SequenceNotStr[str]] | Omit = omit,
         url: Optional[str] | Omit = omit,
@@ -612,12 +634,22 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+
+        headers_api: list[HeaderParam] | Omit
+        if headers is omit:
+            headers_api = omit
+        else:
+            headers_api = [
+                HeaderParam(name=header_name, value=header_value)
+                for header_name, header_value in cast(Dict[str, str], headers).items()
+            ]
+
         response = await self._patch(
             f"/v2/agents/{agent_id}",
             body=await async_maybe_transform(
                 {
                     "description": description,
-                    "headers": headers,
+                    "headers": headers_api,
                     "name": name,
                     "supported_languages": supported_languages,
                     "url": url,
