@@ -6,7 +6,6 @@ from typing_extensions import Required
 
 import pydantic
 
-from .common import TaskState
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -187,13 +186,13 @@ class Check(BaseModel):
 
 
 class CheckResult(BaseModel):
-    annotations: Optional[List[OutputAnnotation]] = None
-    display_name: Optional[str] = None
-    error: Optional[str] = None
     name: str
+    display_name: Optional[str] = None
+    status: str
     passed: Optional[bool] = None
+    error: Optional[str] = None
     reason: Optional[str] = None
-    status: TaskState
+    annotations: Optional[List[OutputAnnotation]] = None
 
 
 # ---------------------------------------------------------------------------
