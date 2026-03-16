@@ -26,28 +26,28 @@ from ..types.audit import AuditListEntityParams
 from .._base_client import make_request_options
 from ..types.common import APIPaginatedMetadata
 
-__all__ = ["AuditResource", "AsyncAuditResource"]
+__all__ = ["AuditLogsResource", "AsyncAuditLogsResource"]
 
 
-class AuditResource(SyncAPIResource):
+class AuditLogsResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AuditResourceWithRawResponse:
+    def with_raw_response(self) -> AuditLogsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AuditResourceWithRawResponse(self)
+        return AuditLogsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AuditResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AuditLogsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AuditResourceWithStreamingResponse(self)
+        return AuditLogsResourceWithStreamingResponse(self)
 
     @overload
     def search(
@@ -264,25 +264,25 @@ class AuditResource(SyncAPIResource):
         return self._unwrap_paginated(response, include_metadata)
 
 
-class AsyncAuditResource(AsyncAPIResource):
+class AsyncAuditLogsResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncAuditResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncAuditLogsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncAuditResourceWithRawResponse(self)
+        return AsyncAuditLogsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncAuditResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncAuditLogsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AsyncAuditResourceWithStreamingResponse(self)
+        return AsyncAuditLogsResourceWithStreamingResponse(self)
 
     @overload
     async def search(
@@ -499,8 +499,8 @@ class AsyncAuditResource(AsyncAPIResource):
         return self._unwrap_paginated(response, include_metadata)
 
 
-class AuditResourceWithRawResponse:
-    def __init__(self, audit: AuditResource) -> None:
+class AuditLogsResourceWithRawResponse:
+    def __init__(self, audit: AuditLogsResource) -> None:
         self._audit = audit
 
         self.search = to_raw_response_wrapper(
@@ -511,8 +511,8 @@ class AuditResourceWithRawResponse:
         )
 
 
-class AsyncAuditResourceWithRawResponse:
-    def __init__(self, audit: AsyncAuditResource) -> None:
+class AsyncAuditLogsResourceWithRawResponse:
+    def __init__(self, audit: AsyncAuditLogsResource) -> None:
         self._audit = audit
 
         self.search = async_to_raw_response_wrapper(
@@ -523,8 +523,8 @@ class AsyncAuditResourceWithRawResponse:
         )
 
 
-class AuditResourceWithStreamingResponse:
-    def __init__(self, audit: AuditResource) -> None:
+class AuditLogsResourceWithStreamingResponse:
+    def __init__(self, audit: AuditLogsResource) -> None:
         self._audit = audit
 
         self.search = to_streamed_response_wrapper(
@@ -535,8 +535,8 @@ class AuditResourceWithStreamingResponse:
         )
 
 
-class AsyncAuditResourceWithStreamingResponse:
-    def __init__(self, audit: AsyncAuditResource) -> None:
+class AsyncAuditLogsResourceWithStreamingResponse:
+    def __init__(self, audit: AsyncAuditLogsResource) -> None:
         self._audit = audit
 
         self.search = async_to_streamed_response_wrapper(
