@@ -429,7 +429,7 @@ class AgentsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
-    def autofill_description(
+    def generate_description(
         self,
         agent_id: str,
         *,
@@ -441,10 +441,10 @@ class AgentsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> str:
         """
-        Autofill Agent Description
+        Generate Agent Description
 
         Args:
-          agent_id: Agent ID to autofill description for
+          agent_id: Agent ID to generate description for
 
           extra_headers: Send extra headers
 
@@ -865,7 +865,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def autofill_description(
+    async def generate_description(
         self,
         agent_id: str,
         *,
@@ -877,10 +877,10 @@ class AsyncAgentsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> str:
         """
-        Autofill Agent Description
+        Generate Agent Description
 
         Args:
-          agent_id: Agent ID to autofill description for
+          agent_id: Agent ID to generate description for
 
           extra_headers: Send extra headers
 
@@ -932,8 +932,8 @@ class AgentsResourceWithRawResponse:
         self.test_connection = to_raw_response_wrapper(
             agents.test_connection,
         )
-        self.autofill_description = to_raw_response_wrapper(
-            agents.autofill_description,
+        self.generate_description = to_raw_response_wrapper(
+            agents.generate_description,
         )
 
 
@@ -965,8 +965,8 @@ class AsyncAgentsResourceWithRawResponse:
         self.test_connection = async_to_raw_response_wrapper(
             agents.test_connection,
         )
-        self.autofill_description = async_to_raw_response_wrapper(
-            agents.autofill_description,
+        self.generate_description = async_to_raw_response_wrapper(
+            agents.generate_description,
         )
 
 
@@ -998,8 +998,8 @@ class AgentsResourceWithStreamingResponse:
         self.test_connection = to_streamed_response_wrapper(
             agents.test_connection,
         )
-        self.autofill_description = to_streamed_response_wrapper(
-            agents.autofill_description,
+        self.generate_description = to_streamed_response_wrapper(
+            agents.generate_description,
         )
 
 
@@ -1031,6 +1031,6 @@ class AsyncAgentsResourceWithStreamingResponse:
         self.test_connection = async_to_streamed_response_wrapper(
             agents.test_connection,
         )
-        self.autofill_description = async_to_streamed_response_wrapper(
-            agents.autofill_description,
+        self.generate_description = async_to_streamed_response_wrapper(
+            agents.generate_description,
         )

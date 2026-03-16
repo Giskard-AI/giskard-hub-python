@@ -21,7 +21,7 @@ Methods:
 - <code title="delete /v2/agents">client.agents.<a href="./src/giskard_hub/resources/agents.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/agent_bulk_delete_params.py">params</a>) -> None</code>
 - <code title="post /v2/agents/{agent_id}/generate-completion">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_completion</a>(agent_id, \*\*<a href="src/giskard_hub/types/agent_generate_completion_params.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">AgentOutput</a></code>
 - <code title="post /v2/agents/test-connection">client.agents.<a href="./src/giskard_hub/resources/agents.py">test_connection</a>(\*\*<a href="src/giskard_hub/types/agent_test_connection_params.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">AgentOutput</a></code>
-- <code title="post /v2/agents/{agent_id}/autofill-description">client.agents.<a href="./src/giskard_hub/resources/agents.py">autofill_description</a>(agent_id) -> str</code>
+- <code title="post /v2/agents/{agent_id}/autofill-description">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_description</a>(agent_id) -> str</code>
 
 # Audit
 
