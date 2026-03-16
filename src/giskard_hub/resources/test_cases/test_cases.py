@@ -40,10 +40,14 @@ __all__ = ["TestCasesResource", "AsyncTestCasesResource"]
 DemoOutput = ChatMessageWithMetadataParam | str
 
 
-def _demo_output_to_api(value: DemoOutput) -> ChatMessageWithMetadataParam:
-    if isinstance(value, str):
-        return ChatMessageWithMetadataParam(role="assistant", content=value)
-    return value
+def _normalize_demo_output(
+    demo_output: Optional[ChatMessageWithMetadataParam | str] | Omit,
+) -> Optional[ChatMessageWithMetadataParam] | Omit:
+    if isinstance(demo_output, (Omit, type(None))):
+        return demo_output
+    if isinstance(demo_output, str):
+        return ChatMessageWithMetadataParam(role="assistant", content=demo_output)
+    return demo_output
 
 
 class TestCasesResource(SyncAPIResource):
@@ -124,9 +128,7 @@ class TestCasesResource(SyncAPIResource):
             The newly created test case.
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
-        api_demo_output = (
-            _demo_output_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
-        )
+        api_demo_output = _normalize_demo_output(demo_output)
         response = self._post(
             "/v2/test-cases",
             body=maybe_transform(
@@ -266,9 +268,7 @@ class TestCasesResource(SyncAPIResource):
             api_checks = checks  # type: ignore[assignment]
         else:
             api_checks = _check_params_to_api(checks)
-        api_demo_output = (
-            _demo_output_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
-        )
+        api_demo_output = _normalize_demo_output(demo_output)
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=maybe_transform(
@@ -593,9 +593,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             The newly created test case.
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
-        api_demo_output = (
-            _demo_output_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
-        )
+        api_demo_output = _normalize_demo_output(demo_output)
         response = await self._post(
             "/v2/test-cases",
             body=await async_maybe_transform(
@@ -735,9 +733,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             api_checks = checks  # type: ignore[assignment]
         else:
             api_checks = _check_params_to_api(checks)
-        api_demo_output = (
-            _demo_output_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
-        )
+        api_demo_output = _normalize_demo_output(demo_output)
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=await async_maybe_transform(
