@@ -72,29 +72,38 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBase:
-        """
-        Create Knowledge Base
+        """Create a new knowledge base by uploading a file of documents.
 
-        Args:
-          name: Name of the knowledge base
+        Parameters
+        ----------
+        name : str
+            Name of the knowledge base.
+        project_id : str
+            Project ID to create the knowledge base in.
+        file : FileTypes | list[dict[str, Any]]
+            File to upload for the knowledge base.
+        description : Optional[str] | Omit
+            Description of the knowledge base.
+        document_column : str | Omit
+            Column name for the document column.
+        topic_column : str | Omit
+            Column name for the topic column.
 
-          project_id: Project ID to create the knowledge base in
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          file: File to upload for the knowledge base
-
-          description: Description of the knowledge base
-
-          document_column: Column name for the document column
-
-          topic_column: Column name for the topic column
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        KnowledgeBase
+            The created knowledge base.
         """
         if isinstance(file, list):
             file = ("kb_documents.json", json.dumps(file).encode("utf-8"))
@@ -137,19 +146,33 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBase:
-        """
-        Retrieve Knowledge Base
+        """Retrieve a knowledge base by its ID, including its topics.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base to retrieve
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        KnowledgeBase
+            The retrieved knowledge base.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -178,25 +201,41 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBase:
-        """
-        Update Knowledge Base
+        """Update an existing knowledge base's metadata.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base to update
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base to update.
+        description : Optional[str] | Omit
+            Description of the knowledge base.
+        name : Optional[str] | Omit
+            Name of the knowledge base.
+        project_id : Optional[str] | Omit
+            Project ID to update the knowledge base in.
+        status : Optional[TaskProgressParam] | Omit
+            Task progress status.
 
-          description: Description of the knowledge base
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the knowledge base
+        Returns
+        -------
+        KnowledgeBase
+            The updated knowledge base.
 
-          project_id: Project ID to update the knowledge base in
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -230,19 +269,28 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[KnowledgeBase]:
-        """
-        List Knowledge Bases
+        """List all knowledge bases, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to list knowledge bases for
+        Parameters
+        ----------
+        project_id : Optional[str] | Omit
+            Project ID to list knowledge bases for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[KnowledgeBase]
+            A list of knowledge bases.
         """
         response = self._get(
             "/v2/knowledge-bases",
@@ -269,19 +317,32 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Knowledge Base
+        """Delete a knowledge base by its ID.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base to delete
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -306,19 +367,27 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Knowledge Bases
+        """Delete multiple knowledge bases at once.
 
-        Args:
-          knowledge_base_ids: IDs of the knowledge bases to delete
+        Parameters
+        ----------
+        knowledge_base_ids : SequenceNotStr[str]
+            IDs of the knowledge bases to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/knowledge-bases",
@@ -388,29 +457,43 @@ class KnowledgeBasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[KnowledgeBaseDocumentRow] | Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]:
-        """
-        Search Knowledge Base Documents By Filters
+        """Search documents within a knowledge base using filters, sorting, and pagination.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base.
+        query : Optional[str] | Omit
+            Search query for knowledge base documents.
+        order_by : Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit
+            Order by criteria for knowledge base documents.
+        filters : Optional[KnowledgeBaseDocumentFiltersParam] | Omit
+            Search filters.
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip.
 
-          query: Search query for knowledge base documents
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          order_by: Order by criteria for knowledge base documents
+        Returns
+        -------
+        List[KnowledgeBaseDocumentRow] | Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]
+            A list of document rows, or a tuple of document rows and pagination metadata.
 
-          filters: Search filters
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -447,21 +530,35 @@ class KnowledgeBasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBaseDocumentDetail:
-        """
-        Retrieve Knowledge Base Document
+        """Retrieve detailed information about a specific document in a knowledge base.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base.
+        document_id : str
+            ID of the document.
 
-          document_id: ID of the document
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        KnowledgeBaseDocumentDetail
+            The detailed document information.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` or ``document_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -514,29 +611,38 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBase:
-        """
-        Create Knowledge Base
+        """Create a new knowledge base by uploading a file of documents.
 
-        Args:
-          name: Name of the knowledge base
+        Parameters
+        ----------
+        name : str
+            Name of the knowledge base.
+        project_id : str
+            Project ID to create the knowledge base in.
+        file : FileTypes | list[dict[str, Any]]
+            File to upload for the knowledge base.
+        description : Optional[str] | Omit
+            Description of the knowledge base.
+        document_column : str | Omit
+            Column name for the document column.
+        topic_column : str | Omit
+            Column name for the topic column.
 
-          project_id: Project ID to create the knowledge base in
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          file: File to upload for the knowledge base
-
-          description: Description of the knowledge base
-
-          document_column: Column name for the document column
-
-          topic_column: Column name for the topic column
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        KnowledgeBase
+            The created knowledge base.
         """
         if isinstance(file, list):
             file = ("kb_documents.json", json.dumps(file).encode("utf-8"))
@@ -579,19 +685,33 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBase:
-        """
-        Retrieve Knowledge Base
+        """Retrieve a knowledge base by its ID, including its topics.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base to retrieve
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        KnowledgeBase
+            The retrieved knowledge base.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -620,25 +740,41 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBase:
-        """
-        Update Knowledge Base
+        """Update an existing knowledge base's metadata.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base to update
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base to update.
+        description : Optional[str] | Omit
+            Description of the knowledge base.
+        name : Optional[str] | Omit
+            Name of the knowledge base.
+        project_id : Optional[str] | Omit
+            Project ID to update the knowledge base in.
+        status : Optional[TaskProgressParam] | Omit
+            Task progress status.
 
-          description: Description of the knowledge base
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the knowledge base
+        Returns
+        -------
+        KnowledgeBase
+            The updated knowledge base.
 
-          project_id: Project ID to update the knowledge base in
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -672,19 +808,28 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[KnowledgeBase]:
-        """
-        List Knowledge Bases
+        """List all knowledge bases, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to list knowledge bases for
+        Parameters
+        ----------
+        project_id : Optional[str] | Omit
+            Project ID to list knowledge bases for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[KnowledgeBase]
+            A list of knowledge bases.
         """
         response = await self._get(
             "/v2/knowledge-bases",
@@ -711,19 +856,32 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Knowledge Base
+        """Delete a knowledge base by its ID.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base to delete
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -748,19 +906,27 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Knowledge Bases
+        """Delete multiple knowledge bases at once.
 
-        Args:
-          knowledge_base_ids: IDs of the knowledge bases to delete
+        Parameters
+        ----------
+        knowledge_base_ids : SequenceNotStr[str]
+            IDs of the knowledge bases to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/knowledge-bases",
@@ -830,29 +996,43 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[KnowledgeBaseDocumentRow] | Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]:
-        """
-        Search Knowledge Base Documents By Filters
+        """Search documents within a knowledge base using filters, sorting, and pagination.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base.
+        query : Optional[str] | Omit
+            Search query for knowledge base documents.
+        order_by : Optional[List[KnowledgeBaseDocumentOrderByParam]] | Omit
+            Order by criteria for knowledge base documents.
+        filters : Optional[KnowledgeBaseDocumentFiltersParam] | Omit
+            Search filters.
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip.
 
-          query: Search query for knowledge base documents
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          order_by: Order by criteria for knowledge base documents
+        Returns
+        -------
+        List[KnowledgeBaseDocumentRow] | Tuple[List[KnowledgeBaseDocumentRow], APIPaginatedMetadata]
+            A list of document rows, or a tuple of document rows and pagination metadata.
 
-          filters: Search filters
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -889,21 +1069,35 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KnowledgeBaseDocumentDetail:
-        """
-        Retrieve Knowledge Base Document
+        """Retrieve detailed information about a specific document in a knowledge base.
 
-        Args:
-          knowledge_base_id: ID of the knowledge base
+        Parameters
+        ----------
+        knowledge_base_id : str
+            ID of the knowledge base.
+        document_id : str
+            ID of the document.
 
-          document_id: ID of the document
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        KnowledgeBaseDocumentDetail
+            The detailed document information.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``knowledge_base_id`` or ``document_id`` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")

@@ -79,39 +79,49 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
-        """
-        Create Scheduled Evaluation
+        """Create a new scheduled evaluation for recurring agent testing.
 
-        Args:
-          project_id: Project ID to use for the scheduled evaluation
+        Parameters
+        ----------
+        project_id : str
+            Project ID to use for the scheduled evaluation.
+        name : str
+            Name of the scheduled evaluation.
+        agent_id : str
+            Agent ID to use for the scheduled evaluation.
+        dataset_id : str
+            Dataset ID to use for the scheduled evaluation.
+        tags : SequenceNotStr[str] | Omit
+            List of tags to apply to the scheduled evaluation.
+        run_count : int | Omit
+            The number of times to run each test case. This is useful to get a more
+            accurate result when the chatbot's generation is not deterministic. Testing
+            stops at the first failure. If all runs pass, the test case is considered
+            successful.
+        frequency : FrequencyOption
+            Frequency of the scheduled evaluation.
+        time : str
+            Time of the scheduled evaluation.
+        day_of_month : int | None | Omit
+            Day of the month to run the scheduled evaluation.
+        day_of_week : int | None | Omit
+            Day of the week to run the scheduled evaluation.
 
-          name: Name of the scheduled evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          agent_id: Agent ID to use for the scheduled evaluation
-
-          dataset_id: Dataset ID to use for the scheduled evaluation
-
-          tags: List of tags to apply to the scheduled evaluation
-
-          run_count: The number of times to run each test case. This is useful to get a more accurate
-              result when the chatbot's generation is not deterministic. Testing stops at the
-              first failure. If all runs pass, the test case is considered successful.
-
-          frequency: Frequency of the scheduled evaluation
-
-          time: Time of the scheduled evaluation
-
-          day_of_month: Day of the month to run the scheduled evaluation
-
-          day_of_week: Day of the week to run the scheduled evaluation
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        ScheduledEvaluation
+            The newly created scheduled evaluation.
         """
         response = self._post(
             "/v2/scheduled-evaluations",
@@ -150,21 +160,35 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
-        """
-        Retrieve Scheduled Evaluation
+        """Retrieve a scheduled evaluation by its ID.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to retrieve
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to retrieve.
+        include : list[Literal["evaluations"]] | None | Omit
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        ScheduledEvaluation
+            The requested scheduled evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -207,39 +231,54 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
-        """
-        Update Scheduled Evaluation
+        """Update an existing scheduled evaluation's configuration.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to update
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to update.
+        name : str | None | Omit
+            Name of the scheduled evaluation.
+        run_count : int | None | Omit
+            The number of times to run each test case. This is useful to get a more
+            accurate result when the chatbot's generation is not deterministic. Testing
+            stops at the first failure. If all runs pass, the test case is considered
+            successful.
+        frequency : FrequencyOption | None | Omit
+            Frequency of the scheduled evaluation.
+        time : str | None | Omit
+            Time of the scheduled evaluation.
+        day_of_week : int | None | Omit
+            Day of the week to run the scheduled evaluation.
+        day_of_month : int | None | Omit
+            Day of the month to run the scheduled evaluation.
+        last_execution_at : str | datetime | None | Omit
+            The date and time of the last execution of the scheduled evaluation.
+        last_execution_status : LastExecutionStatusParam | None | Omit
+            The status of the last execution of the scheduled evaluation.
+        paused : bool | None | Omit
+            Whether the scheduled evaluation is paused.
 
-          name: Name of the scheduled evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          run_count: The number of times to run each test case. This is useful to get a more accurate
-              result when the chatbot's generation is not deterministic. Testing stops at the
-              first failure. If all runs pass, the test case is considered successful.
+        Returns
+        -------
+        ScheduledEvaluation
+            The updated scheduled evaluation.
 
-          frequency: Frequency of the scheduled evaluation
-
-          time: Time of the scheduled evaluation
-
-          day_of_month: Day of the month to run the scheduled evaluation
-
-          day_of_week: Day of the week to run the scheduled evaluation
-
-          last_execution_at: The date and time of the last execution of the scheduled evaluation
-
-          last_execution_status: The status of the last execution of the scheduled evaluation
-
-          paused: Whether the scheduled evaluation is paused
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -282,23 +321,32 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[ScheduledEvaluation]:
-        """
-        List Scheduled Evaluations
+        """List all scheduled evaluations for a project.
 
-        Args:
-          project_id: Project ID to use for the scheduled evaluation
+        Parameters
+        ----------
+        project_id : str
+            Project ID to use for the scheduled evaluation.
+        include : list[Literal["evaluations"]] | None | Omit
+            Related resources to include in response.
+        last_days : int | None | Omit
+            Number of days to include in the response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          last_days: Number of days to include in the response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[ScheduledEvaluation]
+            A list of scheduled evaluations for the project.
         """
         response = self._get(
             "/v2/scheduled-evaluations",
@@ -331,19 +379,32 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Scheduled Evaluation
+        """Delete a scheduled evaluation by its ID.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to delete
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -370,19 +431,27 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Scheduled Evaluations
+        """Delete multiple scheduled evaluations at once.
 
-        Args:
-          scheduled_evaluation_ids: IDs of the scheduled evaluations to delete
+        Parameters
+        ----------
+        scheduled_evaluation_ids : SequenceNotStr[str]
+            IDs of the scheduled evaluations to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/scheduled-evaluations",
@@ -413,21 +482,35 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Evaluation]:
-        """
-        List Scheduled Evaluation Evaluations
+        """List all evaluation runs triggered by a specific scheduled evaluation.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to list evaluations for
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to list evaluations for.
+        include : list[Literal["agent", "dataset"]] | None | Omit
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        list[Evaluation]
+            A list of evaluations triggered by the scheduled evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -495,39 +578,49 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
-        """
-        Create Scheduled Evaluation
+        """Create a new scheduled evaluation for recurring agent testing.
 
-        Args:
-          project_id: Project ID to use for the scheduled evaluation
+        Parameters
+        ----------
+        project_id : str
+            Project ID to use for the scheduled evaluation.
+        name : str
+            Name of the scheduled evaluation.
+        agent_id : str
+            Agent ID to use for the scheduled evaluation.
+        dataset_id : str
+            Dataset ID to use for the scheduled evaluation.
+        tags : SequenceNotStr[str] | Omit
+            List of tags to apply to the scheduled evaluation.
+        run_count : int | Omit
+            The number of times to run each test case. This is useful to get a more
+            accurate result when the chatbot's generation is not deterministic. Testing
+            stops at the first failure. If all runs pass, the test case is considered
+            successful.
+        frequency : FrequencyOption
+            Frequency of the scheduled evaluation.
+        time : str
+            Time of the scheduled evaluation.
+        day_of_month : int | None | Omit
+            Day of the month to run the scheduled evaluation.
+        day_of_week : int | None | Omit
+            Day of the week to run the scheduled evaluation.
 
-          name: Name of the scheduled evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          agent_id: Agent ID to use for the scheduled evaluation
-
-          dataset_id: Dataset ID to use for the scheduled evaluation
-
-          tags: List of tags to apply to the scheduled evaluation
-
-          run_count: The number of times to run each test case. This is useful to get a more accurate
-              result when the chatbot's generation is not deterministic. Testing stops at the
-              first failure. If all runs pass, the test case is considered successful.
-
-          frequency: Frequency of the scheduled evaluation
-
-          time: Time of the scheduled evaluation
-
-          day_of_month: Day of the month to run the scheduled evaluation
-
-          day_of_week: Day of the week to run the scheduled evaluation
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        ScheduledEvaluation
+            The newly created scheduled evaluation.
         """
         response = await self._post(
             "/v2/scheduled-evaluations",
@@ -566,21 +659,35 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
-        """
-        Retrieve Scheduled Evaluation
+        """Retrieve a scheduled evaluation by its ID.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to retrieve
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to retrieve.
+        include : list[Literal["evaluations"]] | None | Omit
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        ScheduledEvaluation
+            The requested scheduled evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -623,39 +730,54 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
-        """
-        Update Scheduled Evaluation
+        """Update an existing scheduled evaluation's configuration.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to update
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to update.
+        name : str | None | Omit
+            Name of the scheduled evaluation.
+        run_count : int | None | Omit
+            The number of times to run each test case. This is useful to get a more
+            accurate result when the chatbot's generation is not deterministic. Testing
+            stops at the first failure. If all runs pass, the test case is considered
+            successful.
+        frequency : FrequencyOption | None | Omit
+            Frequency of the scheduled evaluation.
+        time : str | None | Omit
+            Time of the scheduled evaluation.
+        day_of_week : int | None | Omit
+            Day of the week to run the scheduled evaluation.
+        day_of_month : int | None | Omit
+            Day of the month to run the scheduled evaluation.
+        last_execution_at : str | datetime | None | Omit
+            The date and time of the last execution of the scheduled evaluation.
+        last_execution_status : LastExecutionStatusParam | None | Omit
+            The status of the last execution of the scheduled evaluation.
+        paused : bool | None | Omit
+            Whether the scheduled evaluation is paused.
 
-          name: Name of the scheduled evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          run_count: The number of times to run each test case. This is useful to get a more accurate
-              result when the chatbot's generation is not deterministic. Testing stops at the
-              first failure. If all runs pass, the test case is considered successful.
+        Returns
+        -------
+        ScheduledEvaluation
+            The updated scheduled evaluation.
 
-          frequency: Frequency of the scheduled evaluation
-
-          time: Time of the scheduled evaluation
-
-          day_of_month: Day of the month to run the scheduled evaluation
-
-          day_of_week: Day of the week to run the scheduled evaluation
-
-          last_execution_at: The date and time of the last execution of the scheduled evaluation
-
-          last_execution_status: The status of the last execution of the scheduled evaluation
-
-          paused: Whether the scheduled evaluation is paused
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -698,23 +820,32 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[ScheduledEvaluation]:
-        """
-        List Scheduled Evaluations
+        """List all scheduled evaluations for a project.
 
-        Args:
-          project_id: Project ID to use for the scheduled evaluation
+        Parameters
+        ----------
+        project_id : str
+            Project ID to use for the scheduled evaluation.
+        include : list[Literal["evaluations"]] | None | Omit
+            Related resources to include in response.
+        last_days : int | None | Omit
+            Number of days to include in the response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          last_days: Number of days to include in the response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[ScheduledEvaluation]
+            A list of scheduled evaluations for the project.
         """
         response = await self._get(
             "/v2/scheduled-evaluations",
@@ -747,19 +878,32 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Scheduled Evaluation
+        """Delete a scheduled evaluation by its ID.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to delete
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -786,19 +930,27 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Scheduled Evaluations
+        """Delete multiple scheduled evaluations at once.
 
-        Args:
-          scheduled_evaluation_ids: IDs of the scheduled evaluations to delete
+        Parameters
+        ----------
+        scheduled_evaluation_ids : SequenceNotStr[str]
+            IDs of the scheduled evaluations to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/scheduled-evaluations",
@@ -829,21 +981,35 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Evaluation]:
-        """
-        List Scheduled Evaluation Evaluations
+        """List all evaluation runs triggered by a specific scheduled evaluation.
 
-        Args:
-          scheduled_evaluation_id: ID of the scheduled evaluation to list evaluations for
+        Parameters
+        ----------
+        scheduled_evaluation_id : str
+            ID of the scheduled evaluation to list evaluations for.
+        include : list[Literal["agent", "dataset"]] | None | Omit
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        list[Evaluation]
+            A list of evaluations triggered by the scheduled evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``scheduled_evaluation_id`` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(

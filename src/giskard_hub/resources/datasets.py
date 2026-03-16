@@ -70,23 +70,32 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Create Dataset
+        """Create a new empty dataset in the specified project.
 
-        Args:
-          name: Name of the dataset to create
+        Parameters
+        ----------
+        name : str
+            Name of the dataset to create.
+        project_id : str
+            Project ID to create the dataset in.
+        description : Optional[str]
+            Description of the dataset to create.
 
-          project_id: Project ID to create the dataset in
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the dataset to create
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Dataset
+            The newly created dataset.
         """
         response = self._post(
             "/v2/datasets",
@@ -118,25 +127,34 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Upload dataset from a file
+        """Upload a dataset from a file or a list of dictionaries.
 
-        Args:
-          project_id: Project ID to import the dataset into
+        Parameters
+        ----------
+        project_id : str
+            Project ID to import the dataset into.
+        file : FileTypes | list[dict[str, Any]]
+            File to upload.
+        dataset_id : Optional[str]
+            Dataset ID to update (optional).
+        name : Optional[str]
+            Name of the dataset (optional).
 
-          file: File to upload
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          dataset_id: Dataset ID to update (optional)
-
-          name: Name of the dataset (optional)
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Dataset
+            The uploaded dataset.
         """
         if isinstance(file, list):
             file = ("test_cases.json", json.dumps(file).encode("utf-8"))
@@ -185,19 +203,33 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Retrieve Dataset
+        """Retrieve a dataset by its ID.
 
-        Args:
-          dataset_id: ID of the dataset to retrieve
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Dataset
+            The retrieved dataset.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -225,25 +257,39 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Update Dataset
+        """Update an existing dataset's metadata.
 
-        Args:
-          dataset_id: ID of the dataset to update
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to update.
+        description : Optional[str]
+            Description of the dataset to update.
+        name : Optional[str]
+            Name of the dataset to update.
+        status : Optional[TaskProgressParam]
+            Status of the dataset to update.
 
-          description: Description of the dataset to update
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the dataset to update
+        Returns
+        -------
+        Dataset
+            The updated dataset.
 
-          status: Status of the dataset to update
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -276,19 +322,28 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Dataset]:
-        """
-        List Datasets
+        """List all datasets, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to list datasets for
+        Parameters
+        ----------
+        project_id : Optional[str]
+            Project ID to list datasets for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[Dataset]
+            A list of datasets.
         """
         response = self._get(
             "/v2/datasets",
@@ -315,19 +370,32 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Dataset
+        """Delete a dataset by its ID.
 
-        Args:
-          dataset_id: ID of the dataset to delete
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -352,19 +420,27 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Datasets
+        """Delete multiple datasets at once.
 
-        Args:
-          dataset_ids: IDs of the datasets to delete
+        Parameters
+        ----------
+        dataset_ids : SequenceNotStr[str]
+            IDs of the datasets to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/datasets",
@@ -396,29 +472,43 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Generate Scenario Based Dataset
+        """Generate a dataset of test cases from scenario definitions.
 
-        Args:
-          project_id: The ID of the project
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str
+            The ID of the agent to use for generation.
+        scenario_id : str
+            The ID of the scenario to use.
+        n_examples : int
+            Total number of examples to generate.
+        dataset_id : Optional[str]
+            The ID of the dataset to use (required when dataset_name is not provided).
+        dataset_name : Optional[str]
+            Name for the generated dataset.
 
-          agent_id: The ID of the agent to use for generation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          scenario_id: The ID of the scenario to use
+        Returns
+        -------
+        Dataset
+            The generated dataset.
 
-          n_examples: Total number of examples to generate
-
-          dataset_id: The ID of the dataset to use (required when dataset_name is not provided)
-
-          dataset_name: Name for the generated dataset
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If neither ``dataset_id`` nor ``dataset_name`` is provided.
         """
 
         if dataset_id is omit and dataset_name is omit:
@@ -462,31 +552,40 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Generate Document Based Dataset
+        """Generate a dataset of test cases from knowledge base documents.
 
-        Args:
-          agent_id: The ID of the agent to use for generation
+        Parameters
+        ----------
+        agent_id : str
+            The ID of the agent to use for generation.
+        knowledge_base_id : str
+            The ID of the knowledge base to use for generation.
+        project_id : str
+            The ID of the project to use for generation.
+        dataset_name : str
+            Name for the generated dataset.
+        description : Optional[str]
+            Description of the generated dataset.
+        n_examples : int
+            Total number of examples to generate.
+        topic_ids : SequenceNotStr[str]
+            IDs of the topics to use for generation.
 
-          knowledge_base_id: The ID of the knowledge base to use for generation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          project_id: The ID of the project to use for generation
-
-          dataset_name: Name for the generated dataset
-
-          description: Description of the generated dataset
-
-          n_examples: Total number of examples to generate
-
-          topic_ids: IDs of the topics to use for generation
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Dataset
+            The generated dataset.
         """
         response = self._post(
             "/v2/datasets/generate-document-based",
@@ -521,19 +620,33 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[str]:
-        """
-        List Dataset Tags
+        """List all tags associated with a dataset.
 
-        Args:
-          dataset_id: The ID of the dataset to list tags for
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to list tags for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        List[str]
+            A list of tag strings.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -558,19 +671,33 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[TestCase]:
-        """
-        List Dataset Test Cases
+        """List all test cases belonging to a dataset.
 
-        Args:
-          dataset_id: The ID of the dataset to list test cases for
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to list test cases for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        List[TestCase]
+            A list of test cases.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -635,29 +762,43 @@ class DatasetsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]:
-        """
-        Search Dataset Test Cases By Filters
+        """Search test cases in a dataset using filters, sorting, and pagination.
 
-        Args:
-          dataset_id: The ID of the dataset to search test cases in
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to search test cases in.
+        query : Optional[str]
+            Search query for test cases.
+        order_by : Optional[List[TestCaseOrderByParam]]
+            Order by criteria for test cases.
+        filters : Optional[TestCaseFiltersParam]
+            Search filters to apply.
+        limit : int
+            Maximum number of results to return.
+        offset : int
+            Number of results to skip.
 
-          query: Search query for test cases
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          order_by: Order by criteria for test cases
+        Returns
+        -------
+        List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]
+            A list of matching test cases, optionally with pagination metadata.
 
-          filters: Search filters to apply
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -720,23 +861,32 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Create Dataset
+        """Create a new empty dataset in the specified project.
 
-        Args:
-          name: Name of the dataset to create
+        Parameters
+        ----------
+        name : str
+            Name of the dataset to create.
+        project_id : str
+            Project ID to create the dataset in.
+        description : Optional[str]
+            Description of the dataset to create.
 
-          project_id: Project ID to create the dataset in
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the dataset to create
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Dataset
+            The newly created dataset.
         """
         response = await self._post(
             "/v2/datasets",
@@ -768,25 +918,34 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Upload dataset from a file
+        """Upload a dataset from a file or a list of dictionaries.
 
-        Args:
-          project_id: Project ID to import the dataset into
+        Parameters
+        ----------
+        project_id : str
+            Project ID to import the dataset into.
+        file : FileTypes | list[dict[str, Any]]
+            File to upload.
+        dataset_id : Optional[str]
+            Dataset ID to update (optional).
+        name : Optional[str]
+            Name of the dataset (optional).
 
-          file: File to upload
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          dataset_id: Dataset ID to update (optional)
-
-          name: Name of the dataset (optional)
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Dataset
+            The uploaded dataset.
         """
         if isinstance(file, list):
             file = ("test_cases.json", json.dumps(file).encode("utf-8"))
@@ -832,19 +991,33 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Retrieve Dataset
+        """Retrieve a dataset by its ID.
 
-        Args:
-          dataset_id: ID of the dataset to retrieve
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Dataset
+            The retrieved dataset.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -872,25 +1045,39 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Update Dataset
+        """Update an existing dataset's metadata.
 
-        Args:
-          dataset_id: ID of the dataset to update
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to update.
+        description : Optional[str]
+            Description of the dataset to update.
+        name : Optional[str]
+            Name of the dataset to update.
+        status : Optional[TaskProgressParam]
+            Status of the dataset to update.
 
-          description: Description of the dataset to update
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the dataset to update
+        Returns
+        -------
+        Dataset
+            The updated dataset.
 
-          status: Status of the dataset to update
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -923,19 +1110,28 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Dataset]:
-        """
-        List Datasets
+        """List all datasets, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to list datasets for
+        Parameters
+        ----------
+        project_id : Optional[str]
+            Project ID to list datasets for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[Dataset]
+            A list of datasets.
         """
         response = await self._get(
             "/v2/datasets",
@@ -962,19 +1158,32 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Dataset
+        """Delete a dataset by its ID.
 
-        Args:
-          dataset_id: ID of the dataset to delete
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -999,19 +1208,27 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Datasets
+        """Delete multiple datasets at once.
 
-        Args:
-          dataset_ids: IDs of the datasets to delete
+        Parameters
+        ----------
+        dataset_ids : SequenceNotStr[str]
+            IDs of the datasets to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/datasets",
@@ -1043,29 +1260,43 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Generate Scenario Based Dataset
+        """Generate a dataset of test cases from scenario definitions.
 
-        Args:
-          project_id: The ID of the project
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str
+            The ID of the agent to use for generation.
+        scenario_id : str
+            The ID of the scenario to use.
+        n_examples : int
+            Total number of examples to generate.
+        dataset_id : Optional[str]
+            The ID of the dataset to use (required when dataset_name is not provided).
+        dataset_name : Optional[str]
+            Name for the generated dataset.
 
-          agent_id: The ID of the agent to use for generation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          scenario_id: The ID of the scenario to use
+        Returns
+        -------
+        Dataset
+            The generated dataset.
 
-          n_examples: Total number of examples to generate
-
-          dataset_id: The ID of the dataset to use
-
-          dataset_name: Name for the generated dataset (required when dataset_id is not provided)
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If neither ``dataset_id`` nor ``dataset_name`` is provided.
         """
 
         if dataset_id is omit and dataset_name is omit:
@@ -1109,31 +1340,40 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """
-        Generate Document Based Dataset
+        """Generate a dataset of test cases from knowledge base documents.
 
-        Args:
-          agent_id: The ID of the agent to use for generation
+        Parameters
+        ----------
+        agent_id : str
+            The ID of the agent to use for generation.
+        knowledge_base_id : str
+            The ID of the knowledge base to use for generation.
+        project_id : str
+            The ID of the project to use for generation.
+        dataset_name : str
+            Name for the generated dataset.
+        description : Optional[str]
+            Description of the generated dataset.
+        n_examples : int
+            Total number of examples to generate.
+        topic_ids : SequenceNotStr[str]
+            IDs of the topics to use for generation.
 
-          knowledge_base_id: The ID of the knowledge base to use for generation
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          project_id: The ID of the project to use for generation
-
-          dataset_name: Name for the generated dataset
-
-          description: Description of the generated dataset
-
-          n_examples: Total number of examples to generate
-
-          topic_ids: IDs of the topics to use for generation
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Dataset
+            The generated dataset.
         """
         response = await self._post(
             "/v2/datasets/generate-document-based",
@@ -1168,19 +1408,33 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[str]:
-        """
-        List Dataset Tags
+        """List all tags associated with a dataset.
 
-        Args:
-          dataset_id: The ID of the dataset to list test cases for
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to list tags for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        List[str]
+            A list of tag strings.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1205,19 +1459,33 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[TestCase]:
-        """
-        List Dataset Test Cases
+        """List all test cases belonging to a dataset.
 
-        Args:
-          dataset_id: The ID of the dataset to list test cases for
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to list test cases for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        List[TestCase]
+            A list of test cases.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1282,29 +1550,43 @@ class AsyncDatasetsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]:
-        """
-        Search Dataset Test Cases By Filters
+        """Search test cases in a dataset using filters, sorting, and pagination.
 
-        Args:
-          dataset_id: The ID of the dataset to search test cases in
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to search test cases in.
+        query : Optional[str]
+            Search query for test cases.
+        order_by : Optional[List[TestCaseOrderByParam]]
+            Order by criteria for test cases.
+        filters : Optional[TestCaseFiltersParam]
+            Search filters to apply.
+        limit : int
+            Maximum number of results to return.
+        offset : int
+            Number of results to skip.
 
-          query: Search query for test cases
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          filters: Search filters to apply
+        Returns
+        -------
+        List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]
+            A list of matching test cases, optionally with pagination metadata.
 
-          order_by: Order by criteria for test cases
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")

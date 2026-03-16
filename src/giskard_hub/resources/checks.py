@@ -63,27 +63,36 @@ class ChecksResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Check:
-        """
-        Create Check
+        """Create a new check in the specified project.
 
-        Args:
-          params: Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness)
+        Parameters
+        ----------
+        params : CheckTypeParam
+            Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness).
+        identifier : str
+            Unique identifier of the check.
+        name : str
+            Display name of the check.
+        project_id : str
+            Project ID to create the check in.
+        description : str | None | Omit
+            Human-readable description of the check.
 
-          identifier: Identifier of the check
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the check to create
-
-          project_id: Project ID to create the check in
-
-          description: Description of the check to create
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Check
+            The newly created check.
         """
         response = self._post(
             "/v2/checks",
@@ -116,19 +125,33 @@ class ChecksResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Check:
-        """
-        Retrieve Check
+        """Retrieve a check by its ID.
 
-        Args:
-          check_id: ID of the check to retrieve
+        Parameters
+        ----------
+        check_id : str
+            ID of the check to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Check
+            The requested check.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``check_id`` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -157,27 +180,41 @@ class ChecksResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Check:
-        """
-        Update Check
+        """Update an existing check.
 
-        Args:
-          check_id: ID of the check to update
+        Parameters
+        ----------
+        check_id : str
+            ID of the check to update.
+        params : CheckTypeParam | None | Omit
+            Updated check-specific parameters.
+        description : str | None | Omit
+            Updated description of the check.
+        identifier : str | None | Omit
+            Updated identifier of the check.
+        name : str | None | Omit
+            Updated display name of the check.
 
-          params: Check-specific parameters
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the check
+        Returns
+        -------
+        Check
+            The updated check.
 
-          identifier: Identifier of the check
-
-          name: Name of the check
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``check_id`` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -217,21 +254,30 @@ class ChecksResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Check]:
-        """
-        List Checks
+        """List all checks for a project.
 
-        Args:
-          project_id: Project ID to list checks for
+        Parameters
+        ----------
+        project_id : str
+            Project ID to list checks for.
+        filter_builtin : bool | Omit
+            Whether to filter out built-in checks.
 
-          filter_builtin: Whether to filter builtin checks
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Check]
+            List of checks for the project.
         """
         response = self._get(
             "/v2/checks",
@@ -264,19 +310,28 @@ class ChecksResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Check
+        """Delete a check by its ID.
 
-        Args:
-          check_id: ID of the check to delete
+        Parameters
+        ----------
+        check_id : str
+            ID of the check to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``check_id`` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -301,19 +356,23 @@ class ChecksResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Checks
+        """Delete multiple checks at once.
 
-        Args:
-          check_ids: IDs of the checks to delete
+        Parameters
+        ----------
+        check_ids : SequenceNotStr[str]
+            IDs of the checks to delete.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
         """
         response = self._delete(
             "/v2/checks",
@@ -365,27 +424,36 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Check:
-        """
-        Create Check
+        """Create a new check in the specified project.
 
-        Args:
-          params: Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness)
+        Parameters
+        ----------
+        params : CheckTypeParam
+            Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness).
+        identifier : str
+            Unique identifier of the check.
+        name : str
+            Display name of the check.
+        project_id : str
+            Project ID to create the check in.
+        description : str | None | Omit
+            Human-readable description of the check.
 
-          identifier: Identifier of the check
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the check to create
-
-          project_id: Project ID to create the check in
-
-          description: Description of the check to create
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Check
+            The newly created check.
         """
         response = await self._post(
             "/v2/checks",
@@ -418,19 +486,33 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Check:
-        """
-        Retrieve Check
+        """Retrieve a check by its ID.
 
-        Args:
-          check_id: ID of the check to retrieve
+        Parameters
+        ----------
+        check_id : str
+            ID of the check to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Check
+            The requested check.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``check_id`` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -459,27 +541,41 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Check:
-        """
-        Update Check
+        """Update an existing check.
 
-        Args:
-          check_id: ID of the check to update
+        Parameters
+        ----------
+        check_id : str
+            ID of the check to update.
+        params : CheckTypeParam | None | Omit
+            Updated check-specific parameters.
+        description : str | None | Omit
+            Updated description of the check.
+        identifier : str | None | Omit
+            Updated identifier of the check.
+        name : str | None | Omit
+            Updated display name of the check.
 
-          params: Check-specific parameters
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the check
+        Returns
+        -------
+        Check
+            The updated check.
 
-          identifier: Identifier of the check
-
-          name: Name of the check
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``check_id`` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -519,21 +615,30 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Check]:
-        """
-        List Checks
+        """List all checks for a project.
 
-        Args:
-          project_id: Project ID to list checks for
+        Parameters
+        ----------
+        project_id : str
+            Project ID to list checks for.
+        filter_builtin : bool | Omit
+            Whether to filter out built-in checks.
 
-          filter_builtin: Whether to filter builtin checks
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Check]
+            List of checks for the project.
         """
         response = await self._get(
             "/v2/checks",
@@ -566,19 +671,28 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Check
+        """Delete a check by its ID.
 
-        Args:
-          check_id: ID of the check to delete
+        Parameters
+        ----------
+        check_id : str
+            ID of the check to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``check_id`` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -603,19 +717,23 @@ class AsyncChecksResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Checks
+        """Delete multiple checks at once.
 
-        Args:
-          check_ids: IDs of the checks to delete
+        Parameters
+        ----------
+        check_ids : SequenceNotStr[str]
+            IDs of the checks to delete.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
         """
         response = await self._delete(
             "/v2/checks",

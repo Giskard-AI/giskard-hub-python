@@ -55,25 +55,39 @@ class AttemptsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScanProbeAttempt:
-        """
-        Update Scan Probe Attempt
+        """Update a scan probe attempt's review status, severity, or success flag.
 
-        Args:
-          probe_attempt_id: Scan Probe Attempt ID to update
+        Parameters
+        ----------
+        probe_attempt_id : str
+            Scan Probe Attempt ID to update.
+        review_status : ReviewStatus or None
+            Review status of the attempt.
+        severity : Severity or None
+            Severity of the attempt.
+        successful : bool or None
+            Whether the attempt was successful.
 
-          review_status: Review status of the attempt
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          severity: Severity of the attempt
+        Returns
+        -------
+        ScanProbeAttempt
+            The updated scan probe attempt object.
 
-          successful: Whether the attempt was successful
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``probe_attempt_id`` is empty.
         """
         if not probe_attempt_id:
             raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")
@@ -130,25 +144,39 @@ class AsyncAttemptsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScanProbeAttempt:
-        """
-        Update Scan Probe Attempt
+        """Update a scan probe attempt's review status, severity, or success flag.
 
-        Args:
-          probe_attempt_id: Scan Probe Attempt ID to update
+        Parameters
+        ----------
+        probe_attempt_id : str
+            Scan Probe Attempt ID to update.
+        review_status : ReviewStatus or None
+            Review status of the attempt.
+        severity : Severity or None
+            Severity of the attempt.
+        successful : bool or None
+            Whether the attempt was successful.
 
-          review_status: Review status of the attempt
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          severity: Severity of the attempt
+        Returns
+        -------
+        ScanProbeAttempt
+            The updated scan probe attempt object.
 
-          successful: Whether the attempt was successful
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``probe_attempt_id`` is empty.
         """
         if not probe_attempt_id:
             raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")

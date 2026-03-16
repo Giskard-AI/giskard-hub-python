@@ -51,19 +51,33 @@ class ProbesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScanProbe:
-        """
-        Retrieve Scan Probe
+        """Retrieve a specific scan probe result by its ID.
 
-        Args:
-          probe_id: Scan Probe Result ID to retrieve
+        Parameters
+        ----------
+        probe_id : str
+            Scan Probe Result ID to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        ScanProbe
+            The requested scan probe object.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``probe_id`` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
@@ -88,19 +102,33 @@ class ProbesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[ScanProbeAttempt]:
-        """
-        List Scan Probe Attempts
+        """List all attempts for a specific scan probe.
 
-        Args:
-          probe_id: Scan Probe Result ID to list attempts
+        Parameters
+        ----------
+        probe_id : str
+            Scan Probe Result ID to list attempts.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        list of ScanProbeAttempt
+            A list of scan probe attempts.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``probe_id`` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
@@ -146,19 +174,33 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScanProbe:
-        """
-        Retrieve Scan Probe
+        """Retrieve a specific scan probe result by its ID.
 
-        Args:
-          probe_id: Scan Probe Result ID to list attempts
+        Parameters
+        ----------
+        probe_id : str
+            Scan Probe Result ID to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        ScanProbe
+            The requested scan probe object.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``probe_id`` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
@@ -183,19 +225,33 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[ScanProbeAttempt]:
-        """
-        List Scan Probe Attempts
+        """List all attempts for a specific scan probe.
 
-        Args:
-          probe_id: Scan Probe Result ID to list attempts
+        Parameters
+        ----------
+        probe_id : str
+            Scan Probe Result ID to list attempts.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        list of ScanProbeAttempt
+            A list of scan probe attempts.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``probe_id`` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")

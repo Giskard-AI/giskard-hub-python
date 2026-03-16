@@ -61,25 +61,39 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Scenario:
-        """
-        Create Scenario
+        """Create a new scenario within a project.
 
-        Args:
-          project_id: Project ID
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        name : str
+            The name of the scenario.
+        description : str
+            The description of the scenario.
+        rules : SequenceNotStr[str]
+            The rules of the scenario.
 
-          name: The name of the scenario
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          description: The description of the scenario
+        Returns
+        -------
+        Scenario
+            The newly created scenario.
 
-          rules: The rules of the scenario
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -113,21 +127,35 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Scenario:
-        """
-        Retrieve Scenario
+        """Retrieve a scenario by its ID within a project.
 
-        Args:
-          scenario_id: Scenario ID
+        Parameters
+        ----------
+        scenario_id : str
+            The ID of the scenario.
+        project_id : str
+            The ID of the project.
 
-          project_id: Project ID
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        Scenario
+            The requested scenario.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` or ``scenario_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -158,27 +186,41 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Scenario:
-        """
-        Update Scenario
+        """Update an existing scenario's definition.
 
-        Args:
-          scenario_id: Scenario ID
+        Parameters
+        ----------
+        scenario_id : str
+            The ID of the scenario.
+        project_id : str
+            The ID of the project.
+        name : str or None
+            Name of the scenario.
+        description : str or None
+            Description of the scenario.
+        rules : SequenceNotStr[str] or None
+            The rules of the scenario.
 
-          project_id: Project ID
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the scenario
+        Returns
+        -------
+        Scenario
+            The updated scenario.
 
-          description: Description of the scenario
-
-          rules: The rules of the scenario
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` or ``scenario_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -213,19 +255,33 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Scenario]:
-        """
-        List Scenarios
+        """List all scenarios for a project.
 
-        Args:
-          project_id: Project ID
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        list of Scenario
+            A list of all scenarios for the project.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -251,21 +307,34 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Scenario
+        """Delete a scenario from a project.
 
-        Args:
-          scenario_id: Scenario ID
+        Parameters
+        ----------
+        scenario_id : str
+            The ID of the scenario.
+        project_id : str
+            The ID of the project.
 
-          project_id: Project ID
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        None
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` or ``scenario_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -295,25 +364,39 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScenarioPreview:
-        """
-        Preview Scenario
+        """Generate a preview conversation for a scenario without persisting it.
 
-        Args:
-          project_id: Project ID
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str or None
+            Agent ID to use for preview.
+        description : str
+            Description of the scenario.
+        rules : SequenceNotStr[str]
+            Rules to use for preview.
 
-          agent_id: Agent ID to use for preview
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the scenario
+        Returns
+        -------
+        ScenarioPreview
+            The generated preview conversation.
 
-          rules: Rules to use for preview
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -373,25 +456,39 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Scenario:
-        """
-        Create Scenario
+        """Create a new scenario within a project.
 
-        Args:
-          project_id: Project ID
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        name : str
+            The name of the scenario.
+        description : str
+            The description of the scenario.
+        rules : SequenceNotStr[str]
+            The rules of the scenario.
 
-          name: The name of the scenario
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          description: The description of the scenario
+        Returns
+        -------
+        Scenario
+            The newly created scenario.
 
-          rules: The rules of the scenario
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -425,21 +522,35 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Scenario:
-        """
-        Retrieve Scenario
+        """Retrieve a scenario by its ID within a project.
 
-        Args:
-          scenario_id: Scenario ID
+        Parameters
+        ----------
+        scenario_id : str
+            The ID of the scenario.
+        project_id : str
+            The ID of the project.
 
-          project_id: Project ID
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        Scenario
+            The requested scenario.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` or ``scenario_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -470,27 +581,41 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Scenario:
-        """
-        Update Scenario
+        """Update an existing scenario's definition.
 
-        Args:
-          scenario_id: Scenario ID
+        Parameters
+        ----------
+        scenario_id : str
+            The ID of the scenario.
+        project_id : str
+            The ID of the project.
+        name : str or None
+            Name of the scenario.
+        description : str or None
+            Description of the scenario.
+        rules : SequenceNotStr[str] or None
+            The rules of the scenario.
 
-          project_id: Project ID
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          name: Name of the scenario
+        Returns
+        -------
+        Scenario
+            The updated scenario.
 
-          description: Description of the scenario
-
-          rules: The rules of the scenario
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` or ``scenario_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -525,19 +650,33 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Scenario]:
-        """
-        List Scenarios
+        """List all scenarios for a project.
 
-        Args:
-          project_id: Project ID
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        list of Scenario
+            A list of all scenarios for the project.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -563,21 +702,34 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Scenario
+        """Delete a scenario from a project.
 
-        Args:
-          scenario_id: Scenario ID
+        Parameters
+        ----------
+        scenario_id : str
+            The ID of the scenario.
+        project_id : str
+            The ID of the project.
 
-          project_id: Project ID
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        None
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` or ``scenario_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -607,25 +759,39 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScenarioPreview:
-        """
-        Preview Scenario
+        """Generate a preview conversation for a scenario without persisting it.
 
-        Args:
-          project_id: Project ID
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str or None
+            Agent ID to use for preview.
+        description : str
+            Description of the scenario.
+        rules : SequenceNotStr[str]
+            Rules to use for preview.
 
-          agent_id: Agent ID to use for preview
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the scenario
+        Returns
+        -------
+        ScenarioPreview
+            The generated preview conversation.
 
-          rules: Rules to use for preview
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")

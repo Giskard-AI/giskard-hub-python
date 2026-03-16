@@ -97,27 +97,38 @@ class AuditResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[Audit] | Tuple[List[Audit], APIPaginatedMetadata]:
-        """
-        Search Audit Logs By Filters
+        """Search audit logs using filters, sorting, and pagination.
 
-        Args:
-          query: Search query for audit logs
+        Parameters
+        ----------
+        query : str | None | Omit
+            Free-text search query for audit logs.
+        order_by : list[AuditOrderByParam] | Omit
+            Sorting criteria for audit logs.
+        filters : AuditFiltersParam | Omit
+            Filter criteria for audit logs.
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          order_by: Order by criteria for audit logs
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          filters: Filter criteria for audit logs
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Audit] | tuple[list[Audit], APIPaginatedMetadata]
+            Audit logs, optionally with pagination metadata.
         """
         response = self._post(
             "/v2/audit/search",
@@ -192,25 +203,41 @@ class AuditResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[AuditDisplay] | Tuple[List[AuditDisplay], APIPaginatedMetadata]:
-        """
-        List Entity Audit Display Logs
+        """List audit display logs for a specific entity.
 
-        Args:
-          entity_id: The UUID of the entity
+        Parameters
+        ----------
+        entity_id : str
+            UUID of the entity to list audit logs for.
+        entity_type : str
+            Type of the entity (e.g. ``"project"``, ``"agent"``).
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          entity_type: The type of the entity
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          limit: Maximum number of results to return
+        Returns
+        -------
+        list[AuditDisplay] | tuple[list[AuditDisplay], APIPaginatedMetadata]
+            Audit display logs, optionally with pagination metadata.
 
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``entity_type`` or ``entity_id`` is empty.
         """
         if not entity_type:
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
@@ -305,27 +332,38 @@ class AsyncAuditResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[Audit] | Tuple[List[Audit], APIPaginatedMetadata]:
-        """
-        Search Audit Logs By Filters
+        """Search audit logs using filters, sorting, and pagination.
 
-        Args:
-          query: Search query for audit logs
+        Parameters
+        ----------
+        query : str | None | Omit
+            Free-text search query for audit logs.
+        order_by : list[AuditOrderByParam] | Omit
+            Sorting criteria for audit logs.
+        filters : AuditFiltersParam | Omit
+            Filter criteria for audit logs.
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          order_by: Order by criteria for audit logs
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          filters: Filter criteria for audit logs
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Audit] | tuple[list[Audit], APIPaginatedMetadata]
+            Audit logs, optionally with pagination metadata.
         """
         response = await self._post(
             "/v2/audit/search",
@@ -400,25 +438,41 @@ class AsyncAuditResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[AuditDisplay] | Tuple[List[AuditDisplay], APIPaginatedMetadata]:
-        """
-        List Entity Audit Display Logs
+        """List audit display logs for a specific entity.
 
-        Args:
-          entity_id: The UUID of the entity
+        Parameters
+        ----------
+        entity_id : str
+            UUID of the entity to list audit logs for.
+        entity_type : str
+            Type of the entity (e.g. ``"project"``, ``"agent"``).
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          entity_type: The type of the entity
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          limit: Maximum number of results to return
+        Returns
+        -------
+        list[AuditDisplay] | tuple[list[AuditDisplay], APIPaginatedMetadata]
+            Audit display logs, optionally with pagination metadata.
 
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``entity_type`` or ``entity_id`` is empty.
         """
         if not entity_type:
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
