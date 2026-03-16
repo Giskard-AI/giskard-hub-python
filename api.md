@@ -37,8 +37,8 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/audit/search">client.audit.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/audit.py">Audit</a>] | Tuple[List[<a href="./src/giskard_hub/types/audit.py">Audit</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
-- <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>] | Tuple[List[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
+- <code title="post /v2/audit/search">client.audit_logs.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/audit.py">Audit</a>] | Tuple[List[<a href="./src/giskard_hub/types/audit.py">Audit</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
+- <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit_logs.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>] | Tuple[List[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
 
 # Checks
 
