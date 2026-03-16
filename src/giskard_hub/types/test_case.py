@@ -6,9 +6,9 @@ from typing_extensions import Required
 
 from pydantic import Field
 
-from .chat import ChatMessage, ChatMessageParam
+from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadataParam
 from .user import UserReference
-from .agent import AgentOutput, AgentOutputParam
+from .agent import AgentOutput
 from .check import CheckConfig, TestCaseCheckConfigParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
@@ -68,7 +68,7 @@ class TestCaseCreateParams(TypedDict, total=False):
     dataset_id: Required[str]
     messages: Required[Iterable[ChatMessageParam]]
     checks: Iterable[TestCaseCheckConfigParam]
-    demo_output: Optional[AgentOutputParam]
+    demo_output: Optional[ChatMessageWithMetadataParam]
     status: Optional[Literal["active", "draft"]]
     tags: SequenceNotStr[str]
 
@@ -76,7 +76,7 @@ class TestCaseCreateParams(TypedDict, total=False):
 class TestCaseUpdateParams(TypedDict, total=False):
     checks: Optional[Iterable[TestCaseCheckConfigParam]]
     dataset_id: Optional[str]
-    demo_output: Optional[AgentOutputParam]
+    demo_output: Optional[ChatMessageWithMetadataParam]
     messages: Optional[Iterable[ChatMessageParam]]
     tags: Optional[SequenceNotStr[str]]
     status: Optional[Literal["active", "draft"]]

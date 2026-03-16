@@ -27,7 +27,7 @@ from ...types.chat import ChatMessageParam
 from ...types.check import CheckConfigParam, _check_params_to_api
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from .._helpers_types import AgentReturn, normalize_agent_output
+from .._helpers_types import AgentReturn, agent_return_to_api
 from ...types.test_case import (
     TestCase,
     TestCaseCreateParams,
@@ -118,7 +118,7 @@ class TestCasesResource(SyncAPIResource):
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = (
-            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+            agent_return_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
         )
         response = self._post(
             "/v2/test-cases",
@@ -260,7 +260,7 @@ class TestCasesResource(SyncAPIResource):
         else:
             api_checks = _check_params_to_api(checks)
         api_demo_output = (
-            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+            agent_return_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
         )
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
@@ -587,7 +587,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = (
-            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+            agent_return_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
         )
         response = await self._post(
             "/v2/test-cases",
@@ -729,7 +729,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         else:
             api_checks = _check_params_to_api(checks)
         api_demo_output = (
-            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+            agent_return_to_api(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
         )
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",

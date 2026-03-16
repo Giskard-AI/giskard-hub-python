@@ -8,7 +8,7 @@ from pydantic import TypeAdapter
 
 from .._models import BaseModel
 from .._resource import SyncAPIResource, AsyncAPIResource
-from ..types.chat import ChatMessage
+from ..types.chat import ChatMessage, ChatMessageWithMetadataParam
 from ..types.scan import Scan, ScanProbe
 from ..types.agent import Agent, AgentOutput
 from ..types.common import TaskState
@@ -28,6 +28,7 @@ __all__ = [
     "agent_return_adapter",
     "PrintMetricsEntity",
     "normalize_agent_output",
+    "agent_return_to_api",
     "map_entity_to_resource",
 ]
 
@@ -85,6 +86,19 @@ def normalize_agent_output(value: Any) -> AgentOutput:
             return AgentOutput(response=ChatMessage(role="assistant", content=parsed))
         case _:
             raise ValueError(f"Invalid agent output: {value!r}")
+
+
+def agent_return_to_api(value: Any) -> ChatMessageWithMetadataParam:
+    """Convert an ``AgentReturn`` value to the API's expected flat format."""
+    agent_output = normalize_agent_output(value)
+    msg = agent_output.response
+    result = ChatMessageWithMetadataParam(
+        content=msg.content if msg else "",
+        role=msg.role if msg else "assistant",
+    )
+    if agent_output.metadata:
+        result["metadata"] = agent_output.metadata
+    return result
 
 
 def map_entity_to_resource(
