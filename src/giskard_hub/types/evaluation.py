@@ -4,11 +4,9 @@ from typing import Dict, List, Union, Literal, Iterable, Optional, TypeAlias, Ty
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from pydantic import computed_field
-
 from .chat import ChatMessageParam
 from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam
-from .check import OutputAnnotation
+from .check import CheckResult
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
 from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
@@ -80,7 +78,7 @@ class Evaluation(BaseModel):
     tags: List[Metric]
     updated_at: datetime
 
-    @computed_field
+    @property
     def state(self) -> TaskState:
         return self.status.state
 
@@ -113,16 +111,6 @@ class FailureCategoryResult(BaseModel):
     status: Optional[TaskState] = None
 
 
-class Result(BaseModel):
-    name: str
-    annotations: Optional[List[OutputAnnotation]] = None
-    display_name: Optional[str] = None
-    error: Optional[str] = None
-    passed: Optional[bool] = None
-    reason: Optional[str] = None
-    status: Optional[TaskState] = None
-
-
 class TestCaseEvaluationReference(BaseModel):
     id: str
 
@@ -136,7 +124,7 @@ class TestCaseEvaluation(BaseModel):
     evaluation_id: str
     failure_category: Optional[FailureCategoryResult] = None
     output: Optional[AgentOutput] = None
-    results: List[Result]
+    results: List[CheckResult]
     state: TaskState
     test_case: TestCaseReference | TestCase
     hidden: bool

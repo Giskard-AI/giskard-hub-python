@@ -51,11 +51,7 @@ class TestTestCases:
                     "enabled": True,
                 }
             ],
-            demo_output={
-                "content": "content",
-                "role": "role",
-                "metadata": {"foo": "bar"},
-            },
+            demo_output="content",
             status="active",
             tags=["string"],
         )
@@ -167,11 +163,7 @@ class TestTestCases:
                 }
             ],
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            demo_output={
-                "content": "content",
-                "role": "role",
-                "metadata": {"foo": "bar"},
-            },
+            demo_output="content",
             messages=[
                 {
                     "content": "content",
@@ -433,11 +425,7 @@ class TestAsyncTestCases:
                     "enabled": True,
                 }
             ],
-            demo_output={
-                "content": "content",
-                "role": "role",
-                "metadata": {"foo": "bar"},
-            },
+            demo_output="content",
             status="active",
             tags=["string"],
         )
@@ -549,11 +537,7 @@ class TestAsyncTestCases:
                 }
             ],
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            demo_output={
-                "content": "content",
-                "role": "role",
-                "metadata": {"foo": "bar"},
-            },
+            demo_output="content",
             messages=[
                 {
                     "content": "content",

@@ -155,7 +155,7 @@ class OutputAnnotation(BaseModel):
     label: str
     start_char_index: int
     text: str
-    type: Literal["output"]
+    type: Literal["output", "context"]
 
 
 # ---------------------------------------------------------------------------
@@ -187,13 +187,13 @@ class Check(BaseModel):
 
 
 class CheckResult(BaseModel):
-    annotations: Optional[List[OutputAnnotation]] = None
-    display_name: Optional[str] = None
-    error: Optional[str] = None
     name: str
-    passed: Optional[bool] = None
-    reason: Optional[str] = None
+    display_name: Optional[str] = None
     status: TaskState
+    passed: Optional[bool] = None
+    error: Optional[str] = None
+    reason: Optional[str] = None
+    annotations: Optional[List[OutputAnnotation]] = None
 
 
 # ---------------------------------------------------------------------------

@@ -6,8 +6,9 @@ from typing_extensions import Required
 
 from pydantic import Field
 
-from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadata, ChatMessageWithMetadataParam
+from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadataParam
 from .user import UserReference
+from .agent import AgentOutput
 from .check import CheckConfig, TestCaseCheckConfigParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
@@ -52,7 +53,7 @@ class TestCase(BaseModel):
     comments: List[TestCaseComment]
     created_at: datetime
     dataset_id: str
-    demo_output: Optional[ChatMessageWithMetadata] = None
+    demo_output: Optional[AgentOutput] = None
     messages: List[ChatMessage]
     tags: List[str]
     updated_at: datetime

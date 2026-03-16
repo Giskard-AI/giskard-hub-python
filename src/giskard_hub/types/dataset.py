@@ -4,8 +4,6 @@ from typing import Any, Dict, List, Literal, Iterable, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
-from pydantic import computed_field
-
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam, TaskProgressParam
 from .._types import FileTypes, SequenceNotStr
 from .._models import BaseModel
@@ -44,7 +42,7 @@ class Dataset(BaseModel):
     tags: List[str]
     updated_at: datetime
 
-    @computed_field
+    @property
     def state(self) -> TaskState:
         return self.status.state
 
