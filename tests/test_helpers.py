@@ -3,21 +3,25 @@ from typing import Any, List, Iterable
 import pytest
 
 from giskard_hub.types.chat import ChatMessage
+from giskard_hub.types.common import TaskState
 from giskard_hub.types.test_case import TestCase
 from giskard_hub.types.evaluation import Evaluation
 from giskard_hub.resources.helpers import HelpersResource, AsyncHelpersResource
-from giskard_hub.resources._helpers_types import StatefulEntity
 
 
-class DummyStateful(StatefulEntity):
-    def __init__(self, id: str, state: str) -> None:
+class DummyStateful:
+    def __init__(self, id: str, state: TaskState) -> None:
         self.id = id
-        self.state = state  # type: ignore[assignment]
+        self._state: TaskState = state
+
+    @property
+    def state(self) -> TaskState:
+        return self._state
 
 
 class DummySyncResource:
-    def __init__(self, states: Iterable[str]) -> None:
-        self._states: List[str] = list(states)
+    def __init__(self, states: Iterable[TaskState]) -> None:
+        self._states: List[TaskState] = list(states)
         self._index = 0
 
     def retrieve(self, _id: str) -> DummyStateful:
@@ -31,8 +35,8 @@ class DummySyncResource:
 
 
 class DummyAsyncResource:
-    def __init__(self, states: Iterable[str]) -> None:
-        self._states: List[str] = list(states)
+    def __init__(self, states: Iterable[TaskState]) -> None:
+        self._states: List[TaskState] = list(states)
         self._index = 0
 
     async def retrieve(self, _id: str) -> DummyStateful:
@@ -127,7 +131,8 @@ async def test_wait_for_completion_async_error_state_raises() -> None:
 
 
 def test_wait_for_completion_sync_timeout() -> None:
-    helper = DummySyncHelpers(DummySyncResource(["running"] * 3))
+    states: List[TaskState] = ["running"] * 3
+    helper = DummySyncHelpers(DummySyncResource(states))
     entity = DummyStateful("id-1", "running")
 
     with pytest.raises(RuntimeError):
