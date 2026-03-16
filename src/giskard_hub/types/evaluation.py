@@ -4,8 +4,6 @@ from typing import Dict, List, Union, Literal, Iterable, Optional, TypeAlias, Ty
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from pydantic import computed_field
-
 from .chat import ChatMessageParam
 from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult
@@ -80,7 +78,7 @@ class Evaluation(BaseModel):
     tags: List[Metric]
     updated_at: datetime
 
-    @computed_field
+    @property
     def state(self) -> TaskState:
         return self.status.state
 

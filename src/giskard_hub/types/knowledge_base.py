@@ -57,7 +57,7 @@ class KnowledgeBase(BaseModel):
     topics: List[Topic]
     updated_at: datetime
 
-    @computed_field
+    @property
     def state(self) -> TaskState:
         return self.status.state
 

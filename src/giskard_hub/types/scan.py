@@ -5,7 +5,7 @@ from typing import Dict, List, Literal, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
-from pydantic import Field, computed_field
+from pydantic import Field
 
 from .chat import ChatMessageWithMetadata
 from .agent import Agent, AgentReference
@@ -60,7 +60,7 @@ class Scan(BaseModel):
     status: TaskProgress
     updated_at: datetime
 
-    @computed_field
+    @property
     def state(self) -> TaskState:
         return self.status.state
 
@@ -88,7 +88,7 @@ class ScanProbe(BaseModel):
     scan_id: str = Field(alias="scan_result_id")
     status: TaskProgress
 
-    @computed_field
+    @property
     def state(self) -> TaskState:
         return self.status.state
 
