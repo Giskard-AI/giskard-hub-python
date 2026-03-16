@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Literal, Iterable, Optional, cast
+from typing import List, Literal, Iterable, Optional, cast
 
 import httpx
 
@@ -26,7 +26,7 @@ from ..._response import (
 )
 from ...types.chat import ChatMessageParam
 from ...types.agent import AgentOutputParam, MinimalAgentParam
-from ...types.check import CheckResult
+from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
@@ -59,6 +59,10 @@ def _validate_dataset_or_old_evaluation(
     """
     if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
         raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+
+def _check_params_to_api(checks: Iterable[CheckConfigParam]) -> Iterable[dict[str, object]]:
+    return [{"identifier": check["identifier"], **(check.get("params", {}))} for check in checks]
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -491,7 +495,7 @@ class EvaluationsResource(SyncAPIResource):
     def run_single(
         self,
         *,
-        checks: Iterable[Dict[str, object]],
+        checks: Iterable[CheckConfigParam],
         messages: Iterable[ChatMessageParam],
         agent_output: AgentOutputParam,
         agent_description: str | Omit = omit,
@@ -525,11 +529,13 @@ class EvaluationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
+
         response = self._post(
             "/v2/evaluations/run-single",
             body=maybe_transform(
                 {
-                    "checks": checks,
+                    "checks": api_checks,
                     "messages": messages,
                     "model_output": agent_output,
                     "model_description": agent_description,
@@ -976,7 +982,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
     async def run_single(
         self,
         *,
-        checks: Iterable[Dict[str, object]],
+        checks: Iterable[CheckConfigParam],
         messages: Iterable[ChatMessageParam],
         agent_output: AgentOutputParam,
         agent_description: str | Omit = omit,
@@ -1010,11 +1016,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
+
         response = await self._post(
             "/v2/evaluations/run-single",
             body=await async_maybe_transform(
                 {
-                    "checks": checks,
+                    "checks": api_checks,
                     "messages": messages,
                     "model_output": agent_output,
                     "model_description": agent_description,

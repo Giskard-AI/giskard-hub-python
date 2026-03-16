@@ -399,7 +399,7 @@ class TestEvaluations:
     @parametrize
     def test_method_run_single(self, client: HubClient) -> None:
         evaluation = client.evaluations.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -419,7 +419,7 @@ class TestEvaluations:
     @parametrize
     def test_method_run_single_with_all_params(self, client: HubClient) -> None:
         evaluation = client.evaluations.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -446,7 +446,7 @@ class TestEvaluations:
     @parametrize
     def test_raw_response_run_single(self, client: HubClient) -> None:
         response = client.evaluations.with_raw_response.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -470,7 +470,7 @@ class TestEvaluations:
     @parametrize
     def test_streaming_response_run_single(self, client: HubClient) -> None:
         with client.evaluations.with_streaming_response.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -880,7 +880,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_method_run_single(self, async_client: AsyncHubClient) -> None:
         evaluation = await async_client.evaluations.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -900,7 +900,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_method_run_single_with_all_params(self, async_client: AsyncHubClient) -> None:
         evaluation = await async_client.evaluations.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -927,7 +927,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_raw_response_run_single(self, async_client: AsyncHubClient) -> None:
         response = await async_client.evaluations.with_raw_response.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
@@ -951,7 +951,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_streaming_response_run_single(self, async_client: AsyncHubClient) -> None:
         async with async_client.evaluations.with_streaming_response.run_single(
-            checks=[{"foo": "bar"}],
+            checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
                     "content": "content",
