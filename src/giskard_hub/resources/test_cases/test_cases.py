@@ -23,10 +23,11 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
+from ...types.chat import ChatMessageParam
 from ...types.check import CheckConfigParam, _check_params_to_api
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
+from .._helpers_types import AgentReturn, normalize_agent_output
 from ...types.test_case import (
     TestCase,
     TestCaseCreateParams,
@@ -70,7 +71,7 @@ class TestCasesResource(SyncAPIResource):
         dataset_id: str,
         messages: Iterable[ChatMessageParam],
         checks: Iterable[CheckConfigParam] | Omit = omit,
-        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        demo_output: Optional[AgentReturn] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -92,8 +93,8 @@ class TestCasesResource(SyncAPIResource):
         checks : Iterable[CheckConfigParam] | Omit
             Checks to add to the test case. Each check should have an ``identifier``
             and optionally ``params`` (check-specific fields) and ``enabled``.
-        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
-            Agent output.
+        demo_output : Optional[AgentReturn] | Omit
+            Agent output. Can be a string, a ``ChatMessage``, or an ``AgentOutput`` object.
         status : Optional[Literal["active", "draft"]] | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
@@ -116,6 +117,9 @@ class TestCasesResource(SyncAPIResource):
             The newly created test case.
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
+        api_demo_output = (
+            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+        )
         response = self._post(
             "/v2/test-cases",
             body=maybe_transform(
@@ -123,7 +127,7 @@ class TestCasesResource(SyncAPIResource):
                     "dataset_id": dataset_id,
                     "messages": messages,
                     "checks": api_checks,
-                    "demo_output": demo_output,
+                    "demo_output": api_demo_output,
                     "status": status,
                     "tags": tags,
                 },
@@ -195,7 +199,7 @@ class TestCasesResource(SyncAPIResource):
         *,
         checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
-        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        demo_output: Optional[AgentReturn] | Omit = omit,
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
@@ -218,8 +222,8 @@ class TestCasesResource(SyncAPIResource):
             and optionally ``params`` (check-specific fields) and ``enabled``.
         dataset_id : Optional[str] | Omit
             Dataset ID to update the test case.
-        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
-            Agent output.
+        demo_output : Optional[AgentReturn] | Omit
+            Agent output. Can be a string, a ``ChatMessage``, or an ``AgentOutput`` object.
         messages : Optional[Iterable[ChatMessageParam]] | Omit
             Messages to update the test case.
         tags : Optional[SequenceNotStr[str]] | Omit
@@ -255,13 +259,16 @@ class TestCasesResource(SyncAPIResource):
             api_checks = checks  # type: ignore[assignment]
         else:
             api_checks = _check_params_to_api(checks)
+        api_demo_output = (
+            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+        )
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=maybe_transform(
                 {
                     "checks": api_checks,
                     "dataset_id": dataset_id,
-                    "demo_output": demo_output,
+                    "demo_output": api_demo_output,
                     "messages": messages,
                     "tags": tags,
                     "status": status,
@@ -533,7 +540,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         dataset_id: str,
         messages: Iterable[ChatMessageParam],
         checks: Iterable[CheckConfigParam] | Omit = omit,
-        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        demo_output: Optional[AgentReturn] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -555,8 +562,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
         checks : Iterable[CheckConfigParam] | Omit
             Checks to add to the test case. Each check should have an ``identifier``
             and optionally ``params`` (check-specific fields) and ``enabled``.
-        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
-            Agent output.
+        demo_output : Optional[AgentReturn] | Omit
+            Agent output. Can be a string, a ``ChatMessage``, or an ``AgentOutput`` object.
         status : Optional[Literal["active", "draft"]] | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
@@ -579,6 +586,9 @@ class AsyncTestCasesResource(AsyncAPIResource):
             The newly created test case.
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
+        api_demo_output = (
+            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+        )
         response = await self._post(
             "/v2/test-cases",
             body=await async_maybe_transform(
@@ -586,7 +596,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "dataset_id": dataset_id,
                     "messages": messages,
                     "checks": api_checks,
-                    "demo_output": demo_output,
+                    "demo_output": api_demo_output,
                     "status": status,
                     "tags": tags,
                 },
@@ -658,7 +668,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         *,
         checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
-        demo_output: Optional[ChatMessageWithMetadataParam] | Omit = omit,
+        demo_output: Optional[AgentReturn] | Omit = omit,
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
@@ -681,8 +691,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
             and optionally ``params`` (check-specific fields) and ``enabled``.
         dataset_id : Optional[str] | Omit
             Dataset ID to update the test case.
-        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
-            Agent output.
+        demo_output : Optional[AgentReturn] | Omit
+            Agent output. Can be a string, a ``ChatMessage``, or an ``AgentOutput`` object.
         messages : Optional[Iterable[ChatMessageParam]] | Omit
             Messages to update the test case.
         tags : Optional[SequenceNotStr[str]] | Omit
@@ -718,13 +728,16 @@ class AsyncTestCasesResource(AsyncAPIResource):
             api_checks = checks  # type: ignore[assignment]
         else:
             api_checks = _check_params_to_api(checks)
+        api_demo_output = (
+            normalize_agent_output(demo_output) if not isinstance(demo_output, (Omit, type(None))) else demo_output
+        )
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=await async_maybe_transform(
                 {
                     "checks": api_checks,
                     "dataset_id": dataset_id,
-                    "demo_output": demo_output,
+                    "demo_output": api_demo_output,
                     "messages": messages,
                     "tags": tags,
                     "status": status,
