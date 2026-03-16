@@ -13,7 +13,7 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...types.scan import ScanProbeResult, ScanProbeAttempt
+from ...types.scan import ScanProbe, ScanProbeAttempt
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
 
@@ -42,7 +42,7 @@ class ProbesResource(SyncAPIResource):
 
     def retrieve(
         self,
-        probe_result_id: str,
+        probe_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -50,12 +50,12 @@ class ProbesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanProbeResult:
+    ) -> ScanProbe:
         """
         Retrieve Scan Probe
 
         Args:
-          probe_result_id: Scan Probe Result ID to retrieve
+          probe_id: Scan Probe Result ID to retrieve
 
           extra_headers: Send extra headers
 
@@ -65,21 +65,21 @@ class ProbesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not probe_result_id:
-            raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
+        if not probe_id:
+            raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
         response = self._get(
-            f"/v2/scan-probes/{probe_result_id}",
+            f"/v2/scan-probes/{probe_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ScanProbeResult],
+            cast_to=APIResponse[ScanProbe],
         )
 
         return self._unwrap(response)
 
     def list_attempts(
         self,
-        probe_result_id: str,
+        probe_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -92,7 +92,7 @@ class ProbesResource(SyncAPIResource):
         List Scan Probe Attempts
 
         Args:
-          probe_result_id: Scan Probe Result ID to list attempts
+          probe_id: Scan Probe Result ID to list attempts
 
           extra_headers: Send extra headers
 
@@ -102,10 +102,10 @@ class ProbesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not probe_result_id:
-            raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
+        if not probe_id:
+            raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
         response = self._get(
-            f"/v2/scan-probes/{probe_result_id}/attempts",
+            f"/v2/scan-probes/{probe_id}/attempts",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -137,7 +137,7 @@ class AsyncProbesResource(AsyncAPIResource):
 
     async def retrieve(
         self,
-        probe_result_id: str,
+        probe_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -145,12 +145,12 @@ class AsyncProbesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanProbeResult:
+    ) -> ScanProbe:
         """
         Retrieve Scan Probe
 
         Args:
-          probe_result_id: Scan Probe Result ID to list attempts
+          probe_id: Scan Probe Result ID to list attempts
 
           extra_headers: Send extra headers
 
@@ -160,21 +160,21 @@ class AsyncProbesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not probe_result_id:
-            raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
+        if not probe_id:
+            raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
         response = await self._get(
-            f"/v2/scan-probes/{probe_result_id}",
+            f"/v2/scan-probes/{probe_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ScanProbeResult],
+            cast_to=APIResponse[ScanProbe],
         )
 
         return self._unwrap(response)
 
     async def list_attempts(
         self,
-        probe_result_id: str,
+        probe_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -187,7 +187,7 @@ class AsyncProbesResource(AsyncAPIResource):
         List Scan Probe Attempts
 
         Args:
-          probe_result_id: Scan Probe Result ID to list attempts
+          probe_id: Scan Probe Result ID to list attempts
 
           extra_headers: Send extra headers
 
@@ -197,10 +197,10 @@ class AsyncProbesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not probe_result_id:
-            raise ValueError(f"Expected a non-empty value for `probe_result_id` but received {probe_result_id!r}")
+        if not probe_id:
+            raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
         response = await self._get(
-            f"/v2/scan-probes/{probe_result_id}/attempts",
+            f"/v2/scan-probes/{probe_id}/attempts",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

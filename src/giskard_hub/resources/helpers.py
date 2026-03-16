@@ -20,7 +20,7 @@ from ._display import (
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
 from ..types.chat import ChatMessage
-from ..types.scan import ScanProbeResult, ScanProbeAttempt
+from ..types.scan import ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam
 from ..types.dataset import Dataset
 from ..types.project import Project
@@ -232,14 +232,14 @@ class HelpersResource(SyncAPIResource):
         return evaluation
 
     def _print_scan_metrics(self, entity: object) -> None:
-        from ..types.scan import ScanResult as _ScanResult
+        from ..types.scan import Scan as _Scan
 
-        scan = cast(_ScanResult, entity)
+        scan = cast(_Scan, entity)
         category_map = {cat.id: cat.title for cat in self._client.scans.list_categories()}
-        probe_results = self._client.scans.list_probes(scan_result_id=scan.id)
+        probe_results = self._client.scans.list_probes(scan_id=scan.id)
 
-        def fetch_attempts(probe: ScanProbeResult) -> tuple[str, list[ScanProbeAttempt]]:
-            return (probe.id, self._client.scans.probes.list_attempts(probe_result_id=probe.id))
+        def fetch_attempts(probe: ScanProbe) -> tuple[str, list[ScanProbeAttempt]]:
+            return (probe.id, self._client.scans.probes.list_attempts(probe_id=probe.id))
 
         with ThreadPoolExecutor() as executor:
             attempts_by_probe_id = dict(executor.map(fetch_attempts, probe_results))
@@ -451,13 +451,13 @@ class AsyncHelpersResource(AsyncAPIResource):
         return evaluation
 
     async def _print_scan_metrics(self, entity: object) -> None:
-        from ..types.scan import ScanResult as _ScanResult
+        from ..types.scan import Scan as _Scan
 
-        scan = cast(_ScanResult, entity)
+        scan = cast(_Scan, entity)
         category_map = {cat.id: cat.title for cat in await self._client.scans.list_categories()}
-        probe_results = await self._client.scans.list_probes(scan_result_id=scan.id)
+        probe_results = await self._client.scans.list_probes(scan_id=scan.id)
         attempts_list = await asyncio.gather(
-            *(self._client.scans.probes.list_attempts(probe_result_id=probe.id) for probe in probe_results)
+            *(self._client.scans.probes.list_attempts(probe_id=probe.id) for probe in probe_results)
         )
         attempts_by_probe_id = {
             probe.id: attempts for probe, attempts in zip(probe_results, attempts_list, strict=True)

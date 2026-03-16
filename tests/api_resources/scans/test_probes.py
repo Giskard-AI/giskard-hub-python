@@ -9,7 +9,7 @@ import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
-from giskard_hub.types.scan import ScanProbeResult, ScanProbeAttempt
+from giskard_hub.types.scan import ScanProbe, ScanProbeAttempt
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -23,7 +23,7 @@ class TestProbes:
         probe = client.scans.probes.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(ScanProbeResult, probe, path=["response"])
+        assert_matches_type(ScanProbe, probe, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -35,7 +35,7 @@ class TestProbes:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         probe = response.parse()
-        assert_matches_type(ScanProbeResult, probe, path=["response"])
+        assert_matches_type(ScanProbe, probe, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -47,7 +47,7 @@ class TestProbes:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             probe = response.parse()
-            assert_matches_type(ScanProbeResult, probe, path=["response"])
+            assert_matches_type(ScanProbe, probe, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -56,7 +56,7 @@ class TestProbes:
     def test_path_params_retrieve(self, client: HubClient) -> None:
         with pytest.raises(
             ValueError,
-            match=r"Expected a non-empty value for `probe_result_id` but received ''",
+            match=r"Expected a non-empty value for `probe_id` but received ''",
         ):
             client.scans.probes.with_raw_response.retrieve(
                 "",
@@ -101,7 +101,7 @@ class TestProbes:
     def test_path_params_list_attempts(self, client: HubClient) -> None:
         with pytest.raises(
             ValueError,
-            match=r"Expected a non-empty value for `probe_result_id` but received ''",
+            match=r"Expected a non-empty value for `probe_id` but received ''",
         ):
             client.scans.probes.with_raw_response.list_attempts(
                 "",
@@ -122,7 +122,7 @@ class TestAsyncProbes:
         probe = await async_client.scans.probes.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(ScanProbeResult, probe, path=["response"])
+        assert_matches_type(ScanProbe, probe, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -134,7 +134,7 @@ class TestAsyncProbes:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         probe = await response.parse()
-        assert_matches_type(ScanProbeResult, probe, path=["response"])
+        assert_matches_type(ScanProbe, probe, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -146,7 +146,7 @@ class TestAsyncProbes:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             probe = await response.parse()
-            assert_matches_type(ScanProbeResult, probe, path=["response"])
+            assert_matches_type(ScanProbe, probe, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -155,7 +155,7 @@ class TestAsyncProbes:
     async def test_path_params_retrieve(self, async_client: AsyncHubClient) -> None:
         with pytest.raises(
             ValueError,
-            match=r"Expected a non-empty value for `probe_result_id` but received ''",
+            match=r"Expected a non-empty value for `probe_id` but received ''",
         ):
             await async_client.scans.probes.with_raw_response.retrieve(
                 "",
@@ -200,7 +200,7 @@ class TestAsyncProbes:
     async def test_path_params_list_attempts(self, async_client: AsyncHubClient) -> None:
         with pytest.raises(
             ValueError,
-            match=r"Expected a non-empty value for `probe_result_id` but received ''",
+            match=r"Expected a non-empty value for `probe_id` but received ''",
         ):
             await async_client.scans.probes.with_raw_response.list_attempts(
                 "",

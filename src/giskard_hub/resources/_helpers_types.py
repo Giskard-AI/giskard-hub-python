@@ -9,7 +9,7 @@ from pydantic import TypeAdapter
 from .._models import BaseModel
 from .._resource import SyncAPIResource, AsyncAPIResource
 from ..types.chat import ChatMessage
-from ..types.scan import ScanResult, ScanProbeResult
+from ..types.scan import Scan, ScanProbe
 from ..types.agent import Agent, AgentOutput
 from ..types.common import TaskState
 from ..types.dataset import Dataset
@@ -62,7 +62,7 @@ TStateful = TypeVar("TStateful", bound=StatefulEntity)
 AgentReturn = str | ChatMessage | AgentOutput
 agent_return_adapter: TypeAdapter[AgentReturn] = TypeAdapter(AgentReturn)
 
-PrintMetricsEntity = Evaluation | ScanResult
+PrintMetricsEntity = Evaluation | Scan
 
 
 # ---------------------------------------------------------------------------
@@ -117,9 +117,9 @@ def map_entity_to_resource(
         return client.evaluations
     if isinstance(entity, KnowledgeBase):
         return client.knowledge_bases
-    if isinstance(entity, ScanResult):
+    if isinstance(entity, Scan):
         return client.scans
-    if isinstance(entity, ScanProbeResult):
+    if isinstance(entity, ScanProbe):
         return client.scans.probes
     if isinstance(entity, TestCaseEvaluation):
         return client.evaluations.results

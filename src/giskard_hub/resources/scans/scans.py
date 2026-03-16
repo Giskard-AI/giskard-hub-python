@@ -13,11 +13,11 @@ from .probes import (
     AsyncProbesResourceWithStreamingResponse,
 )
 from ...types import (
+    Scan,
     Agent,
-    ScanResult,
+    ScanProbe,
     ScanCategory,
     KnowledgeBase,
-    ScanProbeResult,
 )
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
@@ -91,7 +91,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
+    ) -> Scan:
         """
         Create Scan
 
@@ -126,14 +126,14 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ScanResult],
+            cast_to=APIResponse[Scan],
         )
 
         return self._unwrap(response)
 
     def retrieve(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -142,12 +142,12 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
+    ) -> Scan:
         """
         Retrieve Scan
 
         Args:
-          scan_result_id: Scan Result ID
+          scan_id: Scan Result ID
 
           include: Related resources to include in response
 
@@ -159,10 +159,10 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = self._get(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -170,7 +170,7 @@ class ScansResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, ScanRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[Scan, APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -189,7 +189,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanResult]:
+    ) -> List[Scan]:
         """
         List Scans
 
@@ -221,7 +221,7 @@ class ScansResource(SyncAPIResource):
                     ScanListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[List[Scan], APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -231,7 +231,7 @@ class ScansResource(SyncAPIResource):
 
     def delete(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -244,7 +244,7 @@ class ScansResource(SyncAPIResource):
         Delete Scan
 
         Args:
-          scan_result_id: Scan Result ID to delete
+          scan_id: Scan Result ID to delete
 
           extra_headers: Send extra headers
 
@@ -254,10 +254,10 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = self._delete(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -339,7 +339,7 @@ class ScansResource(SyncAPIResource):
 
     def list_probes(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -347,12 +347,12 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanProbeResult]:
+    ) -> List[ScanProbe]:
         """
         List Scan Probes
 
         Args:
-          scan_result_id: Scan Result ID to list probes
+          scan_id: Scan Result ID to list probes
 
           extra_headers: Send extra headers
 
@@ -362,14 +362,14 @@ class ScansResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = self._get(
-            f"/v2/scans/{scan_result_id}/probes",
+            f"/v2/scans/{scan_id}/probes",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ScanProbeResult]],
+            cast_to=APIResponse[List[ScanProbe]],
         )
 
         return self._unwrap(response)
@@ -416,7 +416,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
+    ) -> Scan:
         """
         Create Scan
 
@@ -451,14 +451,14 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ScanResult],
+            cast_to=APIResponse[Scan],
         )
 
         return self._unwrap(response)
 
     async def retrieve(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -467,12 +467,12 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
+    ) -> Scan:
         """
         Retrieve Scan
 
         Args:
-          scan_result_id: Scan Result ID to retrieve
+          scan_id: Scan Result ID to retrieve
 
           include: Related resources to include in response
 
@@ -484,11 +484,11 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
 
         response = await self._get(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -496,7 +496,7 @@ class AsyncScansResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, ScanRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[Scan, APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -515,7 +515,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanResult]:
+    ) -> List[Scan]:
         """
         List Scans
 
@@ -547,7 +547,7 @@ class AsyncScansResource(AsyncAPIResource):
                     ScanListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[List[Scan], APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -557,7 +557,7 @@ class AsyncScansResource(AsyncAPIResource):
 
     async def delete(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -570,7 +570,7 @@ class AsyncScansResource(AsyncAPIResource):
         Delete Scan
 
         Args:
-          scan_result_id: Scan Result ID to delete
+          scan_id: Scan Result ID to delete
 
           extra_headers: Send extra headers
 
@@ -580,10 +580,10 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = await self._delete(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -607,7 +607,7 @@ class AsyncScansResource(AsyncAPIResource):
         Bulk Delete Scans
 
         Args:
-          scan_result_id: Scan Result ID to list categories
+          scan_id: Scan Result ID to list categories
 
           extra_headers: Send extra headers
 
@@ -665,7 +665,7 @@ class AsyncScansResource(AsyncAPIResource):
 
     async def list_probes(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -673,12 +673,12 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanProbeResult]:
+    ) -> List[ScanProbe]:
         """
         List Scan Probes
 
         Args:
-          scan_result_id: Scan Result ID to list probes
+          scan_id: Scan Result ID to list probes
 
           extra_headers: Send extra headers
 
@@ -688,14 +688,14 @@ class AsyncScansResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = await self._get(
-            f"/v2/scans/{scan_result_id}/probes",
+            f"/v2/scans/{scan_id}/probes",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ScanProbeResult]],
+            cast_to=APIResponse[List[ScanProbe]],
         )
 
         return self._unwrap(response)
