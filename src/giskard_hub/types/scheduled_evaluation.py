@@ -4,10 +4,8 @@ from typing import List, Union, Literal, Optional, Annotated, TypeAlias, TypedDi
 from datetime import datetime
 from typing_extensions import Required
 
-from .agent import AgentReference
 from .._types import SequenceNotStr
 from .._utils import PropertyInfo
-from .dataset import DatasetReference
 from .._models import BaseModel
 from .execution import (
     ErrorExecutionStatus,
@@ -53,8 +51,6 @@ class ScheduledEvaluation(BaseModel):
     name: str
     agent_id: str
     dataset_id: str
-    agent: AgentReference
-    dataset: DatasetReference
     tags: List[str]
     run_count: int
     frequency: FrequencyOption

@@ -27,7 +27,7 @@ class ExecutionErrorParam(TypedDict, total=False):
 
 class ErrorExecutionStatus(BaseModel):
     error_message: str
-    status: Optional[Literal["error"]] = None
+    status: Literal["error"]
 
 
 class ErrorExecutionStatusParam(TypedDict, total=False):
@@ -37,7 +37,7 @@ class ErrorExecutionStatusParam(TypedDict, total=False):
 
 class SuccessExecutionStatus(BaseModel):
     evaluation_id: str
-    status: Optional[Literal["success"]] = None
+    status: Literal["success"]
 
 
 class SuccessExecutionStatusParam(TypedDict, total=False):

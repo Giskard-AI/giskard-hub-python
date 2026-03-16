@@ -154,7 +154,7 @@ class OutputAnnotation(BaseModel):
     label: str
     start_char_index: int
     text: str
-    type: Literal["output"]
+    type: Literal["output", "context"]
 
 
 # ---------------------------------------------------------------------------

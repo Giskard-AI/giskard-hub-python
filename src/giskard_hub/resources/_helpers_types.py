@@ -42,9 +42,7 @@ class StatefulEntity(Protocol):
     """Protocol for entities that expose task-like fields."""
 
     id: str
-
-    @property
-    def state(self) -> TaskState: ...
+    state: TaskState
 
 
 class RetrievableResource(Protocol):
