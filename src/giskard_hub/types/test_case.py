@@ -4,6 +4,8 @@ from typing import List, Literal, Iterable, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
+from pydantic import Field
+
 from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadata, ChatMessageWithMetadataParam
 from .user import UserReference
 from .check import CheckConfig, TestCaseCheckConfigParam
@@ -32,7 +34,7 @@ __all__ = [
 class TestCaseComment(BaseModel):
     __test__ = False
     id: str
-    comment: str
+    content: str = Field(alias="comment")
     created_at: datetime
     updated_at: datetime
     user: UserReference

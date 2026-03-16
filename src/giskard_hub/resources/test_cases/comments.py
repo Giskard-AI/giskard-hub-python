@@ -86,7 +86,7 @@ class CommentsResource(SyncAPIResource):
         self,
         test_case_id: str,
         *,
-        comment: str,
+        content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -100,7 +100,7 @@ class CommentsResource(SyncAPIResource):
         Args:
           test_case_id: Test Case ID to add the comment to
 
-          comment: Comment to add
+          content: Content of the comment to add
 
           extra_headers: Send extra headers
 
@@ -114,7 +114,7 @@ class CommentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = self._post(
             f"/v2/test-cases/{test_case_id}/comments",
-            body=maybe_transform({"comment": comment}, CommentAddParams),
+            body=maybe_transform({"comment": content}, CommentAddParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -128,7 +128,7 @@ class CommentsResource(SyncAPIResource):
         comment_id: str,
         *,
         test_case_id: str,
-        comment: str,
+        content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -144,7 +144,7 @@ class CommentsResource(SyncAPIResource):
 
           test_case_id: Test Case ID to edit the comment from
 
-          comment: Comment to edit
+          content: Content of the comment to edit
 
           extra_headers: Send extra headers
 
@@ -160,7 +160,7 @@ class CommentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         response = self._patch(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
-            body=maybe_transform({"comment": comment}, CommentEditParams),
+            body=maybe_transform({"comment": content}, CommentEditParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -236,7 +236,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         self,
         test_case_id: str,
         *,
-        comment: str,
+        content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -250,7 +250,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         Args:
           test_case_id: Test Case ID to add the comment to
 
-          comment: Comment to add
+          content: Content of the comment to add
 
           extra_headers: Send extra headers
 
@@ -264,7 +264,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = await self._post(
             f"/v2/test-cases/{test_case_id}/comments",
-            body=await async_maybe_transform({"comment": comment}, CommentAddParams),
+            body=await async_maybe_transform({"comment": content}, CommentAddParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -278,7 +278,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         comment_id: str,
         *,
         test_case_id: str,
-        comment: str,
+        content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -294,7 +294,7 @@ class AsyncCommentsResource(AsyncAPIResource):
 
           test_case_id: Test Case ID to edit the comment from
 
-          comment: Comment to edit
+          content: Content of the comment to edit
 
           extra_headers: Send extra headers
 
@@ -310,7 +310,7 @@ class AsyncCommentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}/comments/{comment_id}",
-            body=await async_maybe_transform({"comment": comment}, CommentEditParams),
+            body=await async_maybe_transform({"comment": content}, CommentEditParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

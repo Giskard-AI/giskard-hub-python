@@ -80,7 +80,7 @@ class TestComments:
     def test_method_add(self, client: HubClient) -> None:
         comment = client.test_cases.comments.add(
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
         assert_matches_type(TestCaseComment, comment, path=["response"])
 
@@ -89,7 +89,7 @@ class TestComments:
     def test_raw_response_add(self, client: HubClient) -> None:
         response = client.test_cases.comments.with_raw_response.add(
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
 
         assert response.is_closed is True
@@ -102,7 +102,7 @@ class TestComments:
     def test_streaming_response_add(self, client: HubClient) -> None:
         with client.test_cases.comments.with_streaming_response.add(
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -121,7 +121,7 @@ class TestComments:
         ):
             client.test_cases.comments.with_raw_response.add(
                 test_case_id="",
-                comment="comment",
+                content="comment",
             )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -130,7 +130,7 @@ class TestComments:
         comment = client.test_cases.comments.edit(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
         assert_matches_type(TestCaseComment, comment, path=["response"])
 
@@ -140,7 +140,7 @@ class TestComments:
         response = client.test_cases.comments.with_raw_response.edit(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
 
         assert response.is_closed is True
@@ -154,7 +154,7 @@ class TestComments:
         with client.test_cases.comments.with_streaming_response.edit(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -174,7 +174,7 @@ class TestComments:
             client.test_cases.comments.with_raw_response.edit(
                 comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 test_case_id="",
-                comment="comment",
+                content="comment",
             )
 
         with pytest.raises(
@@ -184,7 +184,7 @@ class TestComments:
             client.test_cases.comments.with_raw_response.edit(
                 comment_id="",
                 test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                comment="comment",
+                content="comment",
             )
 
 
@@ -259,7 +259,7 @@ class TestAsyncComments:
     async def test_method_add(self, async_client: AsyncHubClient) -> None:
         comment = await async_client.test_cases.comments.add(
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
         assert_matches_type(TestCaseComment, comment, path=["response"])
 
@@ -268,7 +268,7 @@ class TestAsyncComments:
     async def test_raw_response_add(self, async_client: AsyncHubClient) -> None:
         response = await async_client.test_cases.comments.with_raw_response.add(
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
 
         assert response.is_closed is True
@@ -281,7 +281,7 @@ class TestAsyncComments:
     async def test_streaming_response_add(self, async_client: AsyncHubClient) -> None:
         async with async_client.test_cases.comments.with_streaming_response.add(
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -300,7 +300,7 @@ class TestAsyncComments:
         ):
             await async_client.test_cases.comments.with_raw_response.add(
                 test_case_id="",
-                comment="comment",
+                content="comment",
             )
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -309,7 +309,7 @@ class TestAsyncComments:
         comment = await async_client.test_cases.comments.edit(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
         assert_matches_type(TestCaseComment, comment, path=["response"])
 
@@ -319,7 +319,7 @@ class TestAsyncComments:
         response = await async_client.test_cases.comments.with_raw_response.edit(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         )
 
         assert response.is_closed is True
@@ -333,7 +333,7 @@ class TestAsyncComments:
         async with async_client.test_cases.comments.with_streaming_response.edit(
             comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            comment="comment",
+            content="comment",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -353,7 +353,7 @@ class TestAsyncComments:
             await async_client.test_cases.comments.with_raw_response.edit(
                 comment_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 test_case_id="",
-                comment="comment",
+                content="comment",
             )
 
         with pytest.raises(
@@ -363,5 +363,5 @@ class TestAsyncComments:
             await async_client.test_cases.comments.with_raw_response.edit(
                 comment_id="",
                 test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                comment="comment",
+                content="comment",
             )
