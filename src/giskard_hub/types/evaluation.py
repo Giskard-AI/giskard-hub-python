@@ -131,6 +131,7 @@ class TestCaseEvaluation(BaseModel):
     __test__ = False
     id: str
     created_at: datetime
+    updated_at: datetime
     error: Optional[str] = None
     evaluation_id: str
     failure_category: Optional[FailureCategoryResult] = None
@@ -138,7 +139,8 @@ class TestCaseEvaluation(BaseModel):
     results: List[Result]
     state: TaskState
     test_case: TestCaseReference | TestCase
-    updated_at: datetime
+    hidden: bool
+    test_case_exists: Optional[bool] = None
 
 
 # ---------------------------------------------------------------------------
