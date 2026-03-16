@@ -1,10 +1,10 @@
 """Agent domain types."""
 
-from typing import Dict, Iterable, Optional, TypedDict
+from typing import Any, Dict, Iterable, Optional, TypedDict, cast
 from datetime import datetime
 from typing_extensions import Required
 
-from pydantic import Field, AliasChoices
+from pydantic import Field, AliasChoices, model_validator
 
 from .chat import Header, ChatMessage, HeaderParam, ChatMessageParam
 from .._types import SequenceNotStr
@@ -37,12 +37,42 @@ class Agent(BaseModel):
     id: str
     created_at: datetime
     description: Optional[str] = None
-    headers: list[Header]
+    headers: Dict[str, str] = Field(default_factory=dict)
     name: str
     project_id: str
     supported_languages: list[str]
     updated_at: datetime
     url: str
+
+    @model_validator(mode="before")
+    @classmethod
+    def _normalize_headers(cls, data: Any) -> Any:  # noqa: ANN401
+        if not isinstance(data, dict):
+            return data
+
+        d = cast(Dict[str, Any], data)
+        raw_headers = d.get("headers")
+
+        # Already a mapping or missing: nothing to do
+        if raw_headers is None or isinstance(raw_headers, dict):
+            return d
+
+        # Convert list of Header models or dicts into a dict[str, str]
+        if isinstance(raw_headers, list):
+            headers_dict: Dict[str, str] = {}
+            for item in cast(list[Any], raw_headers):
+                if isinstance(item, Header):
+                    headers_dict[item.name] = item.value
+                elif isinstance(item, dict):
+                    item_typed = cast(Dict[str, Any], item)
+                    name = item_typed.get("name")
+                    value = item_typed.get("value")
+                    if isinstance(name, str) and isinstance(value, str):
+                        headers_dict[name] = value
+
+            return {**d, "headers": headers_dict}
+
+        return d
 
 
 class AgentReference(BaseModel):
