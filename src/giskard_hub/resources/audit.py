@@ -26,28 +26,28 @@ from ..types.audit import AuditListEntityParams
 from .._base_client import make_request_options
 from ..types.common import APIPaginatedMetadata
 
-__all__ = ["AuditResource", "AsyncAuditResource"]
+__all__ = ["AuditLogsResource", "AsyncAuditLogsResource"]
 
 
-class AuditResource(SyncAPIResource):
+class AuditLogsResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AuditResourceWithRawResponse:
+    def with_raw_response(self) -> AuditLogsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AuditResourceWithRawResponse(self)
+        return AuditLogsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AuditResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AuditLogsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AuditResourceWithStreamingResponse(self)
+        return AuditLogsResourceWithStreamingResponse(self)
 
     @overload
     def search(
@@ -97,27 +97,38 @@ class AuditResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[Audit] | Tuple[List[Audit], APIPaginatedMetadata]:
-        """
-        Search Audit Logs By Filters
+        """Search audit logs using filters, sorting, and pagination.
 
-        Args:
-          query: Search query for audit logs
+        Parameters
+        ----------
+        query : str | None | Omit
+            Free-text search query for audit logs.
+        order_by : list[AuditOrderByParam] | Omit
+            Sorting criteria for audit logs.
+        filters : AuditFiltersParam | Omit
+            Filter criteria for audit logs.
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          order_by: Order by criteria for audit logs
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          filters: Filter criteria for audit logs
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Audit] | tuple[list[Audit], APIPaginatedMetadata]
+            Audit logs, optionally with pagination metadata.
         """
         response = self._post(
             "/v2/audit/search",
@@ -192,25 +203,41 @@ class AuditResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[AuditDisplay] | Tuple[List[AuditDisplay], APIPaginatedMetadata]:
-        """
-        List Entity Audit Display Logs
+        """List audit display logs for a specific entity.
 
-        Args:
-          entity_id: The UUID of the entity
+        Parameters
+        ----------
+        entity_id : str
+            UUID of the entity to list audit logs for.
+        entity_type : str
+            Type of the entity (e.g. ``"project"``, ``"agent"``).
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          entity_type: The type of the entity
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          limit: Maximum number of results to return
+        Returns
+        -------
+        list[AuditDisplay] | tuple[list[AuditDisplay], APIPaginatedMetadata]
+            Audit display logs, optionally with pagination metadata.
 
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``entity_type`` or ``entity_id`` is empty.
         """
         if not entity_type:
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
@@ -237,25 +264,25 @@ class AuditResource(SyncAPIResource):
         return self._unwrap_paginated(response, include_metadata)
 
 
-class AsyncAuditResource(AsyncAPIResource):
+class AsyncAuditLogsResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncAuditResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncAuditLogsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncAuditResourceWithRawResponse(self)
+        return AsyncAuditLogsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncAuditResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncAuditLogsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AsyncAuditResourceWithStreamingResponse(self)
+        return AsyncAuditLogsResourceWithStreamingResponse(self)
 
     @overload
     async def search(
@@ -305,27 +332,38 @@ class AsyncAuditResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[Audit] | Tuple[List[Audit], APIPaginatedMetadata]:
-        """
-        Search Audit Logs By Filters
+        """Search audit logs using filters, sorting, and pagination.
 
-        Args:
-          query: Search query for audit logs
+        Parameters
+        ----------
+        query : str | None | Omit
+            Free-text search query for audit logs.
+        order_by : list[AuditOrderByParam] | Omit
+            Sorting criteria for audit logs.
+        filters : AuditFiltersParam | Omit
+            Filter criteria for audit logs.
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          order_by: Order by criteria for audit logs
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          filters: Filter criteria for audit logs
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Audit] | tuple[list[Audit], APIPaginatedMetadata]
+            Audit logs, optionally with pagination metadata.
         """
         response = await self._post(
             "/v2/audit/search",
@@ -400,25 +438,41 @@ class AsyncAuditResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[AuditDisplay] | Tuple[List[AuditDisplay], APIPaginatedMetadata]:
-        """
-        List Entity Audit Display Logs
+        """List audit display logs for a specific entity.
 
-        Args:
-          entity_id: The UUID of the entity
+        Parameters
+        ----------
+        entity_id : str
+            UUID of the entity to list audit logs for.
+        entity_type : str
+            Type of the entity (e.g. ``"project"``, ``"agent"``).
+        limit : int | Omit
+            Maximum number of results to return.
+        offset : int | Omit
+            Number of results to skip for pagination.
+        include_metadata : bool
+            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
 
-          entity_type: The type of the entity
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          limit: Maximum number of results to return
+        Returns
+        -------
+        list[AuditDisplay] | tuple[list[AuditDisplay], APIPaginatedMetadata]
+            Audit display logs, optionally with pagination metadata.
 
-          offset: Number of results to skip
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``entity_type`` or ``entity_id`` is empty.
         """
         if not entity_type:
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
@@ -445,8 +499,8 @@ class AsyncAuditResource(AsyncAPIResource):
         return self._unwrap_paginated(response, include_metadata)
 
 
-class AuditResourceWithRawResponse:
-    def __init__(self, audit: AuditResource) -> None:
+class AuditLogsResourceWithRawResponse:
+    def __init__(self, audit: AuditLogsResource) -> None:
         self._audit = audit
 
         self.search = to_raw_response_wrapper(
@@ -457,8 +511,8 @@ class AuditResourceWithRawResponse:
         )
 
 
-class AsyncAuditResourceWithRawResponse:
-    def __init__(self, audit: AsyncAuditResource) -> None:
+class AsyncAuditLogsResourceWithRawResponse:
+    def __init__(self, audit: AsyncAuditLogsResource) -> None:
         self._audit = audit
 
         self.search = async_to_raw_response_wrapper(
@@ -469,8 +523,8 @@ class AsyncAuditResourceWithRawResponse:
         )
 
 
-class AuditResourceWithStreamingResponse:
-    def __init__(self, audit: AuditResource) -> None:
+class AuditLogsResourceWithStreamingResponse:
+    def __init__(self, audit: AuditLogsResource) -> None:
         self._audit = audit
 
         self.search = to_streamed_response_wrapper(
@@ -481,8 +535,8 @@ class AuditResourceWithStreamingResponse:
         )
 
 
-class AsyncAuditResourceWithStreamingResponse:
-    def __init__(self, audit: AsyncAuditResource) -> None:
+class AsyncAuditLogsResourceWithStreamingResponse:
+    def __init__(self, audit: AsyncAuditLogsResource) -> None:
         self._audit = audit
 
         self.search = async_to_streamed_response_wrapper(

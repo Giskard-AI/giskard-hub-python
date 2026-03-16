@@ -13,11 +13,11 @@ from .probes import (
     AsyncProbesResourceWithStreamingResponse,
 )
 from ...types import (
+    Scan,
     Agent,
-    ScanResult,
+    ScanProbe,
     ScanCategory,
     KnowledgeBase,
-    ScanProbeResult,
 )
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
@@ -91,26 +91,36 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
-        """
-        Create Scan
+    ) -> Scan:
+        """Launch a new vulnerability scan of an agent.
 
-        Args:
-          project_id: Project ID to use for the scan
+        Parameters
+        ----------
+        project_id : str
+            Project ID to use for the scan.
+        agent_id : str
+            Agent ID to use for the scan.
+        knowledge_base_id : str or None
+            Knowledge Base ID to use for the scan.
+        tags : list of str or None
+            List of category tags to apply to the scan; use ``list_categories``
+            to get the available categories.
 
-          agent_id: Agent ID to use for the scan
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          knowledge_base_id: Knowledge Base ID to use for the scan
-
-          tags: List of category tags to apply to the scan; use `list_categories` to get the available categories.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Scan
+            The newly created scan object.
         """
         response = self._post(
             "/v2/scans",
@@ -126,14 +136,14 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ScanResult],
+            cast_to=APIResponse[Scan],
         )
 
         return self._unwrap(response)
 
     def retrieve(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -142,27 +152,41 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
+    ) -> Scan:
+        """Retrieve a scan result by its ID, with optional related resource inclusion.
+
+        Parameters
+        ----------
+        scan_id : str
+            Scan Result ID.
+        include : list of {'agent', 'knowledge_base'} or None
+            Related resources to include in response.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Scan
+            The requested scan object.
+
+        Raises
+        ------
+        ValueError
+            If ``scan_id`` is empty.
         """
-        Retrieve Scan
-
-        Args:
-          scan_result_id: Scan Result ID
-
-          include: Related resources to include in response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = self._get(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -170,7 +194,7 @@ class ScansResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, ScanRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[Scan, APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -189,22 +213,31 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanResult]:
-        """
-        List Scans
+    ) -> List[Scan]:
+        """List all scan results, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to use for the scan
+        Parameters
+        ----------
+        project_id : str or None
+            Project ID to use for the scan.
+        include : list of {'agent', 'knowledge_base'} or None
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of Scan
+            A list of scan objects.
         """
         response = self._get(
             "/v2/scans",
@@ -221,7 +254,7 @@ class ScansResource(SyncAPIResource):
                     ScanListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[List[Scan], APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -231,7 +264,7 @@ class ScansResource(SyncAPIResource):
 
     def delete(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -240,24 +273,37 @@ class ScansResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
+        """Delete a scan result by its ID.
+
+        Parameters
+        ----------
+        scan_id : str
+            Scan Result ID to delete.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If ``scan_id`` is empty.
         """
-        Delete Scan
-
-        Args:
-          scan_result_id: Scan Result ID to delete
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = self._delete(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -277,19 +323,27 @@ class ScansResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Scans
+        """Delete multiple scan results at once.
 
-        Args:
-          scan_ids: List of scan IDs to delete
+        Parameters
+        ----------
+        scan_ids : list of str
+            List of scan IDs to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/scans",
@@ -315,17 +369,23 @@ class ScansResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[ScanCategory]:
-        """
-        List Scan Categories
+        """List all available scan vulnerability categories.
 
-        Args:
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of ScanCategory
+            A list of scan vulnerability categories.
         """
         response = self._get(
             "/v2/scan-categories",
@@ -339,7 +399,7 @@ class ScansResource(SyncAPIResource):
 
     def list_probes(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -347,29 +407,43 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanProbeResult]:
+    ) -> List[ScanProbe]:
+        """List all probes for a given scan result.
+
+        Parameters
+        ----------
+        scan_id : str
+            Scan Result ID to list probes.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        list of ScanProbe
+            A list of scan probes for the given scan.
+
+        Raises
+        ------
+        ValueError
+            If ``scan_id`` is empty.
         """
-        List Scan Probes
-
-        Args:
-          scan_result_id: Scan Result ID to list probes
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = self._get(
-            f"/v2/scans/{scan_result_id}/probes",
+            f"/v2/scans/{scan_id}/probes",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ScanProbeResult]],
+            cast_to=APIResponse[List[ScanProbe]],
         )
 
         return self._unwrap(response)
@@ -416,26 +490,36 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
-        """
-        Create Scan
+    ) -> Scan:
+        """Launch a new vulnerability scan of an agent.
 
-        Args:
-          project_id: Project ID to use for the scan
+        Parameters
+        ----------
+        project_id : str
+            Project ID to use for the scan.
+        agent_id : str
+            Agent ID to use for the scan.
+        knowledge_base_id : str or None
+            Knowledge Base ID to use for the scan.
+        tags : list of str or None
+            List of category tags to apply to the scan; use ``list_categories``
+            to get the available categories.
 
-          agent_id: Agent ID to use for the scan
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          knowledge_base_id: Knowledge Base ID to use for the scan
-
-          tags: List of category tags to apply to the scan; use `list_categories` to get the available categories.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Scan
+            The newly created scan object.
         """
         response = await self._post(
             "/v2/scans",
@@ -451,14 +535,14 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[ScanResult],
+            cast_to=APIResponse[Scan],
         )
 
         return self._unwrap(response)
 
     async def retrieve(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         include: Optional[List[Literal["agent", "knowledge_base"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -467,28 +551,42 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScanResult:
+    ) -> Scan:
+        """Retrieve a scan result by its ID, with optional related resource inclusion.
+
+        Parameters
+        ----------
+        scan_id : str
+            Scan Result ID to retrieve.
+        include : list of {'agent', 'knowledge_base'} or None
+            Related resources to include in response.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Scan
+            The requested scan object.
+
+        Raises
+        ------
+        ValueError
+            If ``scan_id`` is empty.
         """
-        Retrieve Scan
-
-        Args:
-          scan_result_id: Scan Result ID to retrieve
-
-          include: Related resources to include in response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
 
         response = await self._get(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -496,7 +594,7 @@ class AsyncScansResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, ScanRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[ScanResult, APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[Scan, APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -515,22 +613,31 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanResult]:
-        """
-        List Scans
+    ) -> List[Scan]:
+        """List all scan results, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to use for the scan
+        Parameters
+        ----------
+        project_id : str or None
+            Project ID to use for the scan.
+        include : list of {'agent', 'knowledge_base'} or None
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of Scan
+            A list of scan objects.
         """
         response = await self._get(
             "/v2/scans",
@@ -547,7 +654,7 @@ class AsyncScansResource(AsyncAPIResource):
                     ScanListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[ScanResult], APIResponse[Agent | KnowledgeBase]],
+            cast_to=APIResponseWithIncluded[List[Scan], APIResponse[Agent | KnowledgeBase]],
         )
 
         if include is not omit and include:
@@ -557,7 +664,7 @@ class AsyncScansResource(AsyncAPIResource):
 
     async def delete(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -566,24 +673,37 @@ class AsyncScansResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
+        """Delete a scan result by its ID.
+
+        Parameters
+        ----------
+        scan_id : str
+            Scan Result ID to delete.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If ``scan_id`` is empty.
         """
-        Delete Scan
-
-        Args:
-          scan_result_id: Scan Result ID to delete
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = await self._delete(
-            f"/v2/scans/{scan_result_id}",
+            f"/v2/scans/{scan_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -603,19 +723,27 @@ class AsyncScansResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Scans
+        """Delete multiple scan results at once.
 
-        Args:
-          scan_result_id: Scan Result ID to list categories
+        Parameters
+        ----------
+        scan_ids : list of str
+            List of scan IDs to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/scans",
@@ -641,17 +769,23 @@ class AsyncScansResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[ScanCategory]:
-        """
-        List Scan Categories
+        """List all available scan vulnerability categories.
 
-        Args:
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of ScanCategory
+            A list of scan vulnerability categories.
         """
         response = await self._get(
             "/v2/scan-categories",
@@ -665,7 +799,7 @@ class AsyncScansResource(AsyncAPIResource):
 
     async def list_probes(
         self,
-        scan_result_id: str,
+        scan_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -673,29 +807,43 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanProbeResult]:
+    ) -> List[ScanProbe]:
+        """List all probes for a given scan result.
+
+        Parameters
+        ----------
+        scan_id : str
+            Scan Result ID to list probes.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        list of ScanProbe
+            A list of scan probes for the given scan.
+
+        Raises
+        ------
+        ValueError
+            If ``scan_id`` is empty.
         """
-        List Scan Probes
-
-        Args:
-          scan_result_id: Scan Result ID to list probes
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        if not scan_result_id:
-            raise ValueError(f"Expected a non-empty value for `scan_result_id` but received {scan_result_id!r}")
+        if not scan_id:
+            raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
         response = await self._get(
-            f"/v2/scans/{scan_result_id}/probes",
+            f"/v2/scans/{scan_id}/probes",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ScanProbeResult]],
+            cast_to=APIResponse[List[ScanProbe]],
         )
 
         return self._unwrap(response)

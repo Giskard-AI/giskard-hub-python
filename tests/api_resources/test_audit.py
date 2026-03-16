@@ -14,19 +14,19 @@ from giskard_hub.types import Audit, AuditDisplay, APIPaginatedMetadata
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
-class TestAudit:
+class TestAuditLogs:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search(self, client: HubClient) -> None:
-        audit = client.audit.search()
+        audit = client.audit_logs.search()
         assert_matches_type(List[Audit], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search_with_all_params(self, client: HubClient) -> None:
-        audit = client.audit.search(
+        audit = client.audit_logs.search(
             filters={"action": {"selected_options": ["insert"], "match_logic": "any"}},
             limit=10,
             offset=0,
@@ -36,13 +36,13 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_search_with_metadata(self, client: HubClient) -> None:
-        audit = client.audit.search(include_metadata=True)
+        audit = client.audit_logs.search(include_metadata=True)
         assert_matches_type(Tuple[List[Audit], APIPaginatedMetadata], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_search(self, client: HubClient) -> None:
-        response = client.audit.with_raw_response.search()
+        response = client.audit_logs.with_raw_response.search()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -52,7 +52,7 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_search(self, client: HubClient) -> None:
-        with client.audit.with_streaming_response.search() as response:
+        with client.audit_logs.with_streaming_response.search() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
@@ -64,7 +64,7 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_list_entities(self, client: HubClient) -> None:
-        audit = client.audit.list_entities(
+        audit = client.audit_logs.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -73,7 +73,7 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_list_entities_with_all_params(self, client: HubClient) -> None:
-        audit = client.audit.list_entities(
+        audit = client.audit_logs.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
             limit=10,
@@ -84,7 +84,7 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_list_entities_with_metadata(self, client: HubClient) -> None:
-        audit = client.audit.list_entities(
+        audit = client.audit_logs.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
             include_metadata=True,
@@ -94,7 +94,7 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_list_entities(self, client: HubClient) -> None:
-        response = client.audit.with_raw_response.list_entities(
+        response = client.audit_logs.with_raw_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -107,7 +107,7 @@ class TestAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_list_entities(self, client: HubClient) -> None:
-        with client.audit.with_streaming_response.list_entities(
+        with client.audit_logs.with_streaming_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         ) as response:
@@ -120,19 +120,19 @@ class TestAudit:
         assert cast(Any, response.is_closed) is True
 
 
-class TestAsyncAudit:
+class TestAsyncAuditLogs:
     parametrize = pytest.mark.parametrize("async_client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_search(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.search()
+        audit = await async_client.audit_logs.search()
         assert_matches_type(List[Audit], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_search_with_all_params(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.search(
+        audit = await async_client.audit_logs.search(
             filters={"action": {"selected_options": ["insert"], "match_logic": "any"}},
             limit=10,
             offset=0,
@@ -142,13 +142,13 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_search_with_metadata(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.search(include_metadata=True)
+        audit = await async_client.audit_logs.search(include_metadata=True)
         assert_matches_type(Tuple[List[Audit], APIPaginatedMetadata], audit, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_search(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.audit.with_raw_response.search()
+        response = await async_client.audit_logs.with_raw_response.search()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -158,7 +158,7 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_search(self, async_client: AsyncHubClient) -> None:
-        async with async_client.audit.with_streaming_response.search() as response:
+        async with async_client.audit_logs.with_streaming_response.search() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
@@ -170,7 +170,7 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_list_entities(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.list_entities(
+        audit = await async_client.audit_logs.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -179,7 +179,7 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_list_entities_with_all_params(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.list_entities(
+        audit = await async_client.audit_logs.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
             limit=10,
@@ -190,7 +190,7 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_list_entities_with_metadata(self, async_client: AsyncHubClient) -> None:
-        audit = await async_client.audit.list_entities(
+        audit = await async_client.audit_logs.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
             include_metadata=True,
@@ -200,7 +200,7 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_list_entities(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.audit.with_raw_response.list_entities(
+        response = await async_client.audit_logs.with_raw_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         )
@@ -213,7 +213,7 @@ class TestAsyncAudit:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_list_entities(self, async_client: AsyncHubClient) -> None:
-        async with async_client.audit.with_streaming_response.list_entities(
+        async with async_client.audit_logs.with_streaming_response.list_entities(
             entity_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             entity_type="project",
         ) as response:

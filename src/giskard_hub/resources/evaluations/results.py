@@ -68,23 +68,32 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Retrieve Evaluation Result
+        """Retrieve a specific evaluation result by its ID.
 
-        Args:
-          result_id: The ID of the result to retrieve
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to retrieve.
+        evaluation_id : str
+            The ID of the evaluation to retrieve the result for.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
 
-          evaluation_id: The ID of the evaluation to retrieve the result for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          include: Related resources to include in response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        TestCaseEvaluation
+            The retrieved evaluation result.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -122,23 +131,37 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Update Evaluation Result
+        """Update the failure category of an evaluation result.
 
-        Args:
-          result_id: The ID of the result to update
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to update.
+        evaluation_id : str
+            The ID of the evaluation to update the result for.
+        failure_category : Optional[FailureCategoryParam], optional
+            The failure category to update the result for.
 
-          evaluation_id: The ID of the evaluation to update the result for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          failure_category: The failure category to update the result for
+        Returns
+        -------
+        TestCaseEvaluation
+            The updated evaluation result.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -167,21 +190,35 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[TestCaseEvaluation]:
-        """
-        List Evaluation Results
+        """List all results for a given evaluation.
 
-        Args:
-          evaluation_id: The ID of the evaluation to list the results for
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to list the results for.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        List[TestCaseEvaluation]
+            A list of evaluation results.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -215,21 +252,35 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Rerun Test Case Evaluation
+        """Rerun a single test case evaluation to get fresh results.
 
-        Args:
-          result_id: The ID of the result to rerun the test case for
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to rerun the test case for.
+        evaluation_id : str
+            The ID of the evaluation to rerun the test case for.
 
-          evaluation_id: The ID of the evaluation to rerun the test case for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        TestCaseEvaluation
+            The rerun evaluation result.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -259,25 +310,39 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Submit Local Evaluation Result Output
+        """Submit a locally-generated agent output for evaluation and scoring.
 
-        Args:
-          result_id: The ID of the result to submit the local output for
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to submit the local output for.
+        evaluation_id : str
+            The ID of the evaluation to submit the local output for.
+        error : Optional[str], optional
+            The error to submit the local output for.
+        agent_output : Optional[AgentOutputParam], optional
+            The output to submit the local output for.
 
-          evaluation_id: The ID of the evaluation to submit the local output for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          error: The error to submit the local output for
+        Returns
+        -------
+        TestCaseEvaluation
+            The evaluation result with the submitted output.
 
-          agent_output: The output to submit the local output for
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -354,31 +419,45 @@ class ResultsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]:
-        """
-        Search Evaluation Results By Filters
+        """Search evaluation results using filters, sorting, and pagination.
 
-        Args:
-          evaluation_id: The ID of the evaluation to search the results for
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to search the results for.
+        query : Optional[str], optional
+            Search query for evaluation results.
+        order_by : Optional[List[ResultOrderByParam]], optional
+            Order by criteria for evaluation results.
+        filters : Optional[ResultFiltersParam], optional
+            Filter criteria for evaluation results.
+        limit : Optional[int], optional
+            Maximum number of results to return.
+        offset : Optional[int], optional
+            Number of results to skip.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
 
-          query: Search query for evaluation results
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          order_by: Order by criteria for evaluation results
+        Returns
+        -------
+        List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]
+            The search results, optionally with pagination metadata.
 
-          filters: Filter criteria for evaluation results
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          include: Related resources to include in response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -422,25 +501,39 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Update Evaluation Result Visibility
+        """Update the visibility of an evaluation result, optionally setting the linked test case to draft.
 
-        Args:
-          result_id: The ID of the result to update the visibility for
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to update the visibility for.
+        evaluation_id : str
+            The ID of the evaluation to update the visibility for.
+        hidden : bool
+            Whether the result should be hidden.
+        set_test_case_draft : Optional[bool], optional
+            Whether the test case should be set to draft.
 
-          evaluation_id: The ID of the evaluation to update the visibility for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          hidden: Whether the result should be hidden
+        Returns
+        -------
+        TestCaseEvaluation
+            The updated evaluation result.
 
-          set_test_case_draft: Whether the test case should be set to draft
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -494,23 +587,32 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Retrieve Evaluation Result
+        """Retrieve a specific evaluation result by its ID.
 
-        Args:
-          result_id: The ID of the result to retrieve
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to retrieve.
+        evaluation_id : str
+            The ID of the evaluation to retrieve the result for.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
 
-          evaluation_id: The ID of the evaluation to retrieve the result for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          include: Related resources to include in response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        TestCaseEvaluation
+            The retrieved evaluation result.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -548,23 +650,37 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Update Evaluation Result
+        """Update the failure category of an evaluation result.
 
-        Args:
-          result_id: The ID of the result to update
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to update.
+        evaluation_id : str
+            The ID of the evaluation to update the result for.
+        failure_category : Optional[FailureCategoryParam], optional
+            The failure category to update the result for.
 
-          evaluation_id: The ID of the evaluation to update the result for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          failure_category: The failure category to update the result for
+        Returns
+        -------
+        TestCaseEvaluation
+            The updated evaluation result.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -593,21 +709,35 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[TestCaseEvaluation]:
-        """
-        List Evaluation Results
+        """List all results for a given evaluation.
 
-        Args:
-          evaluation_id: The ID of the evaluation to list the results for
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to list the results for.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        List[TestCaseEvaluation]
+            A list of evaluation results.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -641,21 +771,35 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Rerun Test Case Evaluation
+        """Rerun a single test case evaluation to get fresh results.
 
-        Args:
-          result_id: The ID of the result to rerun the test case for
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to rerun the test case for.
+        evaluation_id : str
+            The ID of the evaluation to rerun the test case for.
 
-          evaluation_id: The ID of the evaluation to rerun the test case for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        TestCaseEvaluation
+            The rerun evaluation result.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -685,25 +829,39 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Submit Local Evaluation Result Output
+        """Submit a locally-generated agent output for evaluation and scoring.
 
-        Args:
-          result_id: The ID of the result to submit the local output for
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to submit the local output for.
+        evaluation_id : str
+            The ID of the evaluation to submit the local output for.
+        error : Optional[str], optional
+            The error to submit the local output for.
+        agent_output : Optional[AgentOutputParam], optional
+            The output to submit the local output for.
 
-          evaluation_id: The ID of the evaluation to submit the local output for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          error: The error to submit the local output for
+        Returns
+        -------
+        TestCaseEvaluation
+            The evaluation result with the submitted output.
 
-          agent_output: The output to submit the local output for
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -780,31 +938,45 @@ class AsyncResultsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
     ) -> List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]:
-        """
-        Search Evaluation Results By Filters
+        """Search evaluation results using filters, sorting, and pagination.
 
-        Args:
-          evaluation_id: The ID of the evaluation to search the results for
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to search the results for.
+        query : Optional[str], optional
+            Search query for evaluation results.
+        order_by : Optional[List[ResultOrderByParam]], optional
+            Order by criteria for evaluation results.
+        filters : Optional[ResultFiltersParam], optional
+            Filter criteria for evaluation results.
+        limit : Optional[int], optional
+            Maximum number of results to return.
+        offset : Optional[int], optional
+            Number of results to skip.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
 
-          query: Search query for evaluation results
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          order_by: Order by criteria for evaluation results
+        Returns
+        -------
+        List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]
+            The search results, optionally with pagination metadata.
 
-          filters: Filter criteria for evaluation results
-
-          limit: Maximum number of results to return
-
-          offset: Number of results to skip
-
-          include: Related resources to include in response
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -850,25 +1022,39 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseEvaluation:
-        """
-        Update Evaluation Result Visibility
+        """Update the visibility of an evaluation result, optionally setting the linked test case to draft.
 
-        Args:
-          result_id: The ID of the result to update the visibility for
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result to update the visibility for.
+        evaluation_id : str
+            The ID of the evaluation to update the visibility for.
+        hidden : bool
+            Whether the result should be hidden.
+        set_test_case_draft : Optional[bool], optional
+            Whether the test case should be set to draft.
 
-          evaluation_id: The ID of the evaluation to update the visibility for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          hidden: Whether the result should be hidden
+        Returns
+        -------
+        TestCaseEvaluation
+            The updated evaluation result.
 
-          set_test_case_draft: Whether the test case should be set to draft
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` or ``result_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")

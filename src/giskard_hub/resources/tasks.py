@@ -70,36 +70,46 @@ class TasksResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Task:
         """
-        Create Task
+        Create a new task in the specified project.
 
-        Args:
-          project_id: Project ID to create the task in
+        Parameters
+        ----------
+        project_id : str
+            Project ID to create the task in.
+        priority : Optional[TaskPriority] | Omit
+            Priority of the task.
+        status : TaskStatus | Omit
+            Status of the task.
+        description : str
+            Description of the task to create.
+        assignee_ids : SequenceNotStr[str] | Omit
+            IDs of the users to assign the task to.
+        evaluation_result_id : Optional[str] | Omit
+            ID of the evaluation result to assign the task to.
+        dataset_test_case_id : Optional[str] | Omit
+            ID of the dataset test case to assign the task to.
+        probe_attempt_id : Optional[str] | Omit
+            ID of the probe attempt to assign the task to.
+        disable_test : bool | Omit
+            Whether to disable the test.
+        hide_result : bool | Omit
+            Whether to hide the result.
 
-          priority: Priority of the task
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          status: Status of the task
-
-          description: Description of the task to create
-
-          assignee_ids: IDs of the users to assign the task to
-
-          evaluation_result_id: ID of the evaluation result to assign the task to
-
-          dataset_test_case_id: ID of the dataset test case to assign the task to
-
-          probe_attempt_id: ID of the probe attempt to assign the task to
-
-          disable_test: Whether to disable the test
-
-          hide_result: Whether to hide the result
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Task
+            The newly created task.
         """
         response = self._post(
             "/v2/tasks",
@@ -138,18 +148,33 @@ class TasksResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Task:
         """
-        Retrieve Task
+        Retrieve a task by its ID.
 
-        Args:
-          task_id: ID of the task to retrieve
+        Parameters
+        ----------
+        task_id : str
+            ID of the task to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Task
+            The requested task.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``task_id`` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -180,28 +205,43 @@ class TasksResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Task:
         """
-        Update Task
+        Update an existing task's metadata and assignees.
 
-        Args:
-          task_id: ID of the task to update
+        Parameters
+        ----------
+        task_id : str
+            ID of the task to update.
+        status : Optional[TaskStatus] | Omit
+            Status of the task.
+        description : Optional[str] | Omit
+            Description of the task.
+        priority : Optional[TaskPriority] | Omit
+            Priority of the task.
+        assignee_ids : Optional[SequenceNotStr[str]] | Omit
+            IDs of the users to assign the task to.
+        set_test_case_status : Optional[str] | Omit
+            Status of the test case to set.
 
-          status: Status of the task
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the task
+        Returns
+        -------
+        Task
+            The updated task.
 
-          priority: Priority of the task
-
-          assignee_ids: IDs of the users to assign the task to
-
-          set_test_case_status: Status of the test case to set
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``task_id`` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -237,18 +277,28 @@ class TasksResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Task]:
         """
-        List Tasks
+        List all tasks for a project, ordered by creation date descending.
 
-        Args:
-          project_id: Project ID to list tasks for
+        Parameters
+        ----------
+        project_id : Optional[str] | Omit
+            Project ID to list tasks for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[Task]
+            A list of tasks for the specified project.
         """
         response = self._get(
             "/v2/tasks",
@@ -281,18 +331,32 @@ class TasksResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete Task
+        Delete a task by its ID.
 
-        Args:
-          task_id: ID of the task to delete
+        Parameters
+        ----------
+        task_id : str
+            ID of the task to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``task_id`` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -318,18 +382,27 @@ class TasksResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Bulk Delete Tasks
+        Delete multiple tasks at once.
 
-        Args:
-          task_ids: IDs of the tasks to delete
+        Parameters
+        ----------
+        task_ids : SequenceNotStr[str]
+            IDs of the tasks to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/tasks",
@@ -387,36 +460,46 @@ class AsyncTasksResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Task:
         """
-        Create Task
+        Create a new task in the specified project.
 
-        Args:
-          project_id: Project ID to create the task in
+        Parameters
+        ----------
+        project_id : str
+            Project ID to create the task in.
+        priority : Optional[TaskPriority] | Omit
+            Priority of the task.
+        status : TaskStatus | Omit
+            Status of the task.
+        description : str
+            Description of the task to create.
+        assignee_ids : SequenceNotStr[str] | Omit
+            IDs of the users to assign the task to.
+        evaluation_result_id : Optional[str] | Omit
+            ID of the evaluation result to assign the task to.
+        dataset_test_case_id : Optional[str] | Omit
+            ID of the dataset test case to assign the task to.
+        probe_attempt_id : Optional[str] | Omit
+            ID of the probe attempt to assign the task to.
+        disable_test : bool | Omit
+            Whether to disable the test.
+        hide_result : bool | Omit
+            Whether to hide the result.
 
-          priority: Priority of the task
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          status: Status of the task
-
-          description: Description of the task to create
-
-          assignee_ids: IDs of the users to assign the task to
-
-          evaluation_result_id: ID of the evaluation result to assign the task to
-
-          dataset_test_case_id: ID of the dataset test case to assign the task to
-
-          probe_attempt_id: ID of the probe attempt to assign the task to
-
-          disable_test: Whether to disable the test
-
-          hide_result: Whether to hide the result
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Task
+            The newly created task.
         """
         response = await self._post(
             "/v2/tasks",
@@ -455,18 +538,33 @@ class AsyncTasksResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Task:
         """
-        Retrieve Task
+        Retrieve a task by its ID.
 
-        Args:
-          task_id: ID of the task to retrieve
+        Parameters
+        ----------
+        task_id : str
+            ID of the task to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Task
+            The requested task.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``task_id`` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -497,28 +595,43 @@ class AsyncTasksResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Task:
         """
-        Update Task
+        Update an existing task's metadata and assignees.
 
-        Args:
-          task_id: ID of the task to update
+        Parameters
+        ----------
+        task_id : str
+            ID of the task to update.
+        status : Optional[TaskStatus] | Omit
+            Status of the task.
+        description : Optional[str] | Omit
+            Description of the task.
+        priority : Optional[TaskPriority] | Omit
+            Priority of the task.
+        assignee_ids : Optional[SequenceNotStr[str]] | Omit
+            IDs of the users to assign the task to.
+        set_test_case_status : Optional[str] | Omit
+            Status of the test case to set.
 
-          status: Status of the task
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          description: Description of the task
+        Returns
+        -------
+        Task
+            The updated task.
 
-          priority: Priority of the task
-
-          assignee_ids: IDs of the users to assign the task to
-
-          set_test_case_status: Status of the test case to set
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``task_id`` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -554,18 +667,28 @@ class AsyncTasksResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Task]:
         """
-        List Tasks
+        List all tasks for a project, ordered by creation date descending.
 
-        Args:
-          project_id: Project ID to list tasks for
+        Parameters
+        ----------
+        project_id : Optional[str] | Omit
+            Project ID to list tasks for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[Task]
+            A list of tasks for the specified project.
         """
         response = await self._get(
             "/v2/tasks",
@@ -598,18 +721,32 @@ class AsyncTasksResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete Task
+        Delete a task by its ID.
 
-        Args:
-          task_id: ID of the task to delete
+        Parameters
+        ----------
+        task_id : str
+            ID of the task to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``task_id`` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -635,18 +772,27 @@ class AsyncTasksResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Bulk Delete Tasks
+        Delete multiple tasks at once.
 
-        Args:
-          task_ids: IDs of the tasks to delete
+        Parameters
+        ----------
+        task_ids : SequenceNotStr[str]
+            IDs of the tasks to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/tasks",

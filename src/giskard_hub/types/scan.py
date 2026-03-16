@@ -16,7 +16,7 @@ from .knowledge_base import KnowledgeBase, KnowledgeBaseReference
 
 __all__ = [
     "ScanProbeAttemptReference",
-    "ScanResult",
+    "Scan",
     "ScanCategory",
     "ScanListParams",
     "ScanCreateParams",
@@ -24,9 +24,9 @@ __all__ = [
     "ScanBulkDeleteParams",
     "Severity",
     "ReviewStatus",
-    "ScanProbeResult",
+    "ScanProbe",
     "ScanProbeAttempt",
-    "AttemptUpdateParams",
+    "ScanProbeAttemptUpdateParams",
 ]
 
 
@@ -50,7 +50,7 @@ ReviewStatus: TypeAlias = Literal["pending", "ignored", "acknowledged", "correct
 # ---------------------------------------------------------------------------
 
 
-class ScanResult(BaseModel):
+class Scan(BaseModel):
     id: str
     agent: AgentReference | Agent
     created_at: datetime
@@ -77,7 +77,7 @@ class ScanProbeMetric(BaseModel):
     severity: Severity
 
 
-class ScanProbeResult(BaseModel):
+class ScanProbe(BaseModel):
     id: str
     metrics: Optional[List[ScanProbeMetric]] = None
     category: str = Field(alias="probe_category")
@@ -85,7 +85,7 @@ class ScanProbeResult(BaseModel):
     probe_lidar_id: str
     name: str = Field(alias="probe_name")
     tags: List[str] = Field(alias="probe_tags")
-    scan_result_id: str
+    scan_id: str = Field(alias="scan_result_id")
     status: TaskProgress
 
     @computed_field
@@ -106,7 +106,7 @@ class ScanProbeAttempt(BaseModel):
     error: Optional[ScanProbeAttemptError] = None
     messages: List[ChatMessageWithMetadata]
     metadata: Dict[str, object]
-    probe_result_id: str
+    probe_id: str = Field(alias="probe_result_id")
     reason: str
     review_status: ReviewStatus
     severity: Severity
@@ -137,7 +137,7 @@ class ScanBulkDeleteParams(TypedDict, total=False):
     scan_ids: Required[SequenceNotStr[str]]
 
 
-class AttemptUpdateParams(TypedDict, total=False):
+class ScanProbeAttemptUpdateParams(TypedDict, total=False):
     review_status: Optional[ReviewStatus]
     severity: Optional[Severity]
     successful: Optional[bool]

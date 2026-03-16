@@ -60,25 +60,34 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[PlaygroundChat]:
-        """
-        List Playground Chats
+        """List playground chats for a project with optional pagination.
 
-        Args:
-          project_id: Project ID to list playground chats for
+        Parameters
+        ----------
+        project_id : str
+            Project ID to list playground chats for.
+        include : list[Literal["agent"]] | None | Omit
+            Related resources to embed in the response (e.g. ``["agent"]``).
+        limit : int | None | Omit
+            Maximum number of playground chats to return.
+        offset : int | None | Omit
+            Number of results to skip for pagination.
 
-          include: Related resources to include in the response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          limit: Maximum number of playground chats to return
-
-          offset: Offset for pagination of playground chats
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[PlaygroundChat]
+            List of playground chats for the project.
         """
         response = self._get(
             "/v2/playground-chats",
@@ -115,21 +124,35 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PlaygroundChat:
-        """
-        Get Playground Chat
+        """Retrieve a specific playground chat by its ID.
 
-        Args:
-          chat_id: Playground chat ID to retrieve
+        Parameters
+        ----------
+        chat_id : str
+            ID of the playground chat to retrieve.
+        include : list[Literal["agent"]] | None | Omit
+            Related resources to embed in the response.
 
-          include: Related resources to include in the response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        PlaygroundChat
+            The requested playground chat.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``chat_id`` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -160,19 +183,28 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Playground Chat
+        """Delete a single playground chat by its ID.
 
-        Args:
-          chat_id: Playground chat ID to delete
+        Parameters
+        ----------
+        chat_id : str
+            ID of the playground chat to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``chat_id`` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -193,19 +225,23 @@ class PlaygroundChatsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Playground Chats
+        """Delete multiple playground chats at once.
 
-        Args:
-          chat_ids: List of playground chat IDs to delete
+        Parameters
+        ----------
+        chat_ids : SequenceNotStr[str]
+            IDs of the playground chats to delete.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
         """
         response = self._delete(
             "/v2/playground-chats",
@@ -243,25 +279,34 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[PlaygroundChat]:
-        """
-        List Playground Chats
+        """List playground chats for a project with optional pagination.
 
-        Args:
-          project_id: Project ID to list playground chats for
+        Parameters
+        ----------
+        project_id : str
+            Project ID to list playground chats for.
+        include : list[Literal["agent"]] | None | Omit
+            Related resources to embed in the response (e.g. ``["agent"]``).
+        limit : int | None | Omit
+            Maximum number of playground chats to return.
+        offset : int | None | Omit
+            Number of results to skip for pagination.
 
-          include: Related resources to include in the response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          limit: Maximum number of playground chats to return
-
-          offset: Offset for pagination of playground chats
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[PlaygroundChat]
+            List of playground chats for the project.
         """
         response = await self._get(
             "/v2/playground-chats",
@@ -298,21 +343,35 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PlaygroundChat:
-        """
-        Get Playground Chat
+        """Retrieve a specific playground chat by its ID.
 
-        Args:
-          chat_id: Playground chat ID to retrieve
+        Parameters
+        ----------
+        chat_id : str
+            ID of the playground chat to retrieve.
+        include : list[Literal["agent"]] | None | Omit
+            Related resources to embed in the response.
 
-          include: Related resources to include in the response
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        PlaygroundChat
+            The requested playground chat.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``chat_id`` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -343,19 +402,28 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Playground Chat
+        """Delete a single playground chat by its ID.
 
-        Args:
-          chat_id: Playground chat ID to delete
+        Parameters
+        ----------
+        chat_id : str
+            ID of the playground chat to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``chat_id`` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -376,19 +444,23 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Playground Chats
+        """Delete multiple playground chats at once.
 
-        Args:
-          chat_ids: List of playground chat IDs to delete
+        Parameters
+        ----------
+        chat_ids : SequenceNotStr[str]
+            IDs of the playground chats to delete.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
         """
         response = await self._delete(
             "/v2/playground-chats",

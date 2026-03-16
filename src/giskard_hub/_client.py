@@ -64,7 +64,7 @@ def _normalize_base_url(base_url: str, *, auto_add_api_suffix: bool) -> str:
 
 
 class HubClient(SyncAPIClient):
-    audit: audit.AuditResource
+    audit_logs: audit.AuditLogsResource
     agents: agents.AgentsResource
     checks: checks.ChecksResource
     datasets: datasets.DatasetsResource
@@ -135,7 +135,7 @@ class HubClient(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.audit = audit.AuditResource(self)
+        self.audit_logs = audit.AuditLogsResource(self)
         self.agents = agents.AgentsResource(self)
         self.checks = checks.ChecksResource(self)
         self.datasets = datasets.DatasetsResource(self)
@@ -259,7 +259,7 @@ class HubClient(SyncAPIClient):
 
 
 class AsyncHubClient(AsyncAPIClient):
-    audit: audit.AsyncAuditResource
+    audit_logs: audit.AsyncAuditLogsResource
     agents: agents.AsyncAgentsResource
     checks: checks.AsyncChecksResource
     datasets: datasets.AsyncDatasetsResource
@@ -330,7 +330,7 @@ class AsyncHubClient(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.audit = audit.AsyncAuditResource(self)
+        self.audit_logs = audit.AsyncAuditLogsResource(self)
         self.agents = agents.AsyncAgentsResource(self)
         self.checks = checks.AsyncChecksResource(self)
         self.datasets = datasets.AsyncDatasetsResource(self)
@@ -457,7 +457,7 @@ class AsyncHubClient(AsyncAPIClient):
 
 class HubClientWithRawResponse:
     def __init__(self, client: HubClient) -> None:
-        self.audit = audit.AuditResourceWithRawResponse(client.audit)
+        self.audit_logs = audit.AuditLogsResourceWithRawResponse(client.audit_logs)
         self.agents = agents.AgentsResourceWithRawResponse(client.agents)
         self.checks = checks.ChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithRawResponse(client.datasets)
@@ -476,7 +476,7 @@ class HubClientWithRawResponse:
 
 class AsyncHubClientWithRawResponse:
     def __init__(self, client: AsyncHubClient) -> None:
-        self.audit = audit.AsyncAuditResourceWithRawResponse(client.audit)
+        self.audit_logs = audit.AsyncAuditLogsResourceWithRawResponse(client.audit_logs)
         self.agents = agents.AsyncAgentsResourceWithRawResponse(client.agents)
         self.checks = checks.AsyncChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithRawResponse(client.datasets)
@@ -495,7 +495,7 @@ class AsyncHubClientWithRawResponse:
 
 class HubClientWithStreamedResponse:
     def __init__(self, client: HubClient) -> None:
-        self.audit = audit.AuditResourceWithStreamingResponse(client.audit)
+        self.audit_logs = audit.AuditLogsResourceWithStreamingResponse(client.audit_logs)
         self.agents = agents.AgentsResourceWithStreamingResponse(client.agents)
         self.checks = checks.ChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithStreamingResponse(client.datasets)
@@ -514,7 +514,7 @@ class HubClientWithStreamedResponse:
 
 class AsyncHubClientWithStreamedResponse:
     def __init__(self, client: AsyncHubClient) -> None:
-        self.audit = audit.AsyncAuditResourceWithStreamingResponse(client.audit)
+        self.audit_logs = audit.AsyncAuditLogsResourceWithStreamingResponse(client.audit_logs)
         self.agents = agents.AsyncAgentsResourceWithStreamingResponse(client.agents)
         self.checks = checks.AsyncChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithStreamingResponse(client.datasets)

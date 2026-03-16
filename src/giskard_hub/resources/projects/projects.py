@@ -66,21 +66,30 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Project:
-        """
-        Create Project
+        """Create a new project.
 
-        Args:
-          name: The name of the project
+        Parameters
+        ----------
+        name : str
+            The name of the project.
+        description : str or None
+            The description of the project.
 
-          description: The description of the project
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Project
+            The newly created project.
         """
         response = self._post(
             "/v2/projects",
@@ -110,19 +119,33 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Project:
-        """
-        Retrieve Project
+        """Retrieve a project by its ID.
 
-        Args:
-          project_id: The ID of the project to retrieve
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Project
+            The requested project.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -150,25 +173,39 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Project:
-        """
-        Update Project
+        """Update an existing project's metadata and failure categories.
 
-        Args:
-          project_id: The ID of the project to retrieve
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to update.
+        description : str or None
+            The description of the project.
+        failure_categories : Iterable[FailureCategoryParam] or None
+            The failure categories of the project.
+        name : str or None
+            The name of the project.
 
-          description: The description of the project
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          failure_categories: The failure categories of the project
+        Returns
+        -------
+        Project
+            The updated project.
 
-          name: The name of the project
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -200,17 +237,23 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Project]:
-        """
-        List Projects
+        """List all projects.
 
-        Args:
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of Project
+            A list of all projects.
         """
         response = self._get(
             "/v2/projects",
@@ -233,19 +276,32 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Project
+        """Delete a project by its ID.
 
-        Args:
-          project_id: The ID of the project to retrieve
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -270,19 +326,27 @@ class ProjectsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Projects
+        """Delete multiple projects at once.
 
-        Args:
-          project_ids: The IDs of the projects to delete
+        Parameters
+        ----------
+        project_ids : SequenceNotStr[str]
+            The IDs of the projects to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/projects",
@@ -335,21 +399,30 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Project:
-        """
-        Create Project
+        """Create a new project.
 
-        Args:
-          name: The name of the project
+        Parameters
+        ----------
+        name : str
+            The name of the project.
+        description : str or None
+            The description of the project.
 
-          description: The description of the project
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Project
+            The newly created project.
         """
         response = await self._post(
             "/v2/projects",
@@ -379,19 +452,33 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Project:
-        """
-        Retrieve Project
+        """Retrieve a project by its ID.
 
-        Args:
-          project_id: The ID of the project to retrieve
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Project
+            The requested project.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -419,25 +506,39 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Project:
-        """
-        Update Project
+        """Update an existing project's metadata and failure categories.
 
-        Args:
-          project_id: The ID of the project to retrieve
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to update.
+        description : str or None
+            The description of the project.
+        failure_categories : Iterable[FailureCategoryParam] or None
+            The failure categories of the project.
+        name : str or None
+            The name of the project.
 
-          description: The description of the project
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          failure_categories: The failure categories of the project
+        Returns
+        -------
+        Project
+            The updated project.
 
-          name: The name of the project
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -469,17 +570,23 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Project]:
-        """
-        List Projects
+        """List all projects.
 
-        Args:
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of Project
+            A list of all projects.
         """
         response = await self._get(
             "/v2/projects",
@@ -502,19 +609,32 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Project
+        """Delete a project by its ID.
 
-        Args:
-          project_id: The ID of the project to retrieve
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``project_id`` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -539,19 +659,27 @@ class AsyncProjectsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Projects
+        """Delete multiple projects at once.
 
-        Args:
-          project_ids: The IDs of the projects to delete
+        Parameters
+        ----------
+        project_ids : SequenceNotStr[str]
+            The IDs of the projects to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float or httpx.Timeout or None
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/projects",

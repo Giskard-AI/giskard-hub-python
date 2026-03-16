@@ -68,29 +68,38 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Agent:
-        """
-        Create Agent
+        """Create a new agent in the specified project.
 
-        Args:
-          name: Name of the agent
+        Parameters
+        ----------
+        name : str
+            Name of the agent.
+        project_id : str
+            Project ID to create the agent in.
+        supported_languages : SequenceNotStr[str]
+            Supported languages for the agent.
+        url : str
+            URL endpoint of the agent.
+        headers : Dict[str, str] | Omit
+            HTTP headers to include when calling the agent.
+        description : str | None | Omit
+            Human-readable description of the agent.
 
-          project_id: Project ID to use for the agent
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          supported_languages: Supported languages for the agent
-
-          url: URL of the agent
-
-          headers: Headers to use for the agent
-
-          description: Description of the agent
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Agent
+            The newly created agent.
         """
         headers_api: list[HeaderParam] = []
 
@@ -132,19 +141,33 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Agent:
-        """
-        Retrieve Agent
+        """Retrieve an agent by its ID.
 
-        Args:
-          agent_id: Agent ID to retrieve
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Agent
+            The requested agent.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -174,29 +197,43 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Agent:
-        """
-        Update Agent
+        """Update an existing agent's configuration.
 
-        Args:
-          agent_id: Agent ID to update
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to update.
+        description : str | None | Omit
+            Updated description of the agent.
+        headers : Dict[str, str] | Omit
+            Updated HTTP headers for agent calls.
+        name : str | None | Omit
+            Updated name of the agent.
+        supported_languages : SequenceNotStr[str] | None | Omit
+            Updated supported languages.
+        url : str | None | Omit
+            Updated URL endpoint of the agent.
 
-          description: Description of the agent
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          headers: Headers to use for the agent
+        Returns
+        -------
+        Agent
+            The updated agent.
 
-          name: Name of the agent
-
-          supported_languages: Supported languages for the agent
-
-          url: URL of the agent
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -241,19 +278,28 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Agent]:
-        """
-        List Agents
+        """List all agents, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to list agents for
+        Parameters
+        ----------
+        project_id : str | None | Omit
+            Project ID to filter agents by.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Agent]
+            List of agents matching the criteria.
         """
         response = self._get(
             "/v2/agents",
@@ -280,19 +326,28 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Agent
+        """Delete an agent by its ID.
 
-        Args:
-          agent_id: Agent ID to delete
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -317,19 +372,23 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Agents
+        """Delete multiple agents at once.
 
-        Args:
-          agent_ids: Agent IDs to delete
+        Parameters
+        ----------
+        agent_ids : SequenceNotStr[str]
+            IDs of the agents to delete.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
         """
         response = self._delete(
             "/v2/agents",
@@ -357,21 +416,35 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentOutput:
-        """
-        Generate Agent Completion
+        """Send a chat conversation to the agent and get a completion response.
 
-        Args:
-          agent_id: Agent ID to generate completion for
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to generate a completion from.
+        messages : Iterable[ChatMessageParam]
+            Conversation messages to send to the agent.
 
-          messages: Messages to generate completion for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        AgentOutput
+            The agent's completion response.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -398,21 +471,30 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentOutput:
-        """
-        Test Agent Connection
+        """Test the connection to an agent endpoint without persisting it.
 
-        Args:
-          url: URL to test the connection for
+        Parameters
+        ----------
+        url : str
+            URL endpoint to test the connection to.
+        headers : Dict[str, str] | Omit
+            HTTP headers to include in the test request.
 
-          headers: Headers to use for the connection test
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        AgentOutput
+            The agent's test response.
         """
         response = self._post(
             "/v2/agents/test-connection",
@@ -442,19 +524,36 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> str:
-        """
-        Generate Agent Description
+        """Auto-generate a description for an agent by probing its capabilities.
 
-        Args:
-          agent_id: Agent ID to generate description for
+        Discovers the agent's tone, features, goals, and constraints, then
+        formats the findings into a human-readable description.
 
-          extra_headers: Send extra headers
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to generate a description for.
 
-          extra_query: Add additional query parameters to the request
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_body: Add additional JSON properties to the request
+        Returns
+        -------
+        str
+            The generated agent description.
 
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -506,29 +605,38 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Agent:
-        """
-        Create Agent
+        """Create a new agent in the specified project.
 
-        Args:
-          name: Name of the agent
+        Parameters
+        ----------
+        name : str
+            Name of the agent.
+        project_id : str
+            Project ID to create the agent in.
+        supported_languages : SequenceNotStr[str]
+            Supported languages for the agent.
+        url : str
+            URL endpoint of the agent.
+        headers : Dict[str, str] | Omit
+            HTTP headers to include when calling the agent.
+        description : str | None | Omit
+            Human-readable description of the agent.
 
-          project_id: Project ID to use for the agent
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          supported_languages: Supported languages for the agent
-
-          url: URL of the agent
-
-          headers: Headers to use for the agent
-
-          description: Description of the agent
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        Agent
+            The newly created agent.
         """
         headers_api: list[HeaderParam] = []
 
@@ -570,19 +678,33 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Agent:
-        """
-        Retrieve Agent
+        """Retrieve an agent by its ID.
 
-        Args:
-          agent_id: Agent ID to retrieve
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Agent
+            The requested agent.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -612,29 +734,43 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Agent:
-        """
-        Update Agent
+        """Update an existing agent's configuration.
 
-        Args:
-          agent_id: Agent ID to update
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to update.
+        description : str | None | Omit
+            Updated description of the agent.
+        headers : Dict[str, str] | Omit
+            Updated HTTP headers for agent calls.
+        name : str | None | Omit
+            Updated name of the agent.
+        supported_languages : SequenceNotStr[str] | None | Omit
+            Updated supported languages.
+        url : str | None | Omit
+            Updated URL endpoint of the agent.
 
-          description: Description of the agent
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          headers: Headers to use for the agent
+        Returns
+        -------
+        Agent
+            The updated agent.
 
-          name: Name of the agent
-
-          supported_languages: Supported languages for the agent
-
-          url: URL of the agent
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -679,19 +815,28 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Agent]:
-        """
-        List Agents
+        """List all agents, optionally filtered by project.
 
-        Args:
-          project_id: Project ID to list agents for
+        Parameters
+        ----------
+        project_id : str | None | Omit
+            Project ID to filter agents by.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list[Agent]
+            List of agents matching the criteria.
         """
         response = await self._get(
             "/v2/agents",
@@ -718,19 +863,28 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Agent
+        """Delete an agent by its ID.
 
-        Args:
-          agent_id: Agent ID to delete
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -755,19 +909,23 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Agents
+        """Delete multiple agents at once.
 
-        Args:
-          agent_ids: Agent IDs to delete
+        Parameters
+        ----------
+        agent_ids : SequenceNotStr[str]
+            IDs of the agents to delete.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
         """
         response = await self._delete(
             "/v2/agents",
@@ -795,21 +953,35 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentOutput:
-        """
-        Generate Agent Completion
+        """Send a chat conversation to the agent and get a completion response.
 
-        Args:
-          agent_id: Agent ID to generate completion for
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to generate a completion from.
+        messages : Iterable[ChatMessageParam]
+            Conversation messages to send to the agent.
 
-          messages: Messages to generate completion for
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        AgentOutput
+            The agent's completion response.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -836,21 +1008,30 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentOutput:
-        """
-        Test Agent Connection
+        """Test the connection to an agent endpoint without persisting it.
 
-        Args:
-          url: URL to test the connection for
+        Parameters
+        ----------
+        url : str
+            URL endpoint to test the connection to.
+        headers : Dict[str, str] | Omit
+            HTTP headers to include in the test request.
 
-          headers: Headers to use for the connection test
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        AgentOutput
+            The agent's test response.
         """
         response = await self._post(
             "/v2/agents/test-connection",
@@ -880,19 +1061,36 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> str:
-        """
-        Generate Agent Description
+        """Auto-generate a description for an agent by probing its capabilities.
 
-        Args:
-          agent_id: Agent ID to generate description for
+        Discovers the agent's tone, features, goals, and constraints, then
+        formats the findings into a human-readable description.
 
-          extra_headers: Send extra headers
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to generate a description for.
 
-          extra_query: Add additional query parameters to the request
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_body: Add additional JSON properties to the request
+        Returns
+        -------
+        str
+            The generated agent description.
 
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")

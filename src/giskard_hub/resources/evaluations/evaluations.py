@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Literal, Iterable, Optional, cast
+from typing import List, Literal, Iterable, Optional, cast
 
 import httpx
 
@@ -26,7 +26,7 @@ from ..._response import (
 )
 from ...types.chat import ChatMessageParam
 from ...types.agent import AgentOutputParam, MinimalAgentParam
-from ...types.check import CheckResult
+from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
@@ -59,6 +59,10 @@ def _validate_dataset_or_old_evaluation(
     """
     if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
         raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+
+def _check_params_to_api(checks: Iterable[CheckConfigParam]) -> Iterable[dict[str, object]]:
+    return [{"identifier": check["identifier"], **(check.get("params", {}))} for check in checks]
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -103,35 +107,53 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """Create Evaluation
+        """Create and launch a new evaluation of an agent on a dataset.
 
-        Args:
-          project_id: The ID of the project to create the evaluation for
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to create the evaluation for.
+        agent_id : str
+            The ID of the agent to create the evaluation for.
+        name : str or Omit
+            The name of the evaluation.
+        dataset_id : str, optional
+            The ID of the dataset to draw test cases from. Exactly one of
+            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to test cases carrying those
+            tags. Only used when ``dataset_id`` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose test cases should be reused.
+            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            provided.
+        run_count : int or Omit
+            The number of times to run each test case.
+        scheduled_evaluation_id : str, optional
+            The ID of the scheduled evaluation to associate with.
 
-          agent_id: The ID of the agent to create the evaluation for
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          name: The name of the evaluation
+        Returns
+        -------
+        Evaluation
+            The newly created evaluation.
 
-          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
-              `dataset_id` or `old_evaluation_id` must be provided.
-
-          tags: Optional tags to restrict the subset to test cases carrying those tags.
-              Only used when `dataset_id` is provided.
-
-          old_evaluation_id: The ID of a previous evaluation whose test cases should be
-              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
-
-          run_count: The number of times to run each test case
-
-          scheduled_evaluation_id: The ID of the scheduled evaluation to associate with
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            provided.
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
@@ -177,21 +199,36 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Retrieve Evaluation
+        """Retrieve an evaluation by its ID, with optional related resource inclusion.
 
-        Args:
-          evaluation_id: The ID of the evaluation to retrieve
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to retrieve.
+        include : list of {"agent", "dataset"}, optional
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        Evaluation
+            The requested evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -225,21 +262,36 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Update Evaluation
+        """Update an evaluation's name.
 
-        Args:
-          evaluation_id: The ID of the evaluation to update
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to update.
+        name : str
+            The name of the evaluation.
 
-          name: The name of the evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        Evaluation
+            The updated evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -266,21 +318,31 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Evaluation]:
-        """
-        List Evaluations
+        """List all evaluations for a project, with optional related resource inclusion.
 
-        Args:
-          project_id: The ID of the project to list evaluations for
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to list evaluations for.
+        include : list of {"agent", "dataset"}, optional
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of Evaluation
+            The evaluations belonging to the project.
         """
         response = self._get(
             "/v2/evaluations",
@@ -316,19 +378,33 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Evaluation
+        """Delete an evaluation by its ID.
 
-        Args:
-          evaluation_id: The ID of the evaluation to delete
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -353,19 +429,28 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Evaluations
+        """Delete multiple evaluations at once.
 
-        Args:
-          evaluation_ids: The IDs of the evaluations to delete
+        Parameters
+        ----------
+        evaluation_ids : sequence of str
+            The IDs of the evaluations to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/evaluations",
@@ -396,31 +481,48 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Create Local Evaluation
+        """Create a local evaluation for running agent checks without a remote agent.
 
-        Args:
-          agent_info: Minimal agent information (name and optional description) to use
-              for the evaluation.
+        Parameters
+        ----------
+        agent_info : MinimalAgentParam
+            Minimal agent information (name and optional description) to use
+            for the evaluation.
+        name : str, optional
+            The name of the evaluation.
+        dataset_id : str, optional
+            The ID of the dataset to draw test cases from. Exactly one of
+            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to test cases carrying those
+            tags. Only used when ``dataset_id`` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose test cases should be reused.
+            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            provided.
 
-          name: The name of the evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
-              `dataset_id` or `old_evaluation_id` must be provided.
+        Returns
+        -------
+        Evaluation
+            The newly created local evaluation.
 
-          tags: Optional tags to restrict the subset to test cases carrying those tags.
-              Only used when `dataset_id` is provided.
-
-          old_evaluation_id: The ID of a previous evaluation whose test cases should be
-              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            provided.
         """
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
@@ -462,19 +564,34 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Rerun Errored Evaluation Results
+        """Rerun all evaluation results that ended in an error state.
 
-        Args:
-          evaluation_id: The ID of the evaluation to rerun errored results for
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to rerun errored results for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Evaluation
+            The evaluation after rerunning errored results.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -491,7 +608,7 @@ class EvaluationsResource(SyncAPIResource):
     def run_single(
         self,
         *,
-        checks: Iterable[Dict[str, object]],
+        checks: Iterable[CheckConfigParam],
         messages: Iterable[ChatMessageParam],
         agent_output: AgentOutputParam,
         agent_description: str | Omit = omit,
@@ -503,33 +620,45 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
+        """Run a single check against a provided agent output without creating a full evaluation.
+
+        Parameters
+        ----------
+        checks : iterable of CheckConfigParam
+            The checks to run for the evaluation.
+        messages : iterable of ChatMessageParam
+            The messages to send to the agent.
+        agent_output : AgentOutputParam
+            The output from the agent.
+        agent_description : str or Omit
+            The description of the agent.
+        project_id : str, optional
+            The ID of the project to run the evaluation for.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
+
+        Returns
+        -------
+        list of CheckResult
+            The results of the checks.
         """
-        Run Single Evaluation
+        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
 
-        Args:
-          checks: The checks to run for the evaluation
-
-          messages: The messages to send to the agent
-
-          agent_output: The output from the agent
-
-          agent_description: The description of the agent
-
-          project_id: The ID of the project to run the evaluation for
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
         response = self._post(
             "/v2/evaluations/run-single",
             body=maybe_transform(
                 {
-                    "checks": checks,
+                    "checks": api_checks,
                     "messages": messages,
                     "model_output": agent_output,
                     "model_description": agent_description,
@@ -588,35 +717,53 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """Create Evaluation
+        """Create and launch a new evaluation of an agent on a dataset.
 
-        Args:
-          project_id: The ID of the project to create the evaluation for
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to create the evaluation for.
+        agent_id : str
+            The ID of the agent to create the evaluation for.
+        name : str or Omit
+            The name of the evaluation.
+        dataset_id : str, optional
+            The ID of the dataset to draw test cases from. Exactly one of
+            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to test cases carrying those
+            tags. Only used when ``dataset_id`` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose test cases should be reused.
+            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            provided.
+        run_count : int or Omit
+            The number of times to run each test case.
+        scheduled_evaluation_id : str, optional
+            The ID of the scheduled evaluation to associate with.
 
-          agent_id: The ID of the agent to create the evaluation for
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          name: The name of the evaluation
+        Returns
+        -------
+        Evaluation
+            The newly created evaluation.
 
-          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
-              `dataset_id` or `old_evaluation_id` must be provided.
-
-          tags: Optional tags to restrict the subset to test cases carrying those tags.
-              Only used when `dataset_id` is provided.
-
-          old_evaluation_id: The ID of a previous evaluation whose test cases should be
-              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
-
-          run_count: The number of times to run each test case
-
-          scheduled_evaluation_id: The ID of the scheduled evaluation to associate with
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            provided.
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
@@ -662,21 +809,36 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Retrieve Evaluation
+        """Retrieve an evaluation by its ID, with optional related resource inclusion.
 
-        Args:
-          evaluation_id: The ID of the evaluation to retrieve
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to retrieve.
+        include : list of {"agent", "dataset"}, optional
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        Evaluation
+            The requested evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -710,21 +872,36 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Update Evaluation
+        """Update an evaluation's name.
 
-        Args:
-          evaluation_id: The ID of the evaluation to update
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to update.
+        name : str
+            The name of the evaluation.
 
-          name: The name of the evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        Evaluation
+            The updated evaluation.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -751,21 +928,31 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Evaluation]:
-        """
-        List Evaluations
+        """List all evaluations for a project, with optional related resource inclusion.
 
-        Args:
-          project_id: The ID of the project to list evaluations for
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to list evaluations for.
+        include : list of {"agent", "dataset"}, optional
+            Related resources to include in response.
 
-          include: Related resources to include in response
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        list of Evaluation
+            The evaluations belonging to the project.
         """
         response = await self._get(
             "/v2/evaluations",
@@ -801,19 +988,33 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Delete Evaluation
+        """Delete an evaluation by its ID.
 
-        Args:
-          evaluation_id: The ID of the evaluation to delete
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -838,19 +1039,28 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """
-        Bulk Delete Evaluations
+        """Delete multiple evaluations at once.
 
-        Args:
-          evaluation_ids: The IDs of the evaluations to delete
+        Parameters
+        ----------
+        evaluation_ids : sequence of str
+            The IDs of the evaluations to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/evaluations",
@@ -881,31 +1091,48 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Create Local Evaluation
+        """Create a local evaluation for running agent checks without a remote agent.
 
-        Args:
-          agent_info: Minimal agent information (name and optional description) to use
-              for the evaluation.
+        Parameters
+        ----------
+        agent_info : MinimalAgentParam
+            Minimal agent information (name and optional description) to use
+            for the evaluation.
+        name : str, optional
+            The name of the evaluation.
+        dataset_id : str, optional
+            The ID of the dataset to draw test cases from. Exactly one of
+            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to test cases carrying those
+            tags. Only used when ``dataset_id`` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose test cases should be reused.
+            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            provided.
 
-          name: The name of the evaluation
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          dataset_id: The ID of the dataset to draw test cases from. Exactly one of
-              `dataset_id` or `old_evaluation_id` must be provided.
+        Returns
+        -------
+        Evaluation
+            The newly created local evaluation.
 
-          tags: Optional tags to restrict the subset to test cases carrying those tags.
-              Only used when `dataset_id` is provided.
-
-          old_evaluation_id: The ID of a previous evaluation whose test cases should be
-              reused. Exactly one of `old_evaluation_id` or `dataset_id` must be provided.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            provided.
         """
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
@@ -947,19 +1174,34 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """
-        Rerun Errored Evaluation Results
+        """Rerun all evaluation results that ended in an error state.
 
-        Args:
-          evaluation_id: The ID of the evaluation to rerun errored results for
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to rerun errored results for.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        Evaluation
+            The evaluation after rerunning errored results.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -976,7 +1218,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
     async def run_single(
         self,
         *,
-        checks: Iterable[Dict[str, object]],
+        checks: Iterable[CheckConfigParam],
         messages: Iterable[ChatMessageParam],
         agent_output: AgentOutputParam,
         agent_description: str | Omit = omit,
@@ -988,33 +1230,45 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
+        """Run a single check against a provided agent output without creating a full evaluation.
+
+        Parameters
+        ----------
+        checks : iterable of CheckConfigParam
+            The checks to run for the evaluation.
+        messages : iterable of ChatMessageParam
+            The messages to send to the agent.
+        agent_output : AgentOutputParam
+            The output from the agent.
+        agent_description : str or Omit
+            The description of the agent.
+        project_id : str, optional
+            The ID of the project to run the evaluation for.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in
+            seconds.
+
+        Returns
+        -------
+        list of CheckResult
+            The results of the checks.
         """
-        Run Single Evaluation
+        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
 
-        Args:
-          checks: The checks to run for the evaluation
-
-          messages: The messages to send to the agent
-
-          agent_output: The output from the agent
-
-          agent_description: The description of the agent
-
-          project_id: The ID of the project to run the evaluation for
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
         response = await self._post(
             "/v2/evaluations/run-single",
             body=await async_maybe_transform(
                 {
-                    "checks": checks,
+                    "checks": api_checks,
                     "messages": messages,
                     "model_output": agent_output,
                     "model_description": agent_description,

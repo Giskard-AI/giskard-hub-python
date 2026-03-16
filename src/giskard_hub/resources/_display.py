@@ -6,7 +6,7 @@ from typing import Optional, TypedDict
 from rich.table import Table
 from rich.console import Console
 
-from ..types.scan import Severity, ScanProbeResult, ScanProbeAttempt
+from ..types.scan import Severity, ScanProbe, ScanProbeAttempt
 from ..types.common import TaskState
 from ..types.evaluation import Evaluation
 
@@ -89,7 +89,7 @@ def print_evaluation_metrics_table(entity: Evaluation) -> None:
 
 def build_scan_probe_data(
     category_map: dict[str, str],
-    probe_results: list[ScanProbeResult],
+    probe_results: list[ScanProbe],
     attempts_by_probe_id: dict[str, list[ScanProbeAttempt]],
 ) -> list[ProbeData]:
     """Build sorted probe data for scan metrics display."""

@@ -1,10 +1,10 @@
 from .audit import (
-    AuditResource,
-    AsyncAuditResource,
-    AuditResourceWithRawResponse,
-    AsyncAuditResourceWithRawResponse,
-    AuditResourceWithStreamingResponse,
-    AsyncAuditResourceWithStreamingResponse,
+    AuditLogsResource,
+    AsyncAuditLogsResource,
+    AuditLogsResourceWithRawResponse,
+    AsyncAuditLogsResourceWithRawResponse,
+    AuditLogsResourceWithStreamingResponse,
+    AsyncAuditLogsResourceWithStreamingResponse,
 )
 from .scans import (
     ScansResource,
@@ -92,12 +92,12 @@ from .scheduled_evaluations import (
 )
 
 __all__ = [
-    "AuditResource",
-    "AsyncAuditResource",
-    "AuditResourceWithRawResponse",
-    "AsyncAuditResourceWithRawResponse",
-    "AuditResourceWithStreamingResponse",
-    "AsyncAuditResourceWithStreamingResponse",
+    "AuditLogsResource",
+    "AsyncAuditLogsResource",
+    "AuditLogsResourceWithRawResponse",
+    "AsyncAuditLogsResourceWithRawResponse",
+    "AuditLogsResourceWithStreamingResponse",
+    "AsyncAuditLogsResourceWithStreamingResponse",
     "ScansResource",
     "AsyncScansResource",
     "ScansResourceWithRawResponse",

@@ -81,29 +81,39 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
         """
-        Create Test Case
+        Create a new test case in a dataset with conversation messages and optional checks.
 
-        Args:
-          dataset_id: Dataset ID to create the test case from
+        Parameters
+        ----------
+        dataset_id : str
+            Dataset ID to create the test case from.
+        messages : Iterable[ChatMessageParam]
+            Messages to add to the test case.
+        checks : Iterable[CheckConfigParam] | Omit
+            Checks to add to the test case. Each check should have an ``identifier``
+            and optionally ``params`` (check-specific fields) and ``enabled``.
+        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
+            Agent output.
+        status : Optional[Literal["active", "draft"]] | Omit
+            Status of the test case.
+        tags : SequenceNotStr[str] | Omit
+            Tags to apply to the test case.
 
-          messages: Messages to add to the test case
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          checks: Checks to add to the test case. Each check should have an ``identifier``
-              and optionally ``params`` (check-specific fields) and ``enabled``.
-
-          demo_output: Agent output
-
-          status: Status of the test case
-
-          tags: Tags to apply to the test case
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        TestCase
+            The newly created test case.
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         response = self._post(
@@ -139,18 +149,33 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
         """
-        Retrieve Test Case
+        Retrieve a test case by its ID.
 
-        Args:
-          test_case_id: Test Case ID to retrieve
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        TestCase
+            The retrieved test case.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -182,31 +207,46 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
         """
-        Update Test Case
+        Update an existing test case's messages, checks, tags, or status.
 
-        Args:
-          test_case_id: Test Case ID to update
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to update.
+        checks : Optional[Iterable[CheckConfigParam]] | Omit
+            Checks to update the test case. Each check should have an ``identifier``
+            and optionally ``params`` (check-specific fields) and ``enabled``.
+        dataset_id : Optional[str] | Omit
+            Dataset ID to update the test case.
+        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
+            Agent output.
+        messages : Optional[Iterable[ChatMessageParam]] | Omit
+            Messages to update the test case.
+        tags : Optional[SequenceNotStr[str]] | Omit
+            Tags to update the test case.
+        status : Optional[Literal["active", "draft"]] | Omit
+            Status to update of the test case.
 
-          checks: Checks to update the test case. Each check should have an ``identifier``
-              and optionally ``params`` (check-specific fields) and ``enabled``.
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          dataset_id: Dataset ID to update the test case
+        Returns
+        -------
+        TestCase
+            The updated test case.
 
-          demo_output: Agent output
-
-          messages: Messages to update the test case
-
-          tags: Tags to update the test case
-
-          status: Status to update of the test case
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -248,18 +288,32 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete Test Case
+        Delete a test case by its ID.
 
-        Args:
-          test_case_id: Test Case ID to delete
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -285,18 +339,27 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Bulk Delete Test Cases
+        Delete multiple test cases at once.
 
-        Args:
-          test_case_ids: Test Case IDs to delete
+        Parameters
+        ----------
+        test_case_ids : SequenceNotStr[str]
+            Test Case IDs to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._delete(
             "/v2/test-cases",
@@ -329,28 +392,38 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[TestCase]:
         """
-        Bulk Update Test Cases
+        Bulk update multiple test cases' checks, tags, or status.
 
-        Args:
-          test_case_ids: Test Case IDs to update
+        Parameters
+        ----------
+        test_case_ids : SequenceNotStr[str]
+            Test Case IDs to update.
+        disabled_checks : Optional[SequenceNotStr[str]] | Omit
+            Partial list of checks to be disabled.
+        enabled_checks : Optional[SequenceNotStr[str]] | Omit
+            Partial list of checks to be enabled.
+        added_tags : Optional[SequenceNotStr[str]] | Omit
+            Tags to be added to the test cases.
+        removed_tags : Optional[SequenceNotStr[str]] | Omit
+            Tags to be removed from the test cases.
+        status : Optional[Literal["active", "draft"]] | Omit
+            Status of the test cases.
 
-          disabled_checks: Partial list of checks to be disabled
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          enabled_checks: Partial list of checks to be enabled
-
-          added_tags: Tags to be added to the test cases
-
-          removed_tags: Tags to be removed from the test cases
-
-          status: Status of the test cases
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[TestCase]
+            The updated test cases.
         """
         response = self._patch(
             "/v2/test-cases",
@@ -385,22 +458,31 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Bulk Move Test Cases
+        Move or copy test cases between datasets.
 
-        Args:
-          test_case_ids: List of test case IDs to move
+        Parameters
+        ----------
+        test_case_ids : List[str]
+            List of test case IDs to move.
+        target_dataset_id : str
+            Target dataset ID to move test cases to.
+        duplicate : Optional[bool] | Omit
+            If true, keep a copy of the test cases in the original dataset. Default is true.
 
-          target_dataset_id: Target dataset ID to move test cases to
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          duplicate: If true, keep a copy of the test cases in the original dataset. Default is true.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = self._post(
             "/v2/test-cases/bulk-move",
@@ -462,29 +544,39 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
         """
-        Create Test Case
+        Create a new test case in a dataset with conversation messages and optional checks.
 
-        Args:
-          dataset_id: Dataset ID to create the test case for
+        Parameters
+        ----------
+        dataset_id : str
+            Dataset ID to create the test case for.
+        messages : Iterable[ChatMessageParam]
+            Messages to add to the test case.
+        checks : Iterable[CheckConfigParam] | Omit
+            Checks to add to the test case. Each check should have an ``identifier``
+            and optionally ``params`` (check-specific fields) and ``enabled``.
+        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
+            Agent output.
+        status : Optional[Literal["active", "draft"]] | Omit
+            Status of the test case.
+        tags : SequenceNotStr[str] | Omit
+            Tags to apply to the test case.
 
-          messages: Messages to add to the test case
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          checks: Checks to add to the test case. Each check should have an ``identifier``
-              and optionally ``params`` (check-specific fields) and ``enabled``.
-
-          demo_output: Agent output
-
-          status: Status of the test case
-
-          tags: Tags to apply to the test case
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        TestCase
+            The newly created test case.
         """
         api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         response = await self._post(
@@ -520,18 +612,33 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
         """
-        Retrieve Test Case
+        Retrieve a test case by its ID.
 
-        Args:
-          test_case_id: Test Case ID to retrieve
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to retrieve.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        TestCase
+            The retrieved test case.
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -563,31 +670,46 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
         """
-        Update Test Case
+        Update an existing test case's messages, checks, tags, or status.
 
-        Args:
-          test_case_id: Test Case ID to update
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to update.
+        checks : Optional[Iterable[CheckConfigParam]] | Omit
+            Checks to update the test case. Each check should have an ``identifier``
+            and optionally ``params`` (check-specific fields) and ``enabled``.
+        dataset_id : Optional[str] | Omit
+            Dataset ID to update the test case.
+        demo_output : Optional[ChatMessageWithMetadataParam] | Omit
+            Agent output.
+        messages : Optional[Iterable[ChatMessageParam]] | Omit
+            Messages to update the test case.
+        tags : Optional[SequenceNotStr[str]] | Omit
+            Tags to update the test case.
+        status : Optional[Literal["active", "draft"]] | Omit
+            Status to update of the test case.
 
-          checks: Checks to update the test case. Each check should have an ``identifier``
-              and optionally ``params`` (check-specific fields) and ``enabled``.
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          dataset_id: Dataset ID to update the test case
+        Returns
+        -------
+        TestCase
+            The updated test case.
 
-          demo_output: Agent output
-
-          messages: Messages to update the test case
-
-          tags: Tags to update the test case
-
-          status: Status to update of the test case
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -629,18 +751,32 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete Test Case
+        Delete a test case by its ID.
 
-        Args:
-          test_case_id: Test Case ID to delete
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
+        Returns
+        -------
+        None
 
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -666,18 +802,27 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Bulk Delete Test Cases
+        Delete multiple test cases at once.
 
-        Args:
-          test_case_ids: Test Case IDs to delete
+        Parameters
+        ----------
+        test_case_ids : SequenceNotStr[str]
+            Test Case IDs to delete.
 
-          extra_headers: Send extra headers
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._delete(
             "/v2/test-cases",
@@ -710,28 +855,38 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[TestCase]:
         """
-        Bulk Update Test Cases
+        Bulk update multiple test cases' checks, tags, or status.
 
-        Args:
-          test_case_ids: Test Case IDs to update
+        Parameters
+        ----------
+        test_case_ids : SequenceNotStr[str]
+            Test Case IDs to update.
+        disabled_checks : Optional[SequenceNotStr[str]] | Omit
+            Partial list of checks to be disabled.
+        enabled_checks : Optional[SequenceNotStr[str]] | Omit
+            Partial list of checks to be enabled.
+        added_tags : Optional[SequenceNotStr[str]] | Omit
+            Tags to be added to the test cases.
+        removed_tags : Optional[SequenceNotStr[str]] | Omit
+            Tags to be removed from the test cases.
+        status : Optional[Literal["active", "draft"]] | Omit
+            Status of the test cases.
 
-          disabled_checks: Partial list of checks to be disabled
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          enabled_checks: Partial list of checks to be enabled
-
-          added_tags: Tags to be added to the test cases
-
-          removed_tags: Tags to be removed from the test cases
-
-          status: Status of the test cases
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        List[TestCase]
+            The updated test cases.
         """
         response = await self._patch(
             "/v2/test-cases",
@@ -766,22 +921,31 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Bulk Move Test Cases
+        Move or copy test cases between datasets.
 
-        Args:
-          test_case_ids: List of test case IDs to move
+        Parameters
+        ----------
+        test_case_ids : List[str]
+            List of test case IDs to move.
+        target_dataset_id : str
+            Target dataset ID to move test cases to.
+        duplicate : Optional[bool] | Omit
+            If true, keep a copy of the test cases in the original dataset. Default is true.
 
-          target_dataset_id: Target dataset ID to move test cases to
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          duplicate: If true, keep a copy of the test cases in the original dataset. Default is true.
-
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Returns
+        -------
+        None
         """
         response = await self._post(
             "/v2/test-cases/bulk-move",

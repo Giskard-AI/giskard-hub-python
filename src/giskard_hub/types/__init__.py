@@ -13,7 +13,7 @@ Types are organized by domain into consolidated modules:
 - dataset: Dataset, DatasetSubset and params
 - knowledge_base: KnowledgeBase, document types and params
 - evaluation: Evaluation, Metric, TestCaseEvaluation, result params
-- scan: ScanResult, ScanCategory, ScanProbe types and params
+- scan: Scan, ScanCategory, ScanProbe types and params
 - scenario: Scenario, ScenarioPreview and params
 - scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
 - test_case: TestCase, TestCaseComment, comment params
@@ -196,7 +196,7 @@ from .evaluation import (
 
 # -- scan ------------------------------------------------------------------
 from .scan import (
-    AttemptUpdateParams as AttemptUpdateParams,
+    ScanProbeAttemptUpdateParams as ScanProbeAttemptUpdateParams,
     ReviewStatus as ReviewStatus,
     ScanBulkDeleteParams as ScanBulkDeleteParams,
     ScanCategory as ScanCategory,
@@ -204,8 +204,8 @@ from .scan import (
     ScanListParams as ScanListParams,
     ScanProbeAttempt as ScanProbeAttempt,
     ScanProbeAttemptReference as ScanProbeAttemptReference,
-    ScanProbeResult as ScanProbeResult,
-    ScanResult as ScanResult,
+    ScanProbe as ScanProbe,
+    Scan as Scan,
     ScanRetrieveParams as ScanRetrieveParams,
     Severity as Severity,
 )
@@ -404,7 +404,7 @@ __all__ = [
     "ResultFiltersParam",
     "ResultOrderByParam",
     # scan
-    "ScanResult",
+    "Scan",
     "ScanCategory",
     "ScanListParams",
     "ScanCreateParams",
@@ -412,10 +412,10 @@ __all__ = [
     "ScanBulkDeleteParams",
     "Severity",
     "ReviewStatus",
-    "ScanProbeResult",
+    "ScanProbe",
     "ScanProbeAttempt",
     "ScanProbeAttemptReference",
-    "AttemptUpdateParams",
+    "ScanProbeAttemptUpdateParams",
     # scenario
     "Scenario",
     "ScenarioPreview",

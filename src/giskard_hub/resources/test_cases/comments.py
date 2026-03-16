@@ -53,20 +53,34 @@ class CommentsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete Test Case Comment
+        Delete a comment from a test case.
 
-        Args:
-          comment_id: Comment ID to delete
+        Parameters
+        ----------
+        comment_id : str
+            Comment ID to delete.
+        test_case_id : str
+            Test Case ID to delete the comment from.
 
-          test_case_id: Test Case ID to delete the comment from
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        None
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` or ``comment_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -95,20 +109,35 @@ class CommentsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseComment:
         """
-        Add Test Case Comment
+        Add a new comment to a test case.
 
-        Args:
-          test_case_id: Test Case ID to add the comment to
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to add the comment to.
+        content : str
+            Content of the comment to add.
 
-          content: Content of the comment to add
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        TestCaseComment
+            The newly created comment.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -137,22 +166,37 @@ class CommentsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseComment:
         """
-        Edit Test Case Comment
+        Edit an existing comment on a test case.
 
-        Args:
-          comment_id: Comment ID to edit
+        Parameters
+        ----------
+        comment_id : str
+            Comment ID to edit.
+        test_case_id : str
+            Test Case ID to edit the comment from.
+        content : str
+            Content of the comment to edit.
 
-          test_case_id: Test Case ID to edit the comment from
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          content: Content of the comment to edit
+        Returns
+        -------
+        TestCaseComment
+            The edited comment.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` or ``comment_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -203,20 +247,34 @@ class AsyncCommentsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete Test Case Comment
+        Delete a comment from a test case.
 
-        Args:
-          comment_id: Comment ID to delete
+        Parameters
+        ----------
+        comment_id : str
+            Comment ID to delete.
+        test_case_id : str
+            Test Case ID to delete the comment from.
 
-          test_case_id: Test Case ID to delete the comment from
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        None
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` or ``comment_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -245,20 +303,35 @@ class AsyncCommentsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseComment:
         """
-        Add Test Case Comment
+        Add a new comment to a test case.
 
-        Args:
-          test_case_id: Test Case ID to add the comment to
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to add the comment to.
+        content : str
+            Content of the comment to add.
 
-          content: Content of the comment to add
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          extra_headers: Send extra headers
+        Returns
+        -------
+        TestCaseComment
+            The newly created comment.
 
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -287,22 +360,37 @@ class AsyncCommentsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCaseComment:
         """
-        Edit Test Case Comment
+        Edit an existing comment on a test case.
 
-        Args:
-          comment_id: Comment ID to edit
+        Parameters
+        ----------
+        comment_id : str
+            Comment ID to edit.
+        test_case_id : str
+            Test Case ID to edit the comment from.
+        content : str
+            Content of the comment to edit.
 
-          test_case_id: Test Case ID to edit the comment from
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
-          content: Content of the comment to edit
+        Returns
+        -------
+        TestCaseComment
+            The edited comment.
 
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` or ``comment_id`` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
