@@ -95,8 +95,10 @@ class AgentsResource(SyncAPIResource):
         headers_api: list[HeaderParam] = []
 
         if headers is not omit:
-            for header_name, header_value in cast(Dict[str, str], headers).items():
-                headers_api.append(HeaderParam(name=header_name, value=header_value))
+            headers_api = [
+                HeaderParam(name=header_name, value=header_value)
+                for header_name, header_value in cast(Dict[str, str], headers).items()
+            ]
 
         response = self._post(
             "/v2/agents",
@@ -531,8 +533,10 @@ class AsyncAgentsResource(AsyncAPIResource):
         headers_api: list[HeaderParam] = []
 
         if headers is not omit:
-            for header_name, header_value in cast(Dict[str, str], headers).items():
-                headers_api.append(HeaderParam(name=header_name, value=header_value))
+            headers_api = [
+                HeaderParam(name=header_name, value=header_value)
+                for header_name, header_value in cast(Dict[str, str], headers).items()
+            ]
 
         response = await self._post(
             "/v2/agents",
