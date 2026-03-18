@@ -157,6 +157,81 @@ class HelpersResource(SyncAPIResource):
 
         return self._evaluate_local(agent=agent, dataset_id=dataset_id, name=name, tags=tags)
 
+    def scan(
+        self,
+        *,
+        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn],
+        project: str | Project,
+        knowledge_base: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        agent_name: Optional[str] = None,
+        agent_description: Optional[str] = None,
+        supported_languages: Optional[list[str]] = None,
+        poll_interval: float = 5.0,
+    ) -> "Scan":
+        """Run a vulnerability scan for a given agent.
+
+        Handles both remote agents (referenced by ID or ``Agent``, which must
+        already be registered in the Hub) and local Python callables.
+
+        When a local callable is provided, the scan is executed via WebSocket:
+        the Hub orchestrates LIDAR server-side and sends agent invocation
+        requests to this process through the WebSocket connection.  The TLS
+        configuration (certificate verification) is automatically inherited
+        from the ``httpx.Client`` passed to ``HubClient``.
+
+        Parameters
+        ----------
+        agent :
+            Either a remote agent identifier (``str`` or ``Agent``) or a
+            callable with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+        project :
+            Project identifier or ``Project`` instance.
+        knowledge_base :
+            Optional knowledge base identifier.
+        tags :
+            Optional list of tags to filter which probes to run.
+        agent_name :
+            Name for the agent (used only for local callables; defaults to
+            the function name).
+        agent_description :
+            Description of the agent (used only for local callables).
+        supported_languages :
+            Languages the agent supports (default ``["en"]``).
+        poll_interval :
+            Seconds between status polls when running a remote scan.
+
+        Returns
+        -------
+        Scan
+            The completed scan result with grade and probe information.
+        """
+        from ..types.scan import Scan as _Scan
+
+        project_id = project if isinstance(project, str) else project.id
+        kb_id = knowledge_base if isinstance(knowledge_base, str) else (
+            knowledge_base if knowledge_base is omit else knowledge_base
+        )
+
+        if isinstance(agent, (str, Agent)):
+            return self._scan_remote(
+                agent=agent,
+                project_id=project_id,
+                knowledge_base_id=kb_id,
+                tags=tags,
+                poll_interval=poll_interval,
+            )
+
+        return self._scan_local(
+            agent=agent,
+            project_id=project_id,
+            knowledge_base_id=kb_id if kb_id is not omit else None,
+            tags=tags if tags is not omit else None,
+            agent_name=agent_name or getattr(agent, "__name__", "local_agent"),
+            agent_description=agent_description or getattr(agent, "__doc__", None) or "",
+            supported_languages=supported_languages or ["en"],
+        )
+
     def print_metrics(self, entity: PrintMetricsEntity) -> None:
         """Print metrics for an evaluation or scan result to the console.
 
@@ -170,6 +245,83 @@ class HelpersResource(SyncAPIResource):
             self._print_scan_metrics(entity)
 
     # -- Private helpers -----------------------------------------------------
+
+    def _scan_remote(
+        self,
+        *,
+        agent: str | Agent,
+        project_id: str,
+        knowledge_base_id: "str | Omit | None",
+        tags: "Optional[SequenceNotStr[str]] | Omit",
+        poll_interval: float,
+    ) -> "Scan":
+        from ..types.scan import Scan as _Scan
+
+        agent_id = agent if isinstance(agent, str) else agent.id
+
+        create_kwargs: dict = {
+            "project_id": project_id,
+            "agent_id": agent_id,
+        }
+        if knowledge_base_id is not omit and knowledge_base_id is not None:
+            create_kwargs["knowledge_base_id"] = knowledge_base_id
+        if tags is not omit:
+            create_kwargs["tags"] = tags
+
+        scan = self._client.scans.create(**create_kwargs)
+        return cast(_Scan, self.wait_for_completion(scan, poll_interval=poll_interval))
+
+    def _scan_local(
+        self,
+        *,
+        agent: Callable[[list[ChatMessage]], AgentReturn],
+        project_id: str,
+        knowledge_base_id: str | None,
+        tags: "list[str] | SequenceNotStr[str] | None",
+        agent_name: str,
+        agent_description: str,
+        supported_languages: list[str],
+    ) -> "Scan":
+        from ..types.scan import Scan as _Scan
+        from ..types.common import APIResponse as _APIResponse
+        from ._ws_scan import run_ws_scan, _ssl_context_from_httpx
+
+        # 1. Create the scan record on the Hub (no worker enqueue).
+        body: dict = {
+            "project_id": project_id,
+            "agent_name": agent_name,
+            "agent_description": agent_description,
+            "supported_languages": supported_languages,
+        }
+        if knowledge_base_id:
+            body["knowledge_base_id"] = knowledge_base_id
+        if tags:
+            body["tags"] = list(tags)
+
+        response = self._post(
+            "/v2/scans/create-local",
+            body=body,
+            cast_to=_APIResponse[_Scan],
+        )
+        scan = self._unwrap(response)
+        scan_id = scan.id
+
+        # 2. Connect via WebSocket and drive the scan.
+        #    Inherit TLS config (verify/no-verify) from the httpx client.
+        base_url = str(self._client.base_url)
+        api_key = self._client.api_key
+        ssl_ctx = _ssl_context_from_httpx(self._client._client)
+
+        run_ws_scan(
+            base_url=base_url,
+            api_key=api_key,
+            scan_id=scan_id,
+            agent=agent,
+            ssl_context=ssl_ctx,
+        )
+
+        # 3. Retrieve the final scan result.
+        return self._client.scans.retrieve(scan_id)
 
     def _evaluate_remote(
         self,
@@ -367,6 +519,48 @@ class AsyncHelpersResource(AsyncAPIResource):
 
         return await self._evaluate_local(agent=agent, dataset_id=dataset_id, name=name, tags=tags)
 
+    async def scan(
+        self,
+        *,
+        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]],
+        project: str | Project,
+        knowledge_base: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        agent_name: Optional[str] = None,
+        agent_description: Optional[str] = None,
+        supported_languages: Optional[list[str]] = None,
+        poll_interval: float = 5.0,
+    ) -> "Scan":
+        """Asynchronously run a vulnerability scan for a given agent.
+
+        See :meth:`HelpersResource.scan` for full parameter documentation.
+        """
+        from ..types.scan import Scan as _Scan
+
+        project_id = project if isinstance(project, str) else project.id
+        kb_id = knowledge_base if isinstance(knowledge_base, str) else (
+            knowledge_base if knowledge_base is omit else knowledge_base
+        )
+
+        if isinstance(agent, (str, Agent)):
+            return await self._scan_remote(
+                agent=agent,
+                project_id=project_id,
+                knowledge_base_id=kb_id,
+                tags=tags,
+                poll_interval=poll_interval,
+            )
+
+        return await self._scan_local(
+            agent=agent,
+            project_id=project_id,
+            knowledge_base_id=kb_id if kb_id is not omit else None,
+            tags=tags if tags is not omit else None,
+            agent_name=agent_name or getattr(agent, "__name__", "local_agent"),
+            agent_description=agent_description or getattr(agent, "__doc__", None) or "",
+            supported_languages=supported_languages or ["en"],
+        )
+
     async def print_metrics(self, entity: PrintMetricsEntity) -> None:
         """Print metrics for an evaluation or scan result to the console (async).
 
@@ -380,6 +574,83 @@ class AsyncHelpersResource(AsyncAPIResource):
             await self._print_scan_metrics(entity)
 
     # -- Private helpers -----------------------------------------------------
+
+    async def _scan_remote(
+        self,
+        *,
+        agent: str | Agent,
+        project_id: str,
+        knowledge_base_id: "str | Omit | None",
+        tags: "Optional[SequenceNotStr[str]] | Omit",
+        poll_interval: float,
+    ) -> "Scan":
+        from ..types.scan import Scan as _Scan
+
+        agent_id = agent if isinstance(agent, str) else agent.id
+
+        create_kwargs: dict = {
+            "project_id": project_id,
+            "agent_id": agent_id,
+        }
+        if knowledge_base_id is not omit and knowledge_base_id is not None:
+            create_kwargs["knowledge_base_id"] = knowledge_base_id
+        if tags is not omit:
+            create_kwargs["tags"] = tags
+
+        scan = await self._client.scans.create(**create_kwargs)
+        return cast(_Scan, await self.wait_for_completion(scan, poll_interval=poll_interval))
+
+    async def _scan_local(
+        self,
+        *,
+        agent: Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]],
+        project_id: str,
+        knowledge_base_id: str | None,
+        tags: "list[str] | SequenceNotStr[str] | None",
+        agent_name: str,
+        agent_description: str,
+        supported_languages: list[str],
+    ) -> "Scan":
+        from ..types.scan import Scan as _Scan
+        from ..types.common import APIResponse as _APIResponse
+        from ._ws_scan import _arun_ws_scan, _ssl_context_from_httpx
+
+        # 1. Create the scan record on the Hub (no worker enqueue).
+        body: dict = {
+            "project_id": project_id,
+            "agent_name": agent_name,
+            "agent_description": agent_description,
+            "supported_languages": supported_languages,
+        }
+        if knowledge_base_id:
+            body["knowledge_base_id"] = knowledge_base_id
+        if tags:
+            body["tags"] = list(tags)
+
+        response = await self._post(
+            "/v2/scans/create-local",
+            body=body,
+            cast_to=_APIResponse[_Scan],
+        )
+        scan = self._unwrap(response)
+        scan_id = scan.id
+
+        # 2. Connect via WebSocket and drive the scan.
+        #    Inherit TLS config (verify/no-verify) from the httpx client.
+        base_url = str(self._client.base_url)
+        api_key = self._client.api_key
+        ssl_ctx = _ssl_context_from_httpx(self._client._client)
+
+        await _arun_ws_scan(
+            base_url=base_url,
+            api_key=api_key,
+            scan_id=scan_id,
+            agent=agent,
+            ssl_context=ssl_ctx,
+        )
+
+        # 3. Retrieve the final scan result.
+        return await self._client.scans.retrieve(scan_id)
 
     async def _evaluate_remote(
         self,
