@@ -6,20 +6,23 @@ requests from LIDAR (running on the Hub), execute the local agent callable,
 and send the response back.
 """
 
-import asyncio
-import inspect
-import json
-import logging
 import os
 import ssl
-from typing import Any, Awaitable, Callable
-from urllib.parse import urlencode, urlparse, urlunparse
+import json
+import asyncio
+import inspect
+import logging
+from typing import Any, Callable, Awaitable
+from urllib.parse import urlparse, urlencode, urlunparse
 
 import httpx
 
 from ..types.chat import ChatMessage
+from ..types.agent import AgentOutput
 
 logger = logging.getLogger(__name__)
+
+__all__ = ["run_ws_scan", "_arun_ws_scan", "_ssl_context_from_httpx"]
 
 
 def _ssl_context_from_httpx(http_client: httpx.Client | httpx.AsyncClient | None) -> ssl.SSLContext | None:
@@ -76,7 +79,7 @@ AgentCallable = Callable[[list[ChatMessage]], Any]
 AsyncAgentCallable = Callable[[list[ChatMessage]], Any | Awaitable[Any]]
 
 
-def _normalize_output(value: Any) -> dict:
+def _normalize_output(value: Any) -> dict[str, object]:
     """Turn the agent return value into a dict matching the Hub protocol."""
     from ._helpers_types import normalize_agent_output
 
@@ -89,9 +92,9 @@ async def _arun_ws_scan(
     api_key: str,
     scan_id: str,
     agent: AsyncAgentCallable,
-    on_progress: Callable[[dict], Any] | None = None,
+    on_progress: Callable[[dict[str, Any]], Any] | None = None,
     ssl_context: ssl.SSLContext | bool | None = None,
-) -> dict | None:
+) -> dict[str, Any] | None:
     """Async implementation of the WebSocket scan loop.
 
     Returns the ``complete`` message payload, or ``None`` if the connection
@@ -188,9 +191,9 @@ def run_ws_scan(
     api_key: str,
     scan_id: str,
     agent: AgentCallable,
-    on_progress: Callable[[dict], Any] | None = None,
+    on_progress: Callable[[dict[str, Any]], Any] | None = None,
     ssl_context: ssl.SSLContext | bool | None = None,
-) -> dict | None:
+) -> dict[str, Any] | None:
     """Synchronous wrapper around the async WebSocket scan loop.
 
     Works correctly even when called from an environment that already has
@@ -199,12 +202,16 @@ def run_ws_scan(
     """
     import concurrent.futures
 
-    def _run_in_thread() -> dict | None:
+    def _run_in_thread() -> dict[str, Any] | None:
         loop = asyncio.new_event_loop()
         try:
             return loop.run_until_complete(
                 _arun_ws_scan(
-                    base_url, api_key, scan_id, agent, on_progress,
+                    base_url,
+                    api_key,
+                    scan_id,
+                    agent,
+                    on_progress,
                     ssl_context=ssl_context,
                 )
             )

@@ -8,7 +8,7 @@ wrap lower-level API resources to offer convenience methods such as
 import time
 import asyncio
 import inspect
-from typing import Callable, Optional, Awaitable, Collection, cast
+from typing import Any, Callable, Optional, Awaitable, Collection, cast
 from concurrent.futures import ThreadPoolExecutor
 
 from .._types import Omit, SequenceNotStr, omit
@@ -20,7 +20,7 @@ from ._display import (
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
 from ..types.chat import ChatMessage
-from ..types.scan import ScanProbe, ScanProbeAttempt
+from ..types.scan import Scan, ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam
 from ..types.dataset import Dataset
 from ..types.project import Project
@@ -168,7 +168,7 @@ class HelpersResource(SyncAPIResource):
         agent_description: Optional[str] = None,
         supported_languages: Optional[list[str]] = None,
         poll_interval: float = 5.0,
-    ) -> "Scan":
+    ) -> Scan:
         """Run a vulnerability scan for a given agent.
 
         Handles both remote agents (referenced by ID or ``Agent``, which must
@@ -206,11 +206,12 @@ class HelpersResource(SyncAPIResource):
         Scan
             The completed scan result with grade and probe information.
         """
-        from ..types.scan import Scan as _Scan
 
         project_id = project if isinstance(project, str) else project.id
-        kb_id = knowledge_base if isinstance(knowledge_base, str) else (
-            knowledge_base if knowledge_base is omit else knowledge_base
+        kb_id = (
+            knowledge_base
+            if isinstance(knowledge_base, str)
+            else (knowledge_base if knowledge_base is omit else knowledge_base)
         )
 
         if isinstance(agent, (str, Agent)):
@@ -225,9 +226,9 @@ class HelpersResource(SyncAPIResource):
         return self._scan_local(
             agent=agent,
             project_id=project_id,
-            knowledge_base_id=kb_id if kb_id is not omit else None,
-            tags=tags if tags is not omit else None,
-            agent_name=agent_name or getattr(agent, "__name__", "local_agent"),
+            knowledge_base_id=kb_id if isinstance(kb_id, str) else None,
+            tags=None if isinstance(tags, Omit) or tags is None else tags,
+            agent_name=agent_name if agent_name is not None else getattr(agent, "__name__", "local_agent"),
             agent_description=agent_description or getattr(agent, "__doc__", None) or "",
             supported_languages=supported_languages or ["en"],
         )
@@ -254,12 +255,10 @@ class HelpersResource(SyncAPIResource):
         knowledge_base_id: "str | Omit | None",
         tags: "Optional[SequenceNotStr[str]] | Omit",
         poll_interval: float,
-    ) -> "Scan":
-        from ..types.scan import Scan as _Scan
-
+    ) -> Scan:
         agent_id = agent if isinstance(agent, str) else agent.id
 
-        create_kwargs: dict = {
+        create_kwargs: dict[str, Any] = {
             "project_id": project_id,
             "agent_id": agent_id,
         }
@@ -269,7 +268,7 @@ class HelpersResource(SyncAPIResource):
             create_kwargs["tags"] = tags
 
         scan = self._client.scans.create(**create_kwargs)
-        return cast(_Scan, self.wait_for_completion(scan, poll_interval=poll_interval))
+        return self.wait_for_completion(scan, poll_interval=poll_interval)  # type: ignore[return-value]
 
     def _scan_local(
         self,
@@ -281,13 +280,12 @@ class HelpersResource(SyncAPIResource):
         agent_name: str,
         agent_description: str,
         supported_languages: list[str],
-    ) -> "Scan":
-        from ..types.scan import Scan as _Scan
-        from ..types.common import APIResponse as _APIResponse
+    ) -> Scan:
         from ._ws_scan import run_ws_scan, _ssl_context_from_httpx
+        from ..types.common import APIResponse as _APIResponse
 
         # 1. Create the scan record on the Hub (no worker enqueue).
-        body: dict = {
+        body: dict[str, Any] = {
             "project_id": project_id,
             "agent_name": agent_name,
             "agent_description": agent_description,
@@ -301,7 +299,7 @@ class HelpersResource(SyncAPIResource):
         response = self._post(
             "/v2/scans/create-local",
             body=body,
-            cast_to=_APIResponse[_Scan],
+            cast_to=_APIResponse[Scan],
         )
         scan = self._unwrap(response)
         scan_id = scan.id
@@ -384,9 +382,7 @@ class HelpersResource(SyncAPIResource):
         return evaluation
 
     def _print_scan_metrics(self, entity: object) -> None:
-        from ..types.scan import Scan as _Scan
-
-        scan = cast(_Scan, entity)
+        scan = cast(Scan, entity)
         category_map = {cat.id: cat.title for cat in self._client.scans.list_categories()}
         probe_results = self._client.scans.list_probes(scan_id=scan.id)
 
@@ -530,16 +526,17 @@ class AsyncHelpersResource(AsyncAPIResource):
         agent_description: Optional[str] = None,
         supported_languages: Optional[list[str]] = None,
         poll_interval: float = 5.0,
-    ) -> "Scan":
+    ) -> Scan:
         """Asynchronously run a vulnerability scan for a given agent.
 
         See :meth:`HelpersResource.scan` for full parameter documentation.
         """
-        from ..types.scan import Scan as _Scan
 
         project_id = project if isinstance(project, str) else project.id
-        kb_id = knowledge_base if isinstance(knowledge_base, str) else (
-            knowledge_base if knowledge_base is omit else knowledge_base
+        kb_id = (
+            knowledge_base
+            if isinstance(knowledge_base, str)
+            else (knowledge_base if knowledge_base is omit else knowledge_base)
         )
 
         if isinstance(agent, (str, Agent)):
@@ -554,9 +551,9 @@ class AsyncHelpersResource(AsyncAPIResource):
         return await self._scan_local(
             agent=agent,
             project_id=project_id,
-            knowledge_base_id=kb_id if kb_id is not omit else None,
-            tags=tags if tags is not omit else None,
-            agent_name=agent_name or getattr(agent, "__name__", "local_agent"),
+            knowledge_base_id=kb_id if isinstance(kb_id, str) else None,
+            tags=None if isinstance(tags, Omit) or tags is None else tags,
+            agent_name=agent_name if agent_name is not None else getattr(agent, "__name__", "local_agent"),
             agent_description=agent_description or getattr(agent, "__doc__", None) or "",
             supported_languages=supported_languages or ["en"],
         )
@@ -583,12 +580,10 @@ class AsyncHelpersResource(AsyncAPIResource):
         knowledge_base_id: "str | Omit | None",
         tags: "Optional[SequenceNotStr[str]] | Omit",
         poll_interval: float,
-    ) -> "Scan":
-        from ..types.scan import Scan as _Scan
-
+    ) -> Scan:
         agent_id = agent if isinstance(agent, str) else agent.id
 
-        create_kwargs: dict = {
+        create_kwargs: dict[str, Any] = {
             "project_id": project_id,
             "agent_id": agent_id,
         }
@@ -598,7 +593,7 @@ class AsyncHelpersResource(AsyncAPIResource):
             create_kwargs["tags"] = tags
 
         scan = await self._client.scans.create(**create_kwargs)
-        return cast(_Scan, await self.wait_for_completion(scan, poll_interval=poll_interval))
+        return await self.wait_for_completion(scan, poll_interval=poll_interval)  # type: ignore[return-value]
 
     async def _scan_local(
         self,
@@ -610,13 +605,12 @@ class AsyncHelpersResource(AsyncAPIResource):
         agent_name: str,
         agent_description: str,
         supported_languages: list[str],
-    ) -> "Scan":
-        from ..types.scan import Scan as _Scan
-        from ..types.common import APIResponse as _APIResponse
+    ) -> Scan:
         from ._ws_scan import _arun_ws_scan, _ssl_context_from_httpx
+        from ..types.common import APIResponse as _APIResponse
 
         # 1. Create the scan record on the Hub (no worker enqueue).
-        body: dict = {
+        body: dict[str, Any] = {
             "project_id": project_id,
             "agent_name": agent_name,
             "agent_description": agent_description,
@@ -630,7 +624,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         response = await self._post(
             "/v2/scans/create-local",
             body=body,
-            cast_to=_APIResponse[_Scan],
+            cast_to=_APIResponse[Scan],
         )
         scan = self._unwrap(response)
         scan_id = scan.id
@@ -722,9 +716,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         return evaluation
 
     async def _print_scan_metrics(self, entity: object) -> None:
-        from ..types.scan import Scan as _Scan
-
-        scan = cast(_Scan, entity)
+        scan = cast(Scan, entity)
         category_map = {cat.id: cat.title for cat in await self._client.scans.list_categories()}
         probe_results = await self._client.scans.list_probes(scan_id=scan.id)
         attempts_list = await asyncio.gather(
