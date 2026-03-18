@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
-from pathlib import Path
 
 import httpx
 
@@ -62,7 +61,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         *,
         name: str,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]] | str,
+        data: FileTypes | list[dict[str, Any]],
         description: Optional[str] | Omit = omit,
         document_column: str | Omit = omit,
         topic_column: str | Omit = omit,
@@ -81,7 +80,7 @@ class KnowledgeBasesResource(SyncAPIResource):
             Name of the knowledge base.
         project_id : str
             Project ID to create the knowledge base in.
-        data : FileTypes | list[dict[str, Any]] | str
+        data : FileTypes | list[dict[str, Any]]
             Data to upload for the knowledge base.
         description : Optional[str] | Omit
             Description of the knowledge base.
@@ -108,9 +107,6 @@ class KnowledgeBasesResource(SyncAPIResource):
         """
         if isinstance(data, list):
             data = ("kb_documents.json", json.dumps(data).encode("utf-8"))
-
-        if isinstance(data, str):
-            data = Path(data)
 
         body = deepcopy_minimal(
             {
@@ -604,7 +600,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         *,
         name: str,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]] | str,
+        data: FileTypes | list[dict[str, Any]],
         description: Optional[str] | Omit = omit,
         document_column: str | Omit = omit,
         topic_column: str | Omit = omit,
@@ -623,7 +619,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             Name of the knowledge base.
         project_id : str
             Project ID to create the knowledge base in.
-        data : FileTypes | list[dict[str, Any]] | str
+        data : FileTypes | list[dict[str, Any]]
             Data to upload for the knowledge base.
         description : Optional[str] | Omit
             Description of the knowledge base.
@@ -650,9 +646,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         """
         if isinstance(data, list):
             data = ("kb_documents.json", json.dumps(data).encode("utf-8"))
-
-        if isinstance(data, str):
-            data = Path(data)
 
         body = deepcopy_minimal(
             {

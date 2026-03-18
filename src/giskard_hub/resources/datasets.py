@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
-from pathlib import Path
 
 import httpx
 
@@ -120,7 +119,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]] | str,
+        data: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -134,7 +133,7 @@ class DatasetsResource(SyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        data : FileTypes | list[dict[str, Any]] | str
+        data : FileTypes | list[dict[str, Any]]
             Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
@@ -159,9 +158,6 @@ class DatasetsResource(SyncAPIResource):
         """
         if isinstance(data, list):
             data = ("test_cases.json", json.dumps(data).encode("utf-8"))
-
-        if isinstance(data, str):
-            data = Path(data)
 
         body = deepcopy_minimal(
             {
@@ -914,7 +910,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]] | str,
+        data: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -928,7 +924,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        data : FileTypes | list[dict[str, Any]] | str
+        data : FileTypes | list[dict[str, Any]]
             Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
@@ -953,9 +949,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if isinstance(data, list):
             data = ("test_cases.json", json.dumps(data).encode("utf-8"))
-
-        if isinstance(data, str):
-            data = Path(data)
 
         body = deepcopy_minimal(
             {
