@@ -119,7 +119,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        file: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -133,8 +133,8 @@ class DatasetsResource(SyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        file : FileTypes | list[dict[str, Any]]
-            File to upload.
+        data : FileTypes | list[dict[str, Any]]
+            Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
         name : Optional[str]
@@ -156,12 +156,12 @@ class DatasetsResource(SyncAPIResource):
         Dataset
             The uploaded dataset.
         """
-        if isinstance(file, list):
-            file = ("test_cases.json", json.dumps(file).encode("utf-8"))
+        if isinstance(data, list):
+            data = ("test_cases.json", json.dumps(data).encode("utf-8"))
 
         body = deepcopy_minimal(
             {
-                "file": file,
+                "file": data,
             }
         )
 
@@ -910,7 +910,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        file: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]],
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -924,8 +924,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        file : FileTypes | list[dict[str, Any]]
-            File to upload.
+        data : FileTypes | list[dict[str, Any]]
+            Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
         name : Optional[str]
@@ -947,12 +947,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Dataset
             The uploaded dataset.
         """
-        if isinstance(file, list):
-            file = ("test_cases.json", json.dumps(file).encode("utf-8"))
+        if isinstance(data, list):
+            data = ("test_cases.json", json.dumps(data).encode("utf-8"))
 
         body = deepcopy_minimal(
             {
-                "file": file,
+                "file": data,
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])

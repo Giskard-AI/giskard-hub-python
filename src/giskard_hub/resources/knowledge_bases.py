@@ -61,7 +61,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         *,
         name: str,
         project_id: str,
-        file: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]],
         description: Optional[str] | Omit = omit,
         document_column: str | Omit = omit,
         topic_column: str | Omit = omit,
@@ -80,8 +80,8 @@ class KnowledgeBasesResource(SyncAPIResource):
             Name of the knowledge base.
         project_id : str
             Project ID to create the knowledge base in.
-        file : FileTypes | list[dict[str, Any]]
-            File to upload for the knowledge base.
+        data : FileTypes | list[dict[str, Any]]
+            Data to upload for the knowledge base.
         description : Optional[str] | Omit
             Description of the knowledge base.
         document_column : str | Omit
@@ -105,8 +105,8 @@ class KnowledgeBasesResource(SyncAPIResource):
         KnowledgeBase
             The created knowledge base.
         """
-        if isinstance(file, list):
-            file = ("kb_documents.json", json.dumps(file).encode("utf-8"))
+        if isinstance(data, list):
+            data = ("kb_documents.json", json.dumps(data).encode("utf-8"))
 
         body = deepcopy_minimal(
             {
@@ -115,7 +115,7 @@ class KnowledgeBasesResource(SyncAPIResource):
                 "description": description,
                 "document_column": document_column,
                 "topic_column": topic_column,
-                "file": file,
+                "file": data,
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
@@ -600,7 +600,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         *,
         name: str,
         project_id: str,
-        file: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]],
         description: Optional[str] | Omit = omit,
         document_column: str | Omit = omit,
         topic_column: str | Omit = omit,
@@ -619,8 +619,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             Name of the knowledge base.
         project_id : str
             Project ID to create the knowledge base in.
-        file : FileTypes | list[dict[str, Any]]
-            File to upload for the knowledge base.
+        data : FileTypes | list[dict[str, Any]]
+            Data to upload for the knowledge base.
         description : Optional[str] | Omit
             Description of the knowledge base.
         document_column : str | Omit
@@ -644,8 +644,8 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         KnowledgeBase
             The created knowledge base.
         """
-        if isinstance(file, list):
-            file = ("kb_documents.json", json.dumps(file).encode("utf-8"))
+        if isinstance(data, list):
+            data = ("kb_documents.json", json.dumps(data).encode("utf-8"))
 
         body = deepcopy_minimal(
             {
@@ -654,7 +654,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                 "description": description,
                 "document_column": document_column,
                 "topic_column": topic_column,
-                "file": file,
+                "file": data,
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
