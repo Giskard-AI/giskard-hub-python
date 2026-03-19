@@ -30,6 +30,7 @@ from ._helpers_types import (
     PrintMetricsEntity,
     RetrievableResource,
     AsyncRetrievableResource,
+    build_local_scan_body,
     map_entity_to_resource,
     normalize_agent_output,
 )
@@ -251,8 +252,8 @@ class HelpersResource(SyncAPIResource):
         *,
         agent: str | Agent,
         project_id: str,
-        knowledge_base_id: "str | Omit | None",
-        tags: "Optional[SequenceNotStr[str]] | Omit",
+        knowledge_base_id: str | Omit | None,
+        tags: Optional[SequenceNotStr[str]] | Omit,
         poll_interval: float,
     ) -> Scan:
         agent_id = agent if isinstance(agent, str) else agent.id
@@ -275,7 +276,7 @@ class HelpersResource(SyncAPIResource):
         agent: Callable[[list[ChatMessage]], AgentReturn],
         project_id: str,
         knowledge_base_id: str | None,
-        tags: "list[str] | SequenceNotStr[str] | None",
+        tags: SequenceNotStr[str] | None,
         agent_name: str,
         agent_description: str,
         supported_languages: list[str],
@@ -283,40 +284,24 @@ class HelpersResource(SyncAPIResource):
         from ._poll_scan import run_poll_scan
         from ..types.common import APIResponse as _APIResponse
 
-        # Create the scan record (enqueued to worker).
-        body: dict[str, Any] = {
-            "project_id": project_id,
-            "agent_name": agent_name,
-            "agent_description": agent_description,
-            "supported_languages": supported_languages,
-        }
-        if knowledge_base_id:
-            body["knowledge_base_id"] = knowledge_base_id
-        if tags:
-            body["tags"] = list(tags)
-
-        response = self._post(
-            "/v2/scans/create-local",
-            body=body,
-            cast_to=_APIResponse[Scan],
+        body = build_local_scan_body(
+            project_id,
+            agent_name,
+            agent_description,
+            supported_languages,
+            knowledge_base_id,
+            tags,
         )
-        scan = self._unwrap(response)
-        scan_id = scan.id
-
-        # Poll for invocations and execute the local agent.
-        base_url = str(self._client.base_url)
-        api_key = self._client.api_key
+        scan = self._unwrap(self._post("/v2/scans/create-local", body=body, cast_to=_APIResponse[Scan]))
 
         run_poll_scan(
-            base_url=base_url,
-            api_key=api_key,
-            scan_id=scan_id,
+            base_url=str(self._client.base_url),
+            api_key=self._client.api_key,
+            scan_id=scan.id,
             agent=agent,
             http_client=self._client._client,
         )
-
-        # Retrieve the final scan result.
-        return self._client.scans.retrieve(scan_id)
+        return self._client.scans.retrieve(scan.id)
 
     def _evaluate_remote(
         self,
@@ -574,8 +559,8 @@ class AsyncHelpersResource(AsyncAPIResource):
         *,
         agent: str | Agent,
         project_id: str,
-        knowledge_base_id: "str | Omit | None",
-        tags: "Optional[SequenceNotStr[str]] | Omit",
+        knowledge_base_id: str | Omit | None,
+        tags: Optional[SequenceNotStr[str]] | Omit,
         poll_interval: float,
     ) -> Scan:
         agent_id = agent if isinstance(agent, str) else agent.id
@@ -598,7 +583,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         agent: Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]],
         project_id: str,
         knowledge_base_id: str | None,
-        tags: "list[str] | SequenceNotStr[str] | None",
+        tags: SequenceNotStr[str] | None,
         agent_name: str,
         agent_description: str,
         supported_languages: list[str],
@@ -606,40 +591,24 @@ class AsyncHelpersResource(AsyncAPIResource):
         from ._poll_scan import arun_poll_scan
         from ..types.common import APIResponse as _APIResponse
 
-        # Create the scan record (enqueued to worker).
-        body: dict[str, Any] = {
-            "project_id": project_id,
-            "agent_name": agent_name,
-            "agent_description": agent_description,
-            "supported_languages": supported_languages,
-        }
-        if knowledge_base_id:
-            body["knowledge_base_id"] = knowledge_base_id
-        if tags:
-            body["tags"] = list(tags)
-
-        response = await self._post(
-            "/v2/scans/create-local",
-            body=body,
-            cast_to=_APIResponse[Scan],
+        body = build_local_scan_body(
+            project_id,
+            agent_name,
+            agent_description,
+            supported_languages,
+            knowledge_base_id,
+            tags,
         )
-        scan = self._unwrap(response)
-        scan_id = scan.id
-
-        # Poll for invocations and execute the local agent.
-        base_url = str(self._client.base_url)
-        api_key = self._client.api_key
+        scan = self._unwrap(await self._post("/v2/scans/create-local", body=body, cast_to=_APIResponse[Scan]))
 
         await arun_poll_scan(
-            base_url=base_url,
-            api_key=api_key,
-            scan_id=scan_id,
+            base_url=str(self._client.base_url),
+            api_key=self._client.api_key,
+            scan_id=scan.id,
             agent=agent,
             http_client=self._client._client,
         )
-
-        # Retrieve the final scan result.
-        return await self._client.scans.retrieve(scan_id)
+        return await self._client.scans.retrieve(scan.id)
 
     async def _evaluate_remote(
         self,

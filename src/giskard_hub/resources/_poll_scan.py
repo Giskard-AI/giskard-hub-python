@@ -21,6 +21,10 @@ def _normalize_output(value: Any) -> dict[str, object]:
     return normalize_agent_output(value).to_dict()
 
 
+def _parse_messages(raw_messages: list[dict[str, Any]]) -> list[ChatMessage]:
+    return [ChatMessage(role=m["role"], content=m.get("content", "")) for m in raw_messages]
+
+
 def run_poll_scan(
     base_url: str,
     api_key: str,
@@ -42,7 +46,7 @@ def run_poll_scan(
         data = resp.json()["data"]
 
         for inv in data["invocations"]:
-            messages = [ChatMessage(role=m["role"], content=m.get("content", "")) for m in inv["messages"]]
+            messages = _parse_messages(inv["messages"])
             try:
                 body: dict[str, Any] = {"output": _normalize_output(agent(messages))}
             except Exception as exc:
@@ -75,7 +79,7 @@ async def arun_poll_scan(
         data = resp.json()["data"]
 
         async def _process(inv: dict[str, Any]) -> None:
-            messages = [ChatMessage(role=m["role"], content=m.get("content", "")) for m in inv["messages"]]
+            messages = _parse_messages(inv["messages"])
             try:
                 result = agent(messages)
                 if inspect.isawaitable(result):
