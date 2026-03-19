@@ -57,6 +57,7 @@ class TestCase(BaseModel):
     messages: List[ChatMessage]
     tags: List[str]
     updated_at: datetime
+    status: Literal["active", "draft"]
 
 
 # ---------------------------------------------------------------------------
