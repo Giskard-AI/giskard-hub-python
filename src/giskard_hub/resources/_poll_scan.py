@@ -1,8 +1,4 @@
-"""Polling client for local-agent scan execution.
-
-The SDK polls for pending invocation requests, executes the
-local agent callable, and POSTs the response back.
-"""
+"""Polling client for local-agent scan execution."""
 
 import time
 import asyncio

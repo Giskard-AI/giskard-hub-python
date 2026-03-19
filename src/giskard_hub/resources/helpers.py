@@ -283,7 +283,7 @@ class HelpersResource(SyncAPIResource):
         from ._poll_scan import run_poll_scan
         from ..types.common import APIResponse as _APIResponse
 
-        # 1. Create the scan record (enqueued to worker automatically).
+        # Create the scan record (enqueued to worker).
         body: dict[str, Any] = {
             "project_id": project_id,
             "agent_name": agent_name,
@@ -303,7 +303,7 @@ class HelpersResource(SyncAPIResource):
         scan = self._unwrap(response)
         scan_id = scan.id
 
-        # 2. Poll for invocations and execute the local agent.
+        # Poll for invocations and execute the local agent.
         base_url = str(self._client.base_url)
         api_key = self._client.api_key
 
@@ -315,7 +315,7 @@ class HelpersResource(SyncAPIResource):
             http_client=self._client._client,
         )
 
-        # 3. Retrieve the final scan result.
+        # Retrieve the final scan result.
         return self._client.scans.retrieve(scan_id)
 
     def _evaluate_remote(
@@ -606,7 +606,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         from ._poll_scan import arun_poll_scan
         from ..types.common import APIResponse as _APIResponse
 
-        # 1. Create the scan record (enqueued to worker automatically).
+        # Create the scan record (enqueued to worker).
         body: dict[str, Any] = {
             "project_id": project_id,
             "agent_name": agent_name,
@@ -626,7 +626,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         scan = self._unwrap(response)
         scan_id = scan.id
 
-        # 2. Poll for invocations and execute the local agent.
+        # Poll for invocations and execute the local agent.
         base_url = str(self._client.base_url)
         api_key = self._client.api_key
 
@@ -638,7 +638,7 @@ class AsyncHelpersResource(AsyncAPIResource):
             http_client=self._client._client,
         )
 
-        # 3. Retrieve the final scan result.
+        # Retrieve the final scan result.
         return await self._client.scans.retrieve(scan_id)
 
     async def _evaluate_remote(
