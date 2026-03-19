@@ -50,7 +50,7 @@ def run_poll_scan(
             try:
                 body: dict[str, Any] = {"output": _normalize_output(agent(messages))}
             except Exception as exc:
-                logger.error("Agent invocation failed: %s", exc)
+                logger.exception("Agent invocation failed")
                 body = {"error": {"message": str(exc)}}
 
             http_client.post(f"{url}/{inv['id']}/respond", json=body, headers=headers).raise_for_status()
@@ -86,7 +86,7 @@ async def arun_poll_scan(
                     result = await result
                 body: dict[str, Any] = {"output": _normalize_output(result)}
             except Exception as exc:
-                logger.error("Agent invocation failed: %s", exc)
+                logger.exception("Agent invocation failed")
                 body = {"error": {"message": str(exc)}}
 
             (await http_client.post(f"{url}/{inv['id']}/respond", json=body, headers=headers)).raise_for_status()

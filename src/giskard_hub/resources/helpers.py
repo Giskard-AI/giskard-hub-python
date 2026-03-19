@@ -36,6 +36,7 @@ from ._helpers_types import (
 )
 from ..types.test_case import TestCase
 from ..types.evaluation import Evaluation, TestCaseEvaluation
+from ..types.knowledge_base import KnowledgeBase
 
 __all__ = ["HelpersResource", "AsyncHelpersResource"]
 
@@ -163,7 +164,7 @@ class HelpersResource(SyncAPIResource):
         *,
         agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn],
         project: str | Project,
-        knowledge_base: Optional[str] | Omit = omit,
+        knowledge_base: Optional[str | KnowledgeBase] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         agent_name: Optional[str] = None,
         agent_description: Optional[str] = None,
@@ -211,7 +212,9 @@ class HelpersResource(SyncAPIResource):
         kb_id = (
             knowledge_base
             if isinstance(knowledge_base, str)
-            else (knowledge_base if knowledge_base is omit else knowledge_base)
+            else knowledge_base.id
+            if isinstance(knowledge_base, KnowledgeBase)
+            else None
         )
 
         if isinstance(agent, (str, Agent)):
@@ -502,7 +505,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         *,
         agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]],
         project: str | Project,
-        knowledge_base: Optional[str] | Omit = omit,
+        knowledge_base: Optional[str | KnowledgeBase] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         agent_name: Optional[str] = None,
         agent_description: Optional[str] = None,
@@ -518,7 +521,9 @@ class AsyncHelpersResource(AsyncAPIResource):
         kb_id = (
             knowledge_base
             if isinstance(knowledge_base, str)
-            else (knowledge_base if knowledge_base is omit else knowledge_base)
+            else knowledge_base.id
+            if isinstance(knowledge_base, KnowledgeBase)
+            else None
         )
 
         if isinstance(agent, (str, Agent)):
@@ -559,7 +564,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         *,
         agent: str | Agent,
         project_id: str,
-        knowledge_base_id: str | Omit | None,
+        knowledge_base_id: str | None,
         tags: Optional[SequenceNotStr[str]] | Omit,
         poll_interval: float,
     ) -> Scan:
@@ -569,7 +574,7 @@ class AsyncHelpersResource(AsyncAPIResource):
             "project_id": project_id,
             "agent_id": agent_id,
         }
-        if knowledge_base_id is not omit and knowledge_base_id is not None:
+        if knowledge_base_id is not None:
             create_kwargs["knowledge_base_id"] = knowledge_base_id
         if tags is not omit:
             create_kwargs["tags"] = tags

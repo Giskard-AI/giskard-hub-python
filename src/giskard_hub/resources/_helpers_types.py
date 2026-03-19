@@ -75,7 +75,7 @@ def build_local_scan_body(
     project_id: str,
     agent_name: str,
     agent_description: str,
-    supported_languages: list[str],
+    supported_languages: SequenceNotStr[str],
     knowledge_base_id: str | None,
     tags: SequenceNotStr[str] | None,
 ) -> dict[str, Any]:
