@@ -174,11 +174,10 @@ class HelpersResource(SyncAPIResource):
         Handles both remote agents (referenced by ID or ``Agent``, which must
         already be registered in the Hub) and local Python callables.
 
-        When a local callable is provided, the scan is executed via WebSocket:
-        the Hub orchestrates LIDAR server-side and sends agent invocation
-        requests to this process through the WebSocket connection.  The TLS
-        configuration (certificate verification) is automatically inherited
-        from the ``httpx.Client`` passed to ``HubClient``.
+        When a local callable is provided, the Hub orchestrates LIDAR
+        server-side and the SDK polls for agent invocation requests via
+        stateless HTTP endpoints.  The scan runs in the Hub's worker
+        process, same as remote scans.
 
         Parameters
         ----------
@@ -281,10 +280,10 @@ class HelpersResource(SyncAPIResource):
         agent_description: str,
         supported_languages: list[str],
     ) -> Scan:
-        from ._ws_scan import run_ws_scan, _ssl_context_from_httpx
+        from ._poll_scan import run_poll_scan
         from ..types.common import APIResponse as _APIResponse
 
-        # 1. Create the scan record on the Hub (no worker enqueue).
+        # 1. Create the scan record (enqueued to worker automatically).
         body: dict[str, Any] = {
             "project_id": project_id,
             "agent_name": agent_name,
@@ -304,18 +303,16 @@ class HelpersResource(SyncAPIResource):
         scan = self._unwrap(response)
         scan_id = scan.id
 
-        # 2. Connect via WebSocket and drive the scan.
-        #    Inherit TLS config (verify/no-verify) from the httpx client.
+        # 2. Poll for invocations and execute the local agent.
         base_url = str(self._client.base_url)
         api_key = self._client.api_key
-        ssl_ctx = _ssl_context_from_httpx(self._client._client)
 
-        run_ws_scan(
+        run_poll_scan(
             base_url=base_url,
             api_key=api_key,
             scan_id=scan_id,
             agent=agent,
-            ssl_context=ssl_ctx,
+            http_client=self._client._client,
         )
 
         # 3. Retrieve the final scan result.
@@ -606,10 +603,10 @@ class AsyncHelpersResource(AsyncAPIResource):
         agent_description: str,
         supported_languages: list[str],
     ) -> Scan:
-        from ._ws_scan import _arun_ws_scan, _ssl_context_from_httpx
+        from ._poll_scan import arun_poll_scan
         from ..types.common import APIResponse as _APIResponse
 
-        # 1. Create the scan record on the Hub (no worker enqueue).
+        # 1. Create the scan record (enqueued to worker automatically).
         body: dict[str, Any] = {
             "project_id": project_id,
             "agent_name": agent_name,
@@ -629,18 +626,16 @@ class AsyncHelpersResource(AsyncAPIResource):
         scan = self._unwrap(response)
         scan_id = scan.id
 
-        # 2. Connect via WebSocket and drive the scan.
-        #    Inherit TLS config (verify/no-verify) from the httpx client.
+        # 2. Poll for invocations and execute the local agent.
         base_url = str(self._client.base_url)
         api_key = self._client.api_key
-        ssl_ctx = _ssl_context_from_httpx(self._client._client)
 
-        await _arun_ws_scan(
+        await arun_poll_scan(
             base_url=base_url,
             api_key=api_key,
             scan_id=scan_id,
             agent=agent,
-            ssl_context=ssl_ctx,
+            http_client=self._client._client,
         )
 
         # 3. Retrieve the final scan result.
