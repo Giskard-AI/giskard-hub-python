@@ -56,13 +56,6 @@ jobs:
           set -euo pipefail
           uv version "${VERSION}"
 
-      - name: Sync version to _version.py
-        run: |
-          cat > src/giskard_hub/_version.py << EOF
-          __title__ = "giskard_hub"
-          __version__ = "${VERSION}"
-          EOF
-
       - name: Build release candidate wheel
         run: uv build
 
@@ -73,7 +66,7 @@ jobs:
 
       - name: Commit and tag
         run: |
-          git add pyproject.toml uv.lock src/giskard_hub/_version.py
+          git add pyproject.toml uv.lock
           git fetch --quiet --tags
           git commit -m "v${VERSION}" --allow-empty
           git tag "v${VERSION}"
