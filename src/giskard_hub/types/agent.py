@@ -18,6 +18,8 @@ __all__ = [
     "AgentOutputParam",
     "MinimalAgent",
     "MinimalAgentParam",
+    "DetectStateful",
+    "DivergenceWarning",
     "AgentListParams",
     "AgentCreateParams",
     "AgentUpdateParams",
@@ -25,6 +27,7 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
+    "AgentDetectStatefulParams",
 ]
 
 
@@ -40,6 +43,7 @@ class Agent(BaseModel):
     headers: Dict[str, str] = Field(default_factory=dict)
     name: str
     project_id: str
+    stateful: Optional[bool] = None
     supported_languages: list[str]
     updated_at: datetime
     url: str
@@ -105,6 +109,16 @@ class MinimalAgentParam(TypedDict, total=False):
     description: Optional[str]
 
 
+class DivergenceWarning(BaseModel):
+    message: str
+    severity: str
+
+
+class DetectStateful(BaseModel):
+    stateful: bool
+    warnings: Optional[list[DivergenceWarning]] = None
+
+
 # ---------------------------------------------------------------------------
 # Params
 # ---------------------------------------------------------------------------
@@ -121,6 +135,7 @@ class AgentCreateParams(TypedDict, total=False):
     supported_languages: Required[SequenceNotStr[str]]
     url: Required[str]
     description: Optional[str]
+    stateful: Optional[bool]
 
 
 class AgentUpdateParams(TypedDict, total=False):
@@ -145,4 +160,8 @@ class AgentGenerateCompletionParams(TypedDict, total=False):
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):
+    pass
+
+
+class AgentDetectStatefulParams(TypedDict, total=False):
     pass

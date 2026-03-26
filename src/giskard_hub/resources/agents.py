@@ -18,6 +18,7 @@ from .._response import (
 from ..types.chat import HeaderParam, ChatMessageParam
 from ..types.agent import (
     Agent,
+    DetectStateful,
     AgentListParams,
     AgentCreateParams,
     AgentUpdateParams,
@@ -25,6 +26,7 @@ from ..types.agent import (
     AgentTestConnectionParams,
     AgentGenerateCompletionParams,
     AgentAutofillDescriptionParams,
+    AgentDetectStatefulParams,
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
@@ -61,6 +63,7 @@ class AgentsResource(SyncAPIResource):
         url: str,
         headers: Dict[str, str] | Omit = omit,
         description: Optional[str] | Omit = omit,
+        stateful: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -119,6 +122,7 @@ class AgentsResource(SyncAPIResource):
                     "supported_languages": supported_languages,
                     "url": url,
                     "description": description,
+                    "stateful": stateful,
                 },
                 AgentCreateParams,
             ),
@@ -568,6 +572,58 @@ class AgentsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    def detect_stateful(
+        self,
+        agent_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> DetectStateful:
+        """Detect whether the agent is stateful by analyzing its behavior.
+
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to detect statefulness for.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        DetectStateful
+            The statefulness detection result with any divergence warnings.
+
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
+        """
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        response = self._post(
+            f"/v2/agents/{agent_id}/detect-stateful",
+            body=maybe_transform({}, AgentDetectStatefulParams),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[DetectStateful],
+        )
+
+        return self._unwrap(response)
+
 
 class AsyncAgentsResource(AsyncAPIResource):
     @cached_property
@@ -598,6 +654,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         url: str,
         headers: Dict[str, str] | Omit = omit,
         description: Optional[str] | Omit = omit,
+        stateful: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -656,6 +713,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                     "supported_languages": supported_languages,
                     "url": url,
                     "description": description,
+                    "stateful": stateful,
                 },
                 AgentCreateParams,
             ),
@@ -1105,6 +1163,58 @@ class AsyncAgentsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def detect_stateful(
+        self,
+        agent_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> DetectStateful:
+        """Detect whether the agent is stateful by analyzing its behavior.
+
+        Parameters
+        ----------
+        agent_id : str
+            ID of the agent to detect statefulness for.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        DetectStateful
+            The statefulness detection result with any divergence warnings.
+
+        Raises
+        ------
+        ValueError
+            If ``agent_id`` is empty.
+        """
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        response = await self._post(
+            f"/v2/agents/{agent_id}/detect-stateful",
+            body=await async_maybe_transform({}, AgentDetectStatefulParams),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[DetectStateful],
+        )
+
+        return self._unwrap(response)
+
 
 class AgentsResourceWithRawResponse:
     def __init__(self, agents: AgentsResource) -> None:
@@ -1136,6 +1246,9 @@ class AgentsResourceWithRawResponse:
         )
         self.generate_description = to_raw_response_wrapper(
             agents.generate_description,
+        )
+        self.detect_stateful = to_raw_response_wrapper(
+            agents.detect_stateful,
         )
 
 
@@ -1170,6 +1283,9 @@ class AsyncAgentsResourceWithRawResponse:
         self.generate_description = async_to_raw_response_wrapper(
             agents.generate_description,
         )
+        self.detect_stateful = async_to_raw_response_wrapper(
+            agents.detect_stateful,
+        )
 
 
 class AgentsResourceWithStreamingResponse:
@@ -1203,6 +1319,9 @@ class AgentsResourceWithStreamingResponse:
         self.generate_description = to_streamed_response_wrapper(
             agents.generate_description,
         )
+        self.detect_stateful = to_streamed_response_wrapper(
+            agents.detect_stateful,
+        )
 
 
 class AsyncAgentsResourceWithStreamingResponse:
@@ -1235,4 +1354,7 @@ class AsyncAgentsResourceWithStreamingResponse:
         )
         self.generate_description = async_to_streamed_response_wrapper(
             agents.generate_description,
+        )
+        self.detect_stateful = async_to_streamed_response_wrapper(
+            agents.detect_stateful,
         )

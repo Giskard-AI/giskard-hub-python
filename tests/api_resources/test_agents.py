@@ -39,6 +39,7 @@ class TestAgents:
             supported_languages=["string"],
             url="url",
             description="description",
+            stateful=True,
         )
         assert_matches_type(Agent, agent, path=["response"])
 
@@ -482,6 +483,7 @@ class TestAsyncAgents:
             supported_languages=["string"],
             url="url",
             description="description",
+            stateful=True,
         )
         assert_matches_type(Agent, agent, path=["response"])
 

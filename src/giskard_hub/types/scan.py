@@ -126,6 +126,7 @@ class ScanCreateParams(TypedDict, total=False):
     agent_id: Required[str]
     project_id: Required[str]
     knowledge_base_id: Optional[str]
+    probe_ids: Optional[SequenceNotStr[str]]
     tags: Optional[SequenceNotStr[str]]
 
 

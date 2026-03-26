@@ -69,6 +69,7 @@ from .agent import (
     AgentAutofillDescriptionParams as AgentAutofillDescriptionParams,
     AgentBulkDeleteParams as AgentBulkDeleteParams,
     AgentCreateParams as AgentCreateParams,
+    AgentDetectStatefulParams as AgentDetectStatefulParams,
     AgentGenerateCompletionParams as AgentGenerateCompletionParams,
     AgentListParams as AgentListParams,
     AgentOutput as AgentOutput,
@@ -76,6 +77,8 @@ from .agent import (
     AgentReference as AgentReference,
     AgentTestConnectionParams as AgentTestConnectionParams,
     AgentUpdateParams as AgentUpdateParams,
+    DetectStateful as DetectStateful,
+    DivergenceWarning as DivergenceWarning,
     MinimalAgent as MinimalAgent,
     MinimalAgentParam as MinimalAgentParam,
 )
@@ -261,6 +264,14 @@ from .project import (
     ProjectUpdateParams as ProjectUpdateParams,
 )
 
+# -- table_view ------------------------------------------------------------
+from .table_view import (
+    TableView as TableView,
+    TableViewCreateParams as TableViewCreateParams,
+    TableViewListParams as TableViewListParams,
+    TableViewUpdateParams as TableViewUpdateParams,
+)
+
 
 __all__ = [
     # common
@@ -300,6 +311,8 @@ __all__ = [
     "AgentOutputParam",
     "MinimalAgent",
     "MinimalAgentParam",
+    "DetectStateful",
+    "DivergenceWarning",
     "AgentListParams",
     "AgentCreateParams",
     "AgentUpdateParams",
@@ -307,6 +320,7 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
+    "AgentDetectStatefulParams",
     # check
     "Check",
     "CheckResult",
@@ -452,4 +466,9 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
+    # table view
+    "TableView",
+    "TableViewListParams",
+    "TableViewCreateParams",
+    "TableViewUpdateParams",
 ]
