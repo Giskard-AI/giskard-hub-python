@@ -61,24 +61,6 @@ jobs:
       - name: Run build
         run: uv build
 
-  test-org-check:
-    timeout-minutes: 2
-    name: test-org-check (TEMPORARY)
-    runs-on: "ubuntu-latest"
-    permissions:
-      contents: read
-    steps:
-      - name: Test org membership API with GITHUB_TOKEN
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -x
-          echo "Testing with github.actor=${{ github.actor }}"
-          gh api "orgs/Giskard-AI/members/${{ github.actor }}" --silent && echo "SUCCESS: 204" || echo "FAILED: exit $?"
-          echo "---"
-          echo "HTTP status:"
-          gh api "orgs/Giskard-AI/members/${{ github.actor }}" --include 2>&1 | head -1 || true
-
   test:
     timeout-minutes: 10
     name: test

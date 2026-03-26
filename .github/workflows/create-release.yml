@@ -40,12 +40,11 @@ jobs:
           fi
       - name: Check if organization member
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTOR: ${{ github.actor }}
         run: |
-          set -euo pipefail
           if ! gh api "orgs/Giskard-AI/members/${ACTOR}" --silent 2>/dev/null; then
-            echo "::error::${ACTOR} is not a member of the Giskard-AI organization"
+            echo "::error::${ACTOR} is not a member of Giskard-AI"
             exit 1
           fi
 
@@ -104,11 +103,17 @@ jobs:
           MAKE_LATEST: ${{ inputs.latest }}
         run: |
           set -euo pipefail
+          latest_flag=""
+          if [ "${MAKE_LATEST}" = "true" ]; then
+            latest_flag="--latest"
+          else
+            latest_flag="--latest=false"
+          fi
           gh release create "v${VERSION}" \
             dist/giskard_hub-*.tar.gz \
             dist/giskard_hub-*.whl \
             --generate-notes \
-            --latest="${MAKE_LATEST}"
+            ${latest_flag}
 
       - name: Publish to PyPI
         run: uv publish --trusted-publishing always
