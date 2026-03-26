@@ -1,5 +1,4 @@
 import typing as _t
-import importlib.metadata as _metadata
 
 from . import types
 from ._types import (
@@ -24,12 +23,7 @@ from ._client import (
     RequestOptions,
 )
 from ._models import BaseModel
-
-__title__ = "giskard_hub"
-try:
-    __version__ = _metadata.version("giskard-hub")
-except _metadata.PackageNotFoundError:
-    __version__ = "unknown"
+from ._version import __title__, __version__
 from ._response import APIResponse as APIResponse, AsyncAPIResponse as AsyncAPIResponse
 from ._constants import DEFAULT_TIMEOUT, DEFAULT_MAX_RETRIES, DEFAULT_CONNECTION_LIMITS
 from ._exceptions import (

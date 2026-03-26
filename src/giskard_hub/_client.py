@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import importlib.metadata
 from typing import Any, Mapping
 from typing_extensions import Self, override
 
@@ -19,11 +18,7 @@ from ._types import (
     not_given,
 )
 from ._utils import is_given, get_async_library
-
-try:
-    __version__ = importlib.metadata.version("giskard-hub")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "unknown"
+from ._version import __version__
 from .resources import (
     audit,
     tasks,
