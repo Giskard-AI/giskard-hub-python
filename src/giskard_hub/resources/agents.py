@@ -18,15 +18,15 @@ from .._response import (
 from ..types.chat import HeaderParam, ChatMessageParam
 from ..types.agent import (
     Agent,
-    DetectStateful,
     AgentListParams,
     AgentCreateParams,
     AgentUpdateParams,
     AgentBulkDeleteParams,
+    AgentDetectStatefulness,
     AgentTestConnectionParams,
+    AgentDetectStatefulnessParams,
     AgentGenerateCompletionParams,
     AgentAutofillDescriptionParams,
-    AgentDetectStatefulParams,
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
@@ -572,7 +572,7 @@ class AgentsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
-    def detect_stateful(
+    def detect_statefulness(
         self,
         agent_id: str,
         *,
@@ -582,7 +582,7 @@ class AgentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DetectStateful:
+    ) -> AgentDetectStatefulness:
         """Detect whether the agent is stateful by analyzing its behavior.
 
         Parameters
@@ -603,7 +603,7 @@ class AgentsResource(SyncAPIResource):
 
         Returns
         -------
-        DetectStateful
+        AgentDetectStatefulness
             The statefulness detection result with any divergence warnings.
 
         Raises
@@ -615,11 +615,11 @@ class AgentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         response = self._post(
             f"/v2/agents/{agent_id}/detect-stateful",
-            body=maybe_transform({}, AgentDetectStatefulParams),
+            body=maybe_transform({}, AgentDetectStatefulnessParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[DetectStateful],
+            cast_to=APIResponse[AgentDetectStatefulness],
         )
 
         return self._unwrap(response)
@@ -1163,7 +1163,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def detect_stateful(
+    async def detect_statefulness(
         self,
         agent_id: str,
         *,
@@ -1173,7 +1173,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DetectStateful:
+    ) -> AgentDetectStatefulness:
         """Detect whether the agent is stateful by analyzing its behavior.
 
         Parameters
@@ -1194,7 +1194,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
         Returns
         -------
-        DetectStateful
+        AgentDetectStatefulness
             The statefulness detection result with any divergence warnings.
 
         Raises
@@ -1206,11 +1206,11 @@ class AsyncAgentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         response = await self._post(
             f"/v2/agents/{agent_id}/detect-stateful",
-            body=await async_maybe_transform({}, AgentDetectStatefulParams),
+            body=await async_maybe_transform({}, AgentDetectStatefulnessParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[DetectStateful],
+            cast_to=APIResponse[AgentDetectStatefulness],
         )
 
         return self._unwrap(response)
@@ -1247,8 +1247,8 @@ class AgentsResourceWithRawResponse:
         self.generate_description = to_raw_response_wrapper(
             agents.generate_description,
         )
-        self.detect_stateful = to_raw_response_wrapper(
-            agents.detect_stateful,
+        self.detect_statefulness = to_raw_response_wrapper(
+            agents.detect_statefulness,
         )
 
 
@@ -1283,8 +1283,8 @@ class AsyncAgentsResourceWithRawResponse:
         self.generate_description = async_to_raw_response_wrapper(
             agents.generate_description,
         )
-        self.detect_stateful = async_to_raw_response_wrapper(
-            agents.detect_stateful,
+        self.detect_statefulness = async_to_raw_response_wrapper(
+            agents.detect_statefulness,
         )
 
 
@@ -1319,8 +1319,8 @@ class AgentsResourceWithStreamingResponse:
         self.generate_description = to_streamed_response_wrapper(
             agents.generate_description,
         )
-        self.detect_stateful = to_streamed_response_wrapper(
-            agents.detect_stateful,
+        self.detect_statefulness = to_streamed_response_wrapper(
+            agents.detect_statefulness,
         )
 
 
@@ -1355,6 +1355,6 @@ class AsyncAgentsResourceWithStreamingResponse:
         self.generate_description = async_to_streamed_response_wrapper(
             agents.generate_description,
         )
-        self.detect_stateful = async_to_streamed_response_wrapper(
-            agents.detect_stateful,
+        self.detect_statefulness = async_to_streamed_response_wrapper(
+            agents.detect_statefulness,
         )

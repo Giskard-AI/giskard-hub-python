@@ -111,6 +111,12 @@ class FailureCategoryResult(BaseModel):
     status: Optional[TaskState] = None
 
 
+class DivergenceWarning(BaseModel):
+    turn: int
+    expected: str
+    actual: str
+
+
 class TestCaseEvaluationReference(BaseModel):
     id: str
 
@@ -129,6 +135,7 @@ class TestCaseEvaluation(BaseModel):
     test_case: TestCaseReference | TestCase
     hidden: bool
     test_case_exists: Optional[bool] = None
+    divergence_warnings: Optional[List[DivergenceWarning]] = None
 
 
 # ---------------------------------------------------------------------------
