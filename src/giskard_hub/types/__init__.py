@@ -264,14 +264,6 @@ from .project import (
     ProjectUpdateParams as ProjectUpdateParams,
 )
 
-# -- table_view ------------------------------------------------------------
-from .table_view import (
-    TableView as TableView,
-    TableViewCreateParams as TableViewCreateParams,
-    TableViewListParams as TableViewListParams,
-    TableViewUpdateParams as TableViewUpdateParams,
-)
-
 
 __all__ = [
     # common
@@ -466,9 +458,4 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
-    # table view
-    "TableView",
-    "TableViewListParams",
-    "TableViewCreateParams",
-    "TableViewUpdateParams",
 ]

@@ -14,14 +14,6 @@ from .scenarios import (
     ScenariosResourceWithStreamingResponse,
     AsyncScenariosResourceWithStreamingResponse,
 )
-from .table_views import (
-    TableViewsResource,
-    AsyncTableViewsResource,
-    TableViewsResourceWithRawResponse,
-    AsyncTableViewsResourceWithRawResponse,
-    TableViewsResourceWithStreamingResponse,
-    AsyncTableViewsResourceWithStreamingResponse,
-)
 
 __all__ = [
     "ProjectsResource",
@@ -36,10 +28,4 @@ __all__ = [
     "AsyncScenariosResourceWithRawResponse",
     "ScenariosResourceWithStreamingResponse",
     "AsyncScenariosResourceWithStreamingResponse",
-    "TableViewsResource",
-    "AsyncTableViewsResource",
-    "TableViewsResourceWithRawResponse",
-    "AsyncTableViewsResourceWithRawResponse",
-    "TableViewsResourceWithStreamingResponse",
-    "AsyncTableViewsResourceWithStreamingResponse",
 ]

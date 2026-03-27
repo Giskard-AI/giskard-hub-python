@@ -15,14 +15,6 @@ from .scenarios import (
     ScenariosResourceWithStreamingResponse,
     AsyncScenariosResourceWithStreamingResponse,
 )
-from .table_views import (
-    TableViewsResource,
-    AsyncTableViewsResource,
-    TableViewsResourceWithRawResponse,
-    AsyncTableViewsResourceWithRawResponse,
-    TableViewsResourceWithStreamingResponse,
-    AsyncTableViewsResourceWithStreamingResponse,
-)
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -42,10 +34,6 @@ class ProjectsResource(SyncAPIResource):
     @cached_property
     def scenarios(self) -> ScenariosResource:
         return ScenariosResource(self._client)
-
-    @cached_property
-    def table_views(self) -> TableViewsResource:
-        return TableViewsResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> ProjectsResourceWithRawResponse:
@@ -381,10 +369,6 @@ class AsyncProjectsResource(AsyncAPIResource):
         return AsyncScenariosResource(self._client)
 
     @cached_property
-    def table_views(self) -> AsyncTableViewsResource:
-        return AsyncTableViewsResource(self._client)
-
-    @cached_property
     def with_raw_response(self) -> AsyncProjectsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
@@ -717,7 +701,6 @@ class ProjectsResourceWithRawResponse:
         self._projects = projects
 
         self.scenarios = ScenariosResourceWithRawResponse(projects.scenarios)
-        self.table_views = TableViewsResourceWithRawResponse(projects.table_views)
         self.create = to_raw_response_wrapper(
             projects.create,
         )
@@ -743,7 +726,6 @@ class AsyncProjectsResourceWithRawResponse:
         self._projects = projects
 
         self.scenarios = AsyncScenariosResourceWithRawResponse(projects.scenarios)
-        self.table_views = AsyncTableViewsResourceWithRawResponse(projects.table_views)
         self.create = async_to_raw_response_wrapper(
             projects.create,
         )
@@ -769,7 +751,6 @@ class ProjectsResourceWithStreamingResponse:
         self._projects = projects
 
         self.scenarios = ScenariosResourceWithStreamingResponse(projects.scenarios)
-        self.table_views = TableViewsResourceWithStreamingResponse(projects.table_views)
         self.create = to_streamed_response_wrapper(
             projects.create,
         )
@@ -795,7 +776,6 @@ class AsyncProjectsResourceWithStreamingResponse:
         self._projects = projects
 
         self.scenarios = AsyncScenariosResourceWithStreamingResponse(projects.scenarios)
-        self.table_views = AsyncTableViewsResourceWithStreamingResponse(projects.table_views)
         self.create = async_to_streamed_response_wrapper(
             projects.create,
         )
