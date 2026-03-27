@@ -604,7 +604,7 @@ class AgentsResource(SyncAPIResource):
         Returns
         -------
         AgentDetectStatefulness
-            The statefulness detection result with any divergence warnings.
+            The statefulness detection result.
 
         Raises
         ------
@@ -1195,7 +1195,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         Returns
         -------
         AgentDetectStatefulness
-            The statefulness detection result with any divergence warnings.
+            The statefulness detection result.
 
         Raises
         ------
