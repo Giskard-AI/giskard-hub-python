@@ -103,6 +103,8 @@ class ScansResource(SyncAPIResource):
             Agent ID to use for the scan.
         knowledge_base_id : str or None
             Knowledge Base ID to use for the scan.
+        probe_ids : list of str or None
+            List of specific probe IDs to run in the scan.
         tags : list of str or None
             List of category tags to apply to the scan; use ``list_categories``
             to get the available categories.
