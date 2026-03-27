@@ -84,6 +84,7 @@ class ScansResource(SyncAPIResource):
         project_id: str,
         agent_id: str,
         knowledge_base_id: Optional[str] | Omit = omit,
+        probe_ids: Optional[SequenceNotStr[str]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -102,6 +103,8 @@ class ScansResource(SyncAPIResource):
             Agent ID to use for the scan.
         knowledge_base_id : str or None
             Knowledge Base ID to use for the scan.
+        probe_ids : list of str or None
+            List of specific probe IDs to run in the scan.
         tags : list of str or None
             List of category tags to apply to the scan; use ``list_categories``
             to get the available categories.
@@ -129,6 +132,7 @@ class ScansResource(SyncAPIResource):
                     "agent_id": agent_id,
                     "project_id": project_id,
                     "knowledge_base_id": knowledge_base_id,
+                    "probe_ids": probe_ids,
                     "tags": tags,
                 },
                 ScanCreateParams,
@@ -483,6 +487,7 @@ class AsyncScansResource(AsyncAPIResource):
         project_id: str,
         agent_id: str,
         knowledge_base_id: Optional[str] | Omit = omit,
+        probe_ids: Optional[SequenceNotStr[str]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -501,6 +506,8 @@ class AsyncScansResource(AsyncAPIResource):
             Agent ID to use for the scan.
         knowledge_base_id : str or None
             Knowledge Base ID to use for the scan.
+        probe_ids : list of str or None
+            List of specific probe IDs to run in the scan.
         tags : list of str or None
             List of category tags to apply to the scan; use ``list_categories``
             to get the available categories.
@@ -528,6 +535,7 @@ class AsyncScansResource(AsyncAPIResource):
                     "agent_id": agent_id,
                     "project_id": project_id,
                     "knowledge_base_id": knowledge_base_id,
+                    "probe_ids": probe_ids,
                     "tags": tags,
                 },
                 ScanCreateParams,

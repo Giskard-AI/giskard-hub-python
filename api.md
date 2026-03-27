@@ -5,6 +5,7 @@ Types:
 ```python
 from giskard_hub.types import (
     Agent,
+    AgentDetectStatefulness,
     AgentOutput,
     ChatMessage,
     Header,
@@ -22,6 +23,7 @@ Methods:
 - <code title="post /v2/agents/{agent_id}/generate-completion">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_completion</a>(agent_id, \*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">AgentOutput</a></code>
 - <code title="post /v2/agents/test-connection">client.agents.<a href="./src/giskard_hub/resources/agents.py">test_connection</a>(\*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">AgentOutput</a></code>
 - <code title="post /v2/agents/{agent_id}/autofill-description">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_description</a>(agent_id) -> str</code>
+- <code title="post /v2/agents/{agent_id}/detect-stateful">client.agents.<a href="./src/giskard_hub/resources/agents.py">detect_statefulness</a>(agent_id) -> <a href="./src/giskard_hub/types/agent.py">AgentDetectStatefulness</a></code>
 
 # Audit
 
@@ -105,6 +107,7 @@ from giskard_hub.types import (
     CheckResult,
     Dataset,
     DatasetSubset,
+    DivergenceWarning,
     Evaluation,
     Metric,
     MinimalAgent,
