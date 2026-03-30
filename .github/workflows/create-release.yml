@@ -82,7 +82,6 @@ jobs:
       - name: Commit and tag
         run: |
           git add pyproject.toml uv.lock
-          git fetch --quiet --tags
           git commit -m "v${VERSION}" --allow-empty
           git tag "v${VERSION}"
 
