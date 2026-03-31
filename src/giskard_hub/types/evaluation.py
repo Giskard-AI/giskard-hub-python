@@ -38,7 +38,6 @@ __all__ = [
     "ResultUpdateParams",
     "ResultUpdateVisibilityParams",
     "ResultSubmitLocalOutputParams",
-    "NavigationInfo",
 ]
 
 
@@ -234,13 +233,3 @@ class ResultUpdateVisibilityParams(TypedDict, total=False):
 class ResultSubmitLocalOutputParams(TypedDict, total=False):
     error: Optional[str]
     output: Optional[AgentOutputParam]
-
-
-# ---------------------------------------------------------------------------
-# Navigation (e.g. dataset test-case prev/next IDs; same response shape as API)
-# ---------------------------------------------------------------------------
-
-
-class NavigationInfo(BaseModel):
-    previous_test_case_id: Optional[str] = None
-    next_test_case_id: Optional[str] = None
