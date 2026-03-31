@@ -203,6 +203,7 @@ from .scan import (
     ReviewStatus as ReviewStatus,
     ScanBulkDeleteParams as ScanBulkDeleteParams,
     ScanCategory as ScanCategory,
+    ScanAvailableProbeAPIResource as ScanAvailableProbeAPIResource,
     ScanCreateParams as ScanCreateParams,
     ScanListParams as ScanListParams,
     ScanProbeAttempt as ScanProbeAttempt,
@@ -412,6 +413,7 @@ __all__ = [
     # scan
     "Scan",
     "ScanCategory",
+    "ScanAvailableProbeAPIResource",
     "ScanListParams",
     "ScanCreateParams",
     "ScanRetrieveParams",

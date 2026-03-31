@@ -17,6 +17,7 @@ from ...types import (
     Agent,
     ScanProbe,
     ScanCategory,
+    ScanAvailableProbeAPIResource,
     KnowledgeBase,
 )
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
@@ -452,6 +453,44 @@ class ScansResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    def list_available_probes(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[ScanAvailableProbeAPIResource]:
+        """List all available probes that can be used for scanning.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        list of ScanAvailableProbeAPIResource
+            A list of available scan probes.
+        """
+        response = self._get(
+            "/v2/scan-available-probes",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[List[ScanAvailableProbeAPIResource]],
+        )
+
+        return self._unwrap(response)
+
 
 class AsyncScansResource(AsyncAPIResource):
     @cached_property
@@ -856,6 +895,44 @@ class AsyncScansResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def list_available_probes(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[ScanAvailableProbeAPIResource]:
+        """List all available probes that can be used for scanning.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, or None
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        list of ScanAvailableProbeAPIResource
+            A list of available scan probes.
+        """
+        response = await self._get(
+            "/v2/scan-available-probes",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[List[ScanAvailableProbeAPIResource]],
+        )
+
+        return self._unwrap(response)
+
 
 class ScansResourceWithRawResponse:
     def __init__(self, scans: ScansResource) -> None:
@@ -881,6 +958,9 @@ class ScansResourceWithRawResponse:
         )
         self.list_probes = to_raw_response_wrapper(
             scans.list_probes,
+        )
+        self.list_available_probes = to_raw_response_wrapper(
+            scans.list_available_probes,
         )
 
     @cached_property
@@ -917,6 +997,9 @@ class AsyncScansResourceWithRawResponse:
         self.list_probes = async_to_raw_response_wrapper(
             scans.list_probes,
         )
+        self.list_available_probes = async_to_raw_response_wrapper(
+            scans.list_available_probes,
+        )
 
     @cached_property
     def probes(self) -> AsyncProbesResourceWithRawResponse:
@@ -952,6 +1035,9 @@ class ScansResourceWithStreamingResponse:
         self.list_probes = to_streamed_response_wrapper(
             scans.list_probes,
         )
+        self.list_available_probes = to_streamed_response_wrapper(
+            scans.list_available_probes,
+        )
 
     @cached_property
     def probes(self) -> ProbesResourceWithStreamingResponse:
@@ -986,6 +1072,9 @@ class AsyncScansResourceWithStreamingResponse:
         )
         self.list_probes = async_to_streamed_response_wrapper(
             scans.list_probes,
+        )
+        self.list_available_probes = async_to_streamed_response_wrapper(
+            scans.list_available_probes,
         )
 
     @cached_property
