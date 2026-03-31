@@ -23,7 +23,6 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
-from ..types.evaluation import NavigationInfo
 from ..types.dataset import (
     Dataset,
     DatasetListParams,
@@ -35,6 +34,7 @@ from ..types.dataset import (
     DatasetGenerateScenarioBasedParams,
 )
 from ..types.test_case import TestCase
+from ..types.evaluation import NavigationInfo
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
