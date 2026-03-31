@@ -12,10 +12,7 @@ from tests.utils import assert_matches_type
 from giskard_hub.types import (
     Check,
     Evaluation,
-    APIPaginatedMetadata,
 )
-from giskard_hub.types.evaluation import ComparisonRow, NavigationInfo
-
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
@@ -493,48 +490,6 @@ class TestEvaluations:
             assert_matches_type(List[Check], evaluation, path=["response"])
 
         assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_compare(self, client: HubClient) -> None:
-        result = client.evaluations.compare(
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-        )
-        assert_matches_type(List[ComparisonRow], result, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_compare_with_all_params(self, client: HubClient) -> None:
-        result = client.evaluations.compare(
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-            query="search term",
-            order_by=[{"id": "status", "desc": True}],
-            filters={"status": {"selected_options": ["passed"], "match_mode": "include"}},
-            limit=10,
-            offset=0,
-        )
-        assert_matches_type(List[ComparisonRow], result, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_get_compare_navigation_info(self, client: HubClient) -> None:
-        navigation_info = client.evaluations.get_compare_navigation_info(
-            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-        )
-        assert_matches_type(NavigationInfo, navigation_info, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_get_compare_navigation_info_with_all_params(self, client: HubClient) -> None:
-        navigation_info = client.evaluations.get_compare_navigation_info(
-            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-            query="search term",
-            order_by=[{"id": "status", "desc": True}],
-            filters={"status": {"selected_options": ["passed"], "match_mode": "include"}},
-        )
-        assert_matches_type(NavigationInfo, navigation_info, path=["response"])
 
 
 class TestAsyncEvaluations:
@@ -1016,45 +971,3 @@ class TestAsyncEvaluations:
             assert_matches_type(List[Check], evaluation, path=["response"])
 
         assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_compare(self, async_client: AsyncHubClient) -> None:
-        result = await async_client.evaluations.compare(
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-        )
-        assert_matches_type(List[ComparisonRow], result, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_compare_with_all_params(self, async_client: AsyncHubClient) -> None:
-        result = await async_client.evaluations.compare(
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-            query="search term",
-            order_by=[{"id": "status", "desc": True}],
-            filters={"status": {"selected_options": ["passed"], "match_mode": "include"}},
-            limit=10,
-            offset=0,
-        )
-        assert_matches_type(List[ComparisonRow], result, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_get_compare_navigation_info(self, async_client: AsyncHubClient) -> None:
-        navigation_info = await async_client.evaluations.get_compare_navigation_info(
-            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-        )
-        assert_matches_type(NavigationInfo, navigation_info, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_get_compare_navigation_info_with_all_params(self, async_client: AsyncHubClient) -> None:
-        navigation_info = await async_client.evaluations.get_compare_navigation_info(
-            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-            query="search term",
-            order_by=[{"id": "status", "desc": True}],
-            filters={"status": {"selected_options": ["passed"], "match_mode": "include"}},
-        )
-        assert_matches_type(NavigationInfo, navigation_info, path=["response"])

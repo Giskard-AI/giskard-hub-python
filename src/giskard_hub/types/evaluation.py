@@ -39,10 +39,6 @@ __all__ = [
     "ResultUpdateVisibilityParams",
     "ResultSubmitLocalOutputParams",
     "NavigationInfo",
-    "CompareEvaluationsParams",
-    "CompareNavigationParams",
-    "ComparisonResult",
-    "ComparisonRow",
 ]
 
 
@@ -241,36 +237,10 @@ class ResultSubmitLocalOutputParams(TypedDict, total=False):
 
 
 # ---------------------------------------------------------------------------
-# Navigation and comparison types
+# Navigation (e.g. dataset test-case prev/next IDs; same response shape as API)
 # ---------------------------------------------------------------------------
 
 
 class NavigationInfo(BaseModel):
     previous_test_case_id: Optional[str] = None
     next_test_case_id: Optional[str] = None
-
-
-class ComparisonResult(BaseModel):
-    evaluation_id: str
-    result: Optional[TestCaseEvaluation] = None
-
-
-class ComparisonRow(BaseModel):
-    test_case: TestCase
-    results: List[ComparisonResult]
-
-
-class CompareEvaluationsParams(TypedDict, total=False):
-    evaluation_ids: Required[SequenceNotStr[str]]
-    search: Optional[str]
-    order_by: Optional[List[ResultOrderByParam]]
-    filters: Optional[ResultFiltersParam]
-    limit: int
-    offset: int
-
-
-class CompareNavigationParams(TypedDict, total=False):
-    evaluation_ids: Required[SequenceNotStr[str]]
-    search: Optional[str]
-    order_by: Optional[List[ResultOrderByParam]]
-    filters: Optional[ResultFiltersParam]
