@@ -2,19 +2,8 @@ name: Update lockfiles
 
 on:
   workflow_dispatch:
-    inputs:
-      update_python:
-        description: "Update Python lockfiles via uv (uv lock -U)"
-        required: false
-        type: boolean
-        default: true
-      python_projects:
-        description: "Comma-separated project directories to update (e.g. .) or 'all'"
-        required: false
-        type: string
-        default: all
   schedule:
-    # Weekly Monday 06:00 UTC (targets main, all deps)
+    # Weekly Monday 06:00 UTC
     - cron: "0 6 * * 1"
 
 concurrency:
@@ -38,45 +27,19 @@ jobs:
         env:
           GH_EVENT_NAME: ${{ github.event_name }}
           GH_REF_NAME: ${{ github.ref_name }}
-          INPUT_UPDATE_PYTHON: ${{ inputs.update_python }}
-          INPUT_PYTHON_PROJECTS: ${{ inputs.python_projects }}
         run: |
           set -euo pipefail
-
-          UPDATE_PYTHON="true"
-          PYTHON_PROJECTS="all"
-
-          write_output() {
-            local key="$1"
-            local value="$2"
-            # Keep outputs single-line to avoid output-command injection.
-            value="${value//$'\r'/}"
-            value="${value//$'\n'/}"
-            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_OUTPUT"
-          }
-
           if [ "$GH_EVENT_NAME" = "schedule" ]; then
-            write_output "branch" "main"
-            write_output "mode" "pr"
-            write_output "update_python" "$UPDATE_PYTHON"
-            write_output "python_projects" "$PYTHON_PROJECTS"
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+            echo "mode=pr" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-
-          BRANCH="$GH_REF_NAME"
-          write_output "branch" "$BRANCH"
-
-          if [ "$BRANCH" = "main" ]; then
-            write_output "mode" "pr"
+          echo "branch=$GH_REF_NAME" >> "$GITHUB_OUTPUT"
+          if [ "$GH_REF_NAME" = "main" ]; then
+            echo "mode=pr" >> "$GITHUB_OUTPUT"
           else
-            write_output "mode" "push"
+            echo "mode=push" >> "$GITHUB_OUTPUT"
           fi
-
-          UPDATE_PYTHON="$INPUT_UPDATE_PYTHON"
-          PYTHON_PROJECTS="$INPUT_PYTHON_PROJECTS"
-
-          write_output "update_python" "$UPDATE_PYTHON"
-          write_output "python_projects" "$PYTHON_PROJECTS"
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -86,93 +49,36 @@ jobs:
           persist-credentials: false
 
       - name: Generate release token
-        id: automation-token
+        id: app-token
         uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
         with:
           app-id: ${{ vars.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
       - name: Install uv
-        if: steps.target.outputs.update_python == 'true'
         uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           enable-cache: true
           python-version: "3.10"
 
-      - name: Update Python lockfiles (uv lock -U)
-        if: steps.target.outputs.update_python == 'true'
-        shell: bash
-        env:
-          PYTHON_PROJECTS_INPUT: ${{ steps.target.outputs.python_projects }}
-        run: |
-          set -euo pipefail
-
-          # Discover Python projects that have a tracked pyproject.toml.
-          mapfile -t PROJECT_DIRS < <(
-            git ls-files '**/pyproject.toml' pyproject.toml \
-              | xargs -n1 dirname \
-              | sort -u
-          )
-
-          if [ "${#PROJECT_DIRS[@]}" -eq 0 ]; then
-            echo "No Python projects found." >&2
-            exit 1
-          fi
-
-          INPUT="$PYTHON_PROJECTS_INPUT"
-          INPUT="${INPUT//$'\n'/,}"
-          INPUT="${INPUT#"${INPUT%%[![:space:]]*}"}"
-          INPUT="${INPUT%"${INPUT##*[![:space:]]}"}"
-
-          if [ -z "$INPUT" ]; then
-            echo "PYTHON_PROJECTS input is empty; use 'all' or a comma-separated list." >&2
-            exit 1
-          fi
-
-          TARGET_DIRS=()
-          if [ "$INPUT" = "all" ]; then
-            TARGET_DIRS=("${PROJECT_DIRS[@]}")
-          else
-            IFS=',' read -r -a WANTED <<< "$INPUT"
-            for w in "${WANTED[@]}"; do
-              w="${w#"${w%%[![:space:]]*}"}"
-              w="${w%"${w##*[![:space:]]}"}"
-              if [ -z "$w" ]; then
-                continue
-              fi
-              if printf '%s\n' "${PROJECT_DIRS[@]}" | grep -Fxq "$w"; then
-                TARGET_DIRS+=("$w")
-              else
-                echo "Unknown python project '$w'. Known projects:" >&2
-                printf ' - %s\n' "${PROJECT_DIRS[@]}" >&2
-                exit 1
-              fi
-            done
-          fi
-
-          echo "Python projects to update: ${#TARGET_DIRS[@]}"
-          for d in "${TARGET_DIRS[@]}"; do
-            echo "Updating (uv lock -U): $d"
-            (cd "$d" && uv lock -U)
-          done
+      - name: Update lockfile
+        run: uv lock -U
 
       - name: Commit and push to feature branch
         if: steps.target.outputs.mode == 'push'
         shell: bash
         env:
-          APP_TOKEN: ${{ steps.automation-token.outputs.token }}
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit."
             exit 0
           fi
-
           git config user.name "lockfile-bot"
           git config user.email "lockfile-bot@users.noreply.github.com"
-          git add -A
+          git add uv.lock
           git commit -m "chore: update lockfiles"
           git remote set-url origin "https://x-access-token:${APP_TOKEN}@github.com/${REPO}.git"
           git push origin HEAD
@@ -181,7 +87,7 @@ jobs:
         if: steps.target.outputs.mode == 'pr'
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
-          token: ${{ steps.automation-token.outputs.token }}
+          token: ${{ steps.app-token.outputs.token }}
           branch: chore/lock-update-${{ steps.target.outputs.branch }}
           base: ${{ steps.target.outputs.branch }}
           title: "chore: update lockfiles"
