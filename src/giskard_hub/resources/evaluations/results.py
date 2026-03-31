@@ -7,7 +7,7 @@ import httpx
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
-from .._included import embed_included_list, embed_included_single, embed_included_paginated
+from .._included import embed_included_single, embed_included_paginated
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -20,7 +20,6 @@ from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedMetadata, APIPaginatedResponse, APIResponseWithIncluded
 from ...types.test_case import TestCase
 from ...types.evaluation import (
-    ResultListParams,
     ResultFiltersParam,
     ResultOrderByParam,
     ResultSearchParams,
@@ -302,6 +301,75 @@ class ResultsResource(SyncAPIResource):
         )
 
         return self._unwrap(response)
+
+    def list(
+        self,
+        evaluation_id: str,
+        *,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[TestCaseEvaluation]:
+        """List all results for a given evaluation.
+
+        Fetches every page via :meth:`search` (same as an unfiltered search).
+
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to list the results for.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        List[TestCaseEvaluation]
+            A list of evaluation results.
+
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+
+        page_limit = 100
+        all_items: List[TestCaseEvaluation] = []
+        offset = 0
+        while True:
+            page, meta = self.search(
+                evaluation_id,
+                limit=page_limit,
+                offset=offset,
+                include=include,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+            all_items.extend(page)
+            next_offset = meta.offset + meta.count
+            if next_offset >= meta.total or not page:
+                break
+            offset = next_offset
+        return all_items
 
     @overload
     def search(
@@ -760,6 +828,75 @@ class AsyncResultsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def list(
+        self,
+        evaluation_id: str,
+        *,
+        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[TestCaseEvaluation]:
+        """List all results for a given evaluation.
+
+        Fetches every page via :meth:`search` (same as an unfiltered search).
+
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation to list the results for.
+        include : Optional[List[Literal["test_case"]]], optional
+            Related resources to include in response.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        List[TestCaseEvaluation]
+            A list of evaluation results.
+
+        Raises
+        ------
+        ValueError
+            If ``evaluation_id`` is empty.
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+
+        page_limit = 100
+        all_items: List[TestCaseEvaluation] = []
+        offset = 0
+        while True:
+            page, meta = await self.search(
+                evaluation_id,
+                limit=page_limit,
+                offset=offset,
+                include=include,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+            all_items.extend(page)
+            next_offset = meta.offset + meta.count
+            if next_offset >= meta.total or not page:
+                break
+            offset = next_offset
+        return all_items
+
     @overload
     async def search(
         self,
@@ -967,6 +1104,9 @@ class ResultsResourceWithRawResponse:
         self.submit_local_output = to_raw_response_wrapper(
             results.submit_local_output,
         )
+        self.list = to_raw_response_wrapper(
+            results.list,
+        )
         self.search = to_raw_response_wrapper(
             results.search,
         )
@@ -990,6 +1130,9 @@ class AsyncResultsResourceWithRawResponse:
         )
         self.submit_local_output = async_to_raw_response_wrapper(
             results.submit_local_output,
+        )
+        self.list = async_to_raw_response_wrapper(
+            results.list,
         )
         self.search = async_to_raw_response_wrapper(
             results.search,
@@ -1015,6 +1158,9 @@ class ResultsResourceWithStreamingResponse:
         self.submit_local_output = to_streamed_response_wrapper(
             results.submit_local_output,
         )
+        self.list = to_streamed_response_wrapper(
+            results.list,
+        )
         self.search = to_streamed_response_wrapper(
             results.search,
         )
@@ -1038,6 +1184,9 @@ class AsyncResultsResourceWithStreamingResponse:
         )
         self.submit_local_output = async_to_streamed_response_wrapper(
             results.submit_local_output,
+        )
+        self.list = async_to_streamed_response_wrapper(
+            results.list,
         )
         self.search = async_to_streamed_response_wrapper(
             results.search,

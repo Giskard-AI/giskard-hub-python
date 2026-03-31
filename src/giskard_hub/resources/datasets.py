@@ -662,6 +662,70 @@ class DatasetsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    def list_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[TestCase]:
+        """List all test cases belonging to a dataset.
+
+        Fetches every page via :meth:`search_test_cases` (same as an unfiltered search).
+
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to list test cases for.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        List[TestCase]
+            A list of test cases.
+
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        page_limit = 100
+        all_items: List[TestCase] = []
+        offset = 0
+        while True:
+            page, meta = self.search_test_cases(
+                dataset_id,
+                limit=page_limit,
+                offset=offset,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+            all_items.extend(page)
+            next_offset = meta.offset + meta.count
+            if next_offset >= meta.total or not page:
+                break
+            offset = next_offset
+        return all_items
+
     @overload
     def search_test_cases(
         self,
@@ -676,7 +740,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-        include_metadata: bool = False,
+        include_metadata: Literal[False] = False,
     ) -> List[TestCase]: ...
 
     @overload
@@ -693,7 +757,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-        include_metadata: Literal[True],
+        include_metadata: Literal[True] = True,
     ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
 
     def search_test_cases(
@@ -1476,6 +1540,71 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def list_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[TestCase]:
+        """List all test cases belonging to a dataset.
+
+        Fetches every page via :meth:`search_test_cases` (same as an unfiltered search).
+
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to list test cases for.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        List[TestCase]
+            A list of test cases.
+
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` is empty.
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        page_limit = 100
+        all_items: List[TestCase] = []
+        offset = 0
+        while True:
+            result = await self.search_test_cases(
+                dataset_id,
+                limit=page_limit,
+                offset=offset,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+            page, meta = cast(Tuple[List[TestCase], APIPaginatedMetadata], result)
+            all_items.extend(page)
+            next_offset = meta.offset + meta.count
+            if next_offset >= meta.total or not page:
+                break
+            offset = next_offset
+        return all_items
+
     @overload
     async def search_test_cases(
         self,
@@ -1704,6 +1833,9 @@ class DatasetsResourceWithRawResponse:
         self.list_tags = to_raw_response_wrapper(
             datasets.list_tags,
         )
+        self.list_test_cases = to_raw_response_wrapper(
+            datasets.list_test_cases,
+        )
         self.search_test_cases = to_raw_response_wrapper(
             datasets.search_test_cases,
         )
@@ -1745,6 +1877,9 @@ class AsyncDatasetsResourceWithRawResponse:
         )
         self.list_tags = async_to_raw_response_wrapper(
             datasets.list_tags,
+        )
+        self.list_test_cases = async_to_raw_response_wrapper(
+            datasets.list_test_cases,
         )
         self.search_test_cases = async_to_raw_response_wrapper(
             datasets.search_test_cases,
@@ -1788,6 +1923,9 @@ class DatasetsResourceWithStreamingResponse:
         self.list_tags = to_streamed_response_wrapper(
             datasets.list_tags,
         )
+        self.list_test_cases = to_streamed_response_wrapper(
+            datasets.list_test_cases,
+        )
         self.search_test_cases = to_streamed_response_wrapper(
             datasets.search_test_cases,
         )
@@ -1829,6 +1967,9 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.list_tags = async_to_streamed_response_wrapper(
             datasets.list_tags,
+        )
+        self.list_test_cases = async_to_streamed_response_wrapper(
+            datasets.list_test_cases,
         )
         self.search_test_cases = async_to_streamed_response_wrapper(
             datasets.search_test_cases,
