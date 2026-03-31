@@ -614,6 +614,31 @@ class TestDatasets:
                 "",
             )
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_get_test_case_navigation_info(self, client: HubClient) -> None:
+        from giskard_hub.types.evaluation import NavigationInfo
+        
+        navigation_info = client.datasets.get_test_case_navigation_info(
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(NavigationInfo, navigation_info, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_get_test_case_navigation_info_with_all_params(self, client: HubClient) -> None:
+        from giskard_hub.types.evaluation import NavigationInfo
+        
+        navigation_info = client.datasets.get_test_case_navigation_info(
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            query="search term",
+            order_by=[{"id": "created_at", "desc": True}],
+            filters={"tags": {"selected_options": ["tag1"], "match_mode": "include"}},
+        )
+        assert_matches_type(NavigationInfo, navigation_info, path=["response"])
+
 
 class TestAsyncDatasets:
     parametrize = pytest.mark.parametrize(
@@ -1215,3 +1240,28 @@ class TestAsyncDatasets:
             await async_client.datasets.with_raw_response.search_test_cases(
                 "",
             )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_get_test_case_navigation_info(self, async_client: AsyncHubClient) -> None:
+        from giskard_hub.types.evaluation import NavigationInfo
+        
+        navigation_info = await async_client.datasets.get_test_case_navigation_info(
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(NavigationInfo, navigation_info, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_get_test_case_navigation_info_with_all_params(self, async_client: AsyncHubClient) -> None:
+        from giskard_hub.types.evaluation import NavigationInfo
+        
+        navigation_info = await async_client.datasets.get_test_case_navigation_info(
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            query="search term",
+            order_by=[{"id": "created_at", "desc": True}],
+            filters={"tags": {"selected_options": ["tag1"], "match_mode": "include"}},
+        )
+        assert_matches_type(NavigationInfo, navigation_info, path=["response"])

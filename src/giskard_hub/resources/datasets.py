@@ -9,6 +9,7 @@ from ..types import (
     TestCaseFiltersParam,
     TestCaseOrderByParam,
     DatasetSearchTestCasesParams,
+    DatasetTestCaseNavigationParams,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
@@ -22,6 +23,7 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
+from ..types.evaluation import NavigationInfo
 from ..types.dataset import (
     Dataset,
     DatasetListParams,
@@ -660,57 +662,6 @@ class DatasetsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
-    def list_test_cases(
-        self,
-        dataset_id: str,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCase]:
-        """List all test cases belonging to a dataset.
-
-        Parameters
-        ----------
-        dataset_id : str
-            The ID of the dataset to list test cases for.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers | None
-            Send extra headers.
-        extra_query : Query | None
-            Add additional query parameters to the request.
-        extra_body : Body | None
-            Add additional JSON properties to the request.
-        timeout : float | httpx.Timeout | None | NotGiven
-            Override the client-level default timeout for this request, in seconds.
-
-        Returns
-        -------
-        List[TestCase]
-            A list of test cases.
-
-        Raises
-        ------
-        ValueError
-            If ``dataset_id`` is empty.
-        """
-        if not dataset_id:
-            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        response = self._get(
-            f"/v2/datasets/{dataset_id}/test-cases",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[List[TestCase]],
-        )
-
-        return self._unwrap(response)
-
     @overload
     def search_test_cases(
         self,
@@ -826,6 +777,83 @@ class DatasetsResource(SyncAPIResource):
         )
 
         return self._unwrap_paginated(response, include_metadata)
+
+    def get_test_case_navigation_info(
+        self,
+        dataset_id: str,
+        test_case_id: str,
+        *,
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> NavigationInfo:
+        """Get navigation info (previous/next test case IDs) for a test case in a dataset.
+
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset.
+        test_case_id : str
+            The ID of the test case to get navigation info for.
+        query : Optional[str]
+            Search query for test cases.
+        order_by : Optional[List[TestCaseOrderByParam]]
+            Order by criteria for test cases.
+        filters : Optional[TestCaseFiltersParam]
+            Search filters to apply.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        NavigationInfo
+            Navigation information with previous and next test case IDs.
+
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` or ``test_case_id`` is empty.
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        
+        response = self._post(
+            f"/v2/datasets/{dataset_id}/test-cases/{test_case_id}/navigation-info",
+            body=maybe_transform(
+                {
+                    "filters": filters,
+                    "order_by": order_by,
+                    "search": query,
+                },
+                DatasetTestCaseNavigationParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[NavigationInfo],
+        )
+
+        return self._unwrap(response)
 
 
 class AsyncDatasetsResource(AsyncAPIResource):
@@ -1448,57 +1476,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def list_test_cases(
-        self,
-        dataset_id: str,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCase]:
-        """List all test cases belonging to a dataset.
-
-        Parameters
-        ----------
-        dataset_id : str
-            The ID of the dataset to list test cases for.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers | None
-            Send extra headers.
-        extra_query : Query | None
-            Add additional query parameters to the request.
-        extra_body : Body | None
-            Add additional JSON properties to the request.
-        timeout : float | httpx.Timeout | None | NotGiven
-            Override the client-level default timeout for this request, in seconds.
-
-        Returns
-        -------
-        List[TestCase]
-            A list of test cases.
-
-        Raises
-        ------
-        ValueError
-            If ``dataset_id`` is empty.
-        """
-        if not dataset_id:
-            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        response = await self._get(
-            f"/v2/datasets/{dataset_id}/test-cases",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[List[TestCase]],
-        )
-
-        return self._unwrap(response)
-
     @overload
     async def search_test_cases(
         self,
@@ -1615,6 +1592,83 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap_paginated(response, include_metadata)
 
+    async def get_test_case_navigation_info(
+        self,
+        dataset_id: str,
+        test_case_id: str,
+        *,
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
+        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> NavigationInfo:
+        """Get navigation info (previous/next test case IDs) for a test case in a dataset.
+
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset.
+        test_case_id : str
+            The ID of the test case to get navigation info for.
+        query : Optional[str]
+            Search query for test cases.
+        order_by : Optional[List[TestCaseOrderByParam]]
+            Order by criteria for test cases.
+        filters : Optional[TestCaseFiltersParam]
+            Search filters to apply.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        NavigationInfo
+            Navigation information with previous and next test case IDs.
+
+        Raises
+        ------
+        ValueError
+            If ``dataset_id`` or ``test_case_id`` is empty.
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        
+        response = await self._post(
+            f"/v2/datasets/{dataset_id}/test-cases/{test_case_id}/navigation-info",
+            body=await async_maybe_transform(
+                {
+                    "filters": filters,
+                    "order_by": order_by,
+                    "search": query,
+                },
+                DatasetTestCaseNavigationParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[NavigationInfo],
+        )
+
+        return self._unwrap(response)
+
 
 class DatasetsResourceWithRawResponse:
     def __init__(self, datasets: DatasetsResource) -> None:
@@ -1650,11 +1704,11 @@ class DatasetsResourceWithRawResponse:
         self.list_tags = to_raw_response_wrapper(
             datasets.list_tags,
         )
-        self.list_test_cases = to_raw_response_wrapper(
-            datasets.list_test_cases,
-        )
         self.search_test_cases = to_raw_response_wrapper(
             datasets.search_test_cases,
+        )
+        self.get_test_case_navigation_info = to_raw_response_wrapper(
+            datasets.get_test_case_navigation_info,
         )
 
 
@@ -1692,11 +1746,11 @@ class AsyncDatasetsResourceWithRawResponse:
         self.list_tags = async_to_raw_response_wrapper(
             datasets.list_tags,
         )
-        self.list_test_cases = async_to_raw_response_wrapper(
-            datasets.list_test_cases,
-        )
         self.search_test_cases = async_to_raw_response_wrapper(
             datasets.search_test_cases,
+        )
+        self.get_test_case_navigation_info = async_to_raw_response_wrapper(
+            datasets.get_test_case_navigation_info,
         )
 
 
@@ -1734,11 +1788,11 @@ class DatasetsResourceWithStreamingResponse:
         self.list_tags = to_streamed_response_wrapper(
             datasets.list_tags,
         )
-        self.list_test_cases = to_streamed_response_wrapper(
-            datasets.list_test_cases,
-        )
         self.search_test_cases = to_streamed_response_wrapper(
             datasets.search_test_cases,
+        )
+        self.get_test_case_navigation_info = to_streamed_response_wrapper(
+            datasets.get_test_case_navigation_info,
         )
 
 
@@ -1776,9 +1830,9 @@ class AsyncDatasetsResourceWithStreamingResponse:
         self.list_tags = async_to_streamed_response_wrapper(
             datasets.list_tags,
         )
-        self.list_test_cases = async_to_streamed_response_wrapper(
-            datasets.list_test_cases,
-        )
         self.search_test_cases = async_to_streamed_response_wrapper(
             datasets.search_test_cases,
+        )
+        self.get_test_case_navigation_info = async_to_streamed_response_wrapper(
+            datasets.get_test_case_navigation_info,
         )

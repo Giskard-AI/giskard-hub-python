@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Literal, Iterable, Optional, cast
+from typing import List, Tuple, Literal, Iterable, Optional, cast, overload
 
 import httpx
 
@@ -28,7 +28,7 @@ from ...types.chat import ChatMessageParam
 from ...types.agent import AgentOutputParam, MinimalAgentParam
 from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
-from ...types.common import APIResponse, APIResponseWithIncluded
+from ...types.common import APIResponse, APIResponseWithIncluded, APIPaginatedMetadata, APIPaginatedResponse
 from ...types.dataset import DatasetSubsetParam
 from ...types.evaluation import (
     Evaluation,
@@ -40,6 +40,12 @@ from ...types.evaluation import (
     CriterionEvaluationDataset,
     EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams,
+    CompareEvaluationsParams,
+    CompareNavigationParams,
+    ComparisonRow,
+    NavigationInfo,
+    ResultOrderByParam,
+    ResultFiltersParam,
 )
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
@@ -674,6 +680,194 @@ class EvaluationsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    @overload
+    def compare(
+        self,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[ComparisonRow]: ...
+
+    @overload
+    def compare(
+        self,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[ComparisonRow], APIPaginatedMetadata]: ...
+
+    def compare(
+        self,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[ComparisonRow] | Tuple[List[ComparisonRow], APIPaginatedMetadata]:
+        """Compare multiple evaluations side-by-side.
+
+        Parameters
+        ----------
+        evaluation_ids : sequence of str
+            The IDs of the evaluations to compare.
+        query : Optional[str]
+            Search query for filtering results.
+        order_by : Optional[List[ResultOrderByParam]]
+            Order by criteria for results.
+        filters : Optional[ResultFiltersParam]
+            Filters to apply to results.
+        limit : int
+            Maximum number of results to return.
+        offset : int
+            Number of results to skip.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+        include_metadata : bool
+            Whether to include pagination metadata in the response.
+
+        Returns
+        -------
+        List[ComparisonRow] | Tuple[List[ComparisonRow], APIPaginatedMetadata]
+            Comparison results, optionally with pagination metadata.
+        """
+        response = self._post(
+            "/v2/evaluations/compare",
+            body=maybe_transform(
+                {
+                    "evaluation_ids": evaluation_ids,
+                    "search": query,
+                    "order_by": order_by,
+                    "filters": filters,
+                },
+                CompareEvaluationsParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"limit": limit, "offset": offset},
+                    CompareEvaluationsParams,
+                ),
+            ),
+            cast_to=APIPaginatedResponse[ComparisonRow, None],
+        )
+
+        return self._unwrap_paginated(response, include_metadata)
+
+    def get_compare_navigation_info(
+        self,
+        test_case_id: str,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> NavigationInfo:
+        """Get navigation info for a test case when comparing evaluations.
+
+        Parameters
+        ----------
+        test_case_id : str
+            The ID of the test case to get navigation info for.
+        evaluation_ids : sequence of str
+            The IDs of the evaluations being compared.
+        query : Optional[str]
+            Search query for filtering results.
+        order_by : Optional[List[ResultOrderByParam]]
+            Order by criteria for results.
+        filters : Optional[ResultFiltersParam]
+            Filters to apply to results.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        NavigationInfo
+            Navigation information with previous and next test case IDs.
+
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+
+        response = self._post(
+            f"/v2/evaluations/compare/{test_case_id}/navigation-info",
+            body=maybe_transform(
+                {
+                    "evaluation_ids": evaluation_ids,
+                    "search": query,
+                    "order_by": order_by,
+                    "filters": filters,
+                },
+                CompareNavigationParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[NavigationInfo],
+        )
+
+        return self._unwrap(response)
+
 
 class AsyncEvaluationsResource(AsyncAPIResource):
     @cached_property
@@ -1284,6 +1478,194 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    @overload
+    async def compare(
+        self,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[ComparisonRow]: ...
+
+    @overload
+    async def compare(
+        self,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: Literal[True],
+    ) -> Tuple[List[ComparisonRow], APIPaginatedMetadata]: ...
+
+    async def compare(
+        self,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[ComparisonRow] | Tuple[List[ComparisonRow], APIPaginatedMetadata]:
+        """Compare multiple evaluations side-by-side.
+
+        Parameters
+        ----------
+        evaluation_ids : sequence of str
+            The IDs of the evaluations to compare.
+        query : Optional[str]
+            Search query for filtering results.
+        order_by : Optional[List[ResultOrderByParam]]
+            Order by criteria for results.
+        filters : Optional[ResultFiltersParam]
+            Filters to apply to results.
+        limit : int
+            Maximum number of results to return.
+        offset : int
+            Number of results to skip.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+        include_metadata : bool
+            Whether to include pagination metadata in the response.
+
+        Returns
+        -------
+        List[ComparisonRow] | Tuple[List[ComparisonRow], APIPaginatedMetadata]
+            Comparison results, optionally with pagination metadata.
+        """
+        response = await self._post(
+            "/v2/evaluations/compare",
+            body=await async_maybe_transform(
+                {
+                    "evaluation_ids": evaluation_ids,
+                    "search": query,
+                    "order_by": order_by,
+                    "filters": filters,
+                },
+                CompareEvaluationsParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"limit": limit, "offset": offset},
+                    CompareEvaluationsParams,
+                ),
+            ),
+            cast_to=APIPaginatedResponse[ComparisonRow, None],
+        )
+
+        return self._unwrap_paginated(response, include_metadata)
+
+    async def get_compare_navigation_info(
+        self,
+        test_case_id: str,
+        *,
+        evaluation_ids: SequenceNotStr[str],
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ResultOrderByParam]] | Omit = omit,
+        filters: Optional[ResultFiltersParam] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> NavigationInfo:
+        """Get navigation info for a test case when comparing evaluations.
+
+        Parameters
+        ----------
+        test_case_id : str
+            The ID of the test case to get navigation info for.
+        evaluation_ids : sequence of str
+            The IDs of the evaluations being compared.
+        query : Optional[str]
+            Search query for filtering results.
+        order_by : Optional[List[ResultOrderByParam]]
+            Order by criteria for results.
+        filters : Optional[ResultFiltersParam]
+            Filters to apply to results.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        NavigationInfo
+            Navigation information with previous and next test case IDs.
+
+        Raises
+        ------
+        ValueError
+            If ``test_case_id`` is empty.
+        """
+        if not test_case_id:
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+
+        response = await self._post(
+            f"/v2/evaluations/compare/{test_case_id}/navigation-info",
+            body=await async_maybe_transform(
+                {
+                    "evaluation_ids": evaluation_ids,
+                    "search": query,
+                    "order_by": order_by,
+                    "filters": filters,
+                },
+                CompareNavigationParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[NavigationInfo],
+        )
+
+        return self._unwrap(response)
+
 
 class EvaluationsResourceWithRawResponse:
     def __init__(self, evaluations: EvaluationsResource) -> None:
@@ -1315,6 +1697,12 @@ class EvaluationsResourceWithRawResponse:
         )
         self.run_single = to_raw_response_wrapper(
             evaluations.run_single,
+        )
+        self.compare = to_raw_response_wrapper(
+            evaluations.compare,
+        )
+        self.get_compare_navigation_info = to_raw_response_wrapper(
+            evaluations.get_compare_navigation_info,
         )
 
     @cached_property
@@ -1353,6 +1741,12 @@ class AsyncEvaluationsResourceWithRawResponse:
         self.run_single = async_to_raw_response_wrapper(
             evaluations.run_single,
         )
+        self.compare = async_to_raw_response_wrapper(
+            evaluations.compare,
+        )
+        self.get_compare_navigation_info = async_to_raw_response_wrapper(
+            evaluations.get_compare_navigation_info,
+        )
 
     @cached_property
     def results(self) -> AsyncResultsResourceWithRawResponse:
@@ -1390,6 +1784,12 @@ class EvaluationsResourceWithStreamingResponse:
         self.run_single = to_streamed_response_wrapper(
             evaluations.run_single,
         )
+        self.compare = to_streamed_response_wrapper(
+            evaluations.compare,
+        )
+        self.get_compare_navigation_info = to_streamed_response_wrapper(
+            evaluations.get_compare_navigation_info,
+        )
 
     @cached_property
     def results(self) -> ResultsResourceWithStreamingResponse:
@@ -1426,6 +1826,12 @@ class AsyncEvaluationsResourceWithStreamingResponse:
         )
         self.run_single = async_to_streamed_response_wrapper(
             evaluations.run_single,
+        )
+        self.compare = async_to_streamed_response_wrapper(
+            evaluations.compare,
+        )
+        self.get_compare_navigation_info = async_to_streamed_response_wrapper(
+            evaluations.get_compare_navigation_info,
         )
 
     @cached_property

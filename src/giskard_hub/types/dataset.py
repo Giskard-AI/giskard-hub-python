@@ -19,6 +19,7 @@ __all__ = [
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
     "DatasetSearchTestCasesParams",
+    "DatasetTestCaseNavigationParams",
     "TestCaseOrderByParam",
     "TestCaseFiltersParam",
     "DatasetGenerateAdversarialParams",
@@ -113,6 +114,12 @@ class DatasetSearchTestCasesParams(TypedDict, total=False):
     filters: Optional[TestCaseFiltersParam]
     limit: int
     offset: int
+
+
+class DatasetTestCaseNavigationParams(TypedDict, total=False):
+    search: Optional[str]
+    order_by: Optional[List[TestCaseOrderByParam]]
+    filters: Optional[TestCaseFiltersParam]
 
 
 # ---------------------------------------------------------------------------
