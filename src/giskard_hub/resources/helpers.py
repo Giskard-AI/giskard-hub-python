@@ -1,8 +1,8 @@
 """High-level helper resources that orchestrate common workflows.
 
-This module provides ``HelpersResource`` and ``AsyncHelpersResource``, which
+This module provides `HelpersResource` and `AsyncHelpersResource`, which
 wrap lower-level API resources to offer convenience methods such as
-``wait_for_completion``, ``evaluate``, and ``print_metrics``.
+`wait_for_completion`, `evaluate`, and `print_metrics`.
 """
 
 import time
@@ -76,12 +76,12 @@ class HelpersResource(SyncAPIResource):
         -------
         StatefulEntity
             The refreshed entity once it has left the running states, or is in
-            an error state when ``raise_on_error`` is ``False``.
+            an error state when `raise_on_error` is `False`.
 
         Raises
         ------
         ValueError
-            If the entity reaches an error state and ``raise_on_error`` is ``True``.
+            If the entity reaches an error state and `raise_on_error` is `True`.
         RuntimeError
             If the entity does not complete within the allotted number of retries.
         """
@@ -117,21 +117,21 @@ class HelpersResource(SyncAPIResource):
     ) -> Evaluation:
         """Run an evaluation for a given agent over a dataset.
 
-        Handles both remote agents (referenced by ID or ``Agent``) and local
-        Python callables that take a list of ``ChatMessage`` and return an
-        ``AgentOutput``-compatible value.
+        Handles both remote agents (referenced by ID or `Agent`) and local
+        Python callables that take a list of `ChatMessage` and return an
+        `AgentOutput`-compatible value.
 
         Parameters
         ----------
         agent :
-            Either a remote agent identifier (``str`` or ``Agent``) or a callable
-            with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+            Either a remote agent identifier (`str` or `Agent`) or a callable
+            with signature `(messages: list[ChatMessage]) -> AgentReturn`.
         dataset :
-            Dataset identifier or ``Dataset`` instance containing the test cases
+            Dataset identifier or `Dataset` instance containing the test cases
             to evaluate the agent on.
         project :
-            Project identifier or ``Project`` instance.  Required when ``agent``
-            is a remote agent (string or ``Agent``).
+            Project identifier or `Project` instance.  Required when `agent`
+            is a remote agent (string or `Agent`).
         name :
             Optional name to assign to the created evaluation.
         tags :
@@ -145,10 +145,10 @@ class HelpersResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project`` is not provided when running a remote evaluation.
+            If `project` is not provided when running a remote evaluation.
         TypeError
             If the local agent callable returns an unsupported value, or if test
-            cases do not include full ``TestCase`` objects during local evaluation.
+            cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
@@ -284,12 +284,12 @@ class AsyncHelpersResource(AsyncAPIResource):
         -------
         StatefulEntity
             The refreshed entity once it has left the running states, or is in
-            an error state when ``raise_on_error`` is ``False``.
+            an error state when `raise_on_error` is `False`.
 
         Raises
         ------
         ValueError
-            If the entity reaches an error state and ``raise_on_error`` is ``True``.
+            If the entity reaches an error state and `raise_on_error` is `True`.
         RuntimeError
             If the entity does not complete within the allotted number of retries.
         """
@@ -325,21 +325,21 @@ class AsyncHelpersResource(AsyncAPIResource):
     ) -> Evaluation:
         """Asynchronously run an evaluation for a given agent over a dataset.
 
-        Handles both remote agents (referenced by ID or ``Agent``) and local
-        Python callables (sync or async) that take a list of ``ChatMessage``
-        and return an ``AgentOutput``-compatible value.
+        Handles both remote agents (referenced by ID or `Agent`) and local
+        Python callables (sync or async) that take a list of `ChatMessage`
+        and return an `AgentOutput`-compatible value.
 
         Parameters
         ----------
         agent :
-            Either a remote agent identifier (``str`` or ``Agent``) or a callable
-            with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+            Either a remote agent identifier (`str` or `Agent`) or a callable
+            with signature `(messages: list[ChatMessage]) -> AgentReturn`.
         dataset :
-            Dataset identifier or ``Dataset`` instance containing the test cases
+            Dataset identifier or `Dataset` instance containing the test cases
             to evaluate the agent on.
         project :
-            Project identifier or ``Project`` instance.  Required when ``agent``
-            is a remote agent (string or ``Agent``).
+            Project identifier or `Project` instance.  Required when `agent`
+            is a remote agent (string or `Agent`).
         name :
             Optional name to assign to the created evaluation.
         tags :
@@ -353,10 +353,10 @@ class AsyncHelpersResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project`` is not provided when running a remote evaluation.
+            If `project` is not provided when running a remote evaluation.
         TypeError
             If the local agent callable returns an unsupported value, or if test
-            cases do not include full ``TestCase`` objects during local evaluation.
+            cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
