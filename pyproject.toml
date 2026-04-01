@@ -38,6 +38,8 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/Giskard-AI/giskard-hub-python"
 Repository = "https://github.com/Giskard-AI/giskard-hub-python"
+Documentation = "https://docs.giskard.ai/hub/sdk"
+Issues = "https://github.com/Giskard-AI/giskard-hub-python/issues"
 
 [project.optional-dependencies]
 aiohttp = ["aiohttp", "httpx_aiohttp>=0.1.9"]

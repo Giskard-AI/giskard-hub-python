@@ -3,15 +3,22 @@
 <!-- prettier-ignore -->
 [![PyPI version](https://img.shields.io/pypi/v/giskard-hub.svg?label=pypi%20(stable))](https://pypi.org/project/giskard-hub/)
 
-The Giskard Hub Python SDK provides convenient access to the Giskard Hub API from any Python 3.10+
-application. The package includes type definitions for all request params and response fields,
-and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
+The official Python SDK for Giskard Hub. Use it to define agents, manage projects and datasets,
+run evaluations and vulnerability scans, schedule recurring runs, and automate your LLM quality
+workflow from Python.
+
+The package includes type definitions for all request params and response fields, and offers both
+synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
 
 It was initially generated with [Stainless](https://www.stainless.com/).
 
 ## Documentation
 
-The full API of this library can be found in [api.md](api.md).
+- [Documentation website](https://docs.giskard.ai/hub/sdk)
+- [Quickstart](https://docs.giskard.ai/hub/sdk/quickstart)
+- [How-to guides](https://docs.giskard.ai/hub/sdk/guides/projects)
+- [API reference](https://docs.giskard.ai/hub/sdk/reference)
+- [Migration guide (for SDK v2 users)](https://docs.giskard.ai/hub/sdk/migration)
 
 ## Installation
 
@@ -19,46 +26,83 @@ The full API of this library can be found in [api.md](api.md).
 pip install giskard-hub
 ```
 
-Or, install directly from the repository:
+To install the latest unreleased changes directly from GitHub:
 
 ```sh
-# install from this staging repo
 pip install git+ssh://git@github.com/Giskard-AI/giskard-hub-python.git
 ```
 
-## Usage
+## Configuration
 
-The full API of this library can be found in [api.md](api.md).
+Set the Hub base URL and API key before creating a client:
 
-```python
-import os
-from giskard_hub import HubClient
-
-client = HubClient(
-    api_key=os.environ.get("GISKARD_HUB_API_KEY"),  # This is the default and can be omitted
-)
-
-projects = client.projects.list()
-print(projects)
+```sh
+export GISKARD_HUB_BASE_URL="https://your-hub-instance"
+export GISKARD_HUB_API_KEY="your-api-key"
 ```
 
-While you can provide an `api_key` keyword argument,
-we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
-to add `GISKARD_HUB_API_KEY="My API Key"` to your `.env` file
-so that your API Key is not stored in source control.
+`HubClient()` and `AsyncHubClient()` automatically read these environment variables.
+
+## Quickstart
+
+```python
+from giskard_hub import HubClient
+
+hub = HubClient()
+
+project = hub.projects.list()[0]
+
+scan = hub.scans.create(
+    project_id=project.id,
+    agent_id="<agent-id>",
+    dataset_id="<dataset-id>",
+)
+
+print(scan)
+```
+
+If you prefer, you can also pass `api_key` and `base_url` directly to the client constructor.
+For local development, we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
+to load `GISKARD_HUB_BASE_URL` and `GISKARD_HUB_API_KEY` from a local `.env` file
+so that secrets are not stored in source control.
+
+## Helpers
+
+The SDK exposes convenience helpers on `hub.helpers` for common workflows such as running
+evaluations over a dataset, waiting for asynchronous jobs to finish, and printing evaluation or
+scan metrics.
+
+For example, to run an evaluation with a local Python callable:
+
+```python
+from giskard_hub import HubClient
+from giskard_hub.type import ChatMessage
+
+hub = HubClient()
+
+def my_agent(messages: list[ChatMessage]) -> str:
+    # Your agent logic here
+    return "Hello from my agent"
+
+evaluation = hub.helpers.evaluate(
+    agent=my_agent,
+    dataset="dataset-id",
+    name="My local evaluation",
+)
+
+completed = hub.helpers.wait_for_completion(evaluation)
+hub.helpers.print_metrics(completed)
+```
 
 ## Async usage
 
 Simply import `AsyncHubClient` instead of `HubClient` and use `await` with each API call:
 
 ```python
-import os
 import asyncio
 from giskard_hub import AsyncHubClient
 
-client = AsyncHubClient(
-    api_key=os.environ.get("GISKARD_HUB_API_KEY"),  # This is the default and can be omitted
-)
+client = AsyncHubClient()
 
 
 async def main() -> None:
@@ -92,7 +136,6 @@ from giskard_hub import AsyncHubClient
 
 async def main() -> None:
     async with AsyncHubClient(
-        api_key="My API Key",
         http_client=DefaultAioHttpClient(),
     ) as client:
         projects = await client.projects.list()
@@ -110,33 +153,6 @@ Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typ
 - Converting to a dictionary, `model.to_dict()`
 
 Typed requests and responses provide autocomplete and documentation within your editor. If you would like to see type errors in VS Code to help catch bugs earlier, set `python.analysis.typeCheckingMode` to `basic`.
-
-## Helpers
-
-The SDK exposes convenience helpers on `client.helpers` for common workflows such as running evaluations over a dataset.
-
-For example, to run an evaluation with a local Python callable:
-
-```python
-from giskard_hub import HubClient
-from giskard_hub.types.chat import ChatMessage
-
-client = HubClient()
-
-def my_agent(messages: list[ChatMessage]) -> str:
-    # Your agent logic here; can also return an AgentOutput-like dict
-    return "Hello from my agent"
-
-evaluation = client.helpers.evaluate(
-    agent=my_agent,
-    dataset="dataset-id",
-    name="My local evaluation",
-)
-
-# Optionally wait until the evaluation completes
-completed = client.helpers.wait_for_completion(evaluation)
-print(completed.state)
-```
 
 ## Nested params
 
