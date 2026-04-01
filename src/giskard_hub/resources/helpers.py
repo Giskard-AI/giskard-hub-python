@@ -25,12 +25,12 @@ from ..types.agent import Agent, AgentOutputParam
 from ..types.dataset import Dataset
 from ..types.project import Project
 from ._helpers_types import (
+    Retriever,
     TStateful,
     AgentReturn,
+    AsyncRetriever,
     PrintMetricsEntity,
-    RetrievableResource,
-    AsyncRetrievableResource,
-    map_entity_to_resource,
+    make_retriever,
     normalize_agent_output,
 )
 from ..types.test_case import TestCase
@@ -42,8 +42,8 @@ __all__ = ["HelpersResource", "AsyncHelpersResource"]
 class HelpersResource(SyncAPIResource):
     """Synchronous high-level helpers wrapping lower-level API resources."""
 
-    def _map_entity_to_resource(self, entity: BaseModel) -> SyncAPIResource:
-        return cast(SyncAPIResource, map_entity_to_resource(self._client, entity))
+    def _make_retriever(self, entity: BaseModel) -> Retriever:
+        return cast(Retriever, make_retriever(self._client, entity))
 
     def wait_for_completion(
         self,
@@ -85,11 +85,11 @@ class HelpersResource(SyncAPIResource):
         RuntimeError
             If the entity does not complete within the allotted number of retries.
         """
-        resource = cast(RetrievableResource, self._map_entity_to_resource(cast(BaseModel, entity)))
+        retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
 
         for _ in range(max_retries):
-            current = cast(TStateful, resource.retrieve(current.id))
+            current = cast(TStateful, retrieve(current.id))
 
             if current.state in error_states:
                 if raise_on_error:
@@ -250,8 +250,8 @@ class HelpersResource(SyncAPIResource):
 class AsyncHelpersResource(AsyncAPIResource):
     """Asynchronous high-level helpers wrapping lower-level API resources."""
 
-    def _map_entity_to_resource(self, entity: BaseModel) -> AsyncAPIResource:
-        return cast(AsyncAPIResource, map_entity_to_resource(self._client, entity))
+    def _make_retriever(self, entity: BaseModel) -> AsyncRetriever:
+        return cast(AsyncRetriever, make_retriever(self._client, entity))
 
     async def wait_for_completion(
         self,
@@ -293,11 +293,11 @@ class AsyncHelpersResource(AsyncAPIResource):
         RuntimeError
             If the entity does not complete within the allotted number of retries.
         """
-        resource = cast(AsyncRetrievableResource, self._map_entity_to_resource(cast(BaseModel, entity)))
+        retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
 
         for _ in range(max_retries):
-            current = cast(TStateful, await resource.retrieve(current.id))
+            current = cast(TStateful, await retrieve(current.id))
 
             if current.state in error_states:
                 if raise_on_error:
