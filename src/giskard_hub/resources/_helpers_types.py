@@ -10,7 +10,7 @@ from pydantic import TypeAdapter
 from .._models import BaseModel
 from ..types.chat import ChatMessage
 from ..types.scan import Scan, ScanProbe
-from ..types.agent import Agent, AgentOutput
+from ..types.agent import AgentOutput
 from ..types.common import TaskState
 from ..types.dataset import Dataset
 from ..types.evaluation import Evaluation, TestCaseEvaluation
@@ -112,8 +112,6 @@ def make_retriever(
     TypeError
         If the entity type is not supported.
     """
-    if isinstance(entity, Agent):
-        return client.agents.retrieve
     if isinstance(entity, Dataset):
         return client.datasets.retrieve
     if isinstance(entity, Evaluation):
