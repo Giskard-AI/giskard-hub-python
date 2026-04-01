@@ -857,7 +857,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
     async def bulk_update(
         self,
         *,
-        ids: SequenceNotStr[str],
+        test_case_ids: SequenceNotStr[str],
         disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         added_tags: Optional[SequenceNotStr[str]] | Omit = omit,
@@ -908,7 +908,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             "/v2/test-cases",
             body=await async_maybe_transform(
                 {
-                    "ids": ids,
+                    "ids": test_case_ids,
                     "disabled_checks": disabled_checks,
                     "enabled_checks": enabled_checks,
                     "added_tags": added_tags,

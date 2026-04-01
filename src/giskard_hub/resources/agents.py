@@ -190,7 +190,7 @@ class AgentsResource(SyncAPIResource):
         agent_id: str,
         *,
         description: Optional[str] | Omit = omit,
-        headers: Dict[str, str] | Omit = omit,
+        headers: Optional[Dict[str, str]] | Omit = omit,
         name: Optional[str] | Omit = omit,
         supported_languages: Optional[SequenceNotStr[str]] | Omit = omit,
         url: Optional[str] | Omit = omit,
@@ -243,7 +243,7 @@ class AgentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
 
         headers_api: list[HeaderParam] | Omit
-        if headers is omit:
+        if headers is omit or headers is None:
             headers_api = omit
         else:
             headers_api = [
@@ -781,7 +781,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         agent_id: str,
         *,
         description: Optional[str] | Omit = omit,
-        headers: Dict[str, str] | Omit = omit,
+        headers: Optional[Dict[str, str]] | Omit = omit,
         name: Optional[str] | Omit = omit,
         supported_languages: Optional[SequenceNotStr[str]] | Omit = omit,
         url: Optional[str] | Omit = omit,
@@ -834,7 +834,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
 
         headers_api: list[HeaderParam] | Omit
-        if headers is omit:
+        if headers is omit or headers is None:
             headers_api = omit
         else:
             headers_api = [

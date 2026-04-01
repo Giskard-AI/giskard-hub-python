@@ -261,7 +261,7 @@ class ChecksResource(SyncAPIResource):
         project_id : str
             Project ID to list checks for.
         filter_builtin : bool | Omit
-            Whether to filter out built-in checks.
+            Whether to filter out built-in checks. Default value is True.
 
         Other Parameters
         ----------------
@@ -622,7 +622,7 @@ class AsyncChecksResource(AsyncAPIResource):
         project_id : str
             Project ID to list checks for.
         filter_builtin : bool | Omit
-            Whether to filter out built-in checks.
+            Whether to filter out built-in checks. Default value is True.
 
         Other Parameters
         ----------------
