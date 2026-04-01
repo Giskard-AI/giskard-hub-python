@@ -238,8 +238,8 @@ class ResultsResource(SyncAPIResource):
         result_id: str,
         *,
         evaluation_id: str,
-        error: Optional[str] | Omit = omit,
         agent_output: Optional[AgentOutputParam] | Omit = omit,
+        error: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -255,10 +255,10 @@ class ResultsResource(SyncAPIResource):
             The ID of the result to submit the local output for.
         evaluation_id : str
             The ID of the evaluation to submit the local output for.
-        error : Optional[str], optional
-            The error to submit the local output for.
         agent_output : Optional[AgentOutputParam], optional
             The output to submit the local output for.
+        error : Optional[str], optional
+            The error to submit the local output for.
 
         Other Parameters
         ----------------
@@ -764,8 +764,8 @@ class AsyncResultsResource(AsyncAPIResource):
         result_id: str,
         *,
         evaluation_id: str,
-        error: Optional[str] | Omit = omit,
         agent_output: Optional[AgentOutputParam] | Omit = omit,
+        error: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -781,10 +781,10 @@ class AsyncResultsResource(AsyncAPIResource):
             The ID of the result to submit the local output for.
         evaluation_id : str
             The ID of the evaluation to submit the local output for.
-        error : Optional[str], optional
-            The error to submit the local output for.
         agent_output : Optional[AgentOutputParam], optional
             The output to submit the local output for.
+        error : Optional[str], optional
+            The error to submit the local output for.
 
         Other Parameters
         ----------------
