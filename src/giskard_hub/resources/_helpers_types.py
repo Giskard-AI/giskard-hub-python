@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, TypeVar, Callable, Protocol, Awaitable, runtime_checkable
+from typing import TYPE_CHECKING, Any, TypeVar, Callable, Protocol, Awaitable, cast, overload, runtime_checkable
 from functools import partial
 
 from pydantic import TypeAdapter
@@ -82,10 +82,16 @@ def normalize_agent_output(value: Any) -> AgentOutput:
             raise ValueError(f"Invalid agent output: {value!r}")
 
 
+@overload
+def make_retriever(client: HubClient, entity: BaseModel) -> Retriever: ...
+@overload
+def make_retriever(client: AsyncHubClient, entity: BaseModel) -> AsyncRetriever: ...
+
+
 def make_retriever(
-    client: "HubClient | AsyncHubClient",
+    client: HubClient | AsyncHubClient,
     entity: BaseModel,
-) -> Callable[..., Any]:
+) -> Retriever | AsyncRetriever:
     """Create a callable that retrieves the latest state of `entity` by ID.
 
     For most entity types the callable is the `retrieve` method of the
@@ -103,7 +109,7 @@ def make_retriever(
 
     Returns
     -------
-    Callable[..., Any]
+    Retriever | AsyncRetriever
         A callable `(id: str) -> StatefulEntity` (sync or async depending
         on the client).
 
@@ -123,5 +129,8 @@ def make_retriever(
     if isinstance(entity, ScanProbe):
         return client.scans.probes.retrieve
     if isinstance(entity, TestCaseEvaluation):
-        return partial(client.evaluations.results.retrieve, evaluation_id=entity.evaluation_id)
-    raise TypeError(f"Unsupported entity type for wait_for_completion: {type(entity)!r}")
+        return cast(
+            Retriever | AsyncRetriever,
+            partial(client.evaluations.results.retrieve, evaluation_id=entity.evaluation_id),
+        )
+    raise TypeError(f"Unsupported entity type for retriever resolution: {type(entity)!r}")

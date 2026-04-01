@@ -43,7 +43,7 @@ class HelpersResource(SyncAPIResource):
     """Synchronous high-level helpers wrapping lower-level API resources."""
 
     def _make_retriever(self, entity: BaseModel) -> Retriever:
-        return cast(Retriever, make_retriever(self._client, entity))
+        return make_retriever(self._client, entity)
 
     def wait_for_completion(
         self,
@@ -251,7 +251,7 @@ class AsyncHelpersResource(AsyncAPIResource):
     """Asynchronous high-level helpers wrapping lower-level API resources."""
 
     def _make_retriever(self, entity: BaseModel) -> AsyncRetriever:
-        return cast(AsyncRetriever, make_retriever(self._client, entity))
+        return make_retriever(self._client, entity)
 
     async def wait_for_completion(
         self,
