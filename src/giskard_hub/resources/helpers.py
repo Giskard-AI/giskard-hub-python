@@ -1,8 +1,8 @@
 """High-level helper resources that orchestrate common workflows.
 
-This module provides ``HelpersResource`` and ``AsyncHelpersResource``, which
+This module provides `HelpersResource` and `AsyncHelpersResource`, which
 wrap lower-level API resources to offer convenience methods such as
-``wait_for_completion``, ``evaluate``, and ``print_metrics``.
+`wait_for_completion`, `evaluate`, and `print_metrics`.
 """
 
 import time
@@ -25,12 +25,12 @@ from ..types.agent import Agent, AgentOutputParam
 from ..types.dataset import Dataset
 from ..types.project import Project
 from ._helpers_types import (
+    Retriever,
     TStateful,
     AgentReturn,
+    AsyncRetriever,
     PrintMetricsEntity,
-    RetrievableResource,
-    AsyncRetrievableResource,
-    map_entity_to_resource,
+    make_retriever,
     normalize_agent_output,
 )
 from ..types.test_case import TestCase
@@ -42,8 +42,8 @@ __all__ = ["HelpersResource", "AsyncHelpersResource"]
 class HelpersResource(SyncAPIResource):
     """Synchronous high-level helpers wrapping lower-level API resources."""
 
-    def _map_entity_to_resource(self, entity: BaseModel) -> SyncAPIResource:
-        return cast(SyncAPIResource, map_entity_to_resource(self._client, entity))
+    def _make_retriever(self, entity: BaseModel) -> Retriever:
+        return make_retriever(self._client, entity)
 
     def wait_for_completion(
         self,
@@ -76,20 +76,20 @@ class HelpersResource(SyncAPIResource):
         -------
         StatefulEntity
             The refreshed entity once it has left the running states, or is in
-            an error state when ``raise_on_error`` is ``False``.
+            an error state when `raise_on_error` is `False`.
 
         Raises
         ------
         ValueError
-            If the entity reaches an error state and ``raise_on_error`` is ``True``.
+            If the entity reaches an error state and `raise_on_error` is `True`.
         RuntimeError
             If the entity does not complete within the allotted number of retries.
         """
-        resource = cast(RetrievableResource, self._map_entity_to_resource(cast(BaseModel, entity)))
+        retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
 
         for _ in range(max_retries):
-            current = cast(TStateful, resource.retrieve(current.id))
+            current = cast(TStateful, retrieve(current.id))
 
             if current.state in error_states:
                 if raise_on_error:
@@ -117,21 +117,21 @@ class HelpersResource(SyncAPIResource):
     ) -> Evaluation:
         """Run an evaluation for a given agent over a dataset.
 
-        Handles both remote agents (referenced by ID or ``Agent``) and local
-        Python callables that take a list of ``ChatMessage`` and return an
-        ``AgentOutput``-compatible value.
+        Handles both remote agents (referenced by ID or `Agent`) and local
+        Python callables that take a list of `ChatMessage` and return an
+        `AgentOutput`-compatible value.
 
         Parameters
         ----------
         agent :
-            Either a remote agent identifier (``str`` or ``Agent``) or a callable
-            with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+            Either a remote agent identifier (`str` or `Agent`) or a callable
+            with signature `(messages: list[ChatMessage]) -> AgentReturn`.
         dataset :
-            Dataset identifier or ``Dataset`` instance containing the test cases
+            Dataset identifier or `Dataset` instance containing the test cases
             to evaluate the agent on.
         project :
-            Project identifier or ``Project`` instance.  Required when ``agent``
-            is a remote agent (string or ``Agent``).
+            Project identifier or `Project` instance.  Required when `agent`
+            is a remote agent (string or `Agent`).
         name :
             Optional name to assign to the created evaluation.
         tags :
@@ -145,10 +145,10 @@ class HelpersResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project`` is not provided when running a remote evaluation.
+            If `project` is not provided when running a remote evaluation.
         TypeError
             If the local agent callable returns an unsupported value, or if test
-            cases do not include full ``TestCase`` objects during local evaluation.
+            cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
@@ -250,8 +250,8 @@ class HelpersResource(SyncAPIResource):
 class AsyncHelpersResource(AsyncAPIResource):
     """Asynchronous high-level helpers wrapping lower-level API resources."""
 
-    def _map_entity_to_resource(self, entity: BaseModel) -> AsyncAPIResource:
-        return cast(AsyncAPIResource, map_entity_to_resource(self._client, entity))
+    def _make_retriever(self, entity: BaseModel) -> AsyncRetriever:
+        return make_retriever(self._client, entity)
 
     async def wait_for_completion(
         self,
@@ -284,20 +284,20 @@ class AsyncHelpersResource(AsyncAPIResource):
         -------
         StatefulEntity
             The refreshed entity once it has left the running states, or is in
-            an error state when ``raise_on_error`` is ``False``.
+            an error state when `raise_on_error` is `False`.
 
         Raises
         ------
         ValueError
-            If the entity reaches an error state and ``raise_on_error`` is ``True``.
+            If the entity reaches an error state and `raise_on_error` is `True`.
         RuntimeError
             If the entity does not complete within the allotted number of retries.
         """
-        resource = cast(AsyncRetrievableResource, self._map_entity_to_resource(cast(BaseModel, entity)))
+        retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
 
         for _ in range(max_retries):
-            current = cast(TStateful, await resource.retrieve(current.id))
+            current = cast(TStateful, await retrieve(current.id))
 
             if current.state in error_states:
                 if raise_on_error:
@@ -325,21 +325,21 @@ class AsyncHelpersResource(AsyncAPIResource):
     ) -> Evaluation:
         """Asynchronously run an evaluation for a given agent over a dataset.
 
-        Handles both remote agents (referenced by ID or ``Agent``) and local
-        Python callables (sync or async) that take a list of ``ChatMessage``
-        and return an ``AgentOutput``-compatible value.
+        Handles both remote agents (referenced by ID or `Agent`) and local
+        Python callables (sync or async) that take a list of `ChatMessage`
+        and return an `AgentOutput`-compatible value.
 
         Parameters
         ----------
         agent :
-            Either a remote agent identifier (``str`` or ``Agent``) or a callable
-            with signature ``(messages: list[ChatMessage]) -> AgentReturn``.
+            Either a remote agent identifier (`str` or `Agent`) or a callable
+            with signature `(messages: list[ChatMessage]) -> AgentReturn`.
         dataset :
-            Dataset identifier or ``Dataset`` instance containing the test cases
+            Dataset identifier or `Dataset` instance containing the test cases
             to evaluate the agent on.
         project :
-            Project identifier or ``Project`` instance.  Required when ``agent``
-            is a remote agent (string or ``Agent``).
+            Project identifier or `Project` instance.  Required when `agent`
+            is a remote agent (string or `Agent`).
         name :
             Optional name to assign to the created evaluation.
         tags :
@@ -353,10 +353,10 @@ class AsyncHelpersResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project`` is not provided when running a remote evaluation.
+            If `project` is not provided when running a remote evaluation.
         TypeError
             If the local agent callable returns an unsupported value, or if test
-            cases do not include full ``TestCase`` objects during local evaluation.
+            cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
