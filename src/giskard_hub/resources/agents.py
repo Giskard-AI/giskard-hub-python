@@ -243,7 +243,7 @@ class AgentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
 
         headers_api: list[HeaderParam] | Omit
-        if headers is omit:
+        if headers is omit or headers is None:
             headers_api = omit
         else:
             headers_api = [
@@ -834,7 +834,7 @@ class AsyncAgentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
 
         headers_api: list[HeaderParam] | Omit
-        if headers is omit:
+        if headers is omit or headers is None:
             headers_api = omit
         else:
             headers_api = [
