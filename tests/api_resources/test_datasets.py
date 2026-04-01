@@ -615,7 +615,6 @@ class TestDatasets:
             )
 
 
-
 class TestAsyncDatasets:
     parametrize = pytest.mark.parametrize(
         "async_client",
@@ -1216,4 +1215,3 @@ class TestAsyncDatasets:
             await async_client.datasets.with_raw_response.search_test_cases(
                 "",
             )
-

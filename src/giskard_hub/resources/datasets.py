@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
+from pathlib import Path
 
 import httpx
 
@@ -119,7 +120,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -133,7 +134,7 @@ class DatasetsResource(SyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        data : FileTypes | list[dict[str, Any]]
+        data : FileTypes | list[dict[str, Any]] | str
             Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
@@ -156,6 +157,8 @@ class DatasetsResource(SyncAPIResource):
         Dataset
             The uploaded dataset.
         """
+        if isinstance(data, str):
+            data = Path(data)
         if isinstance(data, list):
             data = ("test_cases.json", json.dumps(data).encode("utf-8"))
 
@@ -841,7 +844,6 @@ class DatasetsResource(SyncAPIResource):
         return self._unwrap_paginated(response, include_metadata)
 
 
-
 class AsyncDatasetsResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncDatasetsResourceWithRawResponse:
@@ -924,7 +926,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -938,7 +940,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        data : FileTypes | list[dict[str, Any]]
+        data : FileTypes | list[dict[str, Any]] | str
             Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
@@ -961,6 +963,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Dataset
             The uploaded dataset.
         """
+        if isinstance(data, str):
+            data = Path(data)
         if isinstance(data, list):
             data = ("test_cases.json", json.dumps(data).encode("utf-8"))
 
@@ -1641,7 +1645,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
         )
 
         return self._unwrap_paginated(response, include_metadata)
-
 
 
 class DatasetsResourceWithRawResponse:
