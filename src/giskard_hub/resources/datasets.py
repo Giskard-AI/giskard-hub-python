@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
+from pathlib import Path
 
 import httpx
 
@@ -119,7 +120,7 @@ class DatasetsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -133,7 +134,7 @@ class DatasetsResource(SyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        data : FileTypes | list[dict[str, Any]]
+        data : FileTypes | list[dict[str, Any]] | str
             Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
@@ -156,6 +157,8 @@ class DatasetsResource(SyncAPIResource):
         Dataset
             The uploaded dataset.
         """
+        if isinstance(data, str):
+            data = Path(data)
         if isinstance(data, list):
             data = ("test_cases.json", json.dumps(data).encode("utf-8"))
 
@@ -673,6 +676,8 @@ class DatasetsResource(SyncAPIResource):
     ) -> List[TestCase]:
         """List all test cases belonging to a dataset.
 
+        Fetches every page via :meth:`search_test_cases` (same as an unfiltered search).
+
         Parameters
         ----------
         dataset_id : str
@@ -701,15 +706,26 @@ class DatasetsResource(SyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        response = self._get(
-            f"/v2/datasets/{dataset_id}/test-cases",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[List[TestCase]],
-        )
-
-        return self._unwrap(response)
+        page_limit = 100
+        all_items: List[TestCase] = []
+        offset = 0
+        while True:
+            page, meta = self.search_test_cases(
+                dataset_id,
+                limit=page_limit,
+                offset=offset,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+            all_items.extend(page)
+            next_offset = meta.offset + meta.count
+            if next_offset >= meta.total or not page:
+                break
+            offset = next_offset
+        return all_items
 
     @overload
     def search_test_cases(
@@ -725,7 +741,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-        include_metadata: bool = False,
+        include_metadata: Literal[False] = False,
     ) -> List[TestCase]: ...
 
     @overload
@@ -742,7 +758,7 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-        include_metadata: Literal[True],
+        include_metadata: Literal[True] = True,
     ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
 
     def search_test_cases(
@@ -910,7 +926,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        data: FileTypes | list[dict[str, Any]],
+        data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -924,7 +940,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         ----------
         project_id : str
             Project ID to import the dataset into.
-        data : FileTypes | list[dict[str, Any]]
+        data : FileTypes | list[dict[str, Any]] | str
             Data to upload.
         dataset_id : Optional[str]
             Dataset ID to update (optional).
@@ -947,6 +963,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Dataset
             The uploaded dataset.
         """
+        if isinstance(data, str):
+            data = Path(data)
         if isinstance(data, list):
             data = ("test_cases.json", json.dumps(data).encode("utf-8"))
 
@@ -1461,6 +1479,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
     ) -> List[TestCase]:
         """List all test cases belonging to a dataset.
 
+        Fetches every page via :meth:`search_test_cases` (same as an unfiltered search).
+
         Parameters
         ----------
         dataset_id : str
@@ -1489,15 +1509,26 @@ class AsyncDatasetsResource(AsyncAPIResource):
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
-        response = await self._get(
-            f"/v2/datasets/{dataset_id}/test-cases",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=APIResponse[List[TestCase]],
-        )
-
-        return self._unwrap(response)
+        page_limit = 100
+        all_items: List[TestCase] = []
+        offset = 0
+        while True:
+            page, meta = await self.search_test_cases(
+                dataset_id,
+                limit=page_limit,
+                offset=offset,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+            all_items.extend(page)
+            next_offset = meta.offset + meta.count
+            if next_offset >= meta.total or not page:
+                break
+            offset = next_offset
+        return all_items
 
     @overload
     async def search_test_cases(
@@ -1513,7 +1544,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-        include_metadata: bool = False,
+        include_metadata: Literal[False] = False,
     ) -> List[TestCase]: ...
 
     @overload
@@ -1530,7 +1561,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-        include_metadata: Literal[True],
+        include_metadata: Literal[True] = True,
     ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
 
     async def search_test_cases(

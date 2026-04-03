@@ -69,6 +69,7 @@ from .agent import (
     AgentAutofillDescriptionParams as AgentAutofillDescriptionParams,
     AgentBulkDeleteParams as AgentBulkDeleteParams,
     AgentCreateParams as AgentCreateParams,
+    AgentDetectStatefulnessParams as AgentDetectStatefulnessParams,
     AgentGenerateCompletionParams as AgentGenerateCompletionParams,
     AgentListParams as AgentListParams,
     AgentOutput as AgentOutput,
@@ -76,6 +77,7 @@ from .agent import (
     AgentReference as AgentReference,
     AgentTestConnectionParams as AgentTestConnectionParams,
     AgentUpdateParams as AgentUpdateParams,
+    AgentDetectStatefulness as AgentDetectStatefulness,
     MinimalAgent as MinimalAgent,
     MinimalAgentParam as MinimalAgentParam,
 )
@@ -170,6 +172,7 @@ from .knowledge_base import (
 
 # -- evaluation ------------------------------------------------------------
 from .evaluation import (
+    DivergenceWarning as DivergenceWarning,
     Evaluation as Evaluation,
     EvaluationReference as EvaluationReference,
     EvaluationBulkDeleteParams as EvaluationBulkDeleteParams,
@@ -300,6 +303,7 @@ __all__ = [
     "AgentOutputParam",
     "MinimalAgent",
     "MinimalAgentParam",
+    "AgentDetectStatefulness",
     "AgentListParams",
     "AgentCreateParams",
     "AgentUpdateParams",
@@ -307,6 +311,7 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
+    "AgentDetectStatefulnessParams",
     # check
     "Check",
     "CheckResult",
@@ -382,6 +387,7 @@ __all__ = [
     "KnowledgeBaseDocumentFiltersParam",
     # evaluation
     "Metric",
+    "DivergenceWarning",
     "Evaluation",
     "EvaluationReference",
     "EvaluationListParams",

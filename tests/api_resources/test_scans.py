@@ -37,6 +37,7 @@ class TestScans:
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            probe_ids=["string"],
             tags=["string"],
         )
         assert_matches_type(Scan, scan, path=["response"])
@@ -337,6 +338,7 @@ class TestAsyncScans:
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            probe_ids=["string"],
             tags=["string"],
         )
         assert_matches_type(Scan, scan, path=["response"])
