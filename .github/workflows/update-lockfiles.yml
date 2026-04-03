@@ -21,6 +21,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     steps:
+      - name: Check if organization member
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          if ! gh api "orgs/Giskard-AI/members/${ACTOR}" --silent 2>/dev/null; then
+            echo "::error::${ACTOR} is not a member of Giskard-AI"
+            exit 1
+          fi
+
       - name: Compute target branch + mode
         id: target
         shell: bash
