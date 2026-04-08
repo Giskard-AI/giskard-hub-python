@@ -258,6 +258,7 @@ from giskard_hub.types import (
     AgentReference,
     KnowledgeBase,
     Scan,
+    ScanAvailableProbe,
     ScanCategory,
     ScanProbe,
 )
@@ -272,6 +273,7 @@ Methods:
 - <code title="delete /v2/scans">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/scan.py">params</a>) -> None</code>
 - <code title="get /v2/scan-categories">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_categories</a>() -> List[<a href="./src/giskard_hub/types/scan.py">ScanCategory</a>]</code>
 - <code title="get /v2/scans/{scan_id}/probes">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_probes</a>(scan_id) -> List[<a href="./src/giskard_hub/types/scan.py">ScanProbe</a>]</code>
+- <code title="get /v2/scan-available-probes">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_available_probes</a>() -> List[<a href="./src/giskard_hub/types/scan.py">ScanAvailableProbe</a>]</code>
 
 ## Probes
 

@@ -18,6 +18,7 @@ __all__ = [
     "ScanProbeAttemptReference",
     "Scan",
     "ScanCategory",
+    "ScanAvailableProbe",
     "ScanListParams",
     "ScanCreateParams",
     "ScanRetrieveParams",
@@ -70,6 +71,13 @@ class ScanCategory(BaseModel):
     description: str
     owasp_id: Optional[str] = None
     title: str
+
+
+class ScanAvailableProbe(BaseModel):
+    id: str
+    name: str
+    desc: str
+    tags: List[str]
 
 
 class ScanProbeMetric(BaseModel):
