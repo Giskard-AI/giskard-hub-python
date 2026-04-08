@@ -17,8 +17,8 @@ from ...types import (
     Agent,
     ScanProbe,
     ScanCategory,
-    ScanAvailableProbeAPIResource,
     KnowledgeBase,
+    ScanAvailableProbe,
 )
 from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from ..._utils import maybe_transform, async_maybe_transform
@@ -462,7 +462,7 @@ class ScansResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanAvailableProbeAPIResource]:
+    ) -> List[ScanAvailableProbe]:
         """List all available probes that can be used for scanning.
 
         Other Parameters
@@ -478,7 +478,7 @@ class ScansResource(SyncAPIResource):
 
         Returns
         -------
-        list of ScanAvailableProbeAPIResource
+        list of ScanAvailableProbe
             A list of available scan probes.
         """
         response = self._get(
@@ -486,7 +486,7 @@ class ScansResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ScanAvailableProbeAPIResource]],
+            cast_to=APIResponse[List[ScanAvailableProbe]],
         )
 
         return self._unwrap(response)
@@ -904,7 +904,7 @@ class AsyncScansResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[ScanAvailableProbeAPIResource]:
+    ) -> List[ScanAvailableProbe]:
         """List all available probes that can be used for scanning.
 
         Other Parameters
@@ -920,7 +920,7 @@ class AsyncScansResource(AsyncAPIResource):
 
         Returns
         -------
-        list of ScanAvailableProbeAPIResource
+        list of ScanAvailableProbe
             A list of available scan probes.
         """
         response = await self._get(
@@ -928,7 +928,7 @@ class AsyncScansResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[ScanAvailableProbeAPIResource]],
+            cast_to=APIResponse[List[ScanAvailableProbe]],
         )
 
         return self._unwrap(response)

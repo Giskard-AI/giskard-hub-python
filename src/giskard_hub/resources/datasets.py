@@ -841,7 +841,6 @@ class DatasetsResource(SyncAPIResource):
         return self._unwrap_paginated(response, include_metadata)
 
 
-
 class AsyncDatasetsResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncDatasetsResourceWithRawResponse:
@@ -1641,7 +1640,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
         )
 
         return self._unwrap_paginated(response, include_metadata)
-
 
 
 class DatasetsResourceWithRawResponse:

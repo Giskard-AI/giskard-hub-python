@@ -18,7 +18,7 @@ __all__ = [
     "ScanProbeAttemptReference",
     "Scan",
     "ScanCategory",
-    "ScanAvailableProbeAPIResource",
+    "ScanAvailableProbe",
     "ScanListParams",
     "ScanCreateParams",
     "ScanRetrieveParams",
@@ -73,7 +73,7 @@ class ScanCategory(BaseModel):
     title: str
 
 
-class ScanAvailableProbeAPIResource(BaseModel):
+class ScanAvailableProbe(BaseModel):
     id: str
     name: str
     desc: str
