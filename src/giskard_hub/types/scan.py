@@ -75,9 +75,8 @@ class ScanCategory(BaseModel):
 
 class ScanAvailableProbeAPIResource(BaseModel):
     id: str
-    category: str
-    description: str
     name: str
+    desc: str
     tags: List[str]
 
 
