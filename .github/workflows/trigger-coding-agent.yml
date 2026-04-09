@@ -3,9 +3,10 @@ name: SDK Code Generation Agent Trigger
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
-      - "backend/openapi_specs/**"
+      - "openapi.json"
+  workflow_dispatch: {}
 
 permissions: {}
 
@@ -19,121 +20,93 @@ jobs:
     permissions:
       contents: read
     runs-on: blacksmith-2vcpu-ubuntu-2404
-    environment: ci
+    environment: codegen
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Generate submodule token
-        id: app-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
-        with:
-          app-id: ${{ vars.SUBMODULE_APP_ID }}
-          private-key: ${{ secrets.SUBMODULE_APP_PRIVATE_KEY }}
-          owner: Giskard-AI
-          repositories: lidar
-      - name: Init submodules
+          fetch-depth: 2
+
+      - name: Check for openapi.json changes
+        id: check_changes
         run: |
-          git config --global url."https://x-access-token:${APP_TOKEN}@github.com/".insteadOf "git@github.com:"
-          git submodule update --init --recursive
-        env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          set -e
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            # On main (push event): compare with previous commit
+            BASELINE="HEAD~1"
+          else
+            # On a branch (workflow_dispatch): compare with main
+            git fetch origin main --depth=1 --quiet
+            BASELINE="origin/main"
+          fi
+
+          if git show "${BASELINE}:openapi.json" > /tmp/previous_openapi.json 2>/dev/null; then
+            if diff -q openapi.json /tmp/previous_openapi.json > /dev/null 2>&1; then
+              echo "No changes detected in openapi.json compared to ${BASELINE}"
+              echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "Changes detected in openapi.json compared to ${BASELINE}"
+              echo "has_changes=true" >> "$GITHUB_OUTPUT"
+              echo "previous_spec=/tmp/previous_openapi.json" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "No openapi.json found at ${BASELINE} (new file)"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install uv
+        if: steps.check_changes.outputs.has_changes == 'true'
         uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           enable-cache: true
           python-version: "3.12"
 
-      - name: Find latest spec files
-        id: find_specs
-        working-directory: backend
-        run: |
-          set -e
-
-          write_output() {
-            local key="$1"
-            local value="$2"
-            value="${value//$'\r'/}"
-            value="${value//$'\n'/}"
-            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_OUTPUT"
-          }
-
-          # Find the latest spec files (previous and new)
-          if [ -d "openapi_specs" ] && [ "$(ls -A openapi_specs/*.json 2>/dev/null)" ]; then
-            # Get the two most recent specs
-            SPECS=$(ls openapi_specs/*.json 2>/dev/null | sort -r)
-            NEW_SPEC=$(echo "$SPECS" | head -n1)
-            PREVIOUS_SPEC=$(echo "$SPECS" | head -n2 | tail -n1)
-            
-            echo "New spec: $NEW_SPEC"
-            write_output "new_spec_file" "$NEW_SPEC"
-            
-            # Only set previous spec if it's different from new spec (i.e., there are at least 2 specs)
-            if [ -n "$PREVIOUS_SPEC" ] && [ "$NEW_SPEC" != "$PREVIOUS_SPEC" ]; then
-              echo "Previous spec: $PREVIOUS_SPEC"
-              write_output "previous_spec_file" "$PREVIOUS_SPEC"
-            else
-              echo "No previous spec found (this is the first spec file)"
-            fi
-          else
-            echo "No spec files found"
-            exit 1
-          fi
-
       - name: Generate comparison summary
+        if: steps.check_changes.outputs.has_changes == 'true'
         id: generate_summary
-        working-directory: backend
         env:
-          PREVIOUS_SPEC_FILE: ${{ steps.find_specs.outputs.previous_spec_file }}
-          NEW_SPEC_FILE: ${{ steps.find_specs.outputs.new_spec_file }}
+          PREVIOUS_SPEC: ${{ steps.check_changes.outputs.previous_spec }}
         run: |
           set -e
-          if [ -n "$PREVIOUS_SPEC_FILE" ] && [ -f "$PREVIOUS_SPEC_FILE" ]; then
-            echo "Comparing specs: $PREVIOUS_SPEC_FILE -> $NEW_SPEC_FILE"
-            SUMMARY=$(uv run python scripts/compare_openapi_specs.py "$PREVIOUS_SPEC_FILE" "$NEW_SPEC_FILE" 2>&1)
+          if [ -n "$PREVIOUS_SPEC" ] && [ -f "$PREVIOUS_SPEC" ]; then
+            echo "Comparing previous and current openapi.json..."
+            SUMMARY=$(uv run python scripts/compare_openapi_specs.py "$PREVIOUS_SPEC" openapi.json 2>&1)
           else
             echo "No previous spec found, using default summary"
-            SUMMARY="New OpenAPI spec file created: $NEW_SPEC_FILE"
+            SUMMARY="New OpenAPI spec file: openapi.json"
           fi
-          echo "summary<<EOF" >> $GITHUB_OUTPUT
-          echo "$SUMMARY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "summary<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$SUMMARY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Render SDK agent prompt
+        if: steps.check_changes.outputs.has_changes == 'true'
         id: render_prompt
-        working-directory: backend
         env:
           SUMMARY: ${{ steps.generate_summary.outputs.summary }}
         run: |
           set -e
-          echo "Rendering prompt with summary..."
           PROMPT=$(uv run python scripts/render_sdk_agent_prompt.py --summary "$SUMMARY")
-          echo "prompt<<EOF" >> $GITHUB_OUTPUT
-          echo "$PROMPT" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "prompt<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PROMPT" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Launch Cursor Agent
+        if: steps.check_changes.outputs.has_changes == 'true'
         id: launch_agent
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
           PROMPT_TEXT_RAW: ${{ steps.render_prompt.outputs.prompt }}
         run: |
           set -e
-          echo "Preparing agent request payload..."
           BRANCH_NAME="cursor/update-api-$(date -u +%Y%m%d-%H%M%S)"
-          PROMPT_TEXT=$(printf '%s' "$PROMPT_TEXT_RAW" | jq -Rs .)
 
           PAYLOAD=$(jq -n \
-            --arg prompt_text "$PROMPT_TEXT" \
+            --arg prompt_text "$PROMPT_TEXT_RAW" \
             --arg branch_name "$BRANCH_NAME" \
             '{
-              "prompt": {
-                "text": $prompt_text
-              },
+              "prompt": { "text": $prompt_text },
               "source": {
                 "repository": "https://github.com/Giskard-AI/giskard-hub-python",
                 "ref": "main"
@@ -146,7 +119,6 @@ jobs:
               }
             }')
 
-          echo "Launching Cursor Agent..."
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             --request POST \
             --url https://api.cursor.com/v0/agents \
@@ -157,12 +129,13 @@ jobs:
           HTTP_CODE=$(echo "${RESPONSE}" | tail -n 1)
           BODY=$(echo "${RESPONSE}" | sed '$d')
 
-          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
-          echo "body<<EOF" >> $GITHUB_OUTPUT
-          echo "$BODY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "http_code=$HTTP_CODE" >> "$GITHUB_OUTPUT"
+          echo "body<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$BODY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Process agent response
+        if: steps.check_changes.outputs.has_changes == 'true'
         env:
           HTTP_CODE: ${{ steps.launch_agent.outputs.http_code }}
           BODY: ${{ steps.launch_agent.outputs.body }}
@@ -171,13 +144,11 @@ jobs:
           if [ "${HTTP_CODE}" -eq 200 ] || [ "${HTTP_CODE}" -eq 201 ]; then
             AGENT_ID=$(echo "${BODY}" | jq -r '.id')
             AGENT_URL=$(echo "${BODY}" | jq -r '.target.url')
-            echo "✅ Cursor Agent launched successfully!"
+            echo "Cursor Agent launched successfully!"
             echo "Agent ID: ${AGENT_ID}"
             echo "Agent URL: ${AGENT_URL}"
-            echo ""
-            echo "The agent will analyze the changes and create a PR in giskard-hub-python repository."
           else
-            echo "❌ Failed to launch Cursor Agent"
+            echo "Failed to launch Cursor Agent"
             echo "HTTP Status: ${HTTP_CODE}"
             echo "Response: ${BODY}"
             exit 1
