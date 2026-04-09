@@ -7,6 +7,7 @@ from functools import partial
 
 from pydantic import TypeAdapter
 
+from .._types import SequenceNotStr
 from .._models import BaseModel
 from ..types.chat import ChatMessage
 from ..types.scan import Scan, ScanProbe
@@ -65,6 +66,28 @@ PrintMetricsEntity = Evaluation | Scan
 # ---------------------------------------------------------------------------
 # Utility functions
 # ---------------------------------------------------------------------------
+
+
+def build_local_scan_body(
+    project_id: str,
+    agent_name: str,
+    agent_description: str,
+    supported_languages: SequenceNotStr[str],
+    knowledge_base_id: str | None,
+    tags: SequenceNotStr[str] | None,
+) -> dict[str, Any]:
+    """Build the request body for POST /v2/scans/create-local."""
+    body: dict[str, Any] = {
+        "project_id": project_id,
+        "agent_name": agent_name,
+        "agent_description": agent_description,
+        "supported_languages": supported_languages,
+    }
+    if knowledge_base_id:
+        body["knowledge_base_id"] = knowledge_base_id
+    if tags:
+        body["tags"] = list(tags)
+    return body
 
 
 def normalize_agent_output(value: Any) -> AgentOutput:
