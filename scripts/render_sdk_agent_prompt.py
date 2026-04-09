@@ -3,9 +3,7 @@ from pathlib import Path
 
 
 def render_prompt(summary: str) -> str:
-    template_path = (
-        Path(__file__).resolve().parents[1] / "prompts" / "sdk_agent_prompt.md"
-    )
+    template_path = Path(__file__).resolve().parents[1] / "prompts" / "sdk_agent_prompt.md"
     template = template_path.read_text(encoding="utf-8")
     return template.replace("{{SUMMARY}}", summary)
 

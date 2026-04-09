@@ -1,12 +1,13 @@
-import argparse
 import json
+import argparse
+from typing import Any, Set, Dict, Tuple, Mapping, Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Set, Tuple
 
 
-def load_spec(path: Path) -> Dict[str, Any]:
+def load_spec(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        result: dict[str, Any] = json.load(f)
+        return result
 
 
 def _short_schema_repr(schema: Mapping[str, Any] | None) -> str:
@@ -65,22 +66,22 @@ def _extract_main_schema(
     if not isinstance(response_or_rb, Mapping):
         return None
 
-    content = response_or_rb.get("content")
-    if not isinstance(content, Mapping):
+    content: dict[str, Any] | None = response_or_rb.get("content")
+    if not isinstance(content, dict):
         return None
 
     # Prefer application/json if present, otherwise first content type
+    ct_schema: dict[str, Any] | None
     if "application/json" in content:
         ct_schema = content["application/json"]
     else:
-        first = next(iter(content.values()), None)
-        ct_schema = first
+        ct_schema = next(iter(content.values()), None)
 
-    if not isinstance(ct_schema, Mapping):
+    if not isinstance(ct_schema, dict):
         return None
 
-    schema = ct_schema.get("schema")
-    if isinstance(schema, Mapping):
+    schema: dict[str, Any] | None = ct_schema.get("schema")
+    if isinstance(schema, dict):
         return schema
     return None
 
@@ -101,35 +102,24 @@ def _print_operation_signature(path: str, method: str, op: Mapping[str, Any]) ->
         for (name, loc), p in sorted(params_map.items()):
             required = bool(p.get("required", False))
             schema = p.get("schema") if isinstance(p.get("schema"), Mapping) else None
-            print(
-                f"      - {name!r} in {loc!r} "
-                f"(required={required}): {_short_schema_repr(schema)}"
-            )
+            print(f"      - {name!r} in {loc!r} (required={required}): {_short_schema_repr(schema)}")
 
     # Request body
-    rb = op.get("requestBody")
-    if isinstance(rb, Mapping):
+    rb: dict[str, Any] | None = op.get("requestBody")
+    if isinstance(rb, dict):
         rb_schema = _extract_main_schema(rb)
-        print(
-            "    requestBody:"
-            f" {_short_schema_repr(rb_schema) if rb_schema is not None else 'no schema'}"
-        )
+        print(f"    requestBody: {_short_schema_repr(rb_schema) if rb_schema is not None else 'no schema'}")
 
     # Responses
-    responses = op.get("responses") or {}
-    if isinstance(responses, Mapping) and responses:
+    responses: dict[str, Any] = op.get("responses") or {}
+    if responses:
         print("    responses:")
         for code in sorted(responses.keys()):
             schema = _extract_main_schema(responses.get(code))
-            print(
-                f"      - {code}: "
-                f"{_short_schema_repr(schema) if schema is not None else 'no schema'}"
-            )
+            print(f"      - {code}: {_short_schema_repr(schema) if schema is not None else 'no schema'}")
 
 
-def compare_paths(
-    current: Dict[str, Any], new: Dict[str, Any]
-) -> Tuple[Set[str], Set[str], Set[str]]:
+def compare_paths(current: Dict[str, Any], new: Dict[str, Any]) -> Tuple[Set[str], Set[str], Set[str]]:
     current_paths = set(current.get("paths", {}).keys())
     new_paths = set(new.get("paths", {}).keys())
 
@@ -144,16 +134,16 @@ def compare_paths(
     if added_paths:
         print(f"\n✅ ADDED PATHS ({len(added_paths)}):")
         for path in sorted(added_paths):
-            path_item = new.get("paths", {}).get(path) or {}
-            methods = list(path_item.keys()) if isinstance(path_item, Mapping) else []
+            path_item: dict[str, Any] = new.get("paths", {}).get(path) or {}
+            methods = list(path_item.keys())
             print(f"  {path}: {methods}")
 
             # For new paths, print full operation signatures for each method so
             # downstream codegen can understand inputs and outputs.
-            if isinstance(path_item, Mapping):
-                for method, op in sorted(path_item.items()):
-                    if isinstance(op, Mapping):
-                        _print_operation_signature(path, method, op)
+            for method in sorted(path_item):
+                op: dict[str, Any] | None = path_item.get(method)
+                if isinstance(op, dict):
+                    _print_operation_signature(path, method, op)
 
     if removed_paths:
         print(f"\n❌ REMOVED PATHS ({len(removed_paths)}):")
@@ -178,11 +168,10 @@ def compare_paths(
                 # Also print full signatures for newly added methods on existing
                 # paths (these are effectively "new endpoints" for client code).
                 path_item = new.get("paths", {}).get(path) or {}
-                if isinstance(path_item, Mapping):
-                    for method in sorted(added_methods):
-                        op = path_item.get(method)
-                        if isinstance(op, Mapping):
-                            _print_operation_signature(path, method, op)
+                for method in sorted(added_methods):
+                    op = path_item.get(method)
+                    if isinstance(op, dict):
+                        _print_operation_signature(path, method, op)
             if removed_methods:
                 print(f"    ➖ Removed methods: {sorted(removed_methods)}")
 
@@ -198,8 +187,8 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
     Returns the number of operations (path+method) that have any detected change.
     """
 
-    current_paths = current.get("paths", {}) or {}
-    new_paths = new.get("paths", {}) or {}
+    current_paths: dict[str, Any] = current.get("paths", {}) or {}
+    new_paths: dict[str, Any] = new.get("paths", {}) or {}
     common_paths = set(current_paths.keys()) & set(new_paths.keys())
 
     print("\n" + "=" * 80)
@@ -209,32 +198,25 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
     changed_operations = 0
 
     for path in sorted(common_paths):
-        current_ops = current_paths.get(path) or {}
-        new_ops = new_paths.get(path) or {}
-        if not isinstance(current_ops, Mapping) or not isinstance(new_ops, Mapping):
-            continue
+        current_ops: dict[str, Any] = current_paths.get(path) or {}
+        new_ops: dict[str, Any] = new_paths.get(path) or {}
 
         common_methods = set(current_ops.keys()) & set(new_ops.keys())
         for method in sorted(common_methods):
-            op_current = current_ops.get(method) or {}
-            op_new = new_ops.get(method) or {}
-            if not isinstance(op_current, Mapping) or not isinstance(op_new, Mapping):
-                continue
+            op_current: dict[str, Any] = current_ops.get(method) or {}
+            op_new: dict[str, Any] = new_ops.get(method) or {}
 
             operation_changed = False
             diffs: list[str] = []
 
             # Summary / description / operationId changes
             if op_current.get("summary") != op_new.get("summary"):
-                diffs.append(
-                    f"      - summary changed: {op_current.get('summary')!r} -> {op_new.get('summary')!r}"
-                )
+                diffs.append(f"      - summary changed: {op_current.get('summary')!r} -> {op_new.get('summary')!r}")
             if op_current.get("description") != op_new.get("description"):
                 diffs.append("      - description changed")
             if op_current.get("operationId") != op_new.get("operationId"):
                 diffs.append(
-                    f"      - operationId changed: "
-                    f"{op_current.get('operationId')!r} -> {op_new.get('operationId')!r}"
+                    f"      - operationId changed: {op_current.get('operationId')!r} -> {op_new.get('operationId')!r}"
                 )
 
             # Parameters
@@ -246,14 +228,10 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
             common_params = params_current.keys() & params_new.keys()
 
             if added_params:
-                added_desc = ", ".join(
-                    f"{name} in {loc}" for (name, loc) in sorted(added_params)
-                )
+                added_desc = ", ".join(f"{name} in {loc}" for (name, loc) in sorted(added_params))
                 diffs.append(f"      - added parameters: {added_desc}")
             if removed_params:
-                removed_desc = ", ".join(
-                    f"{name} in {loc}" for (name, loc) in sorted(removed_params)
-                )
+                removed_desc = ", ".join(f"{name} in {loc}" for (name, loc) in sorted(removed_params))
                 diffs.append(f"      - removed parameters: {removed_desc}")
 
             for key in sorted(common_params):
@@ -262,35 +240,20 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
                 param_changes: list[str] = []
 
                 if cur.get("required") != nxt.get("required"):
-                    param_changes.append(
-                        f"required {cur.get('required')} -> {nxt.get('required')}"
-                    )
+                    param_changes.append(f"required {cur.get('required')} -> {nxt.get('required')}")
 
-                cur_schema = (
-                    cur.get("schema")
-                    if isinstance(cur.get("schema"), Mapping)
-                    else None
-                )
-                new_schema = (
-                    nxt.get("schema")
-                    if isinstance(nxt.get("schema"), Mapping)
-                    else None
-                )
+                cur_schema = cur.get("schema") if isinstance(cur.get("schema"), Mapping) else None
+                new_schema = nxt.get("schema") if isinstance(nxt.get("schema"), Mapping) else None
                 if cur_schema != new_schema:
-                    param_changes.append(
-                        f"schema {_short_schema_repr(cur_schema)} -> {_short_schema_repr(new_schema)}"
-                    )
+                    param_changes.append(f"schema {_short_schema_repr(cur_schema)} -> {_short_schema_repr(new_schema)}")
 
                 if param_changes:
                     name, loc = key
-                    diffs.append(
-                        f"      - parameter {name!r} in {loc!r} changed: "
-                        + "; ".join(param_changes)
-                    )
+                    diffs.append(f"      - parameter {name!r} in {loc!r} changed: " + "; ".join(param_changes))
 
             # Request body
-            rb_current = op_current.get("requestBody")
-            rb_new = op_new.get("requestBody")
+            rb_current: dict[str, Any] | None = op_current.get("requestBody")
+            rb_new: dict[str, Any] | None = op_new.get("requestBody")
 
             if (rb_current is None) != (rb_new is None):
                 diffs.append(
@@ -298,7 +261,7 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
                     f"{'present' if rb_current is not None else 'absent'} -> "
                     f"{'present' if rb_new is not None else 'absent'}"
                 )
-            elif isinstance(rb_current, Mapping) and isinstance(rb_new, Mapping):
+            elif isinstance(rb_current, dict) and isinstance(rb_new, dict):
                 cur_schema = _extract_main_schema(rb_current)
                 new_schema = _extract_main_schema(rb_new)
                 if cur_schema != new_schema:
@@ -308,31 +271,29 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
                     )
 
             # Responses
-            resp_current = op_current.get("responses") or {}
-            resp_new = op_new.get("responses") or {}
-            if isinstance(resp_current, Mapping) and isinstance(resp_new, Mapping):
-                codes_current = set(resp_current.keys())
-                codes_new = set(resp_new.keys())
+            resp_current: dict[str, Any] = op_current.get("responses") or {}
+            resp_new: dict[str, Any] = op_new.get("responses") or {}
 
-                added_codes = codes_new - codes_current
-                removed_codes = codes_current - codes_new
-                common_codes = codes_current & codes_new
+            codes_current = set(resp_current.keys())
+            codes_new = set(resp_new.keys())
 
-                if added_codes:
-                    diffs.append(f"      - added response codes: {sorted(added_codes)}")
-                if removed_codes:
+            added_codes = codes_new - codes_current
+            removed_codes = codes_current - codes_new
+            common_codes = codes_current & codes_new
+
+            if added_codes:
+                diffs.append(f"      - added response codes: {sorted(added_codes)}")
+            if removed_codes:
+                diffs.append(f"      - removed response codes: {sorted(removed_codes)}")
+
+            for code in sorted(common_codes):
+                cur_schema = _extract_main_schema(resp_current.get(code))
+                new_schema = _extract_main_schema(resp_new.get(code))
+                if cur_schema != new_schema:
                     diffs.append(
-                        f"      - removed response codes: {sorted(removed_codes)}"
+                        f"      - response {code} schema changed: "
+                        f"{_short_schema_repr(cur_schema)} -> {_short_schema_repr(new_schema)}"
                     )
-
-                for code in sorted(common_codes):
-                    cur_schema = _extract_main_schema(resp_current.get(code))
-                    new_schema = _extract_main_schema(resp_new.get(code))
-                    if cur_schema != new_schema:
-                        diffs.append(
-                            f"      - response {code} schema changed: "
-                            f"{_short_schema_repr(cur_schema)} -> {_short_schema_repr(new_schema)}"
-                        )
 
             if diffs:
                 if not operation_changed:
@@ -407,10 +368,7 @@ def compare_schemas(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description=(
-            "Compare two OpenAPI JSON specs and print a high-level summary of "
-            "changes in paths and schemas."
-        )
+        description=("Compare two OpenAPI JSON specs and print a high-level summary of changes in paths and schemas.")
     )
     parser.add_argument(
         "current",
