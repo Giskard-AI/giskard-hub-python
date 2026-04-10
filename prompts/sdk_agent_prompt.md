@@ -3,9 +3,10 @@ Given the following API changes summary, implement the necessary updates to the 
 **Task:**
 
 1. Analyze the API changes carefully
-2. Implement ONLY the changes mentioned in the summary — no unrelated modifications
-3. Follow the existing codebase patterns exactly (see conventions below)
-4. Update ALL required files for each change (see checklist)
+2. Study existing resource files, types, and tests to understand the architecture and patterns before writing any code
+3. Implement ONLY the changes mentioned in the summary — no unrelated modifications
+4. Maintain consistency with the current implementation style (see conventions below)
+5. Update ALL required files for each change (see checklist)
 
 **Checklist — files to update for every new or modified endpoint:**
 
