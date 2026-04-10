@@ -313,7 +313,7 @@ def compare_operations(current: Dict[str, Any], new: Dict[str, Any]) -> int:
 def compare_schemas(
     current: Dict[str, Any],
     new: Dict[str, Any],
-    sample_limit: int = 100,
+    sample_limit: int | None = None,
 ) -> Tuple[Set[str], Set[str], Set[str]]:
     current_schemas = set(current.get("components", {}).get("schemas", {}).keys())
     new_schemas = set(new.get("components", {}).get("schemas", {}).keys())
@@ -336,11 +336,12 @@ def compare_schemas(
             print(f"  {schema}")
 
     common_schemas = current_schemas & new_schemas
-    print(f"\n📝 CHECKING CHANGES IN COMMON SCHEMAS (sample of first {sample_limit}):")
+    limit_desc = f"sample of first {sample_limit}" if sample_limit is not None else f"all {len(common_schemas)}"
+    print(f"\n📝 CHECKING CHANGES IN COMMON SCHEMAS ({limit_desc}):")
 
     changed_schemas: list[str] = []
     for i, schema in enumerate(sorted(common_schemas)):
-        if i >= sample_limit:
+        if sample_limit is not None and i >= sample_limit:
             break
 
         current_schema = current["components"]["schemas"].get(schema, {})
@@ -383,8 +384,8 @@ def main() -> None:
     parser.add_argument(
         "--schema-sample-limit",
         type=int,
-        default=100,
-        help="Maximum number of common schemas to inspect for property changes.",
+        default=None,
+        help="Maximum number of common schemas to inspect (default: all).",
     )
 
     args = parser.parse_args()
