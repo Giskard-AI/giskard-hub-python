@@ -13,6 +13,7 @@ __all__ = [
     "PaginatedMetadata",
     "FilterValueParam",
     "ListFilterValueParam",
+    "ListFilterValue",
     "DateRangeFilterValueParam",
     "OrderByParam",
     "TaskState",
@@ -22,6 +23,7 @@ __all__ = [
 
 T = TypeVar("T")
 TIncluded = TypeVar("TIncluded")
+TFilterType = TypeVar("TFilterType")
 
 
 # ---------------------------------------------------------------------------
@@ -68,6 +70,13 @@ class PaginatedMetadata(BaseModel):
 
 class ListFilterValueParam(TypedDict, total=False):
     selected_options: List[Any]
+    is_empty: bool
+    match_mode: Literal["include", "exclude"]
+    match_logic: Literal["any", "all"]
+
+
+class ListFilterValue(TypedDict, Generic[TFilterType], total=False):
+    selected_options: List[TFilterType]
     is_empty: bool
     match_mode: Literal["include", "exclude"]
     match_logic: Literal["any", "all"]

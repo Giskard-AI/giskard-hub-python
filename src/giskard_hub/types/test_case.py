@@ -1,12 +1,12 @@
 """Test case domain types."""
 
-from typing import List, Literal, Iterable, Optional, TypedDict
+from typing import Any, Dict, List, Literal, Iterable, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
 from pydantic import Field
 
-from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadataParam
+from .chat import ChatMessageWithMetadataParam
 from .user import UserReference
 from .agent import AgentOutput
 from .check import CheckConfig, TestCaseCheckConfigParam
@@ -17,6 +17,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
     "TestCaseUpdateParams",
@@ -25,6 +26,13 @@ __all__ = [
     "CommentAddParams",
     "CommentEditParams",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Test case status
+# ---------------------------------------------------------------------------
+
+TestCaseStatus = Literal["active", "draft"]
 
 
 # ---------------------------------------------------------------------------
@@ -54,10 +62,10 @@ class TestCase(BaseModel):
     created_at: datetime
     dataset_id: str
     demo_output: Optional[AgentOutput] = None
-    messages: List[ChatMessage]
+    input_data: Dict[str, Any]
     tags: List[str]
     updated_at: datetime
-    status: Literal["active", "draft"]
+    status: TestCaseStatus
 
 
 # ---------------------------------------------------------------------------
@@ -67,10 +75,11 @@ class TestCase(BaseModel):
 
 class TestCaseCreateParams(TypedDict, total=False):
     dataset_id: Required[str]
-    messages: Required[Iterable[ChatMessageParam]]
+    input_data: Required[Dict[str, Any]]
     checks: Iterable[TestCaseCheckConfigParam]
     demo_output: Optional[ChatMessageWithMetadataParam]
-    status: Optional[Literal["active", "draft"]]
+    source_probe_attempt_id: Optional[str]
+    status: Optional[TestCaseStatus]
     tags: SequenceNotStr[str]
 
 
@@ -78,9 +87,9 @@ class TestCaseUpdateParams(TypedDict, total=False):
     checks: Optional[Iterable[TestCaseCheckConfigParam]]
     dataset_id: Optional[str]
     demo_output: Optional[ChatMessageWithMetadataParam]
-    messages: Optional[Iterable[ChatMessageParam]]
+    input_data: Optional[Dict[str, Any]]
     tags: Optional[SequenceNotStr[str]]
-    status: Optional[Literal["active", "draft"]]
+    status: Optional[TestCaseStatus]
 
 
 class TestCaseBulkDeleteParams(TypedDict, total=False):
@@ -93,7 +102,7 @@ class TestCaseBulkUpdateParams(TypedDict, total=False):
     enabled_checks: Optional[SequenceNotStr[str]]
     added_tags: Optional[SequenceNotStr[str]]
     removed_tags: Optional[SequenceNotStr[str]]
-    status: Optional[Literal["active", "draft"]]
+    status: Optional[TestCaseStatus]
 
 
 class BulkMoveTestCasesParams(TypedDict, total=False):

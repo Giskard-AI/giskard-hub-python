@@ -1,10 +1,9 @@
 """Evaluation domain types."""
 
-from typing import Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from .chat import ChatMessageParam
 from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
@@ -168,7 +167,7 @@ class EvaluationRetrieveParams(TypedDict, total=False):
 
 class EvaluationRunSingleParams(TypedDict, total=False):
     checks: Required[Iterable[Dict[str, object]]]
-    messages: Required[Iterable[ChatMessageParam]]
+    input_data: Required[Dict[str, Any]]
     model_output: Required[AgentOutputParam]
     model_description: str
     project_id: Optional[str]

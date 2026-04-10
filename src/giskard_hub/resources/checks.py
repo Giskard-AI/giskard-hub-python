@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import List, Optional
 
 import httpx
 
@@ -16,10 +16,10 @@ from .._response import (
 )
 from ..types.check import (
     Check,
-    CheckTypeParam,
     CheckListParams,
     CheckCreateParams,
     CheckUpdateParams,
+    FlatCheckSpecParam,
     CheckBulkDeleteParams,
 )
 from .._base_client import make_request_options
@@ -51,7 +51,7 @@ class ChecksResource(SyncAPIResource):
     def create(
         self,
         *,
-        params: CheckTypeParam,
+        spec: FlatCheckSpecParam,
         identifier: str,
         name: str,
         project_id: str,
@@ -67,8 +67,8 @@ class ChecksResource(SyncAPIResource):
 
         Parameters
         ----------
-        params : CheckTypeParam
-            Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness).
+        spec : FlatCheckSpecParam
+            Check specification.
         identifier : str
             Unique identifier of the check.
         name : str
@@ -98,7 +98,7 @@ class ChecksResource(SyncAPIResource):
             "/v2/checks",
             body=maybe_transform(
                 {
-                    "assertions": [params],
+                    "spec": spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -169,7 +169,7 @@ class ChecksResource(SyncAPIResource):
         self,
         check_id: str,
         *,
-        params: Optional[CheckTypeParam] | Omit = omit,
+        spec: Optional[FlatCheckSpecParam] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -186,8 +186,8 @@ class ChecksResource(SyncAPIResource):
         ----------
         check_id : str
             ID of the check to update.
-        params : CheckTypeParam | None | Omit
-            Updated check-specific parameters.
+        spec : FlatCheckSpecParam | None | Omit
+            Updated check specification.
         description : str | None | Omit
             Updated description of the check.
         identifier : str | None | Omit
@@ -218,16 +218,11 @@ class ChecksResource(SyncAPIResource):
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        api_assertions: list[Any] | Omit | None
-        if params is None or isinstance(params, Omit):
-            api_assertions = params  # type: ignore[assignment]
-        else:
-            api_assertions = [params]
         response = self._patch(
             f"/v2/checks/{check_id}",
             body=maybe_transform(
                 {
-                    "assertions": api_assertions,
+                    "spec": spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -412,7 +407,7 @@ class AsyncChecksResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        params: CheckTypeParam,
+        spec: FlatCheckSpecParam,
         identifier: str,
         name: str,
         project_id: str,
@@ -428,8 +423,8 @@ class AsyncChecksResource(AsyncAPIResource):
 
         Parameters
         ----------
-        params : CheckTypeParam
-            Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness).
+        spec : FlatCheckSpecParam
+            Check specification.
         identifier : str
             Unique identifier of the check.
         name : str
@@ -459,7 +454,7 @@ class AsyncChecksResource(AsyncAPIResource):
             "/v2/checks",
             body=await async_maybe_transform(
                 {
-                    "assertions": [params],
+                    "spec": spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -530,7 +525,7 @@ class AsyncChecksResource(AsyncAPIResource):
         self,
         check_id: str,
         *,
-        params: Optional[CheckTypeParam] | Omit = omit,
+        spec: Optional[FlatCheckSpecParam] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -547,8 +542,8 @@ class AsyncChecksResource(AsyncAPIResource):
         ----------
         check_id : str
             ID of the check to update.
-        params : CheckTypeParam | None | Omit
-            Updated check-specific parameters.
+        spec : FlatCheckSpecParam | None | Omit
+            Updated check specification.
         description : str | None | Omit
             Updated description of the check.
         identifier : str | None | Omit
@@ -579,16 +574,11 @@ class AsyncChecksResource(AsyncAPIResource):
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        api_assertions: list[Any] | Omit | None
-        if params is None or isinstance(params, Omit):
-            api_assertions = params  # type: ignore[assignment]
-        else:
-            api_assertions = [params]
         response = await self._patch(
             f"/v2/checks/{check_id}",
             body=await async_maybe_transform(
                 {
-                    "assertions": api_assertions,
+                    "spec": spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,

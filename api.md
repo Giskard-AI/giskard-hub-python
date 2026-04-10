@@ -50,12 +50,8 @@ Types:
 from giskard_hub.types import (
     Check,
     CheckResult,
-    ConformityParams,
-    CorrectnessParams,
-    GroundednessParams,
-    MetadataParams,
-    SemanticSimilarityParams,
-    StringMatchParams,
+    CheckSource,
+    FlatCheckSpec,
 )
 ```
 
