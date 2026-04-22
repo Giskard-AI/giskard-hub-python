@@ -149,7 +149,10 @@ class ScansResource(SyncAPIResource):
         capture_event(
             make_distinct_id(self._client.api_key),
             "scan_created",
-            {"scan_id": result.id, "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None},
+            {
+                "scan_id": result.id,
+                "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None,
+            },
         )
         return result
 
@@ -596,7 +599,10 @@ class AsyncScansResource(AsyncAPIResource):
         capture_event(
             make_distinct_id(self._client.api_key),
             "scan_created",
-            {"scan_id": result.id, "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None},
+            {
+                "scan_id": result.id,
+                "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None,
+            },
         )
         return result
 

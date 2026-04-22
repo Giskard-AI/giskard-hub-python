@@ -555,9 +555,7 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(
-            make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id}
-        )
+        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
         return result
 
     def rerun_errored_results(
@@ -1171,9 +1169,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(
-            make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id}
-        )
+        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
         return result
 
     async def rerun_errored_results(
