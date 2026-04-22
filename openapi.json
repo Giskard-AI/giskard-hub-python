@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "2.0.0"
+    "version": "v2.5.1-39-gfa8ea42e"
   },
   "paths": {
     "/v2/agents": {
@@ -7264,6 +7264,99 @@
         ]
       }
     },
+    "/v2/tenancy/discovery": {
+      "get": {
+        "tags": [
+          "v2",
+          "v2"
+        ],
+        "summary": "Discover Tenant",
+        "description": "Discovery endpoint used by the frontend (server-side) to configure auth per host.\n\nThe middleware already resolved the tenant from the request host and set it in\nthe TenantContext. We simply return the public OIDC discovery inputs.\n\nNote: this endpoint is intentionally unauthenticated. It returns only public\nOIDC discovery inputs (issuer + client id). Secrets are never returned.",
+        "operationId": "discover_tenant_v2_tenancy_discovery_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown tenant"
+          }
+        }
+      }
+    },
+    "/v2/tenancy/health": {
+      "get": {
+        "tags": [
+          "v2",
+          "v2"
+        ],
+        "summary": "Tenant Health",
+        "description": "Tenant-scoped health endpoint.\n\nRequires tenant resolution (middleware). Checks tenant DB connectivity and\ntenant Keycloak realm reachability.",
+        "operationId": "tenant_health_v2_tenancy_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown tenant"
+          }
+        }
+      }
+    },
+    "/v2/tenancy/find-tenant": {
+      "post": {
+        "tags": [
+          "v2",
+          "v2"
+        ],
+        "summary": "Find which tenant(s) an email belongs to",
+        "description": "Cross-tenant email lookup for the tenant finder portal.\n\nThis endpoint is **exempted from the tenant middleware** \u2014 it operates\non the control-plane data directly.  Protected by Cloudflare Turnstile.",
+        "operationId": "find_tenant_v2_tenancy_find_tenant_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindTenantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindTenantResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2/users": {
       "get": {
         "tags": [
@@ -10038,185 +10131,6 @@
                         ],
                         "title": "ChatMessageWithMetadata"
                       },
-                      "ChatTestCaseStatus": {
-                        "type": "string",
-                        "enum": [
-                          "active",
-                          "draft"
-                        ],
-                        "title": "ChatTestCaseStatus"
-                      },
-                      "ConformityParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "conformity",
-                            "title": "Type",
-                            "default": "conformity"
-                          },
-                          "rules": {
-                            "items": {
-                              "type": "string"
-                            },
-                            "type": "array",
-                            "title": "Rules"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "rules"
-                        ],
-                        "title": "ConformityParams"
-                      },
-                      "CorrectnessParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "correctness",
-                            "title": "Type",
-                            "default": "correctness"
-                          },
-                          "reference": {
-                            "type": "string",
-                            "title": "Reference"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "reference"
-                        ],
-                        "title": "CorrectnessParams"
-                      },
-                      "GroundednessParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "groundedness",
-                            "title": "Type",
-                            "default": "groundedness"
-                          },
-                          "context": {
-                            "type": "string",
-                            "title": "Context"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "context"
-                        ],
-                        "title": "GroundednessParams"
-                      },
-                      "JsonPathTestParam": {
-                        "properties": {
-                          "json_path": {
-                            "type": "string",
-                            "title": "Json Path"
-                          },
-                          "expected_value": {
-                            "anyOf": [
-                              {
-                                "type": "boolean"
-                              },
-                              {
-                                "type": "integer"
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "string"
-                              }
-                            ],
-                            "title": "Expected Value"
-                          },
-                          "expected_value_type": {
-                            "$ref": "#/$defs/JsonType"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "json_path",
-                          "expected_value",
-                          "expected_value_type"
-                        ],
-                        "title": "JsonPathTestParam"
-                      },
-                      "JsonType": {
-                        "type": "string",
-                        "enum": [
-                          "string",
-                          "number",
-                          "boolean"
-                        ],
-                        "title": "JsonType"
-                      },
-                      "MetadataParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "metadata",
-                            "title": "Type",
-                            "default": "metadata"
-                          },
-                          "json_path_rules": {
-                            "items": {
-                              "$ref": "#/$defs/JsonPathTestParam"
-                            },
-                            "type": "array",
-                            "title": "Json Path Rules"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "json_path_rules"
-                        ],
-                        "title": "MetadataParams"
-                      },
-                      "SemanticSimilarityParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "semantic_similarity",
-                            "title": "Type",
-                            "default": "semantic_similarity"
-                          },
-                          "reference": {
-                            "type": "string",
-                            "title": "Reference"
-                          },
-                          "threshold": {
-                            "type": "number",
-                            "maximum": 1.0,
-                            "minimum": 0.0,
-                            "title": "Threshold",
-                            "default": 0.95
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "reference"
-                        ],
-                        "title": "SemanticSimilarityParams"
-                      },
-                      "StringMatchParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "string_match",
-                            "title": "Type",
-                            "default": "string_match"
-                          },
-                          "keyword": {
-                            "type": "string",
-                            "title": "Keyword"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "keyword"
-                        ],
-                        "title": "StringMatchParams"
-                      },
                       "TestCaseAPIResource": {
                         "properties": {
                           "id": {
@@ -10239,12 +10153,21 @@
                             "format": "date-time",
                             "title": "Updated At"
                           },
+                          "input_data": {
+                            "items": {
+                              "$ref": "#/$defs/ChatMessage"
+                            },
+                            "type": "array",
+                            "title": "Input Data"
+                          },
                           "messages": {
                             "items": {
                               "$ref": "#/$defs/ChatMessage"
                             },
                             "type": "array",
-                            "title": "Messages"
+                            "title": "Messages",
+                            "description": "Deprecated alias for input_data. Use input_data instead.",
+                            "deprecated": true
                           },
                           "demo_output": {
                             "anyOf": [
@@ -10278,7 +10201,7 @@
                             "title": "Comments"
                           },
                           "status": {
-                            "$ref": "#/$defs/ChatTestCaseStatus"
+                            "$ref": "#/$defs/TestCaseStatus"
                           }
                         },
                         "type": "object",
@@ -10287,6 +10210,7 @@
                           "dataset_id",
                           "created_at",
                           "updated_at",
+                          "input_data",
                           "messages",
                           "tags",
                           "checks",
@@ -10301,43 +10225,27 @@
                             "type": "string",
                             "title": "Identifier"
                           },
-                          "assertions": {
+                          "spec": {
                             "anyOf": [
                               {
-                                "items": {
-                                  "anyOf": [
-                                    {
-                                      "$ref": "#/$defs/CorrectnessParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/ConformityParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/GroundednessParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/StringMatchParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/MetadataParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/SemanticSimilarityParams"
-                                    }
-                                  ]
-                                },
-                                "type": "array"
+                                "additionalProperties": true,
+                                "type": "object"
                               },
                               {
                                 "type": "null"
                               }
                             ],
-                            "title": "Assertions"
+                            "title": "Spec"
                           },
                           "enabled": {
                             "type": "boolean",
                             "title": "Enabled",
                             "default": true
+                          },
+                          "position": {
+                            "type": "integer",
+                            "title": "Position",
+                            "default": 0
                           }
                         },
                         "type": "object",
@@ -10345,7 +10253,7 @@
                           "identifier"
                         ],
                         "title": "TestCaseCheckConfig",
-                        "description": "Object used to describe check config inside a test case"
+                        "description": "Check configuration as embedded in a test case."
                       },
                       "TestCaseCommentAPIResource": {
                         "properties": {
@@ -10381,6 +10289,14 @@
                           "user"
                         ],
                         "title": "TestCaseCommentAPIResource"
+                      },
+                      "TestCaseStatus": {
+                        "type": "string",
+                        "enum": [
+                          "active",
+                          "draft"
+                        ],
+                        "title": "TestCaseStatus"
                       },
                       "UserAPIReference": {
                         "properties": {
@@ -10481,185 +10397,6 @@
                         ],
                         "title": "ChatMessageWithMetadata"
                       },
-                      "ChatTestCaseStatus": {
-                        "type": "string",
-                        "enum": [
-                          "active",
-                          "draft"
-                        ],
-                        "title": "ChatTestCaseStatus"
-                      },
-                      "ConformityParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "conformity",
-                            "title": "Type",
-                            "default": "conformity"
-                          },
-                          "rules": {
-                            "items": {
-                              "type": "string"
-                            },
-                            "type": "array",
-                            "title": "Rules"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "rules"
-                        ],
-                        "title": "ConformityParams"
-                      },
-                      "CorrectnessParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "correctness",
-                            "title": "Type",
-                            "default": "correctness"
-                          },
-                          "reference": {
-                            "type": "string",
-                            "title": "Reference"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "reference"
-                        ],
-                        "title": "CorrectnessParams"
-                      },
-                      "GroundednessParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "groundedness",
-                            "title": "Type",
-                            "default": "groundedness"
-                          },
-                          "context": {
-                            "type": "string",
-                            "title": "Context"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "context"
-                        ],
-                        "title": "GroundednessParams"
-                      },
-                      "JsonPathTestParam": {
-                        "properties": {
-                          "json_path": {
-                            "type": "string",
-                            "title": "Json Path"
-                          },
-                          "expected_value": {
-                            "anyOf": [
-                              {
-                                "type": "boolean"
-                              },
-                              {
-                                "type": "integer"
-                              },
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "string"
-                              }
-                            ],
-                            "title": "Expected Value"
-                          },
-                          "expected_value_type": {
-                            "$ref": "#/$defs/JsonType"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "json_path",
-                          "expected_value",
-                          "expected_value_type"
-                        ],
-                        "title": "JsonPathTestParam"
-                      },
-                      "JsonType": {
-                        "type": "string",
-                        "enum": [
-                          "string",
-                          "number",
-                          "boolean"
-                        ],
-                        "title": "JsonType"
-                      },
-                      "MetadataParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "metadata",
-                            "title": "Type",
-                            "default": "metadata"
-                          },
-                          "json_path_rules": {
-                            "items": {
-                              "$ref": "#/$defs/JsonPathTestParam"
-                            },
-                            "type": "array",
-                            "title": "Json Path Rules"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "json_path_rules"
-                        ],
-                        "title": "MetadataParams"
-                      },
-                      "SemanticSimilarityParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "semantic_similarity",
-                            "title": "Type",
-                            "default": "semantic_similarity"
-                          },
-                          "reference": {
-                            "type": "string",
-                            "title": "Reference"
-                          },
-                          "threshold": {
-                            "type": "number",
-                            "maximum": 1.0,
-                            "minimum": 0.0,
-                            "title": "Threshold",
-                            "default": 0.95
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "reference"
-                        ],
-                        "title": "SemanticSimilarityParams"
-                      },
-                      "StringMatchParams": {
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "const": "string_match",
-                            "title": "Type",
-                            "default": "string_match"
-                          },
-                          "keyword": {
-                            "type": "string",
-                            "title": "Keyword"
-                          }
-                        },
-                        "type": "object",
-                        "required": [
-                          "keyword"
-                        ],
-                        "title": "StringMatchParams"
-                      },
                       "TestCaseAPIResource": {
                         "properties": {
                           "id": {
@@ -10682,12 +10419,21 @@
                             "format": "date-time",
                             "title": "Updated At"
                           },
+                          "input_data": {
+                            "items": {
+                              "$ref": "#/$defs/ChatMessage"
+                            },
+                            "type": "array",
+                            "title": "Input Data"
+                          },
                           "messages": {
                             "items": {
                               "$ref": "#/$defs/ChatMessage"
                             },
                             "type": "array",
-                            "title": "Messages"
+                            "title": "Messages",
+                            "description": "Deprecated alias for input_data. Use input_data instead.",
+                            "deprecated": true
                           },
                           "demo_output": {
                             "anyOf": [
@@ -10721,7 +10467,7 @@
                             "title": "Comments"
                           },
                           "status": {
-                            "$ref": "#/$defs/ChatTestCaseStatus"
+                            "$ref": "#/$defs/TestCaseStatus"
                           }
                         },
                         "type": "object",
@@ -10730,6 +10476,7 @@
                           "dataset_id",
                           "created_at",
                           "updated_at",
+                          "input_data",
                           "messages",
                           "tags",
                           "checks",
@@ -10744,43 +10491,27 @@
                             "type": "string",
                             "title": "Identifier"
                           },
-                          "assertions": {
+                          "spec": {
                             "anyOf": [
                               {
-                                "items": {
-                                  "anyOf": [
-                                    {
-                                      "$ref": "#/$defs/CorrectnessParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/ConformityParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/GroundednessParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/StringMatchParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/MetadataParams"
-                                    },
-                                    {
-                                      "$ref": "#/$defs/SemanticSimilarityParams"
-                                    }
-                                  ]
-                                },
-                                "type": "array"
+                                "additionalProperties": true,
+                                "type": "object"
                               },
                               {
                                 "type": "null"
                               }
                             ],
-                            "title": "Assertions"
+                            "title": "Spec"
                           },
                           "enabled": {
                             "type": "boolean",
                             "title": "Enabled",
                             "default": true
+                          },
+                          "position": {
+                            "type": "integer",
+                            "title": "Position",
+                            "default": 0
                           }
                         },
                         "type": "object",
@@ -10788,7 +10519,7 @@
                           "identifier"
                         ],
                         "title": "TestCaseCheckConfig",
-                        "description": "Object used to describe check config inside a test case"
+                        "description": "Check configuration as embedded in a test case."
                       },
                       "TestCaseCommentAPIResource": {
                         "properties": {
@@ -10824,6 +10555,14 @@
                           "user"
                         ],
                         "title": "TestCaseCommentAPIResource"
+                      },
+                      "TestCaseStatus": {
+                        "type": "string",
+                        "enum": [
+                          "active",
+                          "draft"
+                        ],
+                        "title": "TestCaseStatus"
                       },
                       "UserAPIReference": {
                         "properties": {
@@ -13936,7 +13675,7 @@
       "APIResponse_CheckAPIResource_": {
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/CheckAPIResource"
+            "$ref": "#/components/schemas/CheckAPIResource-Input"
           }
         },
         "type": "object",
@@ -14266,7 +14005,7 @@
         "properties": {
           "data": {
             "items": {
-              "$ref": "#/components/schemas/CheckAPIResource"
+              "$ref": "#/components/schemas/CheckAPIResource-Input"
             },
             "type": "array",
             "title": "Data"
@@ -15149,9 +14888,9 @@
         "properties": {
           "type": {
             "type": "string",
-            "const": "chat_test_case_evaluation",
+            "const": "test_case_evaluation",
             "title": "Type",
-            "default": "chat_test_case_evaluation"
+            "default": "test_case_evaluation"
           },
           "id": {
             "type": "string",
@@ -15173,9 +14912,9 @@
         "properties": {
           "type": {
             "type": "string",
-            "const": "chat_test_case",
+            "const": "test_case",
             "title": "Type",
-            "default": "chat_test_case"
+            "default": "test_case"
           },
           "id": {
             "type": "string",
@@ -15204,15 +14943,7 @@
         ],
         "title": "ChatTestCaseReference"
       },
-      "ChatTestCaseStatus": {
-        "type": "string",
-        "enum": [
-          "active",
-          "draft"
-        ],
-        "title": "ChatTestCaseStatus"
-      },
-      "CheckAPIResource": {
+      "CheckAPIResource-Input": {
         "properties": {
           "id": {
             "type": "string",
@@ -15253,42 +14984,17 @@
             ],
             "title": "Description"
           },
+          "source": {
+            "$ref": "#/components/schemas/CheckSource"
+          },
           "built_in": {
             "type": "boolean",
             "title": "Built In"
           },
-          "assertions": {
-            "anyOf": [
-              {
-                "items": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/CorrectnessParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ConformityParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/GroundednessParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/StringMatchParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/MetadataParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/SemanticSimilarityParams"
-                    }
-                  ]
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Assertions"
+          "spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Spec"
           }
         },
         "type": "object",
@@ -15299,7 +15005,88 @@
           "updated_at",
           "identifier",
           "name",
-          "built_in"
+          "source",
+          "built_in",
+          "spec"
+        ],
+        "title": "CheckAPIResource"
+      },
+      "CheckAPIResource-Output": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "identifier": {
+            "type": "string",
+            "title": "Identifier"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CheckSource"
+          },
+          "built_in": {
+            "type": "boolean",
+            "title": "Built In"
+          },
+          "spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Spec"
+          },
+          "assertions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Assertions",
+            "description": "DEPRECATED(check-spec-v1): SDK <4.x reads ``assertions`` from the response.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "project_id",
+          "created_at",
+          "updated_at",
+          "identifier",
+          "name",
+          "source",
+          "built_in",
+          "spec",
+          "assertions"
         ],
         "title": "CheckAPIResource"
       },
@@ -15377,6 +15164,18 @@
               }
             ],
             "title": "Annotations"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details"
           }
         },
         "type": "object",
@@ -15458,6 +15257,18 @@
               }
             ],
             "title": "Annotations"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details"
           }
         },
         "type": "object",
@@ -15466,6 +15277,14 @@
           "status"
         ],
         "title": "CheckResultAPIResource"
+      },
+      "CheckSource": {
+        "type": "string",
+        "enum": [
+          "builtin",
+          "project"
+        ],
+        "title": "CheckSource"
       },
       "CompareEvaluationsAPIRequest": {
         "properties": {
@@ -15679,28 +15498,6 @@
         ],
         "title": "ComparisonRowAPIResource"
       },
-      "ConformityParams": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "conformity",
-            "title": "Type",
-            "default": "conformity"
-          },
-          "rules": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Rules"
-          }
-        },
-        "type": "object",
-        "required": [
-          "rules"
-        ],
-        "title": "ConformityParams"
-      },
       "ContextAnnotation": {
         "properties": {
           "text": {
@@ -15734,25 +15531,6 @@
           "type"
         ],
         "title": "ContextAnnotation"
-      },
-      "CorrectnessParams": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "correctness",
-            "title": "Type",
-            "default": "correctness"
-          },
-          "reference": {
-            "type": "string",
-            "title": "Reference"
-          }
-        },
-        "type": "object",
-        "required": [
-          "reference"
-        ],
-        "title": "CorrectnessParams"
       },
       "CreateAgentAPIRequest": {
         "properties": {
@@ -15836,30 +15614,31 @@
             ],
             "title": "Description"
           },
+          "spec": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spec"
+          },
           "assertions": {
-            "items": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/CorrectnessParams"
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
                 },
-                {
-                  "$ref": "#/components/schemas/ConformityParams"
-                },
-                {
-                  "$ref": "#/components/schemas/GroundednessParams"
-                },
-                {
-                  "$ref": "#/components/schemas/StringMatchParams"
-                },
-                {
-                  "$ref": "#/components/schemas/MetadataParams"
-                },
-                {
-                  "$ref": "#/components/schemas/SemanticSimilarityParams"
-                }
-              ]
-            },
-            "type": "array",
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Assertions"
           }
         },
@@ -15867,8 +15646,7 @@
         "required": [
           "project_id",
           "identifier",
-          "name",
-          "assertions"
+          "name"
         ],
         "title": "CreateCheckAPIRequest"
       },
@@ -16396,12 +16174,12 @@
             "format": "uuid",
             "title": "Dataset Id"
           },
-          "messages": {
+          "input_data": {
             "items": {
               "$ref": "#/components/schemas/ChatMessage"
             },
             "type": "array",
-            "title": "Messages"
+            "title": "Input Data"
           },
           "demo_output": {
             "anyOf": [
@@ -16430,18 +16208,30 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ChatTestCaseStatus"
+                "$ref": "#/components/schemas/TestCaseStatus"
               },
               {
                 "type": "null"
               }
             ]
+          },
+          "source_probe_attempt_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Probe Attempt Id"
           }
         },
         "type": "object",
         "required": [
           "dataset_id",
-          "messages"
+          "input_data"
         ],
         "title": "CreateTestCaseAPIRequest"
       },
@@ -16717,7 +16507,7 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ListFilterValue_ChatTestCaseStatus_"
+                "$ref": "#/components/schemas/ListFilterValue_TestCaseStatus_"
               },
               {
                 "type": "null"
@@ -17190,6 +16980,73 @@
         "type": "object",
         "title": "FailureCategoryResult"
       },
+      "FindTenantRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "turnstile_token": {
+            "type": "string",
+            "title": "Turnstile Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "turnstile_token"
+        ],
+        "title": "FindTenantRequest"
+      },
+      "FindTenantResponse": {
+        "properties": {
+          "tenants": {
+            "items": {
+              "$ref": "#/components/schemas/FindTenantTenantInfo"
+            },
+            "type": "array",
+            "title": "Tenants"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tenants"
+        ],
+        "title": "FindTenantResponse"
+      },
+      "FindTenantTenantInfo": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "host": {
+            "type": "string",
+            "title": "Host"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "host"
+        ],
+        "title": "FindTenantTenantInfo"
+      },
+      "FlatCheckSpec": {
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "title": "Identifier"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "identifier"
+        ],
+        "title": "FlatCheckSpec",
+        "description": "A flat check dict as sent by the conversation editor's test button.\n\nAccepts ``{\"identifier\": \"correctness\", \"reference\": \"...\"}`` and converts\nto a proper ``TestCaseCheckConfig``.  Also handles legacy ``type`` key."
+      },
       "FrequencyOption": {
         "type": "string",
         "enum": [
@@ -17356,25 +17213,6 @@
         ],
         "title": "GenerateScenarioBasedDatasetAPIRequest"
       },
-      "GroundednessParams": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "groundedness",
-            "title": "Type",
-            "default": "groundedness"
-          },
-          "context": {
-            "type": "string",
-            "title": "Context"
-          }
-        },
-        "type": "object",
-        "required": [
-          "context"
-        ],
-        "title": "GroundednessParams"
-      },
       "GroupAPIReference": {
         "properties": {
           "id": {
@@ -17470,6 +17308,32 @@
           "value"
         ],
         "title": "Header"
+      },
+      "HealthStatus": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "services": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Services"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version",
+          "services"
+        ],
+        "title": "HealthStatus"
       },
       "Included_EvaluationAPIResource": {
         "properties": {
@@ -17631,50 +17495,6 @@
           "permissions"
         ],
         "title": "InviteUserRequest"
-      },
-      "JsonPathTestParam": {
-        "properties": {
-          "json_path": {
-            "type": "string",
-            "title": "Json Path"
-          },
-          "expected_value": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "string"
-              }
-            ],
-            "title": "Expected Value"
-          },
-          "expected_value_type": {
-            "$ref": "#/components/schemas/JsonType"
-          }
-        },
-        "type": "object",
-        "required": [
-          "json_path",
-          "expected_value",
-          "expected_value_type"
-        ],
-        "title": "JsonPathTestParam"
-      },
-      "JsonType": {
-        "type": "string",
-        "enum": [
-          "string",
-          "number",
-          "boolean"
-        ],
-        "title": "JsonType"
       },
       "KnowledgeBaseAPIReference": {
         "properties": {
@@ -17945,42 +17765,6 @@
         "type": "object",
         "title": "ListFilterValue[ActionType]"
       },
-      "ListFilterValue_ChatTestCaseStatus_": {
-        "properties": {
-          "selected_options": {
-            "items": {
-              "$ref": "#/components/schemas/ChatTestCaseStatus"
-            },
-            "type": "array",
-            "title": "Selected Options"
-          },
-          "is_empty": {
-            "type": "boolean",
-            "title": "Is Empty",
-            "default": false
-          },
-          "match_mode": {
-            "type": "string",
-            "enum": [
-              "include",
-              "exclude"
-            ],
-            "title": "Match Mode",
-            "default": "include"
-          },
-          "match_logic": {
-            "type": "string",
-            "enum": [
-              "any",
-              "all"
-            ],
-            "title": "Match Logic",
-            "default": "any"
-          }
-        },
-        "type": "object",
-        "title": "ListFilterValue[ChatTestCaseStatus]"
-      },
       "ListFilterValue_TaskState_": {
         "properties": {
           "selected_options": {
@@ -18016,6 +17800,42 @@
         },
         "type": "object",
         "title": "ListFilterValue[TaskState]"
+      },
+      "ListFilterValue_TestCaseStatus_": {
+        "properties": {
+          "selected_options": {
+            "items": {
+              "$ref": "#/components/schemas/TestCaseStatus"
+            },
+            "type": "array",
+            "title": "Selected Options"
+          },
+          "is_empty": {
+            "type": "boolean",
+            "title": "Is Empty",
+            "default": false
+          },
+          "match_mode": {
+            "type": "string",
+            "enum": [
+              "include",
+              "exclude"
+            ],
+            "title": "Match Mode",
+            "default": "include"
+          },
+          "match_logic": {
+            "type": "string",
+            "enum": [
+              "any",
+              "all"
+            ],
+            "title": "Match Logic",
+            "default": "any"
+          }
+        },
+        "type": "object",
+        "title": "ListFilterValue[TestCaseStatus]"
       },
       "ListFilterValue_UUID_": {
         "properties": {
@@ -18089,28 +17909,6 @@
         },
         "type": "object",
         "title": "ListFilterValue[str]"
-      },
-      "MetadataParams": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "metadata",
-            "title": "Type",
-            "default": "metadata"
-          },
-          "json_path_rules": {
-            "items": {
-              "$ref": "#/components/schemas/JsonPathTestParam"
-            },
-            "type": "array",
-            "title": "Json Path Rules"
-          }
-        },
-        "type": "object",
-        "required": [
-          "json_path_rules"
-        ],
-        "title": "MetadataParams"
       },
       "Metric-Input": {
         "properties": {
@@ -18958,17 +18756,16 @@
             ],
             "title": "Project Id"
           },
-          "messages": {
+          "input_data": {
             "items": {
               "$ref": "#/components/schemas/ChatMessage"
             },
             "type": "array",
-            "title": "Messages"
+            "title": "Input Data"
           },
           "checks": {
             "items": {
-              "additionalProperties": true,
-              "type": "object"
+              "$ref": "#/components/schemas/FlatCheckSpec"
             },
             "type": "array",
             "title": "Checks"
@@ -18984,7 +18781,7 @@
         },
         "type": "object",
         "required": [
-          "messages",
+          "input_data",
           "checks",
           "model_output"
         ],
@@ -19710,32 +19507,6 @@
         "title": "SearchSelectionSummaryDatasetTestCasesAPIRequest",
         "description": "Request payload for computing a selection summary on dataset test cases.\n\n- When `ids` is provided, the summary is restricted to those test case IDs.\n- Filters/search/order_by are still accepted and will further restrict the selection."
       },
-      "SemanticSimilarityParams": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "semantic_similarity",
-            "title": "Type",
-            "default": "semantic_similarity"
-          },
-          "reference": {
-            "type": "string",
-            "title": "Reference"
-          },
-          "threshold": {
-            "type": "number",
-            "maximum": 1.0,
-            "minimum": 0.0,
-            "title": "Threshold",
-            "default": 0.95
-          }
-        },
-        "type": "object",
-        "required": [
-          "reference"
-        ],
-        "title": "SemanticSimilarityParams"
-      },
       "Severity": {
         "type": "integer",
         "enum": [
@@ -19886,25 +19657,6 @@
           "id"
         ],
         "title": "SortBy[Literal['id', 'status', 'failure_category_name', 'visibility', 'sample_success']]"
-      },
-      "StringMatchParams": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "string_match",
-            "title": "Type",
-            "default": "string_match"
-          },
-          "keyword": {
-            "type": "string",
-            "title": "Keyword"
-          }
-        },
-        "type": "object",
-        "required": [
-          "keyword"
-        ],
-        "title": "StringMatchParams"
       },
       "SubmitLocalEvaluationOutputAPIRequest": {
         "properties": {
@@ -20061,9 +19813,9 @@
               "discriminator": {
                 "propertyName": "type",
                 "mapping": {
-                  "chat_test_case": "#/components/schemas/ChatTestCaseReference",
-                  "chat_test_case_evaluation": "#/components/schemas/ChatTestCaseEvaluationReference",
-                  "probe_attempt": "#/components/schemas/ProbeAttemptReference"
+                  "probe_attempt": "#/components/schemas/ProbeAttemptReference",
+                  "test_case": "#/components/schemas/ChatTestCaseReference",
+                  "test_case_evaluation": "#/components/schemas/ChatTestCaseEvaluationReference"
                 }
               }
             },
@@ -20231,12 +19983,21 @@
             "format": "date-time",
             "title": "Updated At"
           },
+          "input_data": {
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "type": "array",
+            "title": "Input Data"
+          },
           "messages": {
             "items": {
               "$ref": "#/components/schemas/ChatMessage"
             },
             "type": "array",
-            "title": "Messages"
+            "title": "Messages",
+            "description": "Deprecated alias for input_data. Use input_data instead.",
+            "deprecated": true
           },
           "demo_output": {
             "anyOf": [
@@ -20270,7 +20031,7 @@
             "title": "Comments"
           },
           "status": {
-            "$ref": "#/components/schemas/ChatTestCaseStatus"
+            "$ref": "#/components/schemas/TestCaseStatus"
           }
         },
         "type": "object",
@@ -20279,6 +20040,7 @@
           "dataset_id",
           "created_at",
           "updated_at",
+          "input_data",
           "messages",
           "tags",
           "checks",
@@ -20293,43 +20055,27 @@
             "type": "string",
             "title": "Identifier"
           },
-          "assertions": {
+          "spec": {
             "anyOf": [
               {
-                "items": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/CorrectnessParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ConformityParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/GroundednessParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/StringMatchParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/MetadataParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/SemanticSimilarityParams"
-                    }
-                  ]
-                },
-                "type": "array"
+                "additionalProperties": true,
+                "type": "object"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Assertions"
+            "title": "Spec"
           },
           "enabled": {
             "type": "boolean",
             "title": "Enabled",
             "default": true
+          },
+          "position": {
+            "type": "integer",
+            "title": "Position",
+            "default": 0
           }
         },
         "type": "object",
@@ -20337,7 +20083,7 @@
           "identifier"
         ],
         "title": "TestCaseCheckConfig",
-        "description": "Object used to describe check config inside a test case"
+        "description": "Check configuration as embedded in a test case."
       },
       "TestCaseCommentAPIResource": {
         "properties": {
@@ -20447,7 +20193,7 @@
           "test_case_exists": {
             "type": "boolean",
             "title": "Test Case Exists",
-            "description": "Whether the original test case still exists in ChatTestCaseTable",
+            "description": "Whether the original test case still exists in TestCaseTable",
             "default": false
           },
           "divergence_warnings": {
@@ -20477,6 +20223,14 @@
           "hidden"
         ],
         "title": "TestCaseEvaluationAPIResource"
+      },
+      "TestCaseStatus": {
+        "type": "string",
+        "enum": [
+          "active",
+          "draft"
+        ],
+        "title": "TestCaseStatus"
       },
       "TopicWithDocumentCount": {
         "properties": {
@@ -20642,30 +20396,24 @@
             ],
             "title": "Description"
           },
+          "spec": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spec"
+          },
           "assertions": {
             "anyOf": [
               {
                 "items": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/CorrectnessParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ConformityParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/GroundednessParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/StringMatchParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/MetadataParams"
-                    },
-                    {
-                      "$ref": "#/components/schemas/SemanticSimilarityParams"
-                    }
-                  ]
+                  "additionalProperties": true,
+                  "type": "object"
                 },
                 "type": "array"
               },
@@ -21184,7 +20932,7 @@
           "set_test_case_status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ChatTestCaseStatus"
+                "$ref": "#/components/schemas/TestCaseStatus"
               },
               {
                 "type": "null"
@@ -21209,7 +20957,7 @@
             ],
             "title": "Dataset Id"
           },
-          "messages": {
+          "input_data": {
             "anyOf": [
               {
                 "items": {
@@ -21221,7 +20969,7 @@
                 "type": "null"
               }
             ],
-            "title": "Messages"
+            "title": "Input Data"
           },
           "demo_output": {
             "anyOf": [
@@ -21264,7 +21012,7 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ChatTestCaseStatus"
+                "$ref": "#/components/schemas/TestCaseStatus"
               },
               {
                 "type": "null"
@@ -21364,7 +21112,7 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ChatTestCaseStatus"
+                "$ref": "#/components/schemas/TestCaseStatus"
               },
               {
                 "type": "null"
@@ -21456,13 +21204,21 @@
           "email": {
             "type": "string",
             "title": "Email"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupAPIReference"
+            },
+            "type": "array",
+            "title": "Groups"
           }
         },
         "type": "object",
         "required": [
           "id",
           "name",
-          "email"
+          "email",
+          "groups"
         ],
         "title": "UserAPIResource"
       },
@@ -21571,6 +21327,26 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
+          "evaluations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluations"
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__2": {
+        "properties": {
           "agent": {
             "anyOf": [
               {
@@ -21590,26 +21366,6 @@
                 "type": "null"
               }
             ]
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__2": {
-        "properties": {
-          "latest_runs": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Latest Runs"
           }
         },
         "type": "object",
@@ -21626,16 +21382,6 @@
                 "type": "null"
               }
             ]
-          },
-          "dataset": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
           }
         },
         "type": "object",
@@ -21643,7 +21389,7 @@
       },
       "backend__http__responses__base__Included_list__4": {
         "properties": {
-          "evaluations": {
+          "latest_runs": {
             "anyOf": [
               {
                 "items": {
@@ -21655,7 +21401,7 @@
                 "type": "null"
               }
             ],
-            "title": "Evaluations"
+            "title": "Latest Runs"
           }
         },
         "type": "object",
@@ -21698,6 +21444,16 @@
                 "type": "null"
               }
             ]
+          },
+          "dataset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -21705,6 +21461,10 @@
       }
     },
     "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
       "APIKeyHeader": {
         "type": "apiKey",
         "in": "header",
