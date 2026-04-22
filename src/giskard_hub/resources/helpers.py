@@ -19,6 +19,7 @@ from ._display import (
     print_evaluation_metrics_table,
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
+from .._analytics import capture_event, make_distinct_id
 from ..types.chat import ChatMessage
 from ..types.scan import ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam
@@ -94,9 +95,19 @@ class HelpersResource(SyncAPIResource):
             if current.state in error_states:
                 if raise_on_error:
                     raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
+                capture_event(
+                    make_distinct_id(self._client.api_key),
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": False},
+                )
                 return current
 
             if current.state not in running_states:
+                capture_event(
+                    make_distinct_id(self._client.api_key),
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": True},
+                )
                 return current
 
             time.sleep(poll_interval)
@@ -151,8 +162,15 @@ class HelpersResource(SyncAPIResource):
             cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
+        is_remote = isinstance(agent, (str, Agent))
 
-        if isinstance(agent, (str, Agent)):
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "helpers_evaluate_called",
+            {"is_remote": is_remote},
+        )
+
+        if is_remote:
             return self._evaluate_remote(agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags)
 
         return self._evaluate_local(agent=agent, dataset_id=dataset_id, name=name, tags=tags)
@@ -302,9 +320,19 @@ class AsyncHelpersResource(AsyncAPIResource):
             if current.state in error_states:
                 if raise_on_error:
                     raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
+                capture_event(
+                    make_distinct_id(self._client.api_key),
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": False},
+                )
                 return current
 
             if current.state not in running_states:
+                capture_event(
+                    make_distinct_id(self._client.api_key),
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": True},
+                )
                 return current
 
             await asyncio.sleep(poll_interval)
@@ -359,8 +387,15 @@ class AsyncHelpersResource(AsyncAPIResource):
             cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
+        is_remote = isinstance(agent, (str, Agent))
 
-        if isinstance(agent, (str, Agent)):
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "helpers_evaluate_called",
+            {"is_remote": is_remote},
+        )
+
+        if is_remote:
             return await self._evaluate_remote(
                 agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags
             )
