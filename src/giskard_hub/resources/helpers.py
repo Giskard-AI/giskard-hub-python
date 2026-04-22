@@ -162,15 +162,14 @@ class HelpersResource(SyncAPIResource):
             cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
-        is_remote = isinstance(agent, (str, Agent))
 
         capture_event(
             make_distinct_id(self._client.api_key),
             "helpers_evaluate_called",
-            {"is_remote": is_remote},
+            {"is_remote": isinstance(agent, (str, Agent))},
         )
 
-        if is_remote:
+        if isinstance(agent, (str, Agent)):
             return self._evaluate_remote(agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags)
 
         return self._evaluate_local(agent=agent, dataset_id=dataset_id, name=name, tags=tags)
@@ -387,15 +386,14 @@ class AsyncHelpersResource(AsyncAPIResource):
             cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
-        is_remote = isinstance(agent, (str, Agent))
 
         capture_event(
             make_distinct_id(self._client.api_key),
             "helpers_evaluate_called",
-            {"is_remote": is_remote},
+            {"is_remote": isinstance(agent, (str, Agent))},
         )
 
-        if is_remote:
+        if isinstance(agent, (str, Agent)):
             return await self._evaluate_remote(
                 agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags
             )
