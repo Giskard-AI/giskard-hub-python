@@ -20,6 +20,7 @@ _DISABLING_ENV_VARS = [
     "GISKARD_TELEMETRY_DISABLED",
     "GISKARD_HUB_TELEMETRY_DISABLED",
 ]
+_CI_ENV_VARS = ["CI", "TF_BUILD"]
 _TRUTHY_VALUES = {"1", "true", "yes", "on", "t", "y"}
 
 
@@ -29,8 +30,14 @@ def _is_true_str(value: str | None) -> bool:
     return value.strip().lower() in _TRUTHY_VALUES
 
 
+def _is_ci() -> bool:
+    return any(_is_true_str(os.getenv(var)) for var in _CI_ENV_VARS)
+
+
 def _should_disable() -> bool:
     if _explicitly_disabled:
+        return True
+    if _is_ci():
         return True
     return any(_is_true_str(os.getenv(var)) for var in _DISABLING_ENV_VARS)
 
