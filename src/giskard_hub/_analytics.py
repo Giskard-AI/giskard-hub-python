@@ -34,9 +34,8 @@ def _is_ci() -> bool:
     return any(_is_true_str(os.getenv(var)) for var in _CI_ENV_VARS)
 
 
-def _should_disable() -> bool:
-    if _explicitly_disabled:
-_env_disabled = any(_is_true_str(os.getenv(var)) for var in _DISABLING_ENV_VARS)
+_env_disabled = any(_is_true_str(os.getenv(var)) for var in _DISABLING_ENV_VARS) or _is_ci()
+
 
 def _should_disable() -> bool:
     return _explicitly_disabled or _env_disabled
