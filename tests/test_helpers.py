@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from typing import Any, List, Iterable
 
 import pytest
@@ -49,18 +50,24 @@ class DummyAsyncResource:
 
 
 class DummySyncHelpers(HelpersResource):
+    _client: Any
+
     def __init__(self, resource: DummySyncResource) -> None:
         # bypass parent init; we don't need a real client
         self._resource = resource
+        self._client = SimpleNamespace(api_key="test-api-key")
 
     def _make_retriever(self, _: Any) -> Any:  # type: ignore[override]
         return self._resource.retrieve
 
 
 class DummyAsyncHelpers(AsyncHelpersResource):
+    _client: Any
+
     def __init__(self, resource: DummyAsyncResource) -> None:
         # bypass parent init; we don't need a real client
         self._resource = resource
+        self._client = SimpleNamespace(api_key="test-api-key")
 
     def _make_retriever(self, _: Any) -> Any:  # type: ignore[override]
         return self._resource.retrieve
@@ -210,8 +217,10 @@ def test_wait_for_completion_sync_with_extra_retrieve_kwargs() -> None:
     retriever = partial(resource.retrieve, evaluation_id="eval-42")
 
     class HelperWithPartial(HelpersResource):
+        _client: Any
+
         def __init__(self) -> None:
-            pass
+            self._client = SimpleNamespace(api_key="test-api-key")
 
         def _make_retriever(self, _: Any) -> Any:  # type: ignore[override]
             return retriever
@@ -250,8 +259,10 @@ async def test_wait_for_completion_async_with_extra_retrieve_kwargs() -> None:
     retriever = partial(resource.retrieve, evaluation_id="eval-42")
 
     class AsyncHelperWithPartial(AsyncHelpersResource):
+        _client: Any
+
         def __init__(self) -> None:
-            pass
+            self._client = SimpleNamespace(api_key="test-api-key")
 
         def _make_retriever(self, _: Any) -> Any:  # type: ignore[override]
             return retriever
@@ -353,11 +364,13 @@ class AsyncDummyEvaluations:
 class DummyClient:
     def __init__(self, evaluations: DummyEvaluations) -> None:
         self.evaluations = evaluations
+        self.api_key = "test-api-key"
 
 
 class AsyncDummyClient:
     def __init__(self, evaluations: AsyncDummyEvaluations) -> None:
         self.evaluations = evaluations
+        self.api_key = "test-api-key"
 
 
 class HelpersWithDummyClient(HelpersResource):
