@@ -93,13 +93,13 @@ class HelpersResource(SyncAPIResource):
             current = cast(TStateful, retrieve(current.id))
 
             if current.state in error_states:
-                if raise_on_error:
-                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 capture_event(
                     make_distinct_id(self._client.api_key),
                     "evaluation_wait_completed",
                     {"final_state": current.state, "success": False},
                 )
+                if raise_on_error:
+                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 return current
 
             if current.state not in running_states:
@@ -317,13 +317,13 @@ class AsyncHelpersResource(AsyncAPIResource):
             current = cast(TStateful, await retrieve(current.id))
 
             if current.state in error_states:
-                if raise_on_error:
-                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 capture_event(
                     make_distinct_id(self._client.api_key),
                     "evaluation_wait_completed",
                     {"final_state": current.state, "success": False},
                 )
+                if raise_on_error:
+                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 return current
 
             if current.state not in running_states:
