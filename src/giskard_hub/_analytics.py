@@ -2,6 +2,7 @@ import os
 import atexit
 import hashlib
 import logging
+import threading
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -9,6 +10,7 @@ log = logging.getLogger(__name__)
 _posthog_client: Any = None
 _initialized = False
 _explicitly_disabled = False
+_init_lock = threading.Lock()
 
 POSTHOG_PROJECT_API_KEY = "phc_z4TRoET597ASsuoDBa7zr5FWmUSjdCSyxazHyScLp2Nf"
 POSTHOG_HOST = "https://eu.i.posthog.com"
@@ -35,28 +37,28 @@ def _should_disable() -> bool:
 
 def _get_client() -> Any:
     global _posthog_client, _initialized
-    if _initialized:
+    with _init_lock:
+        if _initialized:
+            return _posthog_client
+
+        disabled = _should_disable()
+        try:
+            from posthog import Posthog
+
+            _posthog_client = Posthog(
+                POSTHOG_PROJECT_API_KEY,
+                host=POSTHOG_HOST,
+                enable_exception_autocapture=not disabled,
+                disabled=disabled,
+                disable_geoip=disabled,
+            )
+            atexit.register(_posthog_client.shutdown)
+        except Exception:
+            log.debug("PostHog analytics could not be initialized", exc_info=True)
+            _posthog_client = None
+
+        _initialized = True
         return _posthog_client
-
-    _initialized = True
-
-    disabled = _should_disable()
-    try:
-        from posthog import Posthog
-
-        _posthog_client = Posthog(
-            POSTHOG_PROJECT_API_KEY,
-            host=POSTHOG_HOST,
-            enable_exception_autocapture=not disabled,
-            disabled=disabled,
-            disable_geoip=disabled,
-        )
-        atexit.register(_posthog_client.shutdown)
-    except Exception:
-        log.debug("PostHog analytics could not be initialized", exc_info=True)
-        _posthog_client = None
-
-    return _posthog_client
 
 
 def disable_telemetry() -> None:
@@ -83,12 +85,13 @@ def disable_telemetry() -> None:
     >>> disable_telemetry()
     """
     global _explicitly_disabled
-    _explicitly_disabled = True
-    if _posthog_client is not None:
-        try:
-            _posthog_client.disabled = True
-        except Exception:
-            log.debug("Failed to flip PostHog client to disabled", exc_info=True)
+    with _init_lock:
+        _explicitly_disabled = True
+        if _posthog_client is not None:
+            try:
+                _posthog_client.disabled = True
+            except Exception:
+                log.debug("Failed to flip PostHog client to disabled", exc_info=True)
 
 
 def make_distinct_id(api_key: str) -> str:
