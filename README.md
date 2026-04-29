@@ -43,6 +43,17 @@ export GISKARD_HUB_API_KEY="your-api-key"
 
 `HubClient()` and `AsyncHubClient()` automatically read these environment variables.
 
+If you reach the Hub through a non-tenant hostname (for example, internal Docker
+networking such as `http://backend:8000`), also set the tenant host so the SDK
+can address the right tenant:
+
+```sh
+export GISKARD_HUB_TENANT_HOST="your-hub-instance"
+```
+
+This adds an `X-Forwarded-Host` header to every request. You only need it when
+the host in `GISKARD_HUB_BASE_URL` is not the tenant host.
+
 ## Quickstart
 
 ```python
@@ -61,7 +72,7 @@ scan = hub.scans.create(
 print(scan)
 ```
 
-If you prefer, you can also pass `api_key` and `base_url` directly to the client constructor.
+If you prefer, you can also pass `api_key`, `base_url`, and `tenant_host` directly to the client constructor.
 For local development, we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
 to load `GISKARD_HUB_BASE_URL` and `GISKARD_HUB_API_KEY` from a local `.env` file
 so that secrets are not stored in source control.
