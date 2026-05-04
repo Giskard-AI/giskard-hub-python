@@ -1,6 +1,6 @@
 """Test case domain types."""
 
-from typing import List, Literal, Iterable, Optional, TypedDict
+from typing import List, Literal, Iterable, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
@@ -17,6 +17,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
     "TestCaseUpdateParams",
@@ -25,6 +26,8 @@ __all__ = [
     "CommentAddParams",
     "CommentEditParams",
 ]
+
+TestCaseStatus: TypeAlias = Literal["active", "draft"]
 
 
 # ---------------------------------------------------------------------------
@@ -55,9 +58,10 @@ class TestCase(BaseModel):
     dataset_id: str
     demo_output: Optional[AgentOutput] = None
     messages: List[ChatMessage]
+    input_data: List[ChatMessage]
     tags: List[str]
     updated_at: datetime
-    status: Literal["active", "draft"]
+    status: TestCaseStatus
 
 
 # ---------------------------------------------------------------------------
@@ -67,20 +71,21 @@ class TestCase(BaseModel):
 
 class TestCaseCreateParams(TypedDict, total=False):
     dataset_id: Required[str]
-    messages: Required[Iterable[ChatMessageParam]]
+    input_data: Required[Iterable[ChatMessageParam]]
     checks: Iterable[TestCaseCheckConfigParam]
     demo_output: Optional[ChatMessageWithMetadataParam]
-    status: Optional[Literal["active", "draft"]]
+    status: Optional[TestCaseStatus]
     tags: SequenceNotStr[str]
+    source_probe_attempt_id: Optional[str]
 
 
 class TestCaseUpdateParams(TypedDict, total=False):
     checks: Optional[Iterable[TestCaseCheckConfigParam]]
     dataset_id: Optional[str]
     demo_output: Optional[ChatMessageWithMetadataParam]
-    messages: Optional[Iterable[ChatMessageParam]]
+    input_data: Optional[Iterable[ChatMessageParam]]
     tags: Optional[SequenceNotStr[str]]
-    status: Optional[Literal["active", "draft"]]
+    status: Optional[TestCaseStatus]
 
 
 class TestCaseBulkDeleteParams(TypedDict, total=False):
@@ -93,7 +98,7 @@ class TestCaseBulkUpdateParams(TypedDict, total=False):
     enabled_checks: Optional[SequenceNotStr[str]]
     added_tags: Optional[SequenceNotStr[str]]
     removed_tags: Optional[SequenceNotStr[str]]
-    status: Optional[Literal["active", "draft"]]
+    status: Optional[TestCaseStatus]
 
 
 class BulkMoveTestCasesParams(TypedDict, total=False):

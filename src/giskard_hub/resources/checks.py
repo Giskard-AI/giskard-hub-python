@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Dict, List, Optional
 
 import httpx
 
@@ -21,6 +21,7 @@ from ..types.check import (
     CheckCreateParams,
     CheckUpdateParams,
     CheckBulkDeleteParams,
+    _check_param_to_spec,
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
@@ -51,10 +52,11 @@ class ChecksResource(SyncAPIResource):
     def create(
         self,
         *,
-        params: CheckTypeParam,
         identifier: str,
         name: str,
         project_id: str,
+        params: CheckTypeParam | Omit = omit,
+        spec: Dict[str, object] | Omit = omit,
         description: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -67,14 +69,18 @@ class ChecksResource(SyncAPIResource):
 
         Parameters
         ----------
-        params : CheckTypeParam
-            Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness).
         identifier : str
             Unique identifier of the check.
         name : str
             Display name of the check.
         project_id : str
             Project ID to create the check in.
+        params : CheckTypeParam | Omit
+            Check-specific parameters (e.g. `{"reference": "..."}` for correctness).
+            Cannot be combined with `spec`.
+        spec : Dict[str, object] | Omit
+            Raw check spec with a `kind` discriminator (e.g. `{"kind": "hub_correctness", "reference": "..."}`).
+            Cannot be combined with `params`.
         description : str | None | Omit
             Human-readable description of the check.
 
@@ -93,12 +99,26 @@ class ChecksResource(SyncAPIResource):
         -------
         Check
             The newly created check.
+
+        Raises
+        ------
+        ValueError
+            If both `params` and `spec` are provided, or if neither is provided.
         """
+        params_provided = not isinstance(params, Omit)
+        spec_provided = not isinstance(spec, Omit)
+
+        if params_provided and spec_provided:
+            raise ValueError("Cannot provide both 'params' and 'spec'. Use 'spec' or 'params' but not both.")
+        if not params_provided and not spec_provided:
+            raise ValueError("Must provide either 'params' or 'spec'.")
+
+        api_spec = spec if spec_provided else _check_param_to_spec(identifier, params)
         response = self._post(
             "/v2/checks",
             body=maybe_transform(
                 {
-                    "assertions": [params],
+                    "spec": api_spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -151,7 +171,7 @@ class ChecksResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``check_id`` is empty.
+            If `check_id` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -170,6 +190,7 @@ class ChecksResource(SyncAPIResource):
         check_id: str,
         *,
         params: Optional[CheckTypeParam] | Omit = omit,
+        spec: Optional[Dict[str, object]] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -187,7 +208,9 @@ class ChecksResource(SyncAPIResource):
         check_id : str
             ID of the check to update.
         params : CheckTypeParam | None | Omit
-            Updated check-specific parameters.
+            Updated check-specific parameters. Cannot be combined with `spec`.
+        spec : Dict[str, object] | None | Omit
+            Raw check spec with a `kind` discriminator. Cannot be combined with `params`.
         description : str | None | Omit
             Updated description of the check.
         identifier : str | None | Omit
@@ -214,20 +237,33 @@ class ChecksResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``check_id`` is empty.
+            If `check_id` is empty, or if both `params` and `spec` are provided.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        api_assertions: list[Any] | Omit | None
-        if params is None or isinstance(params, Omit):
-            api_assertions = params  # type: ignore[assignment]
+
+        params_provided = not isinstance(params, Omit)
+        spec_provided = not isinstance(spec, Omit)
+
+        if params_provided and spec_provided:
+            raise ValueError("Cannot provide both 'params' and 'spec'. Use 'spec' or 'params' but not both.")
+
+        api_spec: Dict[str, object] | Omit | None
+        if spec_provided:
+            api_spec = spec
+        elif params_provided:
+            if params is None:
+                api_spec = None
+            else:
+                type_or_id = identifier if isinstance(identifier, str) else None
+                api_spec = _check_param_to_spec(type_or_id, params)
         else:
-            api_assertions = [params]
+            api_spec = omit
         response = self._patch(
             f"/v2/checks/{check_id}",
             body=maybe_transform(
                 {
-                    "assertions": api_assertions,
+                    "spec": api_spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -331,7 +367,7 @@ class ChecksResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``check_id`` is empty.
+            If `check_id` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -412,10 +448,11 @@ class AsyncChecksResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        params: CheckTypeParam,
         identifier: str,
         name: str,
         project_id: str,
+        params: CheckTypeParam | Omit = omit,
+        spec: Dict[str, object] | Omit = omit,
         description: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -428,14 +465,18 @@ class AsyncChecksResource(AsyncAPIResource):
 
         Parameters
         ----------
-        params : CheckTypeParam
-            Check-specific parameters (e.g. ``{"reference": "..."}`` for correctness).
         identifier : str
             Unique identifier of the check.
         name : str
             Display name of the check.
         project_id : str
             Project ID to create the check in.
+        params : CheckTypeParam | Omit
+            Check-specific parameters (e.g. `{"reference": "..."}` for correctness).
+            Cannot be combined with `spec`.
+        spec : Dict[str, object] | Omit
+            Raw check spec with a `kind` discriminator (e.g. `{"kind": "hub_correctness", "reference": "..."}`).
+            Cannot be combined with `params`.
         description : str | None | Omit
             Human-readable description of the check.
 
@@ -454,12 +495,26 @@ class AsyncChecksResource(AsyncAPIResource):
         -------
         Check
             The newly created check.
+
+        Raises
+        ------
+        ValueError
+            If both `params` and `spec` are provided, or if neither is provided.
         """
+        params_provided = not isinstance(params, Omit)
+        spec_provided = not isinstance(spec, Omit)
+
+        if params_provided and spec_provided:
+            raise ValueError("Cannot provide both 'params' and 'spec'. Use 'spec' or 'params' but not both.")
+        if not params_provided and not spec_provided:
+            raise ValueError("Must provide either 'params' or 'spec'.")
+
+        api_spec = spec if spec_provided else _check_param_to_spec(identifier, params)
         response = await self._post(
             "/v2/checks",
             body=await async_maybe_transform(
                 {
-                    "assertions": [params],
+                    "spec": api_spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -512,7 +567,7 @@ class AsyncChecksResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``check_id`` is empty.
+            If `check_id` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
@@ -531,6 +586,7 @@ class AsyncChecksResource(AsyncAPIResource):
         check_id: str,
         *,
         params: Optional[CheckTypeParam] | Omit = omit,
+        spec: Optional[Dict[str, object]] | Omit = omit,
         description: Optional[str] | Omit = omit,
         identifier: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -548,7 +604,9 @@ class AsyncChecksResource(AsyncAPIResource):
         check_id : str
             ID of the check to update.
         params : CheckTypeParam | None | Omit
-            Updated check-specific parameters.
+            Updated check-specific parameters. Cannot be combined with `spec`.
+        spec : Dict[str, object] | None | Omit
+            Raw check spec with a `kind` discriminator. Cannot be combined with `params`.
         description : str | None | Omit
             Updated description of the check.
         identifier : str | None | Omit
@@ -575,20 +633,33 @@ class AsyncChecksResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``check_id`` is empty.
+            If `check_id` is empty, or if both `params` and `spec` are provided.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")
-        api_assertions: list[Any] | Omit | None
-        if params is None or isinstance(params, Omit):
-            api_assertions = params  # type: ignore[assignment]
+
+        params_provided = not isinstance(params, Omit)
+        spec_provided = not isinstance(spec, Omit)
+
+        if params_provided and spec_provided:
+            raise ValueError("Cannot provide both 'params' and 'spec'. Use 'spec' or 'params' but not both.")
+
+        api_spec: Dict[str, object] | Omit | None
+        if spec_provided:
+            api_spec = spec
+        elif params_provided:
+            if params is None:
+                api_spec = None
+            else:
+                type_or_id = identifier if isinstance(identifier, str) else None
+                api_spec = _check_param_to_spec(type_or_id, params)
         else:
-            api_assertions = [params]
+            api_spec = omit
         response = await self._patch(
             f"/v2/checks/{check_id}",
             body=await async_maybe_transform(
                 {
-                    "assertions": api_assertions,
+                    "spec": api_spec,
                     "description": description,
                     "identifier": identifier,
                     "name": name,
@@ -692,7 +763,7 @@ class AsyncChecksResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``check_id`` is empty.
+            If `check_id` is empty.
         """
         if not check_id:
             raise ValueError(f"Expected a non-empty value for `check_id` but received {check_id!r}")

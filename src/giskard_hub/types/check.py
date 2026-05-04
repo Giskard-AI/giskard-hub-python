@@ -1,6 +1,17 @@
-"""Check, assertion, and annotation types."""
+"""Check, spec, and annotation types."""
 
-from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Literal,
+    Iterable,
+    Optional,
+    TypeAlias,
+    TypedDict,
+    cast,
+)
 from datetime import datetime
 from typing_extensions import Required
 
@@ -15,6 +26,7 @@ __all__ = [
     "CheckResult",
     "CheckConfig",
     "CheckConfigParam",
+    "CheckSource",
     "CheckType",
     "CheckTypeParam",
     "ConformityParams",
@@ -31,8 +43,9 @@ __all__ = [
     "MetadataParamsParam",
     "JsonPathRule",
     "JsonPathRuleParam",
+    "Annotation",
     "OutputAnnotation",
-    "TestCaseCheckConfig",
+    "ContextAnnotation",
     "TestCaseCheckConfigParam",
     "CheckListParams",
     "CheckCreateParams",
@@ -40,9 +53,11 @@ __all__ = [
     "CheckBulkDeleteParams",
 ]
 
+CheckSource: TypeAlias = Literal["builtin", "project"]
+
 
 # ---------------------------------------------------------------------------
-# Assertion parameter models (BaseModel – used in responses)
+# Check parameter models (BaseModel)
 # ---------------------------------------------------------------------------
 
 
@@ -73,7 +88,7 @@ class SemanticSimilarityParams(BaseModel):
 
 
 class JsonPathRule(BaseModel):
-    expected_value: Union[bool, float, str]
+    expected_value: Union[bool, int, float, str]
     expected_value_type: Literal["string", "number", "boolean"]
     json_path: str
 
@@ -94,7 +109,7 @@ CheckType: TypeAlias = Union[
 
 
 # ---------------------------------------------------------------------------
-# Assertion parameter TypedDicts (used in requests)
+# Check parameter TypedDicts (used in requests)
 # ---------------------------------------------------------------------------
 
 
@@ -125,7 +140,7 @@ class SemanticSimilarityParamsParam(TypedDict, total=False):
 
 
 class JsonPathRuleParam(TypedDict, total=False):
-    expected_value: Required[Union[bool, float, str]]
+    expected_value: Required[Union[bool, int, float, str]]
     expected_value_type: Required[Literal["string", "number", "boolean"]]
     json_path: Required[str]
 
@@ -146,16 +161,26 @@ CheckTypeParam: TypeAlias = Union[
 
 
 # ---------------------------------------------------------------------------
-# Output annotation
+# Annotations
 # ---------------------------------------------------------------------------
 
 
-class OutputAnnotation(BaseModel):
+class _BaseAnnotation(BaseModel):
     end_char_index: int
     label: str
     start_char_index: int
     text: str
-    type: Literal["output", "context"]
+
+
+class OutputAnnotation(_BaseAnnotation):
+    type: Literal["output"]
+
+
+class ContextAnnotation(_BaseAnnotation):
+    type: Literal["context"]
+
+
+Annotation: TypeAlias = Union[OutputAnnotation, ContextAnnotation]
 
 
 # ---------------------------------------------------------------------------
@@ -172,18 +197,19 @@ class Check(BaseModel):
     name: str
     params: Dict[str, Any] = {}
     project_id: str
+    source: CheckSource = "project"
     updated_at: datetime
+    spec: Dict[str, Any] = {}
 
     @pydantic.model_validator(mode="before")
     @classmethod
-    def _convert_assertions(cls, data: Any) -> Any:  # noqa: ANN401
+    def _convert_spec(cls, data: Any) -> Any:  # noqa: ANN401
         if not isinstance(data, dict):
             return data
         d = cast(Dict[str, Any], data)
         if "params" in d:
             return d
-        assertions: list[Any] = d.get("assertions") or []
-        return {**d, "params": assertions[0] if assertions else {}}
+        return {**d, "params": _extract_check_params(d)}
 
 
 class CheckResult(BaseModel):
@@ -193,7 +219,8 @@ class CheckResult(BaseModel):
     passed: Optional[bool] = None
     error: Optional[str] = None
     reason: Optional[str] = None
-    annotations: Optional[List[OutputAnnotation]] = None
+    annotations: Optional[List[Annotation]] = None
+    details: Optional[Dict[str, Any]] = None
 
 
 # ---------------------------------------------------------------------------
@@ -201,47 +228,67 @@ class CheckResult(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-class TestCaseCheckConfig(BaseModel):
-    __test__ = False
-    identifier: str
-    assertions: Optional[List[CheckType]] = None
-    enabled: Optional[bool] = None
-
-
 class TestCaseCheckConfigParam(TypedDict, total=False):
     identifier: Required[str]
-    assertions: Optional[Iterable[CheckTypeParam]]
     enabled: bool
+    spec: Optional[Dict[str, Any]]
+    position: int
 
 
 # ---------------------------------------------------------------------------
-# User-facing check config (simplified format with params instead of assertions)
+# User-facing check config
 # ---------------------------------------------------------------------------
+
+
+# Mirrors the backend
+_IDENTIFIER_TO_KIND: Dict[str, str] = {
+    "correctness": "hub_correctness",
+    "conformity": "hub_conformity",
+    "groundedness": "hub_groundedness",
+    "string_match": "string_matching",
+    "metadata": "hub_metadata",
+    "semantic_similarity": "semantic_similarity",
+}
 
 
 def _extract_check_params(check: Dict[str, Any]) -> Dict[str, Any]:
-    """Extract params from the first assertion, stripping the ``type`` key."""
-    assertions: list[Any] = check.get("assertions") or []
-    if not assertions:
-        return {}
-    first: Any = assertions[0]
-    if isinstance(first, BaseModel):
-        return first.model_dump(exclude={"type"}, exclude_none=True)
-    if isinstance(first, dict):
-        return {k: v for k, v in cast(Dict[str, Any], first).items() if k != "type"}
+    spec: Any = check.get("spec") or {}
+    if isinstance(spec, BaseModel):
+        return spec.model_dump(exclude={"kind"}, exclude_none=True)
+    if isinstance(spec, dict):
+        return {k: v for k, v in cast(Dict[str, Any], spec).items() if k != "kind"}
     return {}
 
 
-class CheckConfig(BaseModel):
-    """Simplified check configuration with ``params`` instead of raw ``assertions``."""
+def _check_param_to_spec(identifier: Optional[str], params: Any) -> Dict[str, Any]:
+    """Build a `spec` dict, deriving `kind` from `params["type"]` then `identifier`."""
+    if isinstance(params, BaseModel):
+        params_dict: Dict[str, Any] = params.model_dump(exclude_none=True)
+    elif isinstance(params, dict):
+        params_dict = dict(cast(Dict[str, Any], params))
+    else:
+        params_dict = {}
+    type_from_params = params_dict.pop("type", None)
+    type_str = type_from_params or identifier or ""
+    if not type_str:
+        raise ValueError(
+            "Cannot derive check kind: provide 'identifier' or include 'type' in 'params', "
+            "or pass 'spec' directly with an explicit 'kind'."
+        )
+    kind = _IDENTIFIER_TO_KIND.get(type_str, type_str)
+    return {"kind": kind, **params_dict}
 
+
+class CheckConfig(BaseModel):
     identifier: str
     enabled: Optional[bool] = None
+    spec: Optional[Dict[str, Any]] = None
+    position: int
     params: Dict[str, Any] = {}
 
     @pydantic.model_validator(mode="before")
     @classmethod
-    def _convert_assertions(cls, data: Any) -> Any:  # noqa: ANN401
+    def _convert_spec(cls, data: Any) -> Any:  # noqa: ANN401
         if not isinstance(data, dict):
             return data
         d = cast(Dict[str, Any], data)
@@ -259,13 +306,12 @@ class CheckConfigParam(TypedDict, total=False):
 def _check_params_to_api(  # pyright: ignore[reportUnusedFunction]
     checks: Iterable[CheckConfigParam],
 ) -> list[Dict[str, Any]]:
-    """Convert user-facing CheckParam dicts to the API assertions format."""
     return [
         {
             "identifier": check["identifier"],
             "enabled": check.get("enabled", True),
             **(
-                {"assertions": [{"type": check["identifier"], **check.get("params", {})}]}
+                {"spec": _check_param_to_spec(check["identifier"], check.get("params", {}))}
                 if check.get("params")
                 else {}
             ),
@@ -285,18 +331,18 @@ class CheckListParams(TypedDict, total=False):
 
 
 class CheckCreateParams(TypedDict, total=False):
-    assertions: Required[Iterable[CheckTypeParam]]
     description: Optional[str]
     identifier: Required[str]
     name: Required[str]
     project_id: Required[str]
+    spec: Required[Dict[str, Any]]
 
 
 class CheckUpdateParams(TypedDict, total=False):
-    assertions: Optional[Iterable[CheckTypeParam]]
     description: Optional[str]
     identifier: Optional[str]
     name: Optional[str]
+    spec: Optional[Dict[str, Any]]
 
 
 class CheckBulkDeleteParams(TypedDict, total=False):
