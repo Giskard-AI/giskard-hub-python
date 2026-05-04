@@ -39,6 +39,7 @@ from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
+from .._check_helpers import check_params_to_specs
 from ...types.evaluation import (
     Evaluation,
     EvaluationListParams,
@@ -68,20 +69,6 @@ def _validate_dataset_or_old_evaluation(
     """
     if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
         raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
-
-
-def _check_params_to_api(
-    checks: Iterable[CheckConfigParam],
-) -> Iterable[dict[str, object]]:
-    # Flat shape for /v2/evaluations/run-single (FlatCheckSpec). `type` is stripped because it
-    # duplicates `identifier` and would leak into the spec extras.
-    return [
-        {
-            "identifier": check["identifier"],
-            **{k: v for k, v in check.get("params", {}).items() if k != "type"},
-        }
-        for check in checks
-    ]
 
 
 def _normalize_agent_output(
@@ -721,7 +708,7 @@ class EvaluationsResource(SyncAPIResource):
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
 
-        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
+        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
 
         response = self._post(
             "/v2/evaluations/run-single",
@@ -1373,7 +1360,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
 
-        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
+        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
 
         response = await self._post(
             "/v2/evaluations/run-single",

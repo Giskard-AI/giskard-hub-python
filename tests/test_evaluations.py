@@ -5,24 +5,23 @@ from typing import Any
 import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
-from giskard_hub.resources.evaluations.evaluations import (
-    _check_params_to_api,
-    _normalize_agent_output,
-)
+from giskard_hub.resources._check_helpers import check_params_to_specs
+from giskard_hub.resources.evaluations.evaluations import _normalize_agent_output
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 
-def test_check_params_to_api_emits_flat_shape() -> None:
-    api = list(_check_params_to_api([{"identifier": "correctness", "params": {"reference": "x"}}]))
+def test_check_params_to_specs_emits_flat_shape() -> None:
+    api = check_params_to_specs([{"identifier": "correctness", "params": {"reference": "x"}}], flat=True)
     assert api == [{"identifier": "correctness", "reference": "x"}]
 
 
-def test_check_params_to_api_strips_redundant_type() -> None:
-    api = list(
-        _check_params_to_api([{"identifier": "string_match", "params": {"type": "string_match", "keyword": "k"}}])
+def test_check_params_to_specs_strips_redundant_type_when_flat() -> None:
+    api = check_params_to_specs(
+        [{"identifier": "string_match", "params": {"type": "string_match", "keyword": "k"}}],
+        flat=True,
     )
     assert api == [{"identifier": "string_match", "keyword": "k"}]
 

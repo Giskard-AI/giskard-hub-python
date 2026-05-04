@@ -33,9 +33,10 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
-from ...types.check import CheckConfigParam, _check_params_to_api
+from ...types.check import CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
+from .._check_helpers import check_params_to_specs
 from ...types.test_case import (
     TestCase,
     TestCaseCreateParams,
@@ -159,7 +160,7 @@ class TestCasesResource(SyncAPIResource):
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
 
-        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
+        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = _normalize_demo_output(demo_output)
         response = self._post(
             "/v2/test-cases",
@@ -321,7 +322,7 @@ class TestCasesResource(SyncAPIResource):
         if checks is None or isinstance(checks, Omit):
             api_checks = checks  # type: ignore[assignment]
         else:
-            api_checks = _check_params_to_api(checks)
+            api_checks = check_params_to_specs(checks)
         api_demo_output = _normalize_demo_output(demo_output)
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
@@ -683,7 +684,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
 
-        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
+        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = _normalize_demo_output(demo_output)
         response = await self._post(
             "/v2/test-cases",
@@ -845,7 +846,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         if checks is None or isinstance(checks, Omit):
             api_checks = checks  # type: ignore[assignment]
         else:
-            api_checks = _check_params_to_api(checks)
+            api_checks = check_params_to_specs(checks)
         api_demo_output = _normalize_demo_output(demo_output)
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
