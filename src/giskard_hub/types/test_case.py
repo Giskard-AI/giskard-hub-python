@@ -9,7 +9,7 @@ from pydantic import Field
 from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadataParam
 from .user import UserReference
 from .agent import AgentOutput
-from .check import CheckConfig, TestCaseCheckConfigParam
+from .check import CheckConfig, TestCaseCheckConfigParam, Interaction, InteractionParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -52,13 +52,10 @@ class TestCaseReference(BaseModel):
 class TestCase(BaseModel):
     __test__ = False
     id: str
-    checks: List[CheckConfig]
     comments: List[TestCaseComment]
     created_at: datetime
     dataset_id: str
-    demo_output: Optional[AgentOutput] = None
-    messages: List[ChatMessage]
-    input_data: List[ChatMessage]
+    interactions: Optional[List[Interaction]] = None
     tags: List[str]
     updated_at: datetime
     status: TestCaseStatus
@@ -71,19 +68,15 @@ class TestCase(BaseModel):
 
 class TestCaseCreateParams(TypedDict, total=False):
     dataset_id: Required[str]
-    input_data: Required[Iterable[ChatMessageParam]]
-    checks: Iterable[TestCaseCheckConfigParam]
-    demo_output: Optional[ChatMessageWithMetadataParam]
+    interactions: Optional[Iterable[InteractionParam]]
     status: Optional[TestCaseStatus]
     tags: SequenceNotStr[str]
     source_probe_attempt_id: Optional[str]
 
 
 class TestCaseUpdateParams(TypedDict, total=False):
-    checks: Optional[Iterable[TestCaseCheckConfigParam]]
     dataset_id: Optional[str]
-    demo_output: Optional[ChatMessageWithMetadataParam]
-    input_data: Optional[Iterable[ChatMessageParam]]
+    interactions: Optional[Iterable[InteractionParam]]
     tags: Optional[SequenceNotStr[str]]
     status: Optional[TestCaseStatus]
 
@@ -102,7 +95,7 @@ class TestCaseBulkUpdateParams(TypedDict, total=False):
 
 
 class BulkMoveTestCasesParams(TypedDict, total=False):
-    chat_test_case_ids: Required[SequenceNotStr[str]]
+    test_case_ids: Required[SequenceNotStr[str]]
     dataset_id: Required[str]
     duplicate: Optional[bool]
 

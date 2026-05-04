@@ -1,10 +1,10 @@
 """Playground chat domain types."""
 
-from typing import List, Literal, Optional, TypedDict
+from typing import Any, Dict, List, Literal, Optional, TypedDict, Iterable
 from datetime import datetime
 from typing_extensions import Required
 
-from .chat import ChatMessageWithMetadata
+from .chat import ChatMessageWithMetadata, ChatMessageWithMetadataParam
 from .user import UserReference
 from .agent import Agent, AgentReference
 from .._types import SequenceNotStr
@@ -12,7 +12,10 @@ from .._models import BaseModel
 
 __all__ = [
     "PlaygroundChat",
+    "PlaygroundExchange",
     "PlaygroundChatListParams",
+    "PlaygroundChatCreateParams",
+    "PlaygroundChatUpdateParams",
     "PlaygroundChatRetrieveParams",
     "PlaygroundChatBulkDeleteParams",
 ]
@@ -23,6 +26,12 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
+class PlaygroundExchange(BaseModel):
+    input: str
+    output: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+
 class PlaygroundChat(BaseModel):
     id: str
     project_id: str
@@ -30,12 +39,31 @@ class PlaygroundChat(BaseModel):
     updated_at: datetime
     user: Optional[UserReference] = None
     agent: Optional[AgentReference | Agent] = None
-    messages: List[ChatMessageWithMetadata]
+    agent_id: Optional[str] = None
+    exchanges: Optional[List[PlaygroundExchange]] = None
+    forwarded: Optional[bool] = None
 
 
 # ---------------------------------------------------------------------------
 # Params
 # ---------------------------------------------------------------------------
+
+
+class PlaygroundExchangeParam(TypedDict, total=False):
+    input: Required[str]
+    output: Optional[str]
+    metadata: Optional[Dict[str, Any]]
+
+
+class PlaygroundChatCreateParams(TypedDict, total=False):
+    project_id: Required[str]
+    agent_id: Optional[str]
+    exchanges: Optional[Iterable[PlaygroundExchangeParam]]
+
+
+class PlaygroundChatUpdateParams(TypedDict, total=False):
+    agent_id: Optional[str]
+    exchanges: Optional[Iterable[PlaygroundExchangeParam]]
 
 
 class PlaygroundChatListParams(TypedDict, total=False):

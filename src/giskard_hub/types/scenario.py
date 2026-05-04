@@ -31,7 +31,7 @@ class Scenario(BaseModel):
 
 
 class ScenarioPreview(BaseModel):
-    conversation: List[Dict[str, Any]]
+    inputs: List[str]
     generated_rules: Optional[List[str]]
 
 

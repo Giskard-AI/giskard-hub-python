@@ -1,6 +1,6 @@
 """Scheduled evaluation domain types."""
 
-from typing import List, Union, Literal, Optional, Annotated, TypeAlias, TypedDict
+from typing import Any, Dict, List, Union, Literal, Optional, Annotated, TypeAlias, TypedDict, Iterable
 from datetime import datetime
 from typing_extensions import Required
 
@@ -61,6 +61,7 @@ class ScheduledEvaluation(BaseModel):
     last_execution_status: Optional[LastExecutionStatus] = None
     paused: bool
     evaluations: List[EvaluationReference]
+    agent_roles: Optional[List[Dict[str, Any]]] = None
 
 
 # ---------------------------------------------------------------------------
@@ -85,6 +86,7 @@ class ScheduledEvaluationCreateParams(TypedDict, total=False):
     time: Required[str]
     day_of_week: Optional[int]
     day_of_month: Optional[int]
+    agent_roles: Optional[Iterable[Dict[str, Any]]]
 
 
 LastExecutionStatusParam: TypeAlias = Union[SuccessExecutionStatusParam, ErrorExecutionStatusParam]
@@ -97,8 +99,6 @@ class ScheduledEvaluationUpdateParams(TypedDict, total=False):
     time: Optional[str]
     day_of_week: Optional[int]
     day_of_month: Optional[int]
-    last_execution_at: Optional[Annotated[Union[str, datetime, None], PropertyInfo(format="iso8601")]]
-    last_execution_status: Optional[LastExecutionStatusParam]
     paused: Optional[bool]
 
 

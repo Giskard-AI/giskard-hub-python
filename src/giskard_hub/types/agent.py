@@ -19,6 +19,8 @@ __all__ = [
     "MinimalAgent",
     "MinimalAgentParam",
     "AgentDetectStatefulness",
+    "AgentRoleSnapshot",
+    "GenerateCompletionOutput",
     "AgentListParams",
     "AgentCreateParams",
     "AgentUpdateParams",
@@ -42,10 +44,12 @@ class Agent(BaseModel):
     headers: Dict[str, str] = Field(default_factory=dict)
     name: str
     project_id: str
-    stateful: bool
     supported_languages: list[str]
     updated_at: datetime
     url: str
+    auto_bindings: Optional[bool] = None
+    input_schema: Optional[Dict[str, Any]] = None
+    output_schema: Optional[Dict[str, Any]] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -112,6 +116,18 @@ class AgentDetectStatefulness(BaseModel):
     stateful: bool
 
 
+class AgentRoleSnapshot(BaseModel):
+    id: str
+    name: str
+    description: Optional[str] = None
+
+
+class GenerateCompletionOutput(BaseModel):
+    output: Optional[str] = None
+    error: Optional[ExecutionError] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+
 # ---------------------------------------------------------------------------
 # Params
 # ---------------------------------------------------------------------------
@@ -128,7 +144,9 @@ class AgentCreateParams(TypedDict, total=False):
     supported_languages: Required[SequenceNotStr[str]]
     url: Required[str]
     description: Optional[str]
-    stateful: Optional[bool]
+    auto_bindings: Optional[bool]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 class AgentUpdateParams(TypedDict, total=False):
@@ -137,6 +155,9 @@ class AgentUpdateParams(TypedDict, total=False):
     name: Optional[str]
     supported_languages: Optional[SequenceNotStr[str]]
     url: Optional[str]
+    auto_bindings: Optional[bool]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 class AgentBulkDeleteParams(TypedDict, total=False):
@@ -146,10 +167,12 @@ class AgentBulkDeleteParams(TypedDict, total=False):
 class AgentTestConnectionParams(TypedDict, total=False):
     url: Required[str]
     headers: Dict[str, str]
+    agent_id: Optional[str]
+    input_schema: Optional[Dict[str, Any]]
 
 
 class AgentGenerateCompletionParams(TypedDict, total=False):
-    messages: Required[Iterable[ChatMessageParam]]
+    input: Required[str]
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):

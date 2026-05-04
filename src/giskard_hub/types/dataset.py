@@ -54,12 +54,14 @@ class DatasetReference(BaseModel):
 
 class DatasetSubset(BaseModel):
     dataset_id: str
+    dataset_name: Optional[str] = None
     tags: Optional[List[str]] = None
     target_type: Optional[Literal["dataset"]] = None
 
 
 class DatasetSubsetParam(TypedDict, total=False):
     dataset_id: Required[str]
+    dataset_name: Optional[str]
     tags: Optional[SequenceNotStr[str]]
     target_type: Literal["dataset"]
 

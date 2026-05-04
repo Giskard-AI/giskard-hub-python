@@ -51,6 +51,13 @@ __all__ = [
     "CheckCreateParams",
     "CheckUpdateParams",
     "CheckBulkDeleteParams",
+    "Interaction",
+    "InteractionParam",
+    "InteractionCheckConfig",
+    "InteractionCheckConfigParam",
+    "InteractionResultData",
+    "FlatCheckSpec",
+    "FlatCheckSpecParam",
 ]
 
 CheckSource: TypeAlias = Literal["builtin", "project"]
@@ -221,6 +228,9 @@ class CheckResult(BaseModel):
     reason: Optional[str] = None
     annotations: Optional[List[Annotation]] = None
     details: Optional[Dict[str, Any]] = None
+    spec: Optional[Dict[str, Any]] = None
+    target: Optional[str] = None
+    reference_text: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------
@@ -301,3 +311,49 @@ class CheckUpdateParams(TypedDict, total=False):
 
 class CheckBulkDeleteParams(TypedDict, total=False):
     check_ids: Required[SequenceNotStr[str]]
+
+
+# ---------------------------------------------------------------------------
+# Interaction types
+# ---------------------------------------------------------------------------
+
+
+class FlatCheckSpec(BaseModel):
+    check_id: str
+    override_spec: Optional[Dict[str, Any]] = None
+    target: Optional[str] = None
+
+
+class FlatCheckSpecParam(TypedDict, total=False):
+    check_id: Required[str]
+    override_spec: Optional[Dict[str, Any]]
+    target: Optional[str]
+
+
+class InteractionCheckConfig(BaseModel):
+    identifier: str
+    spec: Dict[str, Any]
+    target: Optional[str] = None
+
+
+class InteractionCheckConfigParam(TypedDict, total=False):
+    identifier: Required[str]
+    spec: Required[Dict[str, Any]]
+    target: Optional[str]
+
+
+class InteractionResultData(BaseModel):
+    results: List[CheckResult]
+    error: Optional[str] = None
+
+
+class Interaction(BaseModel):
+    input: str
+    output: Optional[str] = None
+    checks: Optional[List[InteractionCheckConfig]] = None
+
+
+class InteractionParam(TypedDict, total=False):
+    input: Required[str]
+    output: Optional[str]
+    checks: Optional[Iterable[InteractionCheckConfigParam]]

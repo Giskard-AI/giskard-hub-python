@@ -79,6 +79,8 @@ from .agent import (
     AgentTestConnectionParams as AgentTestConnectionParams,
     AgentUpdateParams as AgentUpdateParams,
     AgentDetectStatefulness as AgentDetectStatefulness,
+    AgentRoleSnapshot as AgentRoleSnapshot,
+    GenerateCompletionOutput as GenerateCompletionOutput,
     MinimalAgent as MinimalAgent,
     MinimalAgentParam as MinimalAgentParam,
 )
@@ -102,8 +104,15 @@ from .check import (
     ContextAnnotation as ContextAnnotation,
     CorrectnessParams as CorrectnessParams,
     CorrectnessParamsParam as CorrectnessParamsParam,
+    FlatCheckSpec as FlatCheckSpec,
+    FlatCheckSpecParam as FlatCheckSpecParam,
     GroundednessParams as GroundednessParams,
     GroundednessParamsParam as GroundednessParamsParam,
+    Interaction as Interaction,
+    InteractionCheckConfig as InteractionCheckConfig,
+    InteractionCheckConfigParam as InteractionCheckConfigParam,
+    InteractionParam as InteractionParam,
+    InteractionResultData as InteractionResultData,
     JsonPathRule as JsonPathRule,
     JsonPathRuleParam as JsonPathRuleParam,
     MetadataParams as MetadataParams,
@@ -186,6 +195,7 @@ from .evaluation import (
     EvaluationListParams as EvaluationListParams,
     EvaluationRetrieveParams as EvaluationRetrieveParams,
     EvaluationRunSingleParams as EvaluationRunSingleParams,
+    EvaluationRunInteractionChecksParams as EvaluationRunInteractionChecksParams,
     EvaluationUpdateParams as EvaluationUpdateParams,
     FailureCategory as FailureCategory,
     FailureCategoryParam as FailureCategoryParam,
@@ -258,9 +268,12 @@ from .test_case import (
 # -- playground_chat -------------------------------------------------------
 from .playground_chat import (
     PlaygroundChat as PlaygroundChat,
+    PlaygroundExchange as PlaygroundExchange,
     PlaygroundChatBulkDeleteParams as PlaygroundChatBulkDeleteParams,
+    PlaygroundChatCreateParams as PlaygroundChatCreateParams,
     PlaygroundChatListParams as PlaygroundChatListParams,
     PlaygroundChatRetrieveParams as PlaygroundChatRetrieveParams,
+    PlaygroundChatUpdateParams as PlaygroundChatUpdateParams,
 )
 
 # -- project ---------------------------------------------------------------
@@ -269,6 +282,14 @@ from .project import (
     ProjectBulkDeleteParams as ProjectBulkDeleteParams,
     ProjectCreateParams as ProjectCreateParams,
     ProjectUpdateParams as ProjectUpdateParams,
+)
+
+# -- role ------------------------------------------------------------------
+from .role import (
+    Role as Role,
+    RoleListParams as RoleListParams,
+    RoleCreateParams as RoleCreateParams,
+    RoleUpdateParams as RoleUpdateParams,
 )
 
 __all__ = [
@@ -308,6 +329,8 @@ __all__ = [
     "AgentReference",
     "AgentOutput",
     "AgentOutputParam",
+    "AgentRoleSnapshot",
+    "GenerateCompletionOutput",
     "MinimalAgent",
     "MinimalAgentParam",
     "AgentDetectStatefulness",
@@ -329,8 +352,15 @@ __all__ = [
     "ConformityParamsParam",
     "CorrectnessParams",
     "CorrectnessParamsParam",
+    "FlatCheckSpec",
+    "FlatCheckSpecParam",
     "GroundednessParams",
     "GroundednessParamsParam",
+    "Interaction",
+    "InteractionCheckConfig",
+    "InteractionCheckConfigParam",
+    "InteractionParam",
+    "InteractionResultData",
     "StringMatchParams",
     "StringMatchParamsParam",
     "SemanticSimilarityParams",
@@ -406,6 +436,7 @@ __all__ = [
     "EvaluationUpdateParams",
     "EvaluationRetrieveParams",
     "EvaluationRunSingleParams",
+    "EvaluationRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
     "EvaluationBulkDeleteParams",
     "FailureCategory",
@@ -463,7 +494,10 @@ __all__ = [
     "CommentEditParams",
     # playground chat
     "PlaygroundChat",
+    "PlaygroundExchange",
     "PlaygroundChatListParams",
+    "PlaygroundChatCreateParams",
+    "PlaygroundChatUpdateParams",
     "PlaygroundChatRetrieveParams",
     "PlaygroundChatBulkDeleteParams",
     # project
@@ -471,4 +505,9 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
+    # role
+    "Role",
+    "RoleListParams",
+    "RoleCreateParams",
+    "RoleUpdateParams",
 ]

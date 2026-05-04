@@ -5,8 +5,8 @@ from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
 from .chat import ChatMessageParam
-from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam
-from .check import CheckResult
+from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam, AgentRoleSnapshot
+from .check import CheckResult, InteractionParam, InteractionResultData
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
 from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
@@ -22,6 +22,7 @@ __all__ = [
     "EvaluationUpdateParams",
     "EvaluationRetrieveParams",
     "EvaluationRunSingleParams",
+    "EvaluationRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
     "EvaluationBulkDeleteParams",
     "Criterion",
@@ -63,7 +64,7 @@ class EvaluationReference(BaseModel):
 
 class Evaluation(BaseModel):
     id: str
-    agent: AgentReference | MinimalAgent | Agent
+    agent_roles: Optional[List[AgentRoleSnapshot]] = None
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
     dataset: Dataset | DatasetReference
@@ -135,7 +136,7 @@ class TestCaseEvaluation(BaseModel):
     test_case: TestCaseReference | TestCase
     hidden: bool
     test_case_exists: Optional[bool] = None
-    divergence_warnings: Optional[List[DivergenceWarning]] = None
+    interaction_results: Optional[List[InteractionResultData]] = None
 
 
 # ---------------------------------------------------------------------------
@@ -145,7 +146,6 @@ class TestCaseEvaluation(BaseModel):
 
 class EvaluationListParams(TypedDict, total=False):
     project_id: Required[str]
-    include: Optional[List[Literal["agent", "dataset"]]]
 
 
 class EvaluationCreateParams(TypedDict, total=False):
@@ -156,6 +156,7 @@ class EvaluationCreateParams(TypedDict, total=False):
     old_evaluation_id: Optional[str]
     run_count: Optional[int]
     scheduled_evaluation_id: Optional[str]
+    agent_roles: Optional[Iterable[Dict[str, Any]]]
 
 
 class EvaluationUpdateParams(TypedDict, total=False):
@@ -163,7 +164,7 @@ class EvaluationUpdateParams(TypedDict, total=False):
 
 
 class EvaluationRetrieveParams(TypedDict, total=False):
-    include: Optional[List[Literal["agent", "dataset"]]]
+    pass
 
 
 class EvaluationRunSingleParams(TypedDict, total=False):
@@ -171,6 +172,11 @@ class EvaluationRunSingleParams(TypedDict, total=False):
     input_data: Required[Iterable[ChatMessageParam]]
     model_output: Required[AgentOutputParam]
     model_description: str
+    project_id: Optional[str]
+
+
+class EvaluationRunInteractionChecksParams(TypedDict, total=False):
+    interactions: Required[Iterable[InteractionParam]]
     project_id: Optional[str]
 
 

@@ -112,7 +112,8 @@ class ScanProbeAttemptReference(BaseModel):
 class ScanProbeAttempt(BaseModel):
     id: str
     error: Optional[ScanProbeAttemptError] = None
-    messages: List[ChatMessageWithMetadata]
+    input: Optional[str] = None
+    output: Optional[str] = None
     metadata: Dict[str, object]
     probe_id: str = Field(alias="probe_result_id")
     reason: str
