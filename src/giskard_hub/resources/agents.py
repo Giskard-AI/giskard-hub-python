@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, List, Iterable, Optional, cast
+from typing import Dict, List, Iterable, Optional, cast, Any
 
 import httpx
 
-from ..types import AgentOutput
+from ..types import AgentOutput, GenerateCompletionOutput
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -412,22 +412,22 @@ class AgentsResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        messages: Iterable[ChatMessageParam],
+        input: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentOutput:
-        """Send a chat conversation to the agent and get a completion response.
+    ) -> GenerateCompletionOutput:
+        """Send input to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
-        messages : Iterable[ChatMessageParam]
-            Conversation messages to send to the agent.
+        input : str
+            Input text to send to the agent.
 
         Other Parameters
         ----------------
@@ -442,7 +442,7 @@ class AgentsResource(SyncAPIResource):
 
         Returns
         -------
-        AgentOutput
+        GenerateCompletionOutput
             The agent's completion response.
 
         Raises
@@ -454,11 +454,11 @@ class AgentsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         response = self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
+            body=maybe_transform({"input": input}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[AgentOutput],
+            cast_to=APIResponse[GenerateCompletionOutput],
         )
 
         return self._unwrap(response)
@@ -468,13 +468,15 @@ class AgentsResource(SyncAPIResource):
         *,
         url: str,
         headers: Dict[str, str] | Omit = omit,
+        agent_id: str | Omit = omit,
+        input_schema: Dict[str, Any] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentOutput:
+    ) -> Dict[str, Any]:
         """Test the connection to an agent endpoint without persisting it.
 
         Parameters
@@ -483,6 +485,10 @@ class AgentsResource(SyncAPIResource):
             URL endpoint to test the connection to.
         headers : Dict[str, str] | Omit
             HTTP headers to include in the test request.
+        agent_id : str | Omit
+            Optional agent ID to test connection for.
+        input_schema : Dict[str, Any] | Omit
+            Optional input schema for the agent.
 
         Other Parameters
         ----------------
@@ -497,7 +503,7 @@ class AgentsResource(SyncAPIResource):
 
         Returns
         -------
-        AgentOutput
+        Dict[str, Any]
             The agent's test response.
         """
         response = self._post(
@@ -506,13 +512,15 @@ class AgentsResource(SyncAPIResource):
                 {
                     "url": url,
                     "headers": headers,
+                    "agent_id": agent_id,
+                    "input_schema": input_schema,
                 },
                 AgentTestConnectionParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[AgentOutput],
+            cast_to=APIResponse[Dict[str, Any]],
         )
 
         return self._unwrap(response)
@@ -1003,22 +1011,22 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        messages: Iterable[ChatMessageParam],
+        input: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentOutput:
-        """Send a chat conversation to the agent and get a completion response.
+    ) -> GenerateCompletionOutput:
+        """Send input to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
-        messages : Iterable[ChatMessageParam]
-            Conversation messages to send to the agent.
+        input : str
+            Input text to send to the agent.
 
         Other Parameters
         ----------------
@@ -1033,7 +1041,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
         Returns
         -------
-        AgentOutput
+        GenerateCompletionOutput
             The agent's completion response.
 
         Raises
@@ -1045,11 +1053,11 @@ class AsyncAgentsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         response = await self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=await async_maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
+            body=await async_maybe_transform({"input": input}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[AgentOutput],
+            cast_to=APIResponse[GenerateCompletionOutput],
         )
 
         return self._unwrap(response)
@@ -1059,13 +1067,15 @@ class AsyncAgentsResource(AsyncAPIResource):
         *,
         url: str,
         headers: Dict[str, str] | Omit = omit,
+        agent_id: str | Omit = omit,
+        input_schema: Dict[str, Any] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentOutput:
+    ) -> Dict[str, Any]:
         """Test the connection to an agent endpoint without persisting it.
 
         Parameters
@@ -1074,6 +1084,10 @@ class AsyncAgentsResource(AsyncAPIResource):
             URL endpoint to test the connection to.
         headers : Dict[str, str] | Omit
             HTTP headers to include in the test request.
+        agent_id : str | Omit
+            Optional agent ID to test connection for.
+        input_schema : Dict[str, Any] | Omit
+            Optional input schema for the agent.
 
         Other Parameters
         ----------------
@@ -1088,7 +1102,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
         Returns
         -------
-        AgentOutput
+        Dict[str, Any]
             The agent's test response.
         """
         response = await self._post(
@@ -1097,13 +1111,15 @@ class AsyncAgentsResource(AsyncAPIResource):
                 {
                     "url": url,
                     "headers": headers,
+                    "agent_id": agent_id,
+                    "input_schema": input_schema,
                 },
                 AgentTestConnectionParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[AgentOutput],
+            cast_to=APIResponse[Dict[str, Any]],
         )
 
         return self._unwrap(response)
