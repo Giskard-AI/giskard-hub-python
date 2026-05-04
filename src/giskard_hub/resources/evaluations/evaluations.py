@@ -13,7 +13,16 @@ from .results import (
     ResultsResourceWithStreamingResponse,
     AsyncResultsResourceWithStreamingResponse,
 )
-from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._types import (
+    Body,
+    Omit,
+    Query,
+    Headers,
+    NotGiven,
+    SequenceNotStr,
+    omit,
+    not_given,
+)
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from .._included import embed_included_list, embed_included_single
@@ -57,12 +66,21 @@ def _validate_dataset_or_old_evaluation(
     ValueError
         If both are provided or both are omitted.
     """
-    if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
-        raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+    if (dataset_id is omit and old_evaluation_id is omit) or (
+        dataset_id is not omit and old_evaluation_id is not omit
+    ):
+        raise ValueError(
+            "Exactly one of `dataset_id` or `old_evaluation_id` must be provided"
+        )
 
 
-def _check_params_to_api(checks: Iterable[CheckConfigParam]) -> Iterable[dict[str, object]]:
-    return [{"identifier": check["identifier"], **(check.get("params", {}))} for check in checks]
+def _check_params_to_api(
+    checks: Iterable[CheckConfigParam],
+) -> Iterable[dict[str, object]]:
+    return [
+        {"identifier": check["identifier"], **(check.get("params", {}))}
+        for check in checks
+    ]
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -162,7 +180,9 @@ class EvaluationsResource(SyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(
+                    None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)
+                ),
             )
 
         response = self._post(
@@ -180,7 +200,10 @@ class EvaluationsResource(SyncAPIResource):
                 EvaluationCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -231,7 +254,9 @@ class EvaluationsResource(SyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
 
         response = self._get(
             f"/v2/evaluations/{evaluation_id}",
@@ -246,7 +271,9 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         if include is not omit and include:
-            response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_single(
+                response, id_getter=lambda evaluation: evaluation.id
+            )
 
         return self._unwrap(response)
 
@@ -294,12 +321,17 @@ class EvaluationsResource(SyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
         response = self._patch(
             f"/v2/evaluations/{evaluation_id}",
             body=maybe_transform({"name": name}, EvaluationUpdateParams),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -359,11 +391,15 @@ class EvaluationsResource(SyncAPIResource):
                     EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
+            cast_to=APIResponseWithIncluded[
+                List[Evaluation], APIResponse[Agent | Dataset]
+            ],
         )
 
         if include is not omit and include:
-            response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_list(
+                response, id_getter=lambda evaluation: evaluation.id
+            )
 
         return self._unwrap(response)
 
@@ -407,11 +443,16 @@ class EvaluationsResource(SyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
         response = self._delete(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -459,7 +500,9 @@ class EvaluationsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"evaluation_ids": evaluation_ids}, EvaluationBulkDeleteParams),
+                query=maybe_transform(
+                    {"evaluation_ids": evaluation_ids}, EvaluationBulkDeleteParams
+                ),
             ),
             cast_to=APIResponse[None],
         )
@@ -530,10 +573,14 @@ class EvaluationsResource(SyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(
+                    None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)
+                ),
             )
         elif old_evaluation_id is not omit:
-            criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
+            criteria = CriterionEvaluationDataset(
+                evaluation_id=cast(str, old_evaluation_id)
+            )
 
         response = self._post(
             "/v2/evaluations/create-local",
@@ -546,7 +593,10 @@ class EvaluationsResource(SyncAPIResource):
                 EvaluationCreateLocalParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -594,11 +644,16 @@ class EvaluationsResource(SyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
         response = self._post(
             f"/v2/evaluations/{evaluation_id}/rerun-errored-results",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -628,7 +683,7 @@ class EvaluationsResource(SyncAPIResource):
         checks : iterable of CheckConfigParam
             The checks to run for the evaluation.
         messages : iterable of ChatMessageParam or Omit
-            (Deprecated) The messages to send to the agent. Use ``input_data`` instead.
+            The messages to send to the agent.
         agent_output : AgentOutputParam
             The output from the agent.
         agent_description : str or Omit
@@ -636,7 +691,7 @@ class EvaluationsResource(SyncAPIResource):
         project_id : str, optional
             The ID of the project to run the evaluation for.
         input_data : iterable of ChatMessageParam or Omit
-            The input data (messages) to send to the agent. Replaces ``messages``.
+            (Experimental) The input data (messages) to send to the agent. Replaces ``messages`` but will be replaced soon by ``interactions``.
 
         Other Parameters
         ----------------
@@ -667,14 +722,11 @@ class EvaluationsResource(SyncAPIResource):
         if messages_provided and input_data_provided:
             raise ValueError(
                 "Cannot provide both 'messages' and 'input_data'. "
-                "Use 'input_data' (recommended) or 'messages' (deprecated) but not both."
+                "Use 'input_data' or 'messages' but not both."
             )
 
         if not messages_provided and not input_data_provided:
-            raise ValueError(
-                "Must provide either 'messages' (deprecated) or 'input_data'. "
-                "Please use 'input_data' as 'messages' is deprecated."
-            )
+            raise ValueError("Must provide either 'messages' or 'input_data'. ")
 
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
@@ -694,7 +746,10 @@ class EvaluationsResource(SyncAPIResource):
                 EvaluationRunSingleParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[List[CheckResult]],
         )
@@ -799,7 +854,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(
+                    None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)
+                ),
             )
 
         response = await self._post(
@@ -817,7 +874,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 EvaluationCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -868,7 +928,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
 
         response = await self._get(
             f"/v2/evaluations/{evaluation_id}",
@@ -877,13 +939,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"include": include}, EvaluationRetrieveParams),
+                query=await async_maybe_transform(
+                    {"include": include}, EvaluationRetrieveParams
+                ),
             ),
             cast_to=APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]],
         )
 
         if include is not omit and include:
-            response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_single(
+                response, id_getter=lambda evaluation: evaluation.id
+            )
 
         return self._unwrap(response)
 
@@ -931,12 +997,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
         response = await self._patch(
             f"/v2/evaluations/{evaluation_id}",
             body=await async_maybe_transform({"name": name}, EvaluationUpdateParams),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -996,11 +1067,15 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
+            cast_to=APIResponseWithIncluded[
+                List[Evaluation], APIResponse[Agent | Dataset]
+            ],
         )
 
         if include is not omit and include:
-            response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
+            response = embed_included_list(
+                response, id_getter=lambda evaluation: evaluation.id
+            )
 
         return self._unwrap(response)
 
@@ -1044,11 +1119,16 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
         response = await self._delete(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -1096,7 +1176,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"evaluation_ids": evaluation_ids}, EvaluationBulkDeleteParams),
+                query=await async_maybe_transform(
+                    {"evaluation_ids": evaluation_ids}, EvaluationBulkDeleteParams
+                ),
             ),
             cast_to=APIResponse[None],
         )
@@ -1167,10 +1249,14 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(
+                    None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)
+                ),
             )
         elif old_evaluation_id is not omit:
-            criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
+            criteria = CriterionEvaluationDataset(
+                evaluation_id=cast(str, old_evaluation_id)
+            )
 
         response = await self._post(
             "/v2/evaluations/create-local",
@@ -1183,7 +1269,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 EvaluationCreateLocalParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -1231,11 +1320,16 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             If ``evaluation_id`` is empty.
         """
         if not evaluation_id:
-            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+            raise ValueError(
+                f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}"
+            )
         response = await self._post(
             f"/v2/evaluations/{evaluation_id}/rerun-errored-results",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -1265,7 +1359,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         checks : iterable of CheckConfigParam
             The checks to run for the evaluation.
         messages : iterable of ChatMessageParam or Omit
-            (Deprecated) The messages to send to the agent. Use ``input_data`` instead.
+            The messages to send to the agent.
         agent_output : AgentOutputParam
             The output from the agent.
         agent_description : str or Omit
@@ -1273,7 +1367,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         project_id : str, optional
             The ID of the project to run the evaluation for.
         input_data : iterable of ChatMessageParam or Omit
-            The input data (messages) to send to the agent. Replaces ``messages``.
+            (Experimental) The input data (messages) to send to the agent. Replaces ``messages`` but will be replaced soon by ``interactions``.
 
         Other Parameters
         ----------------
@@ -1304,14 +1398,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if messages_provided and input_data_provided:
             raise ValueError(
                 "Cannot provide both 'messages' and 'input_data'. "
-                "Use 'input_data' (recommended) or 'messages' (deprecated) but not both."
+                "Use 'input_data' or 'messages' but not both."
             )
 
         if not messages_provided and not input_data_provided:
-            raise ValueError(
-                "Must provide either 'messages' (deprecated) or 'input_data'. "
-                "Please use 'input_data' as 'messages' is deprecated."
-            )
+            raise ValueError("Must provide either 'messages' or 'input_data'. ")
 
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
@@ -1331,7 +1422,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 EvaluationRunSingleParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[List[CheckResult]],
         )
