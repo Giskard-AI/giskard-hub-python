@@ -1,6 +1,17 @@
 """Check, assertion, and annotation types."""
 
-from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Literal,
+    Iterable,
+    Optional,
+    TypeAlias,
+    TypedDict,
+    cast,
+)
 from datetime import datetime
 from typing_extensions import Required
 
@@ -180,15 +191,13 @@ class Check(BaseModel):
 
     @pydantic.model_validator(mode="before")
     @classmethod
-    def _convert_assertions(cls, data: Any) -> Any:  # noqa: ANN401
+    def _convert_spec(cls, data: Any) -> Any:  # noqa: ANN401
         if not isinstance(data, dict):
             return data
         d = cast(Dict[str, Any], data)
         if "params" in d:
             return d
-        assertions: list[Any] = d.get("assertions") or []
-        spec = d.get("spec", {})
-        return {**d, "params": assertions[0] if assertions else {}, "spec": spec}
+        return {**d, "params": _extract_check_params(d)}
 
 
 class CheckResult(BaseModel):
@@ -230,15 +239,12 @@ class TestCaseCheckConfigParam(TypedDict, total=False):
 
 
 def _extract_check_params(check: Dict[str, Any]) -> Dict[str, Any]:
-    """Extract params from the first assertion, stripping the ``type`` key."""
-    assertions: list[Any] = check.get("assertions") or []
-    if not assertions:
-        return {}
-    first: Any = assertions[0]
-    if isinstance(first, BaseModel):
-        return first.model_dump(exclude={"type"}, exclude_none=True)
-    if isinstance(first, dict):
-        return {k: v for k, v in cast(Dict[str, Any], first).items() if k != "type"}
+    """Extract params from the spec, stripping the ``kind`` key."""
+    spec: Any = check.get("spec") or {}
+    if isinstance(spec, BaseModel):
+        return spec.model_dump(exclude={"kind"}, exclude_none=True)
+    if isinstance(spec, dict):
+        return {k: v for k, v in cast(Dict[str, Any], spec).items() if k != "kind"}
     return {}
 
 
@@ -247,11 +253,13 @@ class CheckConfig(BaseModel):
 
     identifier: str
     enabled: Optional[bool] = None
+    spec: Optional[Dict[str, Any]] = None
+    position: int
     params: Dict[str, Any] = {}
 
     @pydantic.model_validator(mode="before")
     @classmethod
-    def _convert_assertions(cls, data: Any) -> Any:  # noqa: ANN401
+    def _convert_spec(cls, data: Any) -> Any:  # noqa: ANN401
         if not isinstance(data, dict):
             return data
         d = cast(Dict[str, Any], data)
