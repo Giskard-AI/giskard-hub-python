@@ -15,6 +15,7 @@ __all__ = [
     "CheckResult",
     "CheckConfig",
     "CheckConfigParam",
+    "CheckSource",
     "CheckType",
     "CheckTypeParam",
     "ConformityParams",
@@ -39,6 +40,8 @@ __all__ = [
     "CheckUpdateParams",
     "CheckBulkDeleteParams",
 ]
+
+CheckSource: TypeAlias = Literal["builtin", "project"]
 
 
 # ---------------------------------------------------------------------------
@@ -173,6 +176,7 @@ class Check(BaseModel):
     params: Dict[str, Any] = {}
     project_id: str
     updated_at: datetime
+    spec: Dict[str, Any] = {}
 
     @pydantic.model_validator(mode="before")
     @classmethod
@@ -183,7 +187,8 @@ class Check(BaseModel):
         if "params" in d:
             return d
         assertions: list[Any] = d.get("assertions") or []
-        return {**d, "params": assertions[0] if assertions else {}}
+        spec = d.get("spec", {})
+        return {**d, "params": assertions[0] if assertions else {}, "spec": spec}
 
 
 class CheckResult(BaseModel):
@@ -194,6 +199,7 @@ class CheckResult(BaseModel):
     error: Optional[str] = None
     reason: Optional[str] = None
     annotations: Optional[List[OutputAnnotation]] = None
+    details: Optional[Dict[str, Any]] = None
 
 
 # ---------------------------------------------------------------------------
@@ -206,12 +212,16 @@ class TestCaseCheckConfig(BaseModel):
     identifier: str
     assertions: Optional[List[CheckType]] = None
     enabled: Optional[bool] = None
+    spec: Optional[Dict[str, Any]] = None
+    position: Optional[int] = None
 
 
 class TestCaseCheckConfigParam(TypedDict, total=False):
     identifier: Required[str]
     assertions: Optional[Iterable[CheckTypeParam]]
     enabled: bool
+    spec: Optional[Dict[str, Any]]
+    position: int
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +300,7 @@ class CheckCreateParams(TypedDict, total=False):
     identifier: Required[str]
     name: Required[str]
     project_id: Required[str]
+    spec: Optional[Dict[str, Any]]
 
 
 class CheckUpdateParams(TypedDict, total=False):
@@ -297,6 +308,7 @@ class CheckUpdateParams(TypedDict, total=False):
     description: Optional[str]
     identifier: Optional[str]
     name: Optional[str]
+    spec: Optional[Dict[str, Any]]
 
 
 class CheckBulkDeleteParams(TypedDict, total=False):

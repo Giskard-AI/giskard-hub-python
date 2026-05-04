@@ -168,7 +168,7 @@ class EvaluationRetrieveParams(TypedDict, total=False):
 
 class EvaluationRunSingleParams(TypedDict, total=False):
     checks: Required[Iterable[Dict[str, object]]]
-    messages: Required[Iterable[ChatMessageParam]]
+    input_data: Required[Iterable[ChatMessageParam]]
     model_output: Required[AgentOutputParam]
     model_description: str
     project_id: Optional[str]

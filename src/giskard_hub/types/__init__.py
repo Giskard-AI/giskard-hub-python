@@ -49,6 +49,7 @@ from .chat import (
 
 # -- user ------------------------------------------------------------------
 from .user import (
+    GroupReference as GroupReference,
     User as User,
     UserReference as UserReference,
 )
@@ -91,6 +92,7 @@ from .check import (
     CheckCreateParams as CheckCreateParams,
     CheckListParams as CheckListParams,
     CheckResult as CheckResult,
+    CheckSource as CheckSource,
     CheckType as CheckType,
     CheckTypeParam as CheckTypeParam,
     CheckUpdateParams as CheckUpdateParams,
@@ -246,6 +248,7 @@ from .test_case import (
     TestCaseBulkUpdateParams as TestCaseBulkUpdateParams,
     TestCaseComment as TestCaseComment,
     TestCaseCreateParams as TestCaseCreateParams,
+    TestCaseStatus as TestCaseStatus,
     TestCaseUpdateParams as TestCaseUpdateParams,
 )
 
@@ -263,6 +266,14 @@ from .project import (
     ProjectBulkDeleteParams as ProjectBulkDeleteParams,
     ProjectCreateParams as ProjectCreateParams,
     ProjectUpdateParams as ProjectUpdateParams,
+)
+
+# -- tenancy ---------------------------------------------------------------
+from .tenancy import (
+    FindTenantRequest as FindTenantRequest,
+    FindTenantResponse as FindTenantResponse,
+    FindTenantTenantInfo as FindTenantTenantInfo,
+    HealthStatus as HealthStatus,
 )
 
 
@@ -288,6 +299,7 @@ __all__ = [
     "Header",
     "HeaderParam",
     # user
+    "GroupReference",
     "User",
     "UserReference",
     # execution
@@ -316,6 +328,7 @@ __all__ = [
     # check
     "Check",
     "CheckResult",
+    "CheckSource",
     "CheckType",
     "CheckTypeParam",
     "ConformityParams",
@@ -443,6 +456,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
     "TestCaseUpdateParams",
@@ -460,4 +474,9 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
+    # tenancy
+    "FindTenantRequest",
+    "FindTenantResponse",
+    "FindTenantTenantInfo",
+    "HealthStatus",
 ]
