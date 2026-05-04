@@ -412,8 +412,7 @@ class AgentsResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        messages: Iterable[ChatMessageParam] | Omit = omit,
-        message_input: str | Omit = omit,
+        input: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -421,18 +420,14 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GenerateCompletionOutput:
-        """Send a message or conversation to the agent and get a completion response.
+        """Send input to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
-        messages : Iterable[ChatMessageParam] | Omit
-            (Deprecated) Conversation messages to send to the agent.
-            Use ``message_input`` instead for the new API.
-        message_input : str | Omit
-            Input text to send to the agent. This is the new parameter that
-            replaces ``messages``.
+        input : str
+            Input text to send to the agent.
 
         Other Parameters
         ----------------
@@ -453,25 +448,13 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty, or if neither ``messages`` nor ``message_input`` is provided.
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        
-        # Ensure at least one parameter is provided
-        if messages is omit and message_input is omit:
-            raise ValueError("Either 'messages' or 'message_input' must be provided")
-        
-        # Build request body with backward compatibility
-        body_params: Dict[str, Any] = {}
-        if message_input is not omit:
-            body_params["message_input"] = message_input
-        if messages is not omit:
-            body_params["messages"] = messages
-            
         response = self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=maybe_transform(body_params, AgentGenerateCompletionParams),
+            body=maybe_transform({"input": input}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1028,8 +1011,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        messages: Iterable[ChatMessageParam] | Omit = omit,
-        message_input: str | Omit = omit,
+        input: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1037,18 +1019,14 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GenerateCompletionOutput:
-        """Send a message or conversation to the agent and get a completion response.
+        """Send input to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
-        messages : Iterable[ChatMessageParam] | Omit
-            (Deprecated) Conversation messages to send to the agent.
-            Use ``message_input`` instead for the new API.
-        message_input : str | Omit
-            Input text to send to the agent. This is the new parameter that
-            replaces ``messages``.
+        input : str
+            Input text to send to the agent.
 
         Other Parameters
         ----------------
@@ -1069,25 +1047,13 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty, or if neither ``messages`` nor ``message_input`` is provided.
+            If ``agent_id`` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        
-        # Ensure at least one parameter is provided
-        if messages is omit and message_input is omit:
-            raise ValueError("Either 'messages' or 'message_input' must be provided")
-        
-        # Build request body with backward compatibility
-        body_params: Dict[str, Any] = {}
-        if message_input is not omit:
-            body_params["message_input"] = message_input
-        if messages is not omit:
-            body_params["messages"] = messages
-            
         response = await self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=await async_maybe_transform(body_params, AgentGenerateCompletionParams),
+            body=await async_maybe_transform({"input": input}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

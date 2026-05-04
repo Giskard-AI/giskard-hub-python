@@ -348,12 +348,12 @@ class InteractionResultData(BaseModel):
 
 
 class Interaction(BaseModel):
-    message_input: str = Field(alias="input")
-    message_output: Optional[str] = Field(default=None, alias="output")
+    input: str
+    output: Optional[str] = None
     checks: Optional[List[InteractionCheckConfig]] = None
 
 
 class InteractionParam(TypedDict, total=False):
-    message_input: Required[str]
-    message_output: Optional[str]
+    input: Required[str]
+    output: Optional[str]
     checks: Optional[Iterable[InteractionCheckConfigParam]]
