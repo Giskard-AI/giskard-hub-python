@@ -33,7 +33,7 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
-from ...types.check import CheckConfigParam
+from ...types.check import CheckConfigParam, InteractionParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
 from .._check_helpers import check_params_to_specs
@@ -96,6 +96,7 @@ class TestCasesResource(SyncAPIResource):
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         input_data: Iterable[ChatMessageParam] | Omit = omit,
+        interactions: Iterable[InteractionParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -111,18 +112,20 @@ class TestCasesResource(SyncAPIResource):
         dataset_id : str
             Dataset ID to create the test case from.
         messages : Iterable[ChatMessageParam] or Omit
-            Messages to add to the test case.
+            (Deprecated) Messages to add to the test case. Use ``interactions`` instead.
         checks : Iterable[CheckConfigParam] | Omit
-            Checks to add to the test case. Each check should have an `identifier`
-            and optionally `params` (check-specific fields) and `enabled`.
+            (Deprecated) Checks to add to the test case. Use ``interactions`` instead.
         demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
+            (Deprecated) Agent output. Use ``interactions`` instead.
         status : Optional[Literal["active", "draft"]] | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
         input_data : Iterable[ChatMessageParam] or Omit
-            (Experimental) The input data (messages) to add to the test case. Replaces `messages` but will be replaced soon by `interactions`.
+            (Deprecated, never released) The input data. Use ``interactions`` instead.
+        interactions : Iterable[InteractionParam] | Omit
+            Interactions for the test case. This is the new format that replaces
+            ``messages``, ``checks``, ``demo_output``, and ``input_data``.
 
         Other Parameters
         ----------------
@@ -143,46 +146,98 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
+            If both old and new parameters are mixed, or if required parameters are missing.
         """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
-            )
-
-        if not messages_provided and not input_data_provided:
-            raise ValueError("Must provide either 'messages' or 'input_data'. ")
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
-        api_demo_output = _normalize_demo_output(demo_output)
-        response = self._post(
-            "/v2/test-cases",
-            body=maybe_transform(
-                {
-                    "dataset_id": dataset_id,
-                    "input_data": final_input_data,
-                    "checks": api_checks,
-                    "demo_output": api_demo_output,
-                    "status": status,
-                    "tags": tags,
-                },
-                TestCaseCreateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-            ),
-            cast_to=APIResponse[TestCase],
+        # Check if using new API (interactions) or old API (messages/input_data)
+        using_interactions = interactions is not omit
+        using_old_api = (
+            messages is not omit or 
+            input_data is not omit or 
+            checks is not omit or 
+            demo_output is not omit
         )
+        
+        if using_interactions and using_old_api:
+            raise ValueError(
+                "Cannot mix 'interactions' with legacy parameters "
+                "('messages', 'input_data', 'checks', 'demo_output'). "
+                "Use either 'interactions' or the legacy parameters, not both."
+            )
+        
+        if not using_interactions and not using_old_api:
+            raise ValueError(
+                "Must provide either 'interactions' or legacy parameters "
+                "('messages' or 'input_data')."
+            )
+        
+        # Build request body
+        if using_interactions:
+            # New API: use interactions directly
+            response = self._post(
+                "/v2/test-cases",
+                body=maybe_transform(
+                    {
+                        "dataset_id": dataset_id,
+                        "interactions": interactions,
+                        "status": status,
+                        "tags": tags,
+                    },
+                    TestCaseCreateParams,
+                ),
+                options=make_request_options(
+                    extra_headers=extra_headers,
+                    extra_query=extra_query,
+                    extra_body=extra_body,
+                    timeout=timeout,
+                ),
+                cast_to=APIResponse[TestCase],
+            )
+        else:
+            # Legacy API: convert old parameters
+            # Validate backward compatibility: only one of messages or input_data
+            messages_provided = messages is not omit
+            input_data_provided = input_data is not omit
+
+            if messages_provided and input_data_provided:
+                raise ValueError(
+                    "Cannot provide both 'messages' and 'input_data'. "
+                    "Use one or the other, or use 'interactions'."
+                )
+
+            if not messages_provided and not input_data_provided:
+                raise ValueError(
+                    "Must provide either 'messages', 'input_data', or 'interactions'."
+                )
+
+            # Use input_data if provided, otherwise fall back to messages
+            final_input_data = input_data if input_data_provided else messages
+
+            api_checks: Iterable[object] | Omit = (
+                check_params_to_specs(checks) if checks is not omit else omit
+            )
+            api_demo_output = _normalize_demo_output(demo_output)
+            
+            response = self._post(
+                "/v2/test-cases",
+                body=maybe_transform(
+                    {
+                        "dataset_id": dataset_id,
+                        "input_data": final_input_data,
+                        "checks": api_checks,
+                        "demo_output": api_demo_output,
+                        "status": status,
+                        "tags": tags,
+                    },
+                    TestCaseCreateParams,
+                ),
+                options=make_request_options(
+                    extra_headers=extra_headers,
+                    extra_query=extra_query,
+                    extra_body=extra_body,
+                    timeout=timeout,
+                ),
+                cast_to=APIResponse[TestCase],
+            )
 
         return self._unwrap(response)
 
