@@ -150,8 +150,7 @@ class TestCasesResource(SyncAPIResource):
 
         if messages_provided and input_data_provided:
             raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. "
-                "Use 'input_data' or 'messages' but not both."
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
             )
 
         if not messages_provided and not input_data_provided:
@@ -160,9 +159,7 @@ class TestCasesResource(SyncAPIResource):
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
 
-        api_checks: Iterable[object] | Omit = (
-            _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
-        )
+        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = _normalize_demo_output(demo_output)
         response = self._post(
             "/v2/test-cases",
@@ -229,9 +226,7 @@ class TestCasesResource(SyncAPIResource):
             If ``test_case_id`` is empty.
         """
         if not test_case_id:
-            raise ValueError(
-                f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = self._get(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
@@ -308,9 +303,7 @@ class TestCasesResource(SyncAPIResource):
             If ``test_case_id`` is empty, or if both ``messages`` and ``input_data`` are provided.
         """
         if not test_case_id:
-            raise ValueError(
-                f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
 
         # Validate backward compatibility: only one of messages or input_data should be provided
         messages_provided = not isinstance(messages, Omit)
@@ -318,8 +311,7 @@ class TestCasesResource(SyncAPIResource):
 
         if messages_provided and input_data_provided:
             raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. "
-                "Use 'input_data' or 'messages' but not both."
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
             )
 
         # Use input_data if provided, otherwise fall back to messages
@@ -395,9 +387,7 @@ class TestCasesResource(SyncAPIResource):
             If ``test_case_id`` is empty.
         """
         if not test_case_id:
-            raise ValueError(
-                f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = self._delete(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
@@ -452,9 +442,7 @@ class TestCasesResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform(
-                    {"test_case_ids": test_case_ids}, TestCaseBulkDeleteParams
-                ),
+                query=maybe_transform({"test_case_ids": test_case_ids}, TestCaseBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -684,22 +672,18 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
         if messages_provided and input_data_provided:
             raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. "
-                "Use 'input_data' or 'messages' but not both."
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
             )
 
         if not messages_provided and not input_data_provided:
             raise ValueError(
-                "Must provide either 'messages' or 'input_data'. "
-                "Please use 'input_data' as 'messages' is deprecated."
+                "Must provide either 'messages' or 'input_data'. Please use 'input_data' as 'messages' is deprecated."
             )
 
         # Use input_data if provided, otherwise fall back to messages
         final_input_data = input_data if input_data_provided else messages
 
-        api_checks: Iterable[object] | Omit = (
-            _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
-        )
+        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = _normalize_demo_output(demo_output)
         response = await self._post(
             "/v2/test-cases",
@@ -766,9 +750,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             If ``test_case_id`` is empty.
         """
         if not test_case_id:
-            raise ValueError(
-                f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = await self._get(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
@@ -845,9 +827,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             If ``test_case_id`` is empty, or if both ``messages`` and ``input_data`` are provided.
         """
         if not test_case_id:
-            raise ValueError(
-                f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
 
         # Validate backward compatibility: only one of messages or input_data should be provided
         messages_provided = not isinstance(messages, Omit)
@@ -855,8 +835,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
         if messages_provided and input_data_provided:
             raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. "
-                "Use 'input_data' or 'messages' but not both."
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
             )
 
         # Use input_data if provided, otherwise fall back to messages
@@ -932,9 +911,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             If ``test_case_id`` is empty.
         """
         if not test_case_id:
-            raise ValueError(
-                f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = await self._delete(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
@@ -989,9 +966,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
-                    {"test_case_ids": test_case_ids}, TestCaseBulkDeleteParams
-                ),
+                query=await async_maybe_transform({"test_case_ids": test_case_ids}, TestCaseBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
