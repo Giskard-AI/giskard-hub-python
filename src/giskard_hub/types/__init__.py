@@ -7,7 +7,7 @@ Types are organized by domain into consolidated modules:
 - user: User, UserReference
 - execution: ExecutionError, execution status types
 - agent: Agent, AgentOutput, MinimalAgent and params
-- check: Check, assertions, annotations and params
+- check: Check, spec, annotations and params
 - audit: Audit, AuditDisplay and params
 - task: Task, TaskStatus, TaskPriority, references and params
 - dataset: Dataset, DatasetSubset and params
@@ -85,6 +85,7 @@ from .agent import (
 
 # -- check -----------------------------------------------------------------
 from .check import (
+    Annotation as Annotation,
     Check as Check,
     CheckBulkDeleteParams as CheckBulkDeleteParams,
     CheckConfig as CheckConfig,
@@ -98,6 +99,7 @@ from .check import (
     CheckUpdateParams as CheckUpdateParams,
     ConformityParams as ConformityParams,
     ConformityParamsParam as ConformityParamsParam,
+    ContextAnnotation as ContextAnnotation,
     CorrectnessParams as CorrectnessParams,
     CorrectnessParamsParam as CorrectnessParamsParam,
     GroundednessParams as GroundednessParams,
@@ -109,7 +111,6 @@ from .check import (
     SemanticSimilarityParamsParam as SemanticSimilarityParamsParam,
     StringMatchParams as StringMatchParams,
     StringMatchParamsParam as StringMatchParamsParam,
-    TestCaseCheckConfig as TestCaseCheckConfig,
     TestCaseCheckConfigParam as TestCaseCheckConfigParam,
 )
 
@@ -268,7 +269,6 @@ from .project import (
     ProjectUpdateParams as ProjectUpdateParams,
 )
 
-
 __all__ = [
     # common
     "APIResponse",
@@ -335,10 +335,11 @@ __all__ = [
     "SemanticSimilarityParamsParam",
     "MetadataParams",
     "MetadataParamsParam",
+    "Annotation",
     "OutputAnnotation",
+    "ContextAnnotation",
     "CheckConfig",
     "CheckConfigParam",
-    "TestCaseCheckConfig",
     "TestCaseCheckConfigParam",
     "CheckListParams",
     "CheckCreateParams",

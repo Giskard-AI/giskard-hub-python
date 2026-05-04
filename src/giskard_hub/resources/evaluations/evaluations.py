@@ -73,7 +73,15 @@ def _validate_dataset_or_old_evaluation(
 def _check_params_to_api(
     checks: Iterable[CheckConfigParam],
 ) -> Iterable[dict[str, object]]:
-    return [{"identifier": check["identifier"], **(check.get("params", {}))} for check in checks]
+    # Flat shape for /v2/evaluations/run-single (FlatCheckSpec). `type` is stripped because it
+    # duplicates `identifier` and would leak into the spec extras.
+    return [
+        {
+            "identifier": check["identifier"],
+            **{k: v for k, v in check.get("params", {}).items() if k != "type"},
+        }
+        for check in checks
+    ]
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -130,13 +138,13 @@ class EvaluationsResource(SyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
         run_count : int or Omit
             The number of times to run each test case.
@@ -163,7 +171,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
 
@@ -242,7 +250,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -305,7 +313,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -421,7 +429,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -512,13 +520,13 @@ class EvaluationsResource(SyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
 
         Other Parameters
@@ -541,7 +549,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
@@ -614,7 +622,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -662,7 +670,7 @@ class EvaluationsResource(SyncAPIResource):
         project_id : str, optional
             The ID of the project to run the evaluation for.
         input_data : iterable of ChatMessageParam or Omit
-            (Experimental) The input data (messages) to send to the agent. Replaces ``messages`` but will be replaced soon by ``interactions``.
+            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -684,7 +692,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If both ``messages`` and ``input_data`` are provided, or if neither is provided.
+            If both `messages` and `input_data` are provided, or if neither is provided.
         """
         # Validate backward compatibility: only one of messages or input_data should be provided
         messages_provided = not isinstance(messages, Omit)
@@ -781,13 +789,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
         run_count : int or Omit
             The number of times to run each test case.
@@ -814,7 +822,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
 
@@ -893,7 +901,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -956,7 +964,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -1072,7 +1080,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -1163,13 +1171,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
 
         Other Parameters
@@ -1192,7 +1200,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
@@ -1265,7 +1273,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -1313,7 +1321,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         project_id : str, optional
             The ID of the project to run the evaluation for.
         input_data : iterable of ChatMessageParam or Omit
-            (Experimental) The input data (messages) to send to the agent. Replaces ``messages`` but will be replaced soon by ``interactions``.
+            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -1335,7 +1343,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If both ``messages`` and ``input_data`` are provided, or if neither is provided.
+            If both `messages` and `input_data` are provided, or if neither is provided.
         """
         # Validate backward compatibility: only one of messages or input_data should be provided
         messages_provided = not isinstance(messages, Omit)
