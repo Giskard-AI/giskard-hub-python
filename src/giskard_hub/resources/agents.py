@@ -412,7 +412,7 @@ class AgentsResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        input: str,
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -420,14 +420,14 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GenerateCompletionOutput:
-        """Send input to the agent and get a completion response.
+        """Send a conversation to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
-        input : str
-            Input text to send to the agent.
+        messages : Iterable[ChatMessageParam] | Omit
+            Conversation messages to send to the agent.
 
         Other Parameters
         ----------------
@@ -448,13 +448,17 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If ``agent_id`` is empty or if ``messages`` is not provided.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        
+        if messages is omit:
+            raise ValueError("'messages' parameter is required")
+            
         response = self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=maybe_transform({"input": input}, AgentGenerateCompletionParams),
+            body=maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1011,7 +1015,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        input: str,
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1019,14 +1023,14 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GenerateCompletionOutput:
-        """Send input to the agent and get a completion response.
+        """Send a conversation to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
-        input : str
-            Input text to send to the agent.
+        messages : Iterable[ChatMessageParam] | Omit
+            Conversation messages to send to the agent.
 
         Other Parameters
         ----------------
@@ -1047,13 +1051,17 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If ``agent_id`` is empty or if ``messages`` is not provided.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        
+        if messages is omit:
+            raise ValueError("'messages' parameter is required")
+            
         response = await self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=await async_maybe_transform({"input": input}, AgentGenerateCompletionParams),
+            body=await async_maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
