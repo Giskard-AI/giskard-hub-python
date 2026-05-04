@@ -609,10 +609,11 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         checks: Iterable[CheckConfigParam],
-        messages: Iterable[ChatMessageParam],
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         agent_output: AgentOutputParam,
         agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
+        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -626,14 +627,16 @@ class EvaluationsResource(SyncAPIResource):
         ----------
         checks : iterable of CheckConfigParam
             The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam
-            The messages to send to the agent.
+        messages : iterable of ChatMessageParam or Omit
+            (Deprecated) The messages to send to the agent. Use ``input_data`` instead.
         agent_output : AgentOutputParam
             The output from the agent.
         agent_description : str or Omit
             The description of the agent.
         project_id : str, optional
             The ID of the project to run the evaluation for.
+        input_data : iterable of ChatMessageParam or Omit
+            The input data (messages) to send to the agent. Replaces ``messages``.
 
         Other Parameters
         ----------------
@@ -651,7 +654,31 @@ class EvaluationsResource(SyncAPIResource):
         -------
         list of CheckResult
             The results of the checks.
+
+        Raises
+        ------
+        ValueError
+            If both ``messages`` and ``input_data`` are provided, or if neither is provided.
         """
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. "
+                "Use 'input_data' (recommended) or 'messages' (deprecated) but not both."
+            )
+
+        if not messages_provided and not input_data_provided:
+            raise ValueError(
+                "Must provide either 'messages' (deprecated) or 'input_data'. "
+                "Please use 'input_data' as 'messages' is deprecated."
+            )
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
         api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
 
         response = self._post(
@@ -659,7 +686,7 @@ class EvaluationsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "checks": api_checks,
-                    "messages": messages,
+                    "input_data": final_input_data,
                     "model_output": agent_output,
                     "model_description": agent_description,
                     "project_id": project_id,
@@ -1219,10 +1246,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         checks: Iterable[CheckConfigParam],
-        messages: Iterable[ChatMessageParam],
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         agent_output: AgentOutputParam,
         agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
+        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1236,14 +1264,16 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ----------
         checks : iterable of CheckConfigParam
             The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam
-            The messages to send to the agent.
+        messages : iterable of ChatMessageParam or Omit
+            (Deprecated) The messages to send to the agent. Use ``input_data`` instead.
         agent_output : AgentOutputParam
             The output from the agent.
         agent_description : str or Omit
             The description of the agent.
         project_id : str, optional
             The ID of the project to run the evaluation for.
+        input_data : iterable of ChatMessageParam or Omit
+            The input data (messages) to send to the agent. Replaces ``messages``.
 
         Other Parameters
         ----------------
@@ -1261,7 +1291,31 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         -------
         list of CheckResult
             The results of the checks.
+
+        Raises
+        ------
+        ValueError
+            If both ``messages`` and ``input_data`` are provided, or if neither is provided.
         """
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. "
+                "Use 'input_data' (recommended) or 'messages' (deprecated) but not both."
+            )
+
+        if not messages_provided and not input_data_provided:
+            raise ValueError(
+                "Must provide either 'messages' (deprecated) or 'input_data'. "
+                "Please use 'input_data' as 'messages' is deprecated."
+            )
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
         api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
 
         response = await self._post(
@@ -1269,7 +1323,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "checks": api_checks,
-                    "messages": messages,
+                    "input_data": final_input_data,
                     "model_output": agent_output,
                     "model_description": agent_description,
                     "project_id": project_id,
