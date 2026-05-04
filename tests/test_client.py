@@ -628,6 +628,81 @@ class TestHubClient:
             client = HubClient(api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
+    def test_tenant_host_explicit(self) -> None:
+        client = HubClient(
+            base_url=base_url,
+            api_key=api_key,
+            auto_add_api_suffix=False,
+            _strict_response_validation=True,
+            tenant_host="tenant.example.com",
+        )
+        assert client.tenant_host == "tenant.example.com"
+        assert client.default_headers["X-Forwarded-Host"] == "tenant.example.com"
+
+        request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
+        assert request.headers.get("x-forwarded-host") == "tenant.example.com"
+        client.close()
+
+    def test_tenant_host_env(self) -> None:
+        with update_env(GISKARD_HUB_TENANT_HOST="env.example.com"):
+            client = HubClient(
+                base_url=base_url,
+                api_key=api_key,
+                auto_add_api_suffix=False,
+                _strict_response_validation=True,
+            )
+            assert client.tenant_host == "env.example.com"
+            assert client.default_headers["X-Forwarded-Host"] == "env.example.com"
+
+            # Explicit argument overrides the env var.
+            override_client = HubClient(
+                base_url=base_url,
+                api_key=api_key,
+                auto_add_api_suffix=False,
+                _strict_response_validation=True,
+                tenant_host="explicit.example.com",
+            )
+            assert override_client.tenant_host == "explicit.example.com"
+            assert override_client.default_headers["X-Forwarded-Host"] == "explicit.example.com"
+            client.close()
+            override_client.close()
+
+    def test_tenant_host_unset(self) -> None:
+        with update_env(**{"GISKARD_HUB_TENANT_HOST": Omit()}):
+            client = HubClient(
+                base_url=base_url,
+                api_key=api_key,
+                auto_add_api_suffix=False,
+                _strict_response_validation=True,
+            )
+        assert client.tenant_host is None
+        assert "X-Forwarded-Host" not in client.default_headers
+
+        request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
+        assert "x-forwarded-host" not in request.headers
+        client.close()
+
+    def test_copy_tenant_host(self) -> None:
+        client = HubClient(
+            base_url=base_url,
+            api_key=api_key,
+            auto_add_api_suffix=False,
+            _strict_response_validation=True,
+            tenant_host="a.example.com",
+        )
+        assert client.tenant_host == "a.example.com"
+
+        # copy() preserves the tenant_host
+        copied = client.copy()
+        assert copied.tenant_host == "a.example.com"
+        assert copied.default_headers["X-Forwarded-Host"] == "a.example.com"
+
+        # copy() with an override switches it
+        overridden = client.copy(tenant_host="b.example.com")
+        assert overridden.tenant_host == "b.example.com"
+        assert overridden.default_headers["X-Forwarded-Host"] == "b.example.com"
+        client.close()
+
     @pytest.mark.parametrize(
         "client",
         [
@@ -1556,6 +1631,81 @@ class TestAsyncHubClient:
         with update_env(GISKARD_HUB_BASE_URL="http://localhost:5000/from/env"):
             client = AsyncHubClient(api_key=api_key, auto_add_api_suffix=False, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
+
+    async def test_tenant_host_explicit(self) -> None:
+        client = AsyncHubClient(
+            base_url=base_url,
+            api_key=api_key,
+            auto_add_api_suffix=False,
+            _strict_response_validation=True,
+            tenant_host="tenant.example.com",
+        )
+        assert client.tenant_host == "tenant.example.com"
+        assert client.default_headers["X-Forwarded-Host"] == "tenant.example.com"
+
+        request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
+        assert request.headers.get("x-forwarded-host") == "tenant.example.com"
+        await client.close()
+
+    async def test_tenant_host_env(self) -> None:
+        with update_env(GISKARD_HUB_TENANT_HOST="env.example.com"):
+            client = AsyncHubClient(
+                base_url=base_url,
+                api_key=api_key,
+                auto_add_api_suffix=False,
+                _strict_response_validation=True,
+            )
+            assert client.tenant_host == "env.example.com"
+            assert client.default_headers["X-Forwarded-Host"] == "env.example.com"
+
+            # Explicit argument overrides the env var.
+            override_client = AsyncHubClient(
+                base_url=base_url,
+                api_key=api_key,
+                auto_add_api_suffix=False,
+                _strict_response_validation=True,
+                tenant_host="explicit.example.com",
+            )
+            assert override_client.tenant_host == "explicit.example.com"
+            assert override_client.default_headers["X-Forwarded-Host"] == "explicit.example.com"
+            await client.close()
+            await override_client.close()
+
+    async def test_tenant_host_unset(self) -> None:
+        with update_env(**{"GISKARD_HUB_TENANT_HOST": Omit()}):
+            client = AsyncHubClient(
+                base_url=base_url,
+                api_key=api_key,
+                auto_add_api_suffix=False,
+                _strict_response_validation=True,
+            )
+        assert client.tenant_host is None
+        assert "X-Forwarded-Host" not in client.default_headers
+
+        request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
+        assert "x-forwarded-host" not in request.headers
+        await client.close()
+
+    async def test_copy_tenant_host(self) -> None:
+        client = AsyncHubClient(
+            base_url=base_url,
+            api_key=api_key,
+            auto_add_api_suffix=False,
+            _strict_response_validation=True,
+            tenant_host="a.example.com",
+        )
+        assert client.tenant_host == "a.example.com"
+
+        # copy() preserves the tenant_host
+        copied = client.copy()
+        assert copied.tenant_host == "a.example.com"
+        assert copied.default_headers["X-Forwarded-Host"] == "a.example.com"
+
+        # copy() with an override switches it
+        overridden = client.copy(tenant_host="b.example.com")
+        assert overridden.tenant_host == "b.example.com"
+        assert overridden.default_headers["X-Forwarded-Host"] == "b.example.com"
+        await client.close()
 
     @pytest.mark.parametrize(
         "client",
