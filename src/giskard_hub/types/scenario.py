@@ -31,7 +31,7 @@ class Scenario(BaseModel):
 
 
 class ScenarioPreview(BaseModel):
-    inputs: List[str]
+    scenario_inputs: List[str] = Field(alias="inputs")
     generated_rules: Optional[List[str]]
 
 

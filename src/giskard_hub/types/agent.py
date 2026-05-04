@@ -123,7 +123,7 @@ class AgentRoleSnapshot(BaseModel):
 
 
 class GenerateCompletionOutput(BaseModel):
-    output: Optional[str] = None
+    message_output: Optional[str] = Field(default=None, alias="output")
     error: Optional[ExecutionError] = None
     metadata: Optional[Dict[str, Any]] = None
 
@@ -172,7 +172,8 @@ class AgentTestConnectionParams(TypedDict, total=False):
 
 
 class AgentGenerateCompletionParams(TypedDict, total=False):
-    input: Required[str]
+    messages: Iterable[ChatMessageParam]
+    message_input: str
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):

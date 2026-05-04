@@ -27,8 +27,8 @@ __all__ = [
 
 
 class PlaygroundExchange(BaseModel):
-    input: str
-    output: Optional[str] = None
+    exchange_input: str = Field(alias="input")
+    exchange_output: Optional[str] = Field(default=None, alias="output")
     metadata: Optional[Dict[str, Any]] = None
 
 
@@ -50,8 +50,8 @@ class PlaygroundChat(BaseModel):
 
 
 class PlaygroundExchangeParam(TypedDict, total=False):
-    input: Required[str]
-    output: Optional[str]
+    exchange_input: Required[str]
+    exchange_output: Optional[str]
     metadata: Optional[Dict[str, Any]]
 
 

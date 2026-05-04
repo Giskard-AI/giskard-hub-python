@@ -112,8 +112,8 @@ class ScanProbeAttemptReference(BaseModel):
 class ScanProbeAttempt(BaseModel):
     id: str
     error: Optional[ScanProbeAttemptError] = None
-    input: Optional[str] = None
-    output: Optional[str] = None
+    probe_input: Optional[str] = Field(default=None, alias="input")
+    probe_output: Optional[str] = Field(default=None, alias="output")
     metadata: Dict[str, object]
     probe_id: str = Field(alias="probe_result_id")
     reason: str
