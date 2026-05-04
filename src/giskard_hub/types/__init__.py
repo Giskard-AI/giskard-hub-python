@@ -268,14 +268,6 @@ from .project import (
     ProjectUpdateParams as ProjectUpdateParams,
 )
 
-# -- tenancy ---------------------------------------------------------------
-from .tenancy import (
-    FindTenantRequest as FindTenantRequest,
-    FindTenantResponse as FindTenantResponse,
-    FindTenantTenantInfo as FindTenantTenantInfo,
-    HealthStatus as HealthStatus,
-)
-
 
 __all__ = [
     # common
@@ -474,9 +466,4 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
-    # tenancy
-    "FindTenantRequest",
-    "FindTenantResponse",
-    "FindTenantTenantInfo",
-    "HealthStatus",
 ]

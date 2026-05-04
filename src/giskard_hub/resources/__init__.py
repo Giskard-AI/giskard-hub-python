@@ -42,14 +42,6 @@ from .helpers import (
     HelpersResource,
     AsyncHelpersResource,
 )
-from .tenancy import (
-    TenancyResource,
-    AsyncTenancyResource,
-    TenancyResourceWithRawResponse,
-    AsyncTenancyResourceWithRawResponse,
-    TenancyResourceWithStreamingResponse,
-    AsyncTenancyResourceWithStreamingResponse,
-)
 from .datasets import (
     DatasetsResource,
     AsyncDatasetsResource,
@@ -166,12 +158,6 @@ __all__ = [
     "AsyncScheduledEvaluationsResourceWithRawResponse",
     "ScheduledEvaluationsResourceWithStreamingResponse",
     "AsyncScheduledEvaluationsResourceWithStreamingResponse",
-    "TenancyResource",
-    "AsyncTenancyResource",
-    "TenancyResourceWithRawResponse",
-    "AsyncTenancyResourceWithRawResponse",
-    "TenancyResourceWithStreamingResponse",
-    "AsyncTenancyResourceWithStreamingResponse",
     "HelpersResource",
     "AsyncHelpersResource",
 ]
