@@ -240,43 +240,14 @@ class TestCaseCheckConfigParam(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 
 
-# Mirrors the backend
-_IDENTIFIER_TO_KIND: Dict[str, str] = {
-    "correctness": "hub_correctness",
-    "conformity": "hub_conformity",
-    "groundedness": "hub_groundedness",
-    "string_match": "string_matching",
-    "metadata": "hub_metadata",
-    "semantic_similarity": "semantic_similarity",
-}
-
-
 def _extract_check_params(check: Dict[str, Any]) -> Dict[str, Any]:
+    """Strip `kind` from `spec` to derive the user-facing `params` dict."""
     spec: Any = check.get("spec") or {}
     if isinstance(spec, BaseModel):
         return spec.model_dump(exclude={"kind"}, exclude_none=True)
     if isinstance(spec, dict):
         return {k: v for k, v in cast(Dict[str, Any], spec).items() if k != "kind"}
     return {}
-
-
-def _check_param_to_spec(identifier: Optional[str], params: Any) -> Dict[str, Any]:
-    """Build a `spec` dict, deriving `kind` from `params["type"]` then `identifier`."""
-    if isinstance(params, BaseModel):
-        params_dict: Dict[str, Any] = params.model_dump(exclude_none=True)
-    elif isinstance(params, dict):
-        params_dict = dict(cast(Dict[str, Any], params))
-    else:
-        params_dict = {}
-    type_from_params = params_dict.pop("type", None)
-    type_str = type_from_params or identifier or ""
-    if not type_str:
-        raise ValueError(
-            "Cannot derive check kind: provide 'identifier' or include 'type' in 'params', "
-            "or pass 'spec' directly with an explicit 'kind'."
-        )
-    kind = _IDENTIFIER_TO_KIND.get(type_str, type_str)
-    return {"kind": kind, **params_dict}
 
 
 class CheckConfig(BaseModel):
@@ -301,23 +272,6 @@ class CheckConfigParam(TypedDict, total=False):
     identifier: Required[str]
     enabled: bool
     params: Dict[str, Any]
-
-
-def _check_params_to_api(  # pyright: ignore[reportUnusedFunction]
-    checks: Iterable[CheckConfigParam],
-) -> list[Dict[str, Any]]:
-    return [
-        {
-            "identifier": check["identifier"],
-            "enabled": check.get("enabled", True),
-            **(
-                {"spec": _check_param_to_spec(check["identifier"], check.get("params", {}))}
-                if check.get("params")
-                else {}
-            ),
-        }
-        for check in checks
-    ]
 
 
 # ---------------------------------------------------------------------------

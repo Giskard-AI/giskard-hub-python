@@ -21,10 +21,10 @@ from ..types.check import (
     CheckCreateParams,
     CheckUpdateParams,
     CheckBulkDeleteParams,
-    _check_param_to_spec,
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
+from ._check_helpers import check_param_to_spec
 
 __all__ = ["ChecksResource", "AsyncChecksResource"]
 
@@ -113,7 +113,7 @@ class ChecksResource(SyncAPIResource):
         if not params_provided and not spec_provided:
             raise ValueError("Must provide either 'params' or 'spec'.")
 
-        api_spec = spec if spec_provided else _check_param_to_spec(identifier, params)
+        api_spec = spec if spec_provided else check_param_to_spec(identifier, params)
         response = self._post(
             "/v2/checks",
             body=maybe_transform(
@@ -256,7 +256,7 @@ class ChecksResource(SyncAPIResource):
                 api_spec = None
             else:
                 type_or_id = identifier if isinstance(identifier, str) else None
-                api_spec = _check_param_to_spec(type_or_id, params)
+                api_spec = check_param_to_spec(type_or_id, params)
         else:
             api_spec = omit
         response = self._patch(
@@ -509,7 +509,7 @@ class AsyncChecksResource(AsyncAPIResource):
         if not params_provided and not spec_provided:
             raise ValueError("Must provide either 'params' or 'spec'.")
 
-        api_spec = spec if spec_provided else _check_param_to_spec(identifier, params)
+        api_spec = spec if spec_provided else check_param_to_spec(identifier, params)
         response = await self._post(
             "/v2/checks",
             body=await async_maybe_transform(
@@ -652,7 +652,7 @@ class AsyncChecksResource(AsyncAPIResource):
                 api_spec = None
             else:
                 type_or_id = identifier if isinstance(identifier, str) else None
-                api_spec = _check_param_to_spec(type_or_id, params)
+                api_spec = check_param_to_spec(type_or_id, params)
         else:
             api_spec = omit
         response = await self._patch(
