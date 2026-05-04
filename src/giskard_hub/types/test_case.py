@@ -71,8 +71,7 @@ class TestCase(BaseModel):
 
 class TestCaseCreateParams(TypedDict, total=False):
     dataset_id: Required[str]
-    messages: Iterable[ChatMessageParam]
-    input_data: Iterable[ChatMessageParam]
+    input_data: Required[Iterable[ChatMessageParam]]
     checks: Iterable[TestCaseCheckConfigParam]
     demo_output: Optional[ChatMessageWithMetadataParam]
     status: Optional[TestCaseStatus]
@@ -84,7 +83,6 @@ class TestCaseUpdateParams(TypedDict, total=False):
     checks: Optional[Iterable[TestCaseCheckConfigParam]]
     dataset_id: Optional[str]
     demo_output: Optional[ChatMessageWithMetadataParam]
-    messages: Optional[Iterable[ChatMessageParam]]
     input_data: Optional[Iterable[ChatMessageParam]]
     tags: Optional[SequenceNotStr[str]]
     status: Optional[TestCaseStatus]
