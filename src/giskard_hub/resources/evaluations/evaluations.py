@@ -84,6 +84,17 @@ def _check_params_to_api(
     ]
 
 
+def _normalize_agent_output(
+    agent_output: AgentOutputParam | str,
+) -> AgentOutputParam:
+    if isinstance(agent_output, str):
+        return cast(
+            AgentOutputParam,
+            {"response": {"role": "assistant", "content": agent_output}},
+        )
+    return agent_output
+
+
 class EvaluationsResource(SyncAPIResource):
     @cached_property
     def results(self) -> ResultsResource:
@@ -644,7 +655,7 @@ class EvaluationsResource(SyncAPIResource):
         *,
         checks: Iterable[CheckConfigParam],
         messages: Iterable[ChatMessageParam] | Omit = omit,
-        agent_output: AgentOutputParam,
+        agent_output: AgentOutputParam | str,
         agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
         input_data: Iterable[ChatMessageParam] | Omit = omit,
@@ -663,8 +674,9 @@ class EvaluationsResource(SyncAPIResource):
             The checks to run for the evaluation.
         messages : iterable of ChatMessageParam or Omit
             The messages to send to the agent.
-        agent_output : AgentOutputParam
-            The output from the agent.
+        agent_output : AgentOutputParam or str
+            The output from the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`.
         agent_description : str or Omit
             The description of the agent.
         project_id : str, optional
@@ -717,7 +729,7 @@ class EvaluationsResource(SyncAPIResource):
                 {
                     "checks": api_checks,
                     "input_data": final_input_data,
-                    "model_output": agent_output,
+                    "model_output": _normalize_agent_output(agent_output),
                     "model_description": agent_description,
                     "project_id": project_id,
                 },
@@ -1295,7 +1307,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         *,
         checks: Iterable[CheckConfigParam],
         messages: Iterable[ChatMessageParam] | Omit = omit,
-        agent_output: AgentOutputParam,
+        agent_output: AgentOutputParam | str,
         agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
         input_data: Iterable[ChatMessageParam] | Omit = omit,
@@ -1314,8 +1326,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             The checks to run for the evaluation.
         messages : iterable of ChatMessageParam or Omit
             The messages to send to the agent.
-        agent_output : AgentOutputParam
-            The output from the agent.
+        agent_output : AgentOutputParam or str
+            The output from the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`.
         agent_description : str or Omit
             The description of the agent.
         project_id : str, optional
@@ -1368,7 +1381,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 {
                     "checks": api_checks,
                     "input_data": final_input_data,
-                    "model_output": agent_output,
+                    "model_output": _normalize_agent_output(agent_output),
                     "model_description": agent_description,
                     "project_id": project_id,
                 },
