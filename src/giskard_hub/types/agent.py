@@ -1,8 +1,8 @@
 """Agent domain types."""
 
-from typing import Any, Dict, Iterable, Optional, TypedDict, cast
+from typing import Any, Dict, List, Iterable, Optional, TypedDict, cast
 from datetime import datetime
-from typing_extensions import Required
+from typing_extensions import Required, deprecated
 
 from pydantic import Field, AliasChoices, model_validator
 
@@ -47,7 +47,7 @@ class Agent(BaseModel):
     supported_languages: list[str]
     updated_at: datetime
     url: str
-    auto_bindings: Optional[bool] = None
+    auto_bindings: Optional[Dict[str, str]] = None
     input_schema: Optional[Dict[str, Any]] = None
     output_schema: Optional[Dict[str, Any]] = None
 
@@ -117,15 +117,60 @@ class AgentDetectStatefulness(BaseModel):
 
 
 class AgentRoleSnapshot(BaseModel):
-    id: str
-    name: str
-    description: Optional[str] = None
+    """Snapshot of an agent assignment for one role in an evaluation."""
+
+    agent_id: str
+    role_id: Optional[str] = None
+    role_name: Optional[str] = None
+    agent_name: str = ""
+    url: str = ""
+    headers: List[Dict[str, Any]] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    input_schema: Dict[str, Any] = Field(default_factory=dict)
+    output_schema: Dict[str, Any] = Field(default_factory=dict)
+    auto_bindings: Optional[Dict[str, str]] = None
 
 
 class GenerateCompletionOutput(BaseModel):
-    output: Optional[str] = None
+    """Result of `agents.generate_completion`.
+
+    The `output` field is the raw structured output of the agent
+    (matching its `output_schema`). Helper accessors are provided to keep
+    older code that read `response` / `message` working.
+    """
+
+    output: Optional[Dict[str, Any]] = None
     error: Optional[ExecutionError] = None
     metadata: Optional[Dict[str, Any]] = None
+    forwarded: Optional[Dict[str, Any]] = None
+
+    def _extract_response(self) -> Optional[ChatMessage]:
+        if self.output is None:
+            return None
+        response = self.output.get("response")
+        if isinstance(response, dict):
+            r = cast(Dict[str, Any], response)
+            role, content = r.get("role"), r.get("content")
+            if isinstance(role, str) and isinstance(content, str):
+                return ChatMessage(role=role, content=content)
+        return None
+
+    @property
+    @deprecated(
+        "`GenerateCompletionOutput.response` is deprecated; read "
+        "`output['response']` from the structured `output` dict instead."
+    )
+    def response(self) -> Optional[ChatMessage]:
+        """Deprecated accessor for the `response` chat message."""
+        return self._extract_response()
+
+    @property
+    @deprecated(
+        "`GenerateCompletionOutput.message` is deprecated; read "
+        "`output['response']` from the structured `output` dict instead."
+    )
+    def message(self) -> Optional[ChatMessage]:
+        """Deprecated alias for `response`."""
+        return self._extract_response()
 
 
 # ---------------------------------------------------------------------------
@@ -144,7 +189,7 @@ class AgentCreateParams(TypedDict, total=False):
     supported_languages: Required[SequenceNotStr[str]]
     url: Required[str]
     description: Optional[str]
-    auto_bindings: Optional[bool]
+    auto_bindings: Optional[Dict[str, str]]
     input_schema: Optional[Dict[str, Any]]
     output_schema: Optional[Dict[str, Any]]
 
@@ -155,7 +200,7 @@ class AgentUpdateParams(TypedDict, total=False):
     name: Optional[str]
     supported_languages: Optional[SequenceNotStr[str]]
     url: Optional[str]
-    auto_bindings: Optional[bool]
+    auto_bindings: Optional[Dict[str, str]]
     input_schema: Optional[Dict[str, Any]]
     output_schema: Optional[Dict[str, Any]]
 
@@ -166,13 +211,16 @@ class AgentBulkDeleteParams(TypedDict, total=False):
 
 class AgentTestConnectionParams(TypedDict, total=False):
     url: Required[str]
-    headers: Dict[str, str]
+    project_id: Required[str]
+    headers: Iterable[HeaderParam]
     agent_id: Optional[str]
     input_schema: Optional[Dict[str, Any]]
 
 
 class AgentGenerateCompletionParams(TypedDict, total=False):
-    input: Required[str]
+    input: Required[Dict[str, Any]]
+    metadata: Optional[Dict[str, Any]]
+    forwarded: Optional[Dict[str, Any]]
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):

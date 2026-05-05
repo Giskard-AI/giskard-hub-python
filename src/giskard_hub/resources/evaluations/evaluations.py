@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Literal, Iterable, Optional, cast
+import warnings
+from typing import Any, Dict, List, Literal, Mapping, Iterable, Optional, cast
 
 import httpx
 
@@ -39,17 +40,16 @@ from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
-from .._check_helpers import check_params_to_specs
 from ...types.evaluation import (
     Evaluation,
     EvaluationListParams,
     EvaluationCreateParams,
     EvaluationUpdateParams,
     EvaluationRetrieveParams,
-    EvaluationRunSingleParams,
     CriterionEvaluationDataset,
     EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams,
+    EvaluationRunInteractionChecksParams,
 )
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
@@ -80,6 +80,22 @@ def _normalize_agent_output(
             {"response": {"role": "assistant", "content": agent_output}},
         )
     return agent_output
+
+
+def _flat_check_specs(checks: Iterable[CheckConfigParam]) -> List[Dict[str, Any]]:
+    """Convert legacy check configs into `FlatCheckSpec` payloads."""
+    out: List[Dict[str, Any]] = []
+    for check in checks:
+        identifier = check.get("identifier")
+        params = check.get("params") or {}
+        override_spec = {k: v for k, v in params.items() if k != "type"}
+        entry: Dict[str, Any] = {}
+        if identifier:
+            entry["identifier"] = identifier
+        if override_spec:
+            entry["override_spec"] = override_spec
+        out.append(entry)
+    return out
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -640,12 +656,11 @@ class EvaluationsResource(SyncAPIResource):
     def run_single(
         self,
         *,
+        project_id: str,
         checks: Iterable[CheckConfigParam],
-        messages: Iterable[ChatMessageParam] | Omit = omit,
-        agent_output: AgentOutputParam | str,
+        agent_output: AgentOutputParam | Mapping[str, Any] | str,
+        messages: Iterable[ChatMessageParam],
         agent_description: str | Omit = omit,
-        project_id: Optional[str] | Omit = omit,
-        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -653,74 +668,62 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
-        """Run a single check against a provided agent output without creating a full evaluation.
+        """Run checks against a single agent output without creating an evaluation.
+
+        Routes to `POST /v2/evaluations/run-interaction-checks`. The
+        `messages` list is wrapped as `input_data={"messages": [...]}` on the
+        wire. `agent_description` has been removed server-side and is ignored
+        when set (with a warning).
 
         Parameters
         ----------
+        project_id : str
+            ID of the project the checks belong to.
         checks : iterable of CheckConfigParam
-            The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam or Omit
-            The messages to send to the agent.
-        agent_output : AgentOutputParam or str
-            The output from the agent. A bare string is wrapped as
+            Checks to run. Each check needs an `identifier` and optionally
+            `params` (which become `override_spec`).
+        agent_output : AgentOutputParam | Mapping[str, Any] | str
+            The agent's output. A bare string is wrapped as
             `{"response": {"role": "assistant", "content": <string>}}`.
+            Otherwise the dict is sent verbatim as `model_output`.
+        messages : iterable of ChatMessageParam
+            Conversation messages, wrapped on the wire as
+            `input_data={"messages": [...]}`.
         agent_description : str or Omit
-            The description of the agent.
-        project_id : str, optional
-            The ID of the project to run the evaluation for.
-        input_data : iterable of ChatMessageParam or Omit
-            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
+            (Deprecated) No longer accepted by the API; emits a warning and is dropped.
 
         Other Parameters
         ----------------
-        extra_headers : Headers or None
-            Send extra headers.
-        extra_query : Query or None
-            Add additional query parameters to the request.
-        extra_body : Body or None
-            Add additional JSON properties to the request.
-        timeout : float, httpx.Timeout, None, or NotGiven
-            Override the client-level default timeout for this request, in
-            seconds.
+        extra_headers, extra_query, extra_body, timeout
+            Standard request-level overrides.
 
         Returns
         -------
         list of CheckResult
-            The results of the checks.
-
-        Raises
-        ------
-        ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
+            The check results.
         """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        if not isinstance(agent_description, Omit):
+            warnings.warn(
+                "`agent_description` is no longer accepted by `evaluations.run_single`; ignoring it.",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
-        if not messages_provided and not input_data_provided:
-            raise ValueError("Must provide either 'messages' or 'input_data'. ")
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
+        model_output = (
+            _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
+        )
+        api_checks = _flat_check_specs(checks)
 
         response = self._post(
-            "/v2/evaluations/run-single",
+            "/v2/evaluations/run-interaction-checks",
             body=maybe_transform(
                 {
-                    "checks": api_checks,
-                    "input_data": final_input_data,
-                    "model_output": _normalize_agent_output(agent_output),
-                    "model_description": agent_description,
                     "project_id": project_id,
+                    "input_data": {"messages": list(messages)},
+                    "model_output": model_output,
+                    "checks": api_checks,
                 },
-                EvaluationRunSingleParams,
+                EvaluationRunInteractionChecksParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1292,12 +1295,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
     async def run_single(
         self,
         *,
+        project_id: str,
         checks: Iterable[CheckConfigParam],
-        messages: Iterable[ChatMessageParam] | Omit = omit,
-        agent_output: AgentOutputParam | str,
+        agent_output: AgentOutputParam | Mapping[str, Any] | str,
+        messages: Iterable[ChatMessageParam],
         agent_description: str | Omit = omit,
-        project_id: Optional[str] | Omit = omit,
-        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1305,74 +1307,29 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
-        """Run a single check against a provided agent output without creating a full evaluation.
-
-        Parameters
-        ----------
-        checks : iterable of CheckConfigParam
-            The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam or Omit
-            The messages to send to the agent.
-        agent_output : AgentOutputParam or str
-            The output from the agent. A bare string is wrapped as
-            `{"response": {"role": "assistant", "content": <string>}}`.
-        agent_description : str or Omit
-            The description of the agent.
-        project_id : str, optional
-            The ID of the project to run the evaluation for.
-        input_data : iterable of ChatMessageParam or Omit
-            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers or None
-            Send extra headers.
-        extra_query : Query or None
-            Add additional query parameters to the request.
-        extra_body : Body or None
-            Add additional JSON properties to the request.
-        timeout : float, httpx.Timeout, None, or NotGiven
-            Override the client-level default timeout for this request, in
-            seconds.
-
-        Returns
-        -------
-        list of CheckResult
-            The results of the checks.
-
-        Raises
-        ------
-        ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
-        """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        """Async variant of :meth:`EvaluationsResource.run_single`."""
+        if not isinstance(agent_description, Omit):
+            warnings.warn(
+                "`agent_description` is no longer accepted by `evaluations.run_single`; ignoring it.",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
-        if not messages_provided and not input_data_provided:
-            raise ValueError("Must provide either 'messages' or 'input_data'. ")
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
+        model_output = (
+            _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
+        )
+        api_checks = _flat_check_specs(checks)
 
         response = await self._post(
-            "/v2/evaluations/run-single",
+            "/v2/evaluations/run-interaction-checks",
             body=await async_maybe_transform(
                 {
-                    "checks": api_checks,
-                    "input_data": final_input_data,
-                    "model_output": _normalize_agent_output(agent_output),
-                    "model_description": agent_description,
                     "project_id": project_id,
+                    "input_data": {"messages": list(messages)},
+                    "model_output": model_output,
+                    "checks": api_checks,
                 },
-                EvaluationRunSingleParams,
+                EvaluationRunInteractionChecksParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,

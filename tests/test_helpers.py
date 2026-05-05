@@ -381,7 +381,14 @@ def _make_evaluation(eval_id: str = "eval-1") -> Evaluation:
 
 
 def _make_test_case(messages: list[ChatMessage]) -> TestCase:
-    return TestCase.model_construct(id="tc-1", messages=messages)  # type: ignore[arg-type]
+    from giskard_hub.types.check import Interaction
+
+    interaction = Interaction.model_construct(  # type: ignore[arg-type]
+        role_id="role-default",
+        position=0,
+        input={"messages": [m.to_dict() for m in messages]},
+    )
+    return TestCase.model_construct(id="tc-1", interactions=[interaction])  # type: ignore[arg-type]
 
 
 def _make_result_entry(test_case: TestCase, result_id: str = "res-1") -> Any:

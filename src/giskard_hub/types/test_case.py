@@ -1,15 +1,14 @@
 """Test case domain types."""
 
-from typing import List, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import Any, Dict, List, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
 from datetime import datetime
-from typing_extensions import Required
+from typing_extensions import Required, deprecated
 
 from pydantic import Field
 
-from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadataParam
+from .chat import ChatMessage
 from .user import UserReference
-from .agent import AgentOutput
-from .check import CheckConfig, TestCaseCheckConfigParam, Interaction, InteractionParam
+from .check import Interaction, InteractionParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -49,16 +48,50 @@ class TestCaseReference(BaseModel):
     id: str
 
 
+def _first_interaction_messages(interactions: Optional[List[Interaction]]) -> List[ChatMessage]:
+    """Extract chat messages from `interactions[0].input["messages"]`.
+
+    Returns an empty list if there are no interactions or the input is not
+    shaped as `{"messages": [...]}`. Used by both `TestCase.messages` (the
+    deprecated public accessor) and `helpers._evaluate_local` (an internal
+    consumer that needs the same view without tripping the deprecation).
+    """
+    if not interactions:
+        return []
+    raw_messages = interactions[0].input.get("messages")
+    if not isinstance(raw_messages, list):
+        return []
+    out: List[ChatMessage] = []
+    for entry in cast(List[Any], raw_messages):
+        if isinstance(entry, dict):
+            entry_d = cast(Dict[str, Any], entry)
+            role, content = entry_d.get("role"), entry_d.get("content")
+            if isinstance(role, str) and isinstance(content, str):
+                out.append(ChatMessage(role=role, content=content))
+    return out
+
+
 class TestCase(BaseModel):
     __test__ = False
     id: str
-    comments: List[TestCaseComment]
+    comments: List[TestCaseComment] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     created_at: datetime
     dataset_id: str
     interactions: Optional[List[Interaction]] = None
-    tags: List[str]
+    tags: List[str] = Field(default_factory=list)
     updated_at: datetime
-    status: TestCaseStatus
+    status: TestCaseStatus = "active"
+
+    @property
+    @deprecated("`TestCase.messages` is deprecated; read `interactions[i].input` instead.")
+    def messages(self) -> List[ChatMessage]:
+        """Deprecated flattened view of the first interaction's input messages.
+
+        Returns the input messages from `interactions[0].input["messages"]`
+        when present, falling back to an empty list otherwise. Prefer reading
+        `test_case.interactions` directly.
+        """
+        return _first_interaction_messages(self.interactions)
 
 
 # ---------------------------------------------------------------------------

@@ -2,11 +2,11 @@
 
 from typing import Any
 
-import pytest
-
-from giskard_hub import HubClient, AsyncHubClient
 from giskard_hub.resources._check_helpers import check_params_to_specs
-from giskard_hub.resources.evaluations.evaluations import _normalize_agent_output
+from giskard_hub.resources.evaluations.evaluations import (
+    _flat_check_specs,
+    _normalize_agent_output,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -35,37 +35,14 @@ def test_normalize_agent_output_passes_dict_through() -> None:
     assert _normalize_agent_output(payload) is payload
 
 
-# ---------------------------------------------------------------------------
-# run_single validation (sync + async). Validation raises before any HTTP.
-# ---------------------------------------------------------------------------
-
-
-@pytest.fixture
-def hub() -> HubClient:
-    return HubClient(api_key="test", base_url="http://localhost")
-
-
-@pytest.fixture
-def async_hub() -> AsyncHubClient:
-    return AsyncHubClient(api_key="test", base_url="http://localhost")
-
-
-def test_run_single_rejects_both_messages_and_input_data(hub: HubClient) -> None:
-    with pytest.raises(ValueError, match="Cannot provide both 'messages' and 'input_data'"):
-        hub.evaluations.run_single(
-            checks=[],
-            agent_output={"response": {"role": "assistant", "content": "x"}},
-            messages=[{"role": "user", "content": "x"}],
-            input_data=[{"role": "user", "content": "x"}],
-        )
-
-
-@pytest.mark.asyncio
-async def test_async_run_single_rejects_both(async_hub: AsyncHubClient) -> None:
-    with pytest.raises(ValueError, match="Cannot provide both 'messages' and 'input_data'"):
-        await async_hub.evaluations.run_single(
-            checks=[],
-            agent_output={"response": {"role": "assistant", "content": "x"}},
-            messages=[{"role": "user", "content": "x"}],
-            input_data=[{"role": "user", "content": "x"}],
-        )
+def test_flat_check_specs_emits_identifier_and_override_spec() -> None:
+    out = _flat_check_specs(
+        [
+            {"identifier": "correctness", "params": {"reference": "x", "type": "correctness"}},
+            {"identifier": "string_match", "params": {"keyword": "k"}},
+        ]
+    )
+    assert out == [
+        {"identifier": "correctness", "override_spec": {"reference": "x"}},
+        {"identifier": "string_match", "override_spec": {"keyword": "k"}},
+    ]

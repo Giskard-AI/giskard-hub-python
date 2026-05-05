@@ -16,6 +16,7 @@ from datetime import datetime
 from typing_extensions import Required
 
 import pydantic
+from pydantic import Field
 
 from .common import TaskState
 from .._types import SequenceNotStr
@@ -318,42 +319,89 @@ class CheckBulkDeleteParams(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 
 
+# Back-compat re-export. The canonical home is
+# `giskard_hub.resources._check_helpers.IDENTIFIER_TO_KIND`.
+def __getattr__(name: str) -> Any:
+    if name == "_IDENTIFIER_TO_KIND":
+        import warnings
+
+        from ..resources._check_helpers import IDENTIFIER_TO_KIND
+
+        warnings.warn(
+            "Importing `_IDENTIFIER_TO_KIND` from `giskard_hub.types.check` is "
+            "deprecated; import `IDENTIFIER_TO_KIND` from "
+            "`giskard_hub.resources._check_helpers` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return IDENTIFIER_TO_KIND
+    raise AttributeError(f"module 'giskard_hub.types.check' has no attribute {name!r}")
+
+
 class FlatCheckSpec(BaseModel):
-    check_id: str
+    check_id: Optional[str] = None
+    identifier: Optional[str] = None
     override_spec: Optional[Dict[str, Any]] = None
     target: Optional[str] = None
 
 
 class FlatCheckSpecParam(TypedDict, total=False):
-    check_id: Required[str]
+    check_id: Optional[str]
+    identifier: Optional[str]
     override_spec: Optional[Dict[str, Any]]
     target: Optional[str]
 
 
 class InteractionCheckConfig(BaseModel):
-    identifier: str
-    spec: Dict[str, Any]
+    check_id: str
+    name: Optional[str] = None
     target: Optional[str] = None
+    enabled: bool = True
+    override_spec: Optional[Dict[str, Any]] = None
+    position: int = 0
+    spec: Optional[Dict[str, Any]] = None
 
 
 class InteractionCheckConfigParam(TypedDict, total=False):
-    identifier: Required[str]
-    spec: Required[Dict[str, Any]]
+    check_id: Required[str]
+    name: Optional[str]
     target: Optional[str]
+    enabled: bool
+    override_spec: Optional[Dict[str, Any]]
+    position: int
+    spec: Optional[Dict[str, Any]]
 
 
 class InteractionResultData(BaseModel):
-    results: List[CheckResult]
+    interaction_position: int
+    role_name: str = ""
+    input: Optional[Dict[str, Any]] = None
+    output: Optional[Dict[str, Any]] = None
+    state: str = ""
+    check_results: List[CheckResult] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     error: Optional[str] = None
+    checks: Optional[List[InteractionCheckConfig]] = None
 
 
 class Interaction(BaseModel):
-    input: str
-    output: Optional[str] = None
+    role_id: str
+    position: int
+    input: Dict[str, Any]
+    input_bindings: Optional[Dict[str, str]] = None
+    output: Optional[Dict[str, Any]] = None
+    simulator_config: Optional[Dict[str, Any]] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    id: Optional[str] = None
     checks: Optional[List[InteractionCheckConfig]] = None
 
 
 class InteractionParam(TypedDict, total=False):
-    input: Required[str]
-    output: Optional[str]
+    role_id: Required[str]
+    position: Required[int]
+    input: Required[Dict[str, Any]]
+    input_bindings: Optional[Dict[str, str]]
+    output: Optional[Dict[str, Any]]
+    simulator_config: Optional[Dict[str, Any]]
+    test_case_id: Optional[str]
     checks: Optional[Iterable[InteractionCheckConfigParam]]

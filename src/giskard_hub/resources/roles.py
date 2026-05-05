@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import Any, Dict, List
 
 import httpx
 
@@ -48,7 +48,9 @@ class RolesResource(SyncAPIResource):
         *,
         project_id: str,
         name: str,
-        description: str | Omit = omit,
+        input_schema: Dict[str, Any],
+        output_schema: Dict[str, Any],
+        source_agent_id: str | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -64,8 +66,12 @@ class RolesResource(SyncAPIResource):
             Project ID for the role.
         name : str
             Name of the role.
-        description : str | Omit
-            Description of the role.
+        input_schema : Dict[str, Any]
+            JSON schema describing the role's input payload.
+        output_schema : Dict[str, Any]
+            JSON schema describing the role's output payload.
+        source_agent_id : str | Omit
+            Optional source agent to clone the schemas from.
 
         Other Parameters
         ----------------
@@ -86,7 +92,7 @@ class RolesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -95,7 +101,9 @@ class RolesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "name": name,
-                    "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
+                    "source_agent_id": source_agent_id,
                 },
                 RoleCreateParams,
             ),
@@ -150,7 +158,7 @@ class RolesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -175,7 +183,8 @@ class RolesResource(SyncAPIResource):
         *,
         project_id: str,
         name: str | Omit = omit,
-        description: str | Omit = omit,
+        input_schema: Dict[str, Any] | Omit = omit,
+        output_schema: Dict[str, Any] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -191,8 +200,10 @@ class RolesResource(SyncAPIResource):
             Project ID for the role.
         name : str | Omit
             Updated name of the role.
-        description : str | Omit
-            Updated description of the role.
+        input_schema : Dict[str, Any] | Omit
+            Updated input schema for the role.
+        output_schema : Dict[str, Any] | Omit
+            Updated output schema for the role.
 
         Other Parameters
         ----------------
@@ -213,7 +224,7 @@ class RolesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``role_id`` is empty.
+            If `role_id` is empty.
         """
         if not role_id:
             raise ValueError(f"Expected a non-empty value for `role_id` but received {role_id!r}")
@@ -222,7 +233,8 @@ class RolesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "name": name,
-                    "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 RoleUpdateParams,
             ),
@@ -272,7 +284,7 @@ class RolesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``role_id`` is empty.
+            If `role_id` is empty.
         """
         if not role_id:
             raise ValueError(f"Expected a non-empty value for `role_id` but received {role_id!r}")
@@ -318,7 +330,9 @@ class AsyncRolesResource(AsyncAPIResource):
         *,
         project_id: str,
         name: str,
-        description: str | Omit = omit,
+        input_schema: Dict[str, Any],
+        output_schema: Dict[str, Any],
+        source_agent_id: str | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -334,8 +348,12 @@ class AsyncRolesResource(AsyncAPIResource):
             Project ID for the role.
         name : str
             Name of the role.
-        description : str | Omit
-            Description of the role.
+        input_schema : Dict[str, Any]
+            JSON schema describing the role's input payload.
+        output_schema : Dict[str, Any]
+            JSON schema describing the role's output payload.
+        source_agent_id : str | Omit
+            Optional source agent to clone the schemas from.
 
         Other Parameters
         ----------------
@@ -356,7 +374,7 @@ class AsyncRolesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -365,7 +383,9 @@ class AsyncRolesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "name": name,
-                    "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
+                    "source_agent_id": source_agent_id,
                 },
                 RoleCreateParams,
             ),
@@ -420,7 +440,7 @@ class AsyncRolesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -445,7 +465,8 @@ class AsyncRolesResource(AsyncAPIResource):
         *,
         project_id: str,
         name: str | Omit = omit,
-        description: str | Omit = omit,
+        input_schema: Dict[str, Any] | Omit = omit,
+        output_schema: Dict[str, Any] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -461,8 +482,10 @@ class AsyncRolesResource(AsyncAPIResource):
             Project ID for the role.
         name : str | Omit
             Updated name of the role.
-        description : str | Omit
-            Updated description of the role.
+        input_schema : Dict[str, Any] | Omit
+            Updated input schema for the role.
+        output_schema : Dict[str, Any] | Omit
+            Updated output schema for the role.
 
         Other Parameters
         ----------------
@@ -483,7 +506,7 @@ class AsyncRolesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``role_id`` is empty.
+            If `role_id` is empty.
         """
         if not role_id:
             raise ValueError(f"Expected a non-empty value for `role_id` but received {role_id!r}")
@@ -492,7 +515,8 @@ class AsyncRolesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "name": name,
-                    "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 RoleUpdateParams,
             ),
@@ -542,7 +566,7 @@ class AsyncRolesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``role_id`` is empty.
+            If `role_id` is empty.
         """
         if not role_id:
             raise ValueError(f"Expected a non-empty value for `role_id` but received {role_id!r}")

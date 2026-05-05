@@ -399,6 +399,7 @@ class TestEvaluations:
     @parametrize
     def test_method_run_single(self, client: HubClient) -> None:
         evaluation = client.evaluations.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -419,6 +420,7 @@ class TestEvaluations:
     @parametrize
     def test_method_run_single_with_all_params(self, client: HubClient) -> None:
         evaluation = client.evaluations.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -438,7 +440,6 @@ class TestEvaluations:
                 "metadata": {"foo": "bar"},
             },
             agent_description="agent_description",
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(List[Check], evaluation, path=["response"])
 
@@ -446,6 +447,7 @@ class TestEvaluations:
     @parametrize
     def test_raw_response_run_single(self, client: HubClient) -> None:
         response = client.evaluations.with_raw_response.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -470,6 +472,7 @@ class TestEvaluations:
     @parametrize
     def test_streaming_response_run_single(self, client: HubClient) -> None:
         with client.evaluations.with_streaming_response.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -880,6 +883,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_method_run_single(self, async_client: AsyncHubClient) -> None:
         evaluation = await async_client.evaluations.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -900,6 +904,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_method_run_single_with_all_params(self, async_client: AsyncHubClient) -> None:
         evaluation = await async_client.evaluations.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -919,7 +924,6 @@ class TestAsyncEvaluations:
                 "metadata": {"foo": "bar"},
             },
             agent_description="agent_description",
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(List[Check], evaluation, path=["response"])
 
@@ -927,6 +931,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_raw_response_run_single(self, async_client: AsyncHubClient) -> None:
         response = await async_client.evaluations.with_raw_response.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {
@@ -951,6 +956,7 @@ class TestAsyncEvaluations:
     @parametrize
     async def test_streaming_response_run_single(self, async_client: AsyncHubClient) -> None:
         async with async_client.evaluations.with_streaming_response.run_single(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             checks=[{"identifier": "foo", "params": {"bar": "baz"}}],
             messages=[
                 {

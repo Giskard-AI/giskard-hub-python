@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, List, Iterable, Optional, cast, Any
+from typing import Any, Dict, List, Iterable, Optional, cast
 
 import httpx
 
-from ..types import AgentOutput, GenerateCompletionOutput
+from ..types import GenerateCompletionOutput
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -30,8 +30,20 @@ from ..types.agent import (
 )
 from .._base_client import make_request_options
 from ..types.common import APIResponse
+from ._check_helpers import coerce_messages_to_input_dict
 
 __all__ = ["AgentsResource", "AsyncAgentsResource"]
+
+
+def _normalize_test_connection_headers(
+    headers: Dict[str, str] | Iterable[HeaderParam] | Omit,
+) -> List[HeaderParam] | Omit:
+    """Accept either `Dict[str, str]` (legacy) or a list of `HeaderParam`."""
+    if isinstance(headers, Omit):
+        return omit
+    if isinstance(headers, dict):
+        return [HeaderParam(name=name, value=value) for name, value in cast(Dict[str, str], headers).items()]
+    return list(headers)
 
 
 class AgentsResource(SyncAPIResource):
@@ -171,7 +183,7 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -237,7 +249,7 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -351,7 +363,7 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -412,6 +424,8 @@ class AgentsResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
+        input: Dict[str, Any] | Omit = omit,
+        metadata: Dict[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -420,14 +434,20 @@ class AgentsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GenerateCompletionOutput:
-        """Send a conversation to the agent and get a completion response.
+        """Send input to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
+        input : Dict[str, Any] | Omit
+            Structured input matching the agent's `input_schema`. For
+            chat-style agents this is typically `{"messages": [...]}`.
+        metadata : Dict[str, Any] | Omit
+            Optional metadata to forward alongside the request.
         messages : Iterable[ChatMessageParam] | Omit
-            Conversation messages to send to the agent.
+            (Deprecated) Conversation messages. Pass
+            `input={"messages": [...]}` instead.
 
         Other Parameters
         ----------------
@@ -448,17 +468,26 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty or if ``messages`` is not provided.
+            If `agent_id` is empty, if both `input` and `messages` are
+            given, or if neither is provided.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        
-        if messages is omit:
-            raise ValueError("'messages' parameter is required")
-            
+
+        resolved_input = coerce_messages_to_input_dict(
+            input=input,
+            messages=messages,
+            new_param="input",
+            deprecated_param="messages",
+            method_name="agents.generate_completion",
+        )
+        body: Dict[str, Any] = {"input": resolved_input}
+        if not isinstance(metadata, Omit):
+            body["metadata"] = metadata
+
         response = self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
+            body=maybe_transform(body, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -471,7 +500,8 @@ class AgentsResource(SyncAPIResource):
         self,
         *,
         url: str,
-        headers: Dict[str, str] | Omit = omit,
+        project_id: str,
+        headers: Dict[str, str] | Iterable[HeaderParam] | Omit = omit,
         agent_id: str | Omit = omit,
         input_schema: Dict[str, Any] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -487,10 +517,13 @@ class AgentsResource(SyncAPIResource):
         ----------
         url : str
             URL endpoint to test the connection to.
-        headers : Dict[str, str] | Omit
-            HTTP headers to include in the test request.
+        project_id : str
+            ID of the project the agent belongs to.
+        headers : Dict[str, str] | Iterable[HeaderParam] | Omit
+            HTTP headers to include in the test request. Accepts either a
+            `Dict[str, str]` (convenience) or a list of `HeaderParam`.
         agent_id : str | Omit
-            Optional agent ID to test connection for.
+            Optional ID of an existing agent to test against.
         input_schema : Dict[str, Any] | Omit
             Optional input schema for the agent.
 
@@ -515,7 +548,8 @@ class AgentsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "url": url,
-                    "headers": headers,
+                    "project_id": project_id,
+                    "headers": _normalize_test_connection_headers(headers),
                     "agent_id": agent_id,
                     "input_schema": input_schema,
                 },
@@ -569,7 +603,7 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -621,7 +655,7 @@ class AgentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -774,7 +808,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -840,7 +874,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -954,7 +988,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -1015,6 +1049,8 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
+        input: Dict[str, Any] | Omit = omit,
+        metadata: Dict[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1023,14 +1059,20 @@ class AsyncAgentsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GenerateCompletionOutput:
-        """Send a conversation to the agent and get a completion response.
+        """Send input to the agent and get a completion response.
 
         Parameters
         ----------
         agent_id : str
             ID of the agent to generate a completion from.
+        input : Dict[str, Any] | Omit
+            Structured input matching the agent's `input_schema`. For
+            chat-style agents this is typically `{"messages": [...]}`.
+        metadata : Dict[str, Any] | Omit
+            Optional metadata to forward alongside the request.
         messages : Iterable[ChatMessageParam] | Omit
-            Conversation messages to send to the agent.
+            (Deprecated) Conversation messages. Pass
+            `input={"messages": [...]}` instead.
 
         Other Parameters
         ----------------
@@ -1051,17 +1093,26 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty or if ``messages`` is not provided.
+            If `agent_id` is empty, if both `input` and `messages` are
+            given, or if neither is provided.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
-        
-        if messages is omit:
-            raise ValueError("'messages' parameter is required")
-            
+
+        resolved_input = coerce_messages_to_input_dict(
+            input=input,
+            messages=messages,
+            new_param="input",
+            deprecated_param="messages",
+            method_name="agents.generate_completion",
+        )
+        body: Dict[str, Any] = {"input": resolved_input}
+        if not isinstance(metadata, Omit):
+            body["metadata"] = metadata
+
         response = await self._post(
             f"/v2/agents/{agent_id}/generate-completion",
-            body=await async_maybe_transform({"messages": messages}, AgentGenerateCompletionParams),
+            body=await async_maybe_transform(body, AgentGenerateCompletionParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1074,7 +1125,8 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         *,
         url: str,
-        headers: Dict[str, str] | Omit = omit,
+        project_id: str,
+        headers: Dict[str, str] | Iterable[HeaderParam] | Omit = omit,
         agent_id: str | Omit = omit,
         input_schema: Dict[str, Any] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1090,10 +1142,13 @@ class AsyncAgentsResource(AsyncAPIResource):
         ----------
         url : str
             URL endpoint to test the connection to.
-        headers : Dict[str, str] | Omit
-            HTTP headers to include in the test request.
+        project_id : str
+            ID of the project the agent belongs to.
+        headers : Dict[str, str] | Iterable[HeaderParam] | Omit
+            HTTP headers to include in the test request. Accepts either a
+            `Dict[str, str]` (convenience) or a list of `HeaderParam`.
         agent_id : str | Omit
-            Optional agent ID to test connection for.
+            Optional ID of an existing agent to test against.
         input_schema : Dict[str, Any] | Omit
             Optional input schema for the agent.
 
@@ -1118,7 +1173,8 @@ class AsyncAgentsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "url": url,
-                    "headers": headers,
+                    "project_id": project_id,
+                    "headers": _normalize_test_connection_headers(headers),
                     "agent_id": agent_id,
                     "input_schema": input_schema,
                 },
@@ -1172,7 +1228,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
@@ -1224,7 +1280,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``agent_id`` is empty.
+            If `agent_id` is empty.
         """
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")

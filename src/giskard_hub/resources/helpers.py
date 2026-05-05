@@ -33,7 +33,7 @@ from ._helpers_types import (
     make_retriever,
     normalize_agent_output,
 )
-from ..types.test_case import TestCase
+from ..types.test_case import TestCase, _first_interaction_messages
 from ..types.evaluation import Evaluation, TestCaseEvaluation
 
 __all__ = ["HelpersResource", "AsyncHelpersResource"]
@@ -220,7 +220,7 @@ class HelpersResource(SyncAPIResource):
             if not isinstance(test_case, TestCase):
                 raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
 
-            agent_output_model = normalize_agent_output(agent(test_case.messages))
+            agent_output_model = normalize_agent_output(agent(_first_interaction_messages(test_case.interactions)))
             agent_output_param = cast(AgentOutputParam, agent_output_model.to_dict())
 
             self._client.evaluations.results.submit_local_output(
@@ -433,7 +433,7 @@ class AsyncHelpersResource(AsyncAPIResource):
             if not isinstance(test_case, TestCase):
                 raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
 
-            output = agent(test_case.messages)
+            output = agent(_first_interaction_messages(test_case.interactions))
             if inspect.isawaitable(output):
                 output = await output
 

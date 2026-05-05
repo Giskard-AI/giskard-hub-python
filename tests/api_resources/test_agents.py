@@ -369,6 +369,7 @@ class TestAgents:
     def test_method_test_connection(self, client: HubClient) -> None:
         agent = client.agents.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(AgentOutput, agent, path=["response"])
 
@@ -377,6 +378,7 @@ class TestAgents:
     def test_method_test_connection_with_all_params(self, client: HubClient) -> None:
         agent = client.agents.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             headers={"foo": "string"},
         )
         assert_matches_type(AgentOutput, agent, path=["response"])
@@ -386,6 +388,7 @@ class TestAgents:
     def test_raw_response_test_connection(self, client: HubClient) -> None:
         response = client.agents.with_raw_response.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -398,6 +401,7 @@ class TestAgents:
     def test_streaming_response_test_connection(self, client: HubClient) -> None:
         with client.agents.with_streaming_response.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -858,6 +862,7 @@ class TestAsyncAgents:
     async def test_method_test_connection(self, async_client: AsyncHubClient) -> None:
         agent = await async_client.agents.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(AgentOutput, agent, path=["response"])
 
@@ -866,6 +871,7 @@ class TestAsyncAgents:
     async def test_method_test_connection_with_all_params(self, async_client: AsyncHubClient) -> None:
         agent = await async_client.agents.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             headers={"foo": "string"},
         )
         assert_matches_type(AgentOutput, agent, path=["response"])
@@ -875,6 +881,7 @@ class TestAsyncAgents:
     async def test_raw_response_test_connection(self, async_client: AsyncHubClient) -> None:
         response = await async_client.agents.with_raw_response.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -887,6 +894,7 @@ class TestAsyncAgents:
     async def test_streaming_response_test_connection(self, async_client: AsyncHubClient) -> None:
         async with async_client.agents.with_streaming_response.test_connection(
             url="url",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"

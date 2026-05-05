@@ -1,8 +1,9 @@
 """Role domain types."""
 
-from typing import Optional, TypedDict
-from datetime import datetime
+from typing import Any, Dict, Optional, TypedDict
 from typing_extensions import Required
+
+from pydantic import Field
 
 from .._models import BaseModel
 
@@ -21,11 +22,11 @@ __all__ = [
 
 class Role(BaseModel):
     id: str
-    created_at: datetime
-    updated_at: datetime
     dataset_id: str
     name: str
-    description: Optional[str] = None
+    source_agent_id: Optional[str] = None
+    input_schema: Dict[str, Any] = Field(default_factory=dict)
+    output_schema: Dict[str, Any] = Field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -40,10 +41,13 @@ class RoleListParams(TypedDict, total=False):
 class RoleCreateParams(TypedDict, total=False):
     project_id: Required[str]
     name: Required[str]
-    description: Optional[str]
+    input_schema: Required[Dict[str, Any]]
+    output_schema: Required[Dict[str, Any]]
+    source_agent_id: Optional[str]
 
 
 class RoleUpdateParams(TypedDict, total=False):
     project_id: Required[str]
     name: Optional[str]
-    description: Optional[str]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
