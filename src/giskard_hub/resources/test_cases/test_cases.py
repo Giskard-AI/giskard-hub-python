@@ -140,32 +140,26 @@ class TestCasesResource(SyncAPIResource):
     ) -> TestCase:
         """Create a new test case in a dataset.
 
-        The new request shape uses `interactions=[{role_id, position, input,
-        output, checks, ...}]`. Legacy `messages` / `checks` / `demo_output`
-        parameters are still accepted and translated into a single interaction
-        against the dataset's default role; a `DeprecationWarning` is emitted
-        in that case.
-
         Parameters
         ----------
         dataset_id : str
             Dataset ID to create the test case in.
         interactions : Iterable[InteractionParam] | Omit
             Interactions to attach to the test case. Each interaction needs a
-            `role_id`, a `position`, a structured `input` dict matching
-            the role's `input_schema`, and optionally an `output` dict and
-            `checks` list.
-        status : Optional[Literal["active", "draft"]] | Omit
+            `role_id`, a `position`, a structured `input` matching the role's
+            `input_schema`, and optionally an `output` and a `checks` list.
+        status : Literal["active", "draft"] | None | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
         messages : Iterable[ChatMessageParam] | Omit
-            (Deprecated) Conversation messages — translated to
-            `interactions[0].input = {"messages": [...]}`.
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
         checks : Iterable[CheckConfigParam] | Omit
-            (Deprecated) Checks — each `identifier` is resolved to a
-            `check_id` and attached to the synthesized interaction.
-        demo_output : Optional[DemoOutput] | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
             (Deprecated) Reference output for the synthesized interaction.
 
         Other Parameters
@@ -306,26 +300,27 @@ class TestCasesResource(SyncAPIResource):
     ) -> TestCase:
         """Update an existing test case.
 
-        Accepts the new `interactions` parameter directly. For backward
-        compatibility, legacy `messages` / `checks` / `demo_output`
-        arguments are translated into a synthesized interaction (using the
-        dataset's default role) and a `DeprecationWarning` is raised. The
-        dataset is resolved from the existing test case when needed.
-
         Parameters
         ----------
         test_case_id : str
             Test Case ID to update.
-        interactions : Optional[Iterable[InteractionParam]] | Omit
+        interactions : Iterable[InteractionParam] | None | Omit
             Replace the test case's interactions.
-        dataset_id : Optional[str] | Omit
+        dataset_id : str | None | Omit
             Move the test case to this dataset.
-        tags : Optional[SequenceNotStr[str]] | Omit
+        tags : SequenceNotStr[str] | None | Omit
             Tags to set on the test case.
-        status : Optional[Literal["active", "draft"]] | Omit
+        status : Literal["active", "draft"] | None | Omit
             New status of the test case.
-        messages, checks, demo_output
-            (Deprecated) Translated into `interactions`.
+        messages : Iterable[ChatMessageParam] | None | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | None | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
 
         Other Parameters
         ----------------
@@ -671,7 +666,52 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
-        """Async variant of :meth:`TestCasesResource.create`."""
+        """Create a new test case in a dataset.
+
+        Parameters
+        ----------
+        dataset_id : str
+            Dataset ID to create the test case in.
+        interactions : Iterable[InteractionParam] | Omit
+            Interactions to attach to the test case. Each interaction needs a
+            `role_id`, a `position`, a structured `input` matching the role's
+            `input_schema`, and optionally an `output` and a `checks` list.
+        status : Literal["active", "draft"] | None | Omit
+            Status of the test case.
+        tags : SequenceNotStr[str] | Omit
+            Tags to apply to the test case.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        TestCase
+            The newly created test case.
+
+        Raises
+        ------
+        ValueError
+            If `interactions` is mixed with legacy parameters, or if neither
+            is provided.
+        """
         source = _resolve_interaction_source(
             method="create",
             require_one=True,
@@ -786,7 +826,52 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
-        """Async variant of :meth:`TestCasesResource.update`."""
+        """Update an existing test case.
+
+        Parameters
+        ----------
+        test_case_id : str
+            Test Case ID to update.
+        interactions : Iterable[InteractionParam] | None | Omit
+            Replace the test case's interactions.
+        dataset_id : str | None | Omit
+            Move the test case to this dataset.
+        tags : SequenceNotStr[str] | None | Omit
+            Tags to set on the test case.
+        status : Literal["active", "draft"] | None | Omit
+            New status of the test case.
+        messages : Iterable[ChatMessageParam] | None | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | None | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        TestCase
+            The updated test case.
+
+        Raises
+        ------
+        ValueError
+            If `test_case_id` is empty, or if `interactions` is mixed with
+            legacy parameters.
+        """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
 

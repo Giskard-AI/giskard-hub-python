@@ -80,7 +80,7 @@ class CommentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` or ``comment_id`` is empty.
+            If `test_case_id` or `comment_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -137,7 +137,7 @@ class CommentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -196,7 +196,7 @@ class CommentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` or ``comment_id`` is empty.
+            If `test_case_id` or `comment_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -274,7 +274,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` or ``comment_id`` is empty.
+            If `test_case_id` or `comment_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -331,7 +331,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
@@ -390,7 +390,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` or ``comment_id`` is empty.
+            If `test_case_id` or `comment_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")

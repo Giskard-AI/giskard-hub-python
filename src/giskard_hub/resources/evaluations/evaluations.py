@@ -41,11 +41,11 @@ from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
 from .._check_helpers import (
-    coerce_messages_to_input_dict,
+    needs_check_lookup,
     fetch_check_identifier_map,
+    coerce_messages_to_input_dict,
     fetch_check_identifier_map_async,
     flat_check_specs_with_resolution,
-    needs_check_lookup,
 )
 from ...types.evaluation import (
     Evaluation,
@@ -87,8 +87,6 @@ def _normalize_agent_output(
             {"response": {"role": "assistant", "content": agent_output}},
         )
     return agent_output
-
-
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -662,44 +660,48 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
-        """Run checks against a single agent output without creating an evaluation.
-
-        Routes to `POST /v2/evaluations/run-interaction-checks`. Pass either
-        `input_data` (a dict matching the role's `input_schema`, e.g.
-        `{"messages": [...]}` for chat-style agents) or the deprecated
-        `messages` list (wrapped on the wire as
-        `input_data={"messages": [...]}`). `agent_description` has been
-        removed server-side and is ignored when set (with a warning).
+        """Run checks against a single agent output without creating a full evaluation.
 
         Parameters
         ----------
         project_id : str
-            ID of the project the checks belong to.
-        checks : iterable of CheckConfigParam
-            Checks to run. Each check needs an `identifier` and optionally
-            `params` (which become `override_spec`).
+            Project ID the checks belong to.
+        checks : Iterable[CheckConfigParam]
+            Checks to run. Each entry needs an `identifier` and may carry
+            `params` (which are sent as `override_spec`).
         agent_output : AgentOutputParam | Mapping[str, Any] | str
-            The agent's output. A bare string is wrapped as
-            `{"response": {"role": "assistant", "content": <string>}}`.
-            Otherwise the dict is sent verbatim as `model_output`.
-        input_data : Mapping[str, Any] or Omit
+            The output produced by the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`;
+            a `Mapping` is forwarded verbatim as `model_output`.
+        input_data : Mapping[str, Any] | Omit
             Structured input matching the role's `input_schema`. For
             chat-style agents this is typically `{"messages": [...]}`.
-        messages : iterable of ChatMessageParam or Omit
-            (Deprecated) Equivalent to
-            `input_data={"messages": [...]}`.
-        agent_description : str or Omit
-            (Deprecated) No longer accepted by the API; emits a warning and is dropped.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages — wrapped as
+            `input_data={"messages": [...]}`. Pass `input_data` instead.
+        agent_description : str | Omit
+            (Deprecated) Ignored; the field was removed server-side.
 
         Other Parameters
         ----------------
-        extra_headers, extra_query, extra_body, timeout
-            Standard request-level overrides.
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
         Returns
         -------
-        list of CheckResult
-            The check results.
+        List[CheckResult]
+            The results of the checks.
+
+        Raises
+        ------
+        ValueError
+            If both `input_data` and `messages` are provided, or if neither is.
         """
         if not isinstance(agent_description, Omit):
             warnings.warn(
@@ -720,9 +722,7 @@ class EvaluationsResource(SyncAPIResource):
         )
         check_list = list(checks)
         identifier_to_id = (
-            fetch_check_identifier_map(self._client, project_id=project_id)
-            if needs_check_lookup(check_list)
-            else {}
+            fetch_check_identifier_map(self._client, project_id=project_id) if needs_check_lookup(check_list) else {}
         )
         api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
 
@@ -1320,7 +1320,49 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
-        """Async variant of :meth:`EvaluationsResource.run_single`."""
+        """Run checks against a single agent output without creating a full evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            Project ID the checks belong to.
+        checks : Iterable[CheckConfigParam]
+            Checks to run. Each entry needs an `identifier` and may carry
+            `params` (which are sent as `override_spec`).
+        agent_output : AgentOutputParam | Mapping[str, Any] | str
+            The output produced by the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`;
+            a `Mapping` is forwarded verbatim as `model_output`.
+        input_data : Mapping[str, Any] | Omit
+            Structured input matching the role's `input_schema`. For
+            chat-style agents this is typically `{"messages": [...]}`.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages — wrapped as
+            `input_data={"messages": [...]}`. Pass `input_data` instead.
+        agent_description : str | Omit
+            (Deprecated) Ignored; the field was removed server-side.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        List[CheckResult]
+            The results of the checks.
+
+        Raises
+        ------
+        ValueError
+            If both `input_data` and `messages` are provided, or if neither is.
+        """
         if not isinstance(agent_description, Omit):
             warnings.warn(
                 "`agent_description` is no longer accepted by `evaluations.run_single`; ignoring it.",

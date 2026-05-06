@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Any, Dict, List
 
 import httpx
@@ -23,7 +21,7 @@ __all__ = ["RolesResource", "AsyncRolesResource"]
 
 class RolesResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> RolesResourceWithRawResponse:
+    def with_raw_response(self) -> "RolesResourceWithRawResponse":
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
@@ -33,7 +31,7 @@ class RolesResource(SyncAPIResource):
         return RolesResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> RolesResourceWithStreamingResponse:
+    def with_streaming_response(self) -> "RolesResourceWithStreamingResponse":
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
@@ -51,6 +49,8 @@ class RolesResource(SyncAPIResource):
         input_schema: Dict[str, Any],
         output_schema: Dict[str, Any],
         source_agent_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -125,6 +125,8 @@ class RolesResource(SyncAPIResource):
         /,
         *,
         project_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -152,7 +154,7 @@ class RolesResource(SyncAPIResource):
 
         Returns
         -------
-        list[Role]
+        List[Role]
             List of roles in the dataset.
 
         Raises
@@ -185,6 +187,8 @@ class RolesResource(SyncAPIResource):
         name: str | Omit = omit,
         input_schema: Dict[str, Any] | Omit = omit,
         output_schema: Dict[str, Any] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -256,6 +260,8 @@ class RolesResource(SyncAPIResource):
         /,
         *,
         project_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -305,7 +311,7 @@ class RolesResource(SyncAPIResource):
 
 class AsyncRolesResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncRolesResourceWithRawResponse:
+    def with_raw_response(self) -> "AsyncRolesResourceWithRawResponse":
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
@@ -315,7 +321,7 @@ class AsyncRolesResource(AsyncAPIResource):
         return AsyncRolesResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncRolesResourceWithStreamingResponse:
+    def with_streaming_response(self) -> "AsyncRolesResourceWithStreamingResponse":
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
@@ -333,6 +339,8 @@ class AsyncRolesResource(AsyncAPIResource):
         input_schema: Dict[str, Any],
         output_schema: Dict[str, Any],
         source_agent_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -407,6 +415,8 @@ class AsyncRolesResource(AsyncAPIResource):
         /,
         *,
         project_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -434,7 +444,7 @@ class AsyncRolesResource(AsyncAPIResource):
 
         Returns
         -------
-        list[Role]
+        List[Role]
             List of roles in the dataset.
 
         Raises
@@ -467,6 +477,8 @@ class AsyncRolesResource(AsyncAPIResource):
         name: str | Omit = omit,
         input_schema: Dict[str, Any] | Omit = omit,
         output_schema: Dict[str, Any] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -538,6 +550,8 @@ class AsyncRolesResource(AsyncAPIResource):
         /,
         *,
         project_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,

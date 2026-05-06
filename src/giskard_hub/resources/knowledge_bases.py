@@ -175,7 +175,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -238,7 +238,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -345,7 +345,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -496,7 +496,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -561,7 +561,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` or ``document_id`` is empty.
+            If `knowledge_base_id` or `document_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -716,7 +716,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -779,7 +779,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -886,7 +886,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -1037,7 +1037,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` is empty.
+            If `knowledge_base_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")
@@ -1102,7 +1102,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``knowledge_base_id`` or ``document_id`` is empty.
+            If `knowledge_base_id` or `document_id` is empty.
         """
         if not knowledge_base_id:
             raise ValueError(f"Expected a non-empty value for `knowledge_base_id` but received {knowledge_base_id!r}")

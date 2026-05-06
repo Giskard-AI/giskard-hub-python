@@ -107,7 +107,7 @@ class ScansResource(SyncAPIResource):
         probe_ids : list of str or None
             List of specific probe IDs to run in the scan.
         tags : list of str or None
-            List of category tags to apply to the scan; use ``list_categories``
+            List of category tags to apply to the scan; use `list_categories`
             to get the available categories.
 
         Other Parameters
@@ -186,7 +186,7 @@ class ScansResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scan_id`` is empty.
+            If `scan_id` is empty.
         """
         if not scan_id:
             raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
@@ -303,7 +303,7 @@ class ScansResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scan_id`` is empty.
+            If `scan_id` is empty.
         """
         if not scan_id:
             raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
@@ -439,7 +439,7 @@ class ScansResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scan_id`` is empty.
+            If `scan_id` is empty.
         """
         if not scan_id:
             raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
@@ -548,7 +548,7 @@ class AsyncScansResource(AsyncAPIResource):
         probe_ids : list of str or None
             List of specific probe IDs to run in the scan.
         tags : list of str or None
-            List of category tags to apply to the scan; use ``list_categories``
+            List of category tags to apply to the scan; use `list_categories`
             to get the available categories.
 
         Other Parameters
@@ -627,7 +627,7 @@ class AsyncScansResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scan_id`` is empty.
+            If `scan_id` is empty.
         """
         if not scan_id:
             raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
@@ -745,7 +745,7 @@ class AsyncScansResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scan_id`` is empty.
+            If `scan_id` is empty.
         """
         if not scan_id:
             raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")
@@ -881,7 +881,7 @@ class AsyncScansResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scan_id`` is empty.
+            If `scan_id` is empty.
         """
         if not scan_id:
             raise ValueError(f"Expected a non-empty value for `scan_id` but received {scan_id!r}")

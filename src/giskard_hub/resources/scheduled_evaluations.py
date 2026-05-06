@@ -188,7 +188,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -278,7 +278,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -404,7 +404,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -510,7 +510,7 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -687,7 +687,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -777,7 +777,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -903,7 +903,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(
@@ -1009,7 +1009,7 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``scheduled_evaluation_id`` is empty.
+            If `scheduled_evaluation_id` is empty.
         """
         if not scheduled_evaluation_id:
             raise ValueError(

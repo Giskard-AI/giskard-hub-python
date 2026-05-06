@@ -77,7 +77,7 @@ class ProbesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``probe_id`` is empty.
+            If `probe_id` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
@@ -128,7 +128,7 @@ class ProbesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``probe_id`` is empty.
+            If `probe_id` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
@@ -200,7 +200,7 @@ class AsyncProbesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``probe_id`` is empty.
+            If `probe_id` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")
@@ -251,7 +251,7 @@ class AsyncProbesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``probe_id`` is empty.
+            If `probe_id` is empty.
         """
         if not probe_id:
             raise ValueError(f"Expected a non-empty value for `probe_id` but received {probe_id!r}")

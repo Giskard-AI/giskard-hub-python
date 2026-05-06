@@ -1,7 +1,7 @@
 """Request-side helpers for converting `CheckConfigParam` into the wire format."""
 
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, FrozenSet, List, Mapping, Iterable, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Iterable, Optional, FrozenSet, cast
 
 from .._types import Omit
 from .._models import BaseModel
@@ -159,14 +159,9 @@ def fetch_check_identifier_map(client: "HubClient", *, project_id: str) -> Dict[
     return {c.identifier: c.id for c in client.checks.list(project_id=project_id, filter_builtin=False)}
 
 
-async def fetch_check_identifier_map_async(
-    client: "AsyncHubClient", *, project_id: str
-) -> Dict[str, str]:
+async def fetch_check_identifier_map_async(client: "AsyncHubClient", *, project_id: str) -> Dict[str, str]:
     """Async variant of :func:`fetch_check_identifier_map`."""
-    return {
-        c.identifier: c.id
-        for c in await client.checks.list(project_id=project_id, filter_builtin=False)
-    }
+    return {c.identifier: c.id for c in await client.checks.list(project_id=project_id, filter_builtin=False)}
 
 
 def check_params_to_specs(

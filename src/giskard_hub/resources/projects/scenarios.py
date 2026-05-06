@@ -93,7 +93,7 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -155,7 +155,7 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` or ``scenario_id`` is empty.
+            If `project_id` or `scenario_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -220,7 +220,7 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` or ``scenario_id`` is empty.
+            If `project_id` or `scenario_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -281,7 +281,7 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -334,7 +334,7 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` or ``scenario_id`` is empty.
+            If `project_id` or `scenario_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -396,7 +396,7 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -488,7 +488,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -550,7 +550,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` or ``scenario_id`` is empty.
+            If `project_id` or `scenario_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -615,7 +615,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` or ``scenario_id`` is empty.
+            If `project_id` or `scenario_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -676,7 +676,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -729,7 +729,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` or ``scenario_id`` is empty.
+            If `project_id` or `scenario_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -791,7 +791,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")

@@ -174,7 +174,7 @@ class TasksResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``task_id`` is empty.
+            If `task_id` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -241,7 +241,7 @@ class TasksResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``task_id`` is empty.
+            If `task_id` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -356,7 +356,7 @@ class TasksResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``task_id`` is empty.
+            If `task_id` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -564,7 +564,7 @@ class AsyncTasksResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``task_id`` is empty.
+            If `task_id` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -631,7 +631,7 @@ class AsyncTasksResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``task_id`` is empty.
+            If `task_id` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
@@ -746,7 +746,7 @@ class AsyncTasksResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``task_id`` is empty.
+            If `task_id` is empty.
         """
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")

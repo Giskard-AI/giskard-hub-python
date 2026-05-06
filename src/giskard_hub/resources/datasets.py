@@ -23,7 +23,6 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
-from ._interaction_helpers import is_legacy_upload_item, translate_legacy_upload_item
 from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
 from ..types.dataset import (
     Dataset,
@@ -36,6 +35,7 @@ from ..types.dataset import (
     DatasetGenerateScenarioBasedParams,
 )
 from ..types.test_case import TestCase
+from ._interaction_helpers import is_legacy_upload_item, translate_legacy_upload_item
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -91,10 +91,7 @@ def _encode_items(items: List[dict[str, Any]], fmt: Literal["json", "jsonl"]) ->
 
 def _maybe_translate_items(items: List[dict[str, Any]], identifier_to_id: Mapping[str, str]) -> List[dict[str, Any]]:
     """Translate any legacy items in the list, leaving new-shape items alone."""
-    return [
-        translate_legacy_upload_item(it, identifier_to_id) if is_legacy_upload_item(it) else it
-        for it in items
-    ]
+    return [translate_legacy_upload_item(it, identifier_to_id) if is_legacy_upload_item(it) else it for it in items]
 
 
 def _checks_lookup_needed(items: List[dict[str, Any]]) -> bool:
@@ -139,8 +136,7 @@ def _prepare_upload_data_sync(
         identifier_to_id = {}
         if _checks_lookup_needed(items):
             identifier_to_id = {
-                c.identifier: c.id
-                for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
+                c.identifier: c.id for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
             }
         items = _maybe_translate_items(items, identifier_to_id)
         return (data.name, _encode_items(items, fmt))
@@ -278,6 +274,8 @@ class DatasetsResource(SyncAPIResource):
         data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -290,11 +288,15 @@ class DatasetsResource(SyncAPIResource):
         project_id : str
             Project ID to import the dataset into.
         data : FileTypes | list[dict[str, Any]] | str
-            Data to upload.
-        dataset_id : Optional[str]
-            Dataset ID to update (optional).
-        name : Optional[str]
-            Name of the dataset (optional).
+            Data to upload. Accepts a list of dicts, a path to a `.json` /
+            `.jsonl` file, or any binary file-like supported by `FileTypes`.
+            Items in the legacy `messages` / `checks` / `demo_output` shape
+            are translated client-side to the new `interactions` format.
+        dataset_id : str | None | Omit
+            Dataset ID to merge the items into. If omitted, a new dataset is
+            created.
+        name : str | None | Omit
+            Name of the dataset. Used when creating a new dataset.
 
         Other Parameters
         ----------------
@@ -384,7 +386,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -444,7 +446,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -550,7 +552,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -663,7 +665,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If neither ``dataset_id`` nor ``dataset_name`` is provided.
+            If neither `dataset_id` nor `dataset_name` is provided.
         """
 
         if dataset_id is omit and dataset_name is omit:
@@ -801,7 +803,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -854,7 +856,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -966,7 +968,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1081,6 +1083,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -1093,11 +1097,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         project_id : str
             Project ID to import the dataset into.
         data : FileTypes | list[dict[str, Any]] | str
-            Data to upload.
-        dataset_id : Optional[str]
-            Dataset ID to update (optional).
-        name : Optional[str]
-            Name of the dataset (optional).
+            Data to upload. Accepts a list of dicts, a path to a `.json` /
+            `.jsonl` file, or any binary file-like supported by `FileTypes`.
+            Items in the legacy `messages` / `checks` / `demo_output` shape
+            are translated client-side to the new `interactions` format.
+        dataset_id : str | None | Omit
+            Dataset ID to merge the items into. If omitted, a new dataset is
+            created.
+        name : str | None | Omit
+            Name of the dataset. Used when creating a new dataset.
 
         Other Parameters
         ----------------
@@ -1184,7 +1192,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1244,7 +1252,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1350,7 +1358,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1463,7 +1471,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If neither ``dataset_id`` nor ``dataset_name`` is provided.
+            If neither `dataset_id` nor `dataset_name` is provided.
         """
 
         if dataset_id is omit and dataset_name is omit:
@@ -1601,7 +1609,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1654,7 +1662,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1766,7 +1774,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")

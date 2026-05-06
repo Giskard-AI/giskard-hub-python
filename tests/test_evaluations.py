@@ -5,9 +5,9 @@ from typing import Any
 import pytest
 
 from giskard_hub.resources._check_helpers import (
+    needs_check_lookup,
     check_params_to_specs,
     flat_check_specs_with_resolution,
-    needs_check_lookup,
 )
 from giskard_hub.resources.evaluations.evaluations import _normalize_agent_output
 
@@ -67,7 +67,12 @@ def test_needs_check_lookup_true_for_custom() -> None:
 
 
 def test_needs_check_lookup_false_for_built_ins_only() -> None:
-    assert needs_check_lookup([
-        {"identifier": "correctness"},
-        {"identifier": "string_match"},
-    ]) is False
+    assert (
+        needs_check_lookup(
+            [
+                {"identifier": "correctness"},
+                {"identifier": "string_match"},
+            ]
+        )
+        is False
+    )

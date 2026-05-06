@@ -145,7 +145,7 @@ class ProjectsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -205,7 +205,7 @@ class ProjectsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -301,7 +301,7 @@ class ProjectsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -478,7 +478,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -538,7 +538,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
@@ -634,7 +634,7 @@ class AsyncProjectsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``project_id`` is empty.
+            If `project_id` is empty.
         """
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")

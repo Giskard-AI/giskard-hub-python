@@ -167,9 +167,7 @@ def translate_legacy_upload_item(
 
     raw_checks = item.get("checks")
     if raw_checks:
-        interaction["checks"] = _build_check_configs(
-            cast(Iterable[CheckConfigParam], raw_checks), identifier_to_id
-        )
+        interaction["checks"] = _build_check_configs(cast(Iterable[CheckConfigParam], raw_checks), identifier_to_id)
 
     out: Dict[str, Any] = {"interactions": [interaction]}
     if "tags" in item:

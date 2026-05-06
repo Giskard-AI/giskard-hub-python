@@ -112,7 +112,7 @@ class AuditLogsResource(SyncAPIResource):
         offset : int | Omit
             Number of results to skip for pagination.
         include_metadata : bool
-            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
+            If `True`, return a tuple of `(data, metadata)` with pagination info.
 
         Other Parameters
         ----------------
@@ -210,13 +210,13 @@ class AuditLogsResource(SyncAPIResource):
         entity_id : str
             UUID of the entity to list audit logs for.
         entity_type : str
-            Type of the entity (e.g. ``"project"``, ``"agent"``).
+            Type of the entity (e.g. `"project"`, `"agent"`).
         limit : int | Omit
             Maximum number of results to return.
         offset : int | Omit
             Number of results to skip for pagination.
         include_metadata : bool
-            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
+            If `True`, return a tuple of `(data, metadata)` with pagination info.
 
         Other Parameters
         ----------------
@@ -237,7 +237,7 @@ class AuditLogsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``entity_type`` or ``entity_id`` is empty.
+            If `entity_type` or `entity_id` is empty.
         """
         if not entity_type:
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
@@ -347,7 +347,7 @@ class AsyncAuditLogsResource(AsyncAPIResource):
         offset : int | Omit
             Number of results to skip for pagination.
         include_metadata : bool
-            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
+            If `True`, return a tuple of `(data, metadata)` with pagination info.
 
         Other Parameters
         ----------------
@@ -445,13 +445,13 @@ class AsyncAuditLogsResource(AsyncAPIResource):
         entity_id : str
             UUID of the entity to list audit logs for.
         entity_type : str
-            Type of the entity (e.g. ``"project"``, ``"agent"``).
+            Type of the entity (e.g. `"project"`, `"agent"`).
         limit : int | Omit
             Maximum number of results to return.
         offset : int | Omit
             Number of results to skip for pagination.
         include_metadata : bool
-            If ``True``, return a tuple of ``(data, metadata)`` with pagination info.
+            If `True`, return a tuple of `(data, metadata)` with pagination info.
 
         Other Parameters
         ----------------
@@ -472,7 +472,7 @@ class AsyncAuditLogsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``entity_type`` or ``entity_id`` is empty.
+            If `entity_type` or `entity_id` is empty.
         """
         if not entity_type:
             raise ValueError(f"Expected a non-empty value for `entity_type` but received {entity_type!r}")
