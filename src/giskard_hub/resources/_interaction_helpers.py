@@ -124,6 +124,61 @@ def _pick_default_role_id(roles: List[Role]) -> str:
     return next((r for r in roles if r.name == _DEFAULT_ROLE_NAME), roles[0]).id
 
 
+# ---------------------------------------------------------------------------
+# Legacy `datasets.upload` translation
+# ---------------------------------------------------------------------------
+
+
+_LEGACY_UPLOAD_KEYS = ("messages", "input_data", "checks", "demo_output")
+
+
+def is_legacy_upload_item(item: Mapping[str, Any]) -> bool:
+    """Detect whether an item from `datasets.upload(data=[...])` uses the
+    pre-v3 shape (`messages`/`checks`/`demo_output` etc) rather than the new
+    `interactions=[...]` shape."""
+    if "interactions" in item:
+        return False
+    return any(k in item for k in _LEGACY_UPLOAD_KEYS)
+
+
+def translate_legacy_upload_item(
+    item: Mapping[str, Any],
+    identifier_to_id: Mapping[str, str],
+) -> Dict[str, Any]:
+    """Convert one legacy test-case dict (as accepted by `datasets.upload`)
+    into the new `{interactions: [...], tags: [...], status: ...}` import
+    shape.
+
+    Uses `role_name="default"` (the import endpoint resolves it server-side,
+    so no role-id lookup is needed here).
+    """
+    raw_messages: List[Mapping[str, Any]] = item.get("input_data") or item.get("messages") or []
+    msgs = [dict(m) for m in raw_messages]
+
+    interaction: Dict[str, Any] = {
+        "role_name": _DEFAULT_ROLE_NAME,
+        "position": 0,
+        "input": {"messages": msgs},
+    }
+
+    output = _normalize_demo_output(item.get("demo_output"))
+    if output is not None:
+        interaction["output"] = output
+
+    raw_checks = item.get("checks")
+    if raw_checks:
+        interaction["checks"] = _build_check_configs(
+            cast(Iterable[CheckConfigParam], raw_checks), identifier_to_id
+        )
+
+    out: Dict[str, Any] = {"interactions": [interaction]}
+    if "tags" in item:
+        out["tags"] = item["tags"]
+    if "status" in item:
+        out["status"] = item["status"]
+    return out
+
+
 def _assemble_interaction(
     *,
     role_id: str,

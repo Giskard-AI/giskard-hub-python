@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
 from pathlib import Path
 
@@ -22,6 +23,7 @@ from .._response import (
     async_to_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
+from ._interaction_helpers import is_legacy_upload_item, translate_legacy_upload_item
 from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
 from ..types.dataset import (
     Dataset,
@@ -36,6 +38,159 @@ from ..types.dataset import (
 from ..types.test_case import TestCase
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
+
+
+_LEGACY_UPLOAD_DEPRECATION = (
+    "Passing legacy `messages` / `checks` / `demo_output` items to "
+    "`datasets.upload` is deprecated. Use the new "
+    "`{interactions: [{role_name, position, input, output, checks}]}` shape."
+)
+
+
+def _read_dataset_file(path: Path) -> Optional[Tuple[List[dict[str, Any]], Literal["json", "jsonl"]]]:
+    """Read a `.json` / `.jsonl` dataset file into a list of dicts.
+
+    Returns `(items, format)` or `None` if the file is not a recognized
+    JSON dataset (binary, unsupported extension, malformed, etc) — in that
+    case the caller should pass the file through unchanged so the backend
+    can return a clear error.
+    """
+    suffix = path.suffix.lower()
+    if suffix not in (".json", ".jsonl"):
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return None
+    try:
+        if suffix == ".json":
+            data = json.loads(text)
+            if not isinstance(data, list):
+                return None
+            return cast(List[dict[str, Any]], data), "json"
+        items: List[dict[str, Any]] = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            obj = json.loads(line)
+            if not isinstance(obj, dict):
+                return None
+            items.append(cast(dict[str, Any], obj))
+        return items, "jsonl"
+    except json.JSONDecodeError:
+        return None
+
+
+def _encode_items(items: List[dict[str, Any]], fmt: Literal["json", "jsonl"]) -> bytes:
+    """Re-encode a list of dicts back into the original JSON/JSONL format."""
+    if fmt == "jsonl":
+        return ("\n".join(json.dumps(it) for it in items) + "\n").encode("utf-8")
+    return json.dumps(items).encode("utf-8")
+
+
+def _maybe_translate_items(items: List[dict[str, Any]], identifier_to_id: Mapping[str, str]) -> List[dict[str, Any]]:
+    """Translate any legacy items in the list, leaving new-shape items alone."""
+    return [
+        translate_legacy_upload_item(it, identifier_to_id) if is_legacy_upload_item(it) else it
+        for it in items
+    ]
+
+
+def _checks_lookup_needed(items: List[dict[str, Any]]) -> bool:
+    return any(item.get("checks") for item in items if is_legacy_upload_item(item))
+
+
+def _prepare_upload_data_sync(
+    resource: "DatasetsResource",
+    data: "FileTypes | list[dict[str, Any]] | str | Path",
+    *,
+    project_id: str,
+) -> "FileTypes | Tuple[str, bytes]":
+    """Translate legacy `data` (list, .json file, or .jsonl file) into the
+    new import shape; pass other `FileTypes` through unchanged."""
+    if isinstance(data, str):
+        data = Path(data)
+
+    if isinstance(data, list):
+        items: List[dict[str, Any]] = data
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+            identifier_to_id: dict[str, str] = {}
+            if _checks_lookup_needed(items):
+                identifier_to_id = {
+                    c.identifier: c.id
+                    for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
+                }
+            items = _maybe_translate_items(items, identifier_to_id)
+        return ("test_cases.json", _encode_items(items, "json"))
+
+    if isinstance(data, Path):
+        parsed = _read_dataset_file(data)
+        if parsed is None:
+            # Not a JSON/JSONL dataset we can introspect — pass through.
+            return data
+        items, fmt = parsed
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        if not needs_translation:
+            return data
+        warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+        identifier_to_id = {}
+        if _checks_lookup_needed(items):
+            identifier_to_id = {
+                c.identifier: c.id
+                for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
+            }
+        items = _maybe_translate_items(items, identifier_to_id)
+        return (data.name, _encode_items(items, fmt))
+
+    return data
+
+
+async def _prepare_upload_data_async(
+    resource: "AsyncDatasetsResource",
+    data: "FileTypes | list[dict[str, Any]] | str | Path",
+    *,
+    project_id: str,
+) -> "FileTypes | Tuple[str, bytes]":
+    """Async variant of :func:`_prepare_upload_data_sync`."""
+    if isinstance(data, str):
+        data = Path(data)
+
+    if isinstance(data, list):
+        items: List[dict[str, Any]] = data
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+            identifier_to_id: dict[str, str] = {}
+            if _checks_lookup_needed(items):
+                identifier_to_id = {
+                    c.identifier: c.id
+                    for c in await resource._client.checks.list(project_id=project_id, filter_builtin=False)
+                }
+            items = _maybe_translate_items(items, identifier_to_id)
+        return ("test_cases.json", _encode_items(items, "json"))
+
+    if isinstance(data, Path):
+        parsed = _read_dataset_file(data)
+        if parsed is None:
+            return data
+        items, fmt = parsed
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        if not needs_translation:
+            return data
+        warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+        identifier_to_id = {}
+        if _checks_lookup_needed(items):
+            identifier_to_id = {
+                c.identifier: c.id
+                for c in await resource._client.checks.list(project_id=project_id, filter_builtin=False)
+            }
+        items = _maybe_translate_items(items, identifier_to_id)
+        return (data.name, _encode_items(items, fmt))
+
+    return data
 
 
 class DatasetsResource(SyncAPIResource):
@@ -157,10 +312,7 @@ class DatasetsResource(SyncAPIResource):
         Dataset
             The uploaded dataset.
         """
-        if isinstance(data, str):
-            data = Path(data)
-        if isinstance(data, list):
-            data = ("test_cases.json", json.dumps(data).encode("utf-8"))
+        data = _prepare_upload_data_sync(self, data, project_id=project_id)
 
         body = deepcopy_minimal(
             {
@@ -963,10 +1115,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Dataset
             The uploaded dataset.
         """
-        if isinstance(data, str):
-            data = Path(data)
-        if isinstance(data, list):
-            data = ("test_cases.json", json.dumps(data).encode("utf-8"))
+        data = await _prepare_upload_data_async(self, data, project_id=project_id)
 
         body = deepcopy_minimal(
             {

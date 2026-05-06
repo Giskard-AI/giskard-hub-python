@@ -2,11 +2,14 @@
 
 from typing import Any
 
-from giskard_hub.resources._check_helpers import check_params_to_specs
-from giskard_hub.resources.evaluations.evaluations import (
-    _flat_check_specs,
-    _normalize_agent_output,
+import pytest
+
+from giskard_hub.resources._check_helpers import (
+    check_params_to_specs,
+    flat_check_specs_with_resolution,
+    needs_check_lookup,
 )
+from giskard_hub.resources.evaluations.evaluations import _normalize_agent_output
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -35,14 +38,36 @@ def test_normalize_agent_output_passes_dict_through() -> None:
     assert _normalize_agent_output(payload) is payload
 
 
-def test_flat_check_specs_emits_identifier_and_override_spec() -> None:
-    out = _flat_check_specs(
-        [
-            {"identifier": "correctness", "params": {"reference": "x", "type": "correctness"}},
-            {"identifier": "string_match", "params": {"keyword": "k"}},
-        ]
+def test_flat_check_specs_built_in_uses_identifier() -> None:
+    out = flat_check_specs_with_resolution(
+        [{"identifier": "correctness", "params": {"reference": "x", "type": "correctness"}}],
+        identifier_to_id={},
     )
-    assert out == [
-        {"identifier": "correctness", "override_spec": {"reference": "x"}},
-        {"identifier": "string_match", "override_spec": {"keyword": "k"}},
-    ]
+    assert out == [{"identifier": "correctness", "override_spec": {"reference": "x"}}]
+
+
+def test_flat_check_specs_custom_uses_check_id() -> None:
+    out = flat_check_specs_with_resolution(
+        [{"identifier": "tone_pro", "params": {"reference": "x"}}],
+        identifier_to_id={"tone_pro": "uuid-1"},
+    )
+    assert out == [{"check_id": "uuid-1", "override_spec": {"reference": "x"}}]
+
+
+def test_flat_check_specs_unknown_identifier_raises() -> None:
+    with pytest.raises(ValueError, match="not a built-in"):
+        flat_check_specs_with_resolution(
+            [{"identifier": "mystery"}],
+            identifier_to_id={},
+        )
+
+
+def test_needs_check_lookup_true_for_custom() -> None:
+    assert needs_check_lookup([{"identifier": "tone_pro"}]) is True
+
+
+def test_needs_check_lookup_false_for_built_ins_only() -> None:
+    assert needs_check_lookup([
+        {"identifier": "correctness"},
+        {"identifier": "string_match"},
+    ]) is False

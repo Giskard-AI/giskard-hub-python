@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Dict, List, Literal, Mapping, Iterable, Optional, cast
+from typing import Any, List, Literal, Mapping, Iterable, Optional, cast
 
 import httpx
 
@@ -40,6 +40,13 @@ from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
+from .._check_helpers import (
+    coerce_messages_to_input_dict,
+    fetch_check_identifier_map,
+    fetch_check_identifier_map_async,
+    flat_check_specs_with_resolution,
+    needs_check_lookup,
+)
 from ...types.evaluation import (
     Evaluation,
     EvaluationListParams,
@@ -82,20 +89,6 @@ def _normalize_agent_output(
     return agent_output
 
 
-def _flat_check_specs(checks: Iterable[CheckConfigParam]) -> List[Dict[str, Any]]:
-    """Convert legacy check configs into `FlatCheckSpec` payloads."""
-    out: List[Dict[str, Any]] = []
-    for check in checks:
-        identifier = check.get("identifier")
-        params = check.get("params") or {}
-        override_spec = {k: v for k, v in params.items() if k != "type"}
-        entry: Dict[str, Any] = {}
-        if identifier:
-            entry["identifier"] = identifier
-        if override_spec:
-            entry["override_spec"] = override_spec
-        out.append(entry)
-    return out
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -659,7 +652,8 @@ class EvaluationsResource(SyncAPIResource):
         project_id: str,
         checks: Iterable[CheckConfigParam],
         agent_output: AgentOutputParam | Mapping[str, Any] | str,
-        messages: Iterable[ChatMessageParam],
+        input_data: Mapping[str, Any] | Omit = omit,
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         agent_description: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -670,10 +664,12 @@ class EvaluationsResource(SyncAPIResource):
     ) -> List[CheckResult]:
         """Run checks against a single agent output without creating an evaluation.
 
-        Routes to `POST /v2/evaluations/run-interaction-checks`. The
-        `messages` list is wrapped as `input_data={"messages": [...]}` on the
-        wire. `agent_description` has been removed server-side and is ignored
-        when set (with a warning).
+        Routes to `POST /v2/evaluations/run-interaction-checks`. Pass either
+        `input_data` (a dict matching the role's `input_schema`, e.g.
+        `{"messages": [...]}` for chat-style agents) or the deprecated
+        `messages` list (wrapped on the wire as
+        `input_data={"messages": [...]}`). `agent_description` has been
+        removed server-side and is ignored when set (with a warning).
 
         Parameters
         ----------
@@ -686,8 +682,11 @@ class EvaluationsResource(SyncAPIResource):
             The agent's output. A bare string is wrapped as
             `{"response": {"role": "assistant", "content": <string>}}`.
             Otherwise the dict is sent verbatim as `model_output`.
-        messages : iterable of ChatMessageParam
-            Conversation messages, wrapped on the wire as
+        input_data : Mapping[str, Any] or Omit
+            Structured input matching the role's `input_schema`. For
+            chat-style agents this is typically `{"messages": [...]}`.
+        messages : iterable of ChatMessageParam or Omit
+            (Deprecated) Equivalent to
             `input_data={"messages": [...]}`.
         agent_description : str or Omit
             (Deprecated) No longer accepted by the API; emits a warning and is dropped.
@@ -709,17 +708,30 @@ class EvaluationsResource(SyncAPIResource):
                 stacklevel=2,
             )
 
+        resolved_input = coerce_messages_to_input_dict(
+            input=input_data,
+            messages=messages,
+            new_param="input_data",
+            deprecated_param="messages",
+            method_name="evaluations.run_single",
+        )
         model_output = (
             _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
         )
-        api_checks = _flat_check_specs(checks)
+        check_list = list(checks)
+        identifier_to_id = (
+            fetch_check_identifier_map(self._client, project_id=project_id)
+            if needs_check_lookup(check_list)
+            else {}
+        )
+        api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
 
         response = self._post(
             "/v2/evaluations/run-interaction-checks",
             body=maybe_transform(
                 {
                     "project_id": project_id,
-                    "input_data": {"messages": list(messages)},
+                    "input_data": resolved_input,
                     "model_output": model_output,
                     "checks": api_checks,
                 },
@@ -1298,7 +1310,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         project_id: str,
         checks: Iterable[CheckConfigParam],
         agent_output: AgentOutputParam | Mapping[str, Any] | str,
-        messages: Iterable[ChatMessageParam],
+        input_data: Mapping[str, Any] | Omit = omit,
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         agent_description: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1315,17 +1328,30 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 stacklevel=2,
             )
 
+        resolved_input = coerce_messages_to_input_dict(
+            input=input_data,
+            messages=messages,
+            new_param="input_data",
+            deprecated_param="messages",
+            method_name="evaluations.run_single",
+        )
         model_output = (
             _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
         )
-        api_checks = _flat_check_specs(checks)
+        check_list = list(checks)
+        identifier_to_id = (
+            await fetch_check_identifier_map_async(self._client, project_id=project_id)
+            if needs_check_lookup(check_list)
+            else {}
+        )
+        api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
 
         response = await self._post(
             "/v2/evaluations/run-interaction-checks",
             body=await async_maybe_transform(
                 {
                     "project_id": project_id,
-                    "input_data": {"messages": list(messages)},
+                    "input_data": resolved_input,
                     "model_output": model_output,
                     "checks": api_checks,
                 },
