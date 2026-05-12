@@ -31,7 +31,7 @@ from .resources import (
     playground_chats,
     scheduled_evaluations,
 )
-from ._analytics import capture_event, make_distinct_id
+from ._analytics import capture_event, capture_exception, make_distinct_id
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, HubClientError
 from ._base_client import (
@@ -268,7 +268,9 @@ class HubClient(SyncAPIClient):
             return _exceptions.RateLimitError(err_msg, response=response, body=body)
 
         if response.status_code >= 500:
-            return _exceptions.InternalServerError(err_msg, response=response, body=body)
+            error = _exceptions.InternalServerError(err_msg, response=response, body=body)
+            capture_exception(error, distinct_id=distinct_id)
+            return error
         return APIStatusError(err_msg, response=response, body=body)
 
 
@@ -478,7 +480,9 @@ class AsyncHubClient(AsyncAPIClient):
             return _exceptions.RateLimitError(err_msg, response=response, body=body)
 
         if response.status_code >= 500:
-            return _exceptions.InternalServerError(err_msg, response=response, body=body)
+            error = _exceptions.InternalServerError(err_msg, response=response, body=body)
+            capture_exception(error, distinct_id=distinct_id)
+            return error
         return APIStatusError(err_msg, response=response, body=body)
 
 

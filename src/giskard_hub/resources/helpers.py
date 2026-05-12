@@ -19,7 +19,7 @@ from ._display import (
     print_evaluation_metrics_table,
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
-from .._analytics import capture_event, make_distinct_id
+from .._analytics import capture_event, capture_exception, make_distinct_id
 from ..types.chat import ChatMessage
 from ..types.scan import ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam
@@ -88,23 +88,26 @@ class HelpersResource(SyncAPIResource):
         """
         retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
+        distinct_id = make_distinct_id(self._client.api_key)
 
         for _ in range(max_retries):
             current = cast(TStateful, retrieve(current.id))
 
             if current.state in error_states:
                 capture_event(
-                    make_distinct_id(self._client.api_key),
+                    distinct_id,
                     "evaluation_wait_completed",
                     {"final_state": current.state, "success": False},
                 )
                 if raise_on_error:
-                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
+                    error = ValueError(f"Entity {current.id} reached an error state: {current.state}")
+                    capture_exception(error, distinct_id=distinct_id)
+                    raise error
                 return current
 
             if current.state not in running_states:
                 capture_event(
-                    make_distinct_id(self._client.api_key),
+                    distinct_id,
                     "evaluation_wait_completed",
                     {"final_state": current.state, "success": True},
                 )
@@ -112,10 +115,12 @@ class HelpersResource(SyncAPIResource):
 
             time.sleep(poll_interval)
 
-        raise RuntimeError(
+        timeout_error = RuntimeError(
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
+        capture_exception(timeout_error, distinct_id=distinct_id)
+        raise timeout_error
 
     def evaluate(
         self,
@@ -312,23 +317,26 @@ class AsyncHelpersResource(AsyncAPIResource):
         """
         retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
+        distinct_id = make_distinct_id(self._client.api_key)
 
         for _ in range(max_retries):
             current = cast(TStateful, await retrieve(current.id))
 
             if current.state in error_states:
                 capture_event(
-                    make_distinct_id(self._client.api_key),
+                    distinct_id,
                     "evaluation_wait_completed",
                     {"final_state": current.state, "success": False},
                 )
                 if raise_on_error:
-                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
+                    error = ValueError(f"Entity {current.id} reached an error state: {current.state}")
+                    capture_exception(error, distinct_id=distinct_id)
+                    raise error
                 return current
 
             if current.state not in running_states:
                 capture_event(
-                    make_distinct_id(self._client.api_key),
+                    distinct_id,
                     "evaluation_wait_completed",
                     {"final_state": current.state, "success": True},
                 )
@@ -336,10 +344,12 @@ class AsyncHelpersResource(AsyncAPIResource):
 
             await asyncio.sleep(poll_interval)
 
-        raise RuntimeError(
+        timeout_error = RuntimeError(
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
+        capture_exception(timeout_error, distinct_id=distinct_id)
+        raise timeout_error
 
     async def evaluate(
         self,
