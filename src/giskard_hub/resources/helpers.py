@@ -19,7 +19,7 @@ from ._display import (
     print_evaluation_metrics_table,
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
-from .._analytics import capture_event, make_distinct_id, capture_exception
+from .._analytics import capture_event, make_distinct_id
 from ..types.chat import ChatMessage
 from ..types.scan import ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam
@@ -100,9 +100,7 @@ class HelpersResource(SyncAPIResource):
                     {"final_state": current.state, "success": False},
                 )
                 if raise_on_error:
-                    error = ValueError(f"Entity {current.id} reached an error state: {current.state}")
-                    capture_exception(error, distinct_id=distinct_id)
-                    raise error
+                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 return current
 
             if current.state not in running_states:
@@ -115,12 +113,11 @@ class HelpersResource(SyncAPIResource):
 
             time.sleep(poll_interval)
 
-        timeout_error = RuntimeError(
+        capture_event(distinct_id, "evaluation_wait_timeout", {"max_retries": max_retries})
+        raise RuntimeError(
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
-        capture_exception(timeout_error, distinct_id=distinct_id)
-        raise timeout_error
 
     def evaluate(
         self,
@@ -329,9 +326,7 @@ class AsyncHelpersResource(AsyncAPIResource):
                     {"final_state": current.state, "success": False},
                 )
                 if raise_on_error:
-                    error = ValueError(f"Entity {current.id} reached an error state: {current.state}")
-                    capture_exception(error, distinct_id=distinct_id)
-                    raise error
+                    raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 return current
 
             if current.state not in running_states:
@@ -344,12 +339,11 @@ class AsyncHelpersResource(AsyncAPIResource):
 
             await asyncio.sleep(poll_interval)
 
-        timeout_error = RuntimeError(
+        capture_event(distinct_id, "evaluation_wait_timeout", {"max_retries": max_retries})
+        raise RuntimeError(
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
         )
-        capture_exception(timeout_error, distinct_id=distinct_id)
-        raise timeout_error
 
     async def evaluate(
         self,

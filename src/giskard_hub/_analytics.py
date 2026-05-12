@@ -114,18 +114,3 @@ def capture_event(distinct_id: str, event: str, properties: dict[str, Any] | Non
         client.capture(distinct_id=distinct_id, event=event, properties=properties or {})
     except Exception:
         log.debug("PostHog capture failed", exc_info=True)
-
-
-def capture_exception(exc: BaseException, distinct_id: str | None = None) -> None:
-    if _should_disable():
-        return
-    client = _get_client()
-    if client is None:
-        return
-    try:
-        kwargs: dict[str, Any] = {}
-        if distinct_id is not None:
-            kwargs["distinct_id"] = distinct_id
-        client.capture_exception(exc, **kwargs)
-    except Exception:
-        log.debug("PostHog capture_exception failed", exc_info=True)

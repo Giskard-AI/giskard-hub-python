@@ -244,43 +244,6 @@ class TestCaptureEvent:
 
 
 # ---------------------------------------------------------------------------
-# capture_exception
-# ---------------------------------------------------------------------------
-
-
-class TestCaptureException:
-    def test_noop_when_disabled(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(_analytics, "_env_disabled", True)
-        fake = MagicMock(return_value=MagicMock())
-        _install_fake_posthog(monkeypatch, fake)
-        _analytics.capture_exception(ValueError("x"))
-        fake.assert_not_called()
-
-    def test_calls_client_capture_exception_with_distinct_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        mock_client = MagicMock()
-        monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
-        monkeypatch.setattr(_analytics, "_initialized", True)
-        exc = ValueError("boom")
-        _analytics.capture_exception(exc, distinct_id="uid")
-        mock_client.capture_exception.assert_called_once_with(exc, distinct_id="uid")
-
-    def test_omits_distinct_id_when_none(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        mock_client = MagicMock()
-        monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
-        monkeypatch.setattr(_analytics, "_initialized", True)
-        exc = ValueError("boom")
-        _analytics.capture_exception(exc)
-        mock_client.capture_exception.assert_called_once_with(exc)
-
-    def test_swallows_client_exception(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        mock_client = MagicMock()
-        mock_client.capture_exception.side_effect = RuntimeError("network blocked")
-        monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
-        monkeypatch.setattr(_analytics, "_initialized", True)
-        _analytics.capture_exception(ValueError("x"))
-
-
-# ---------------------------------------------------------------------------
 # disable_telemetry
 # ---------------------------------------------------------------------------
 
@@ -297,9 +260,7 @@ class TestDisableTelemetry:
         monkeypatch.setattr(_analytics, "_initialized", True)
         _analytics.disable_telemetry()
         _analytics.capture_event("uid", "evt")
-        _analytics.capture_exception(ValueError("x"))
         mock_client.capture.assert_not_called()
-        mock_client.capture_exception.assert_not_called()
 
     def test_flips_existing_client_disabled_attribute(self, monkeypatch: pytest.MonkeyPatch) -> None:
         mock_client = MagicMock()
