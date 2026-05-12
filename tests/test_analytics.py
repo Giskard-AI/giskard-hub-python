@@ -1,8 +1,9 @@
 """Unit tests for `giskard_hub._analytics`.
 
 These tests rely on `monkeypatch` to reset module-level state between tests
-(`_posthog_client`, `_initialized`, `_explicitly_disabled`, `_env_disabled`)
-and to inject a fake `posthog` module when exercising lazy initialization.
+(`_posthog_client`, `_initialized`, `_explicitly_disabled`) and the opt-out
+environment variables, and to inject a fake `posthog` module when exercising
+lazy initialization.
 """
 
 import sys
@@ -20,7 +21,8 @@ def _reset_analytics_state(monkeypatch: pytest.MonkeyPatch) -> None:  # pyright:
     monkeypatch.setattr(_analytics, "_posthog_client", None)
     monkeypatch.setattr(_analytics, "_initialized", False)
     monkeypatch.setattr(_analytics, "_explicitly_disabled", False)
-    monkeypatch.setattr(_analytics, "_env_disabled", False)
+    for var in _analytics._DISABLING_ENV_VARS + _analytics._CI_ENV_VARS:
+        monkeypatch.delenv(var, raising=False)
 
 
 # ---------------------------------------------------------------------------
@@ -91,8 +93,17 @@ class TestShouldDisable:
         monkeypatch.setattr(_analytics, "_explicitly_disabled", True)
         assert _analytics._should_disable() is True
 
-    def test_env_disabled(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(_analytics, "_env_disabled", True)
+    @pytest.mark.parametrize(
+        "var", ["DO_NOT_TRACK", "GISKARD_TELEMETRY_DISABLED", "GISKARD_HUB_TELEMETRY_DISABLED", "CI", "TF_BUILD"]
+    )
+    def test_env_disabled(self, monkeypatch: pytest.MonkeyPatch, var: str) -> None:
+        monkeypatch.setenv(var, "1")
+        assert _analytics._should_disable() is True
+
+    def test_env_disabled_evaluated_dynamically(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # Setting the opt-out env var after module import must take effect immediately.
+        assert _analytics._should_disable() is False
+        monkeypatch.setenv("DO_NOT_TRACK", "1")
         assert _analytics._should_disable() is True
 
 
@@ -159,7 +170,7 @@ class TestGetClient:
         assert kwargs["max_retries"] == 0
 
     def test_passes_disabled_when_should_disable(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(_analytics, "_env_disabled", True)
+        monkeypatch.setenv("DO_NOT_TRACK", "1")
         fake = MagicMock(return_value=MagicMock())
         _install_fake_posthog(monkeypatch, fake)
         _analytics._get_client()
@@ -200,7 +211,7 @@ class TestGetClient:
 
 class TestCaptureEvent:
     def test_noop_when_env_disabled(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(_analytics, "_env_disabled", True)
+        monkeypatch.setenv("DO_NOT_TRACK", "1")
         fake = MagicMock(return_value=MagicMock())
         _install_fake_posthog(monkeypatch, fake)
         _analytics.capture_event("user", "evt")

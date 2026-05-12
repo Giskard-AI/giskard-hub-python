@@ -33,11 +33,12 @@ def _is_ci() -> bool:
     return any(_is_true_str(os.getenv(var)) for var in _CI_ENV_VARS)
 
 
-_env_disabled = any(_is_true_str(os.getenv(var)) for var in _DISABLING_ENV_VARS) or _is_ci()
+def _is_env_disabled() -> bool:
+    return any(_is_true_str(os.getenv(var)) for var in _DISABLING_ENV_VARS) or _is_ci()
 
 
 def _should_disable() -> bool:
-    return _explicitly_disabled or _env_disabled
+    return _explicitly_disabled or _is_env_disabled()
 
 
 def _get_client() -> Any:
