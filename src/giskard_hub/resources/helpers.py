@@ -19,7 +19,7 @@ from ._display import (
     print_evaluation_metrics_table,
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
-from .._analytics import capture_event, capture_exception, make_distinct_id
+from .._analytics import capture_event, make_distinct_id, capture_exception
 from ..types.chat import ChatMessage
 from ..types.scan import ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam

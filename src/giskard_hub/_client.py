@@ -31,7 +31,7 @@ from .resources import (
     playground_chats,
     scheduled_evaluations,
 )
-from ._analytics import capture_event, capture_exception, make_distinct_id
+from ._analytics import capture_event, make_distinct_id, capture_exception
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, HubClientError
 from ._base_client import (

@@ -16,7 +16,7 @@ from giskard_hub import _analytics
 
 
 @pytest.fixture(autouse=True)
-def _reset_analytics_state(monkeypatch: pytest.MonkeyPatch) -> None:
+def _reset_analytics_state(monkeypatch: pytest.MonkeyPatch) -> None:  # pyright: ignore[reportUnusedFunction]
     monkeypatch.setattr(_analytics, "_posthog_client", None)
     monkeypatch.setattr(_analytics, "_initialized", False)
     monkeypatch.setattr(_analytics, "_explicitly_disabled", False)
@@ -177,10 +177,14 @@ class TestGetClient:
 
     def test_does_not_register_atexit(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Regression: explicit atexit.register was removed to avoid hanging at process exit."""
-        register_calls: list[Any] = []
         import atexit
 
-        monkeypatch.setattr(atexit, "register", lambda fn, *a, **kw: register_calls.append(fn))
+        register_calls: list[Any] = []
+
+        def fake_register(fn: Any, *_a: Any, **_kw: Any) -> None:
+            register_calls.append(fn)
+
+        monkeypatch.setattr(atexit, "register", fake_register)
         fake = MagicMock(return_value=MagicMock(shutdown=MagicMock()))
         _install_fake_posthog(monkeypatch, fake)
         _analytics._get_client()
@@ -215,18 +219,14 @@ class TestCaptureEvent:
         monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
         monkeypatch.setattr(_analytics, "_initialized", True)
         _analytics.capture_event("uid", "my_event", {"a": 1})
-        mock_client.capture.assert_called_once_with(
-            distinct_id="uid", event="my_event", properties={"a": 1}
-        )
+        mock_client.capture.assert_called_once_with(distinct_id="uid", event="my_event", properties={"a": 1})
 
     def test_default_properties_is_empty_dict(self, monkeypatch: pytest.MonkeyPatch) -> None:
         mock_client = MagicMock()
         monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
         monkeypatch.setattr(_analytics, "_initialized", True)
         _analytics.capture_event("uid", "my_event")
-        mock_client.capture.assert_called_once_with(
-            distinct_id="uid", event="my_event", properties={}
-        )
+        mock_client.capture.assert_called_once_with(distinct_id="uid", event="my_event", properties={})
 
     def test_swallows_client_exception(self, monkeypatch: pytest.MonkeyPatch) -> None:
         mock_client = MagicMock()
@@ -256,9 +256,7 @@ class TestCaptureException:
         _analytics.capture_exception(ValueError("x"))
         fake.assert_not_called()
 
-    def test_calls_client_capture_exception_with_distinct_id(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_calls_client_capture_exception_with_distinct_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         mock_client = MagicMock()
         monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
         monkeypatch.setattr(_analytics, "_initialized", True)
@@ -303,9 +301,7 @@ class TestDisableTelemetry:
         mock_client.capture.assert_not_called()
         mock_client.capture_exception.assert_not_called()
 
-    def test_flips_existing_client_disabled_attribute(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_flips_existing_client_disabled_attribute(self, monkeypatch: pytest.MonkeyPatch) -> None:
         mock_client = MagicMock()
         mock_client.disabled = False
         monkeypatch.setattr(_analytics, "_posthog_client", mock_client)
