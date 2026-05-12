@@ -1,5 +1,4 @@
 import os
-import atexit
 import hashlib
 import logging
 import threading
@@ -54,11 +53,12 @@ def _get_client() -> Any:
             _posthog_client = Posthog(
                 POSTHOG_PROJECT_API_KEY,
                 host=POSTHOG_HOST,
-                enable_exception_autocapture=not disabled,
                 disabled=disabled,
                 disable_geoip=disabled,
+                enable_exception_autocapture=False,
+                timeout=2,
+                max_retries=0,
             )
-            atexit.register(_posthog_client.shutdown)
         except Exception:
             log.debug("PostHog analytics could not be initialized", exc_info=True)
             _posthog_client = None
