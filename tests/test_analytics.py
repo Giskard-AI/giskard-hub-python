@@ -17,11 +17,13 @@ from giskard_hub import _analytics
 
 
 @pytest.fixture(autouse=True)
-def _reset_analytics_state(monkeypatch: pytest.MonkeyPatch) -> None:  # pyright: ignore[reportUnusedFunction]
+def _reset_analytics_state(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:  # pyright: ignore[reportUnusedFunction]
     monkeypatch.setattr(_analytics, "_posthog_client", None)
     monkeypatch.setattr(_analytics, "_initialized", False)
     monkeypatch.setattr(_analytics, "_explicitly_disabled", False)
-    for var in _analytics._DISABLING_ENV_VARS + _analytics._CI_ENV_VARS:
+    for var in _analytics._DISABLING_ENV_VARS:
         monkeypatch.delenv(var, raising=False)
 
 
@@ -54,33 +56,6 @@ class TestIsTrueStr:
 
 
 # ---------------------------------------------------------------------------
-# _is_ci
-# ---------------------------------------------------------------------------
-
-
-class TestIsCi:
-    def test_no_ci_vars_set(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.delenv("CI", raising=False)
-        monkeypatch.delenv("TF_BUILD", raising=False)
-        assert _analytics._is_ci() is False
-
-    def test_ci_env_var_true(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("CI", "true")
-        monkeypatch.delenv("TF_BUILD", raising=False)
-        assert _analytics._is_ci() is True
-
-    def test_tf_build_env_var_true(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.delenv("CI", raising=False)
-        monkeypatch.setenv("TF_BUILD", "1")
-        assert _analytics._is_ci() is True
-
-    def test_ci_env_var_falsy(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("CI", "false")
-        monkeypatch.delenv("TF_BUILD", raising=False)
-        assert _analytics._is_ci() is False
-
-
-# ---------------------------------------------------------------------------
 # _should_disable
 # ---------------------------------------------------------------------------
 
@@ -94,11 +69,20 @@ class TestShouldDisable:
         assert _analytics._should_disable() is True
 
     @pytest.mark.parametrize(
-        "var", ["DO_NOT_TRACK", "GISKARD_TELEMETRY_DISABLED", "GISKARD_HUB_TELEMETRY_DISABLED", "CI", "TF_BUILD"]
+        "var",
+        [
+            "DO_NOT_TRACK",
+            "GISKARD_TELEMETRY_DISABLED",
+            "GISKARD_HUB_TELEMETRY_DISABLED",
+        ],
     )
     def test_env_disabled(self, monkeypatch: pytest.MonkeyPatch, var: str) -> None:
         monkeypatch.setenv(var, "1")
         assert _analytics._should_disable() is True
+
+    def test_ci_env_var_does_not_disable(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("CI", "true")
+        assert _analytics._should_disable() is False
 
     def test_env_disabled_evaluated_dynamically(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # Setting the opt-out env var after module import must take effect immediately.

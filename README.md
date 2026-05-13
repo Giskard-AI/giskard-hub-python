@@ -297,8 +297,7 @@ Or to `debug` for more verbose logging.
 The SDK reports anonymous product-usage events (client init, resource creations,
 evaluation outcomes) to help us prioritize improvements. The events are
 hash-anonymized against your API key — no API keys, prompts, responses, or
-dataset contents are sent. Events are also automatically disabled when one of
-the standard CI environment variables (`CI`, `TF_BUILD`) is detected.
+dataset contents are sent.
 
 You can opt out at any time by setting any of the following environment
 variables to a truthy value (`1`, `true`, `yes`, `on`, `t`, `y`):
