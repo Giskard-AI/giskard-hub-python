@@ -17,9 +17,9 @@ from giskard_hub import _analytics
 
 
 @pytest.fixture(autouse=True)
-def _reset_analytics_state(
+def _reset_analytics_state(  # pyright: ignore[reportUnusedFunction]
     monkeypatch: pytest.MonkeyPatch,
-) -> None:  # pyright: ignore[reportUnusedFunction]
+) -> None:
     monkeypatch.setattr(_analytics, "_posthog_client", None)
     monkeypatch.setattr(_analytics, "_initialized", False)
     monkeypatch.setattr(_analytics, "_explicitly_disabled", False)
