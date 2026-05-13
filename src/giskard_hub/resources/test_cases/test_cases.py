@@ -5,7 +5,16 @@ from typing import List, Literal, Iterable, Optional
 import httpx
 
 from ...types import BulkMoveTestCasesParams
-from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._types import (
+    Body,
+    Omit,
+    Query,
+    Headers,
+    NotGiven,
+    SequenceNotStr,
+    omit,
+    not_given,
+)
 from ..._utils import maybe_transform, async_maybe_transform
 from .comments import (
     CommentsResource,
@@ -24,9 +33,10 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
-from ...types.check import CheckConfigParam, _check_params_to_api
+from ...types.check import CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
+from .._check_helpers import check_params_to_specs
 from ...types.test_case import (
     TestCase,
     TestCaseCreateParams,
@@ -80,11 +90,12 @@ class TestCasesResource(SyncAPIResource):
         self,
         *,
         dataset_id: str,
-        messages: Iterable[ChatMessageParam],
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -99,17 +110,19 @@ class TestCasesResource(SyncAPIResource):
         ----------
         dataset_id : str
             Dataset ID to create the test case from.
-        messages : Iterable[ChatMessageParam]
+        messages : Iterable[ChatMessageParam] or Omit
             Messages to add to the test case.
         checks : Iterable[CheckConfigParam] | Omit
-            Checks to add to the test case. Each check should have an ``identifier``
-            and optionally ``params`` (check-specific fields) and ``enabled``.
+            Checks to add to the test case. Each check should have an `identifier`
+            and optionally `params` (check-specific fields) and `enabled`.
         demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a ``ChatMessageWithMetadataParam`` dict.
+            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
         status : Optional[Literal["active", "draft"]] | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
+        input_data : Iterable[ChatMessageParam] or Omit
+            (Experimental) The input data (messages) to add to the test case. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -126,15 +139,35 @@ class TestCasesResource(SyncAPIResource):
         -------
         TestCase
             The newly created test case.
+
+        Raises
+        ------
+        ValueError
+            If both `messages` and `input_data` are provided, or if neither is provided.
         """
-        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+            )
+
+        if not messages_provided and not input_data_provided:
+            raise ValueError("Must provide either 'messages' or 'input_data'. ")
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
+        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = _normalize_demo_output(demo_output)
         response = self._post(
             "/v2/test-cases",
             body=maybe_transform(
                 {
                     "dataset_id": dataset_id,
-                    "messages": messages,
+                    "input_data": final_input_data,
                     "checks": api_checks,
                     "demo_output": api_demo_output,
                     "status": status,
@@ -143,7 +176,10 @@ class TestCasesResource(SyncAPIResource):
                 TestCaseCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[TestCase],
         )
@@ -188,14 +224,17 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = self._get(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[TestCase],
         )
@@ -212,6 +251,7 @@ class TestCasesResource(SyncAPIResource):
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
+        input_data: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -227,18 +267,20 @@ class TestCasesResource(SyncAPIResource):
         test_case_id : str
             Test Case ID to update.
         checks : Optional[Iterable[CheckConfigParam]] | Omit
-            Checks to update the test case. Each check should have an ``identifier``
-            and optionally ``params`` (check-specific fields) and ``enabled``.
+            Checks to update the test case. Each check should have an `identifier`
+            and optionally `params` (check-specific fields) and `enabled`.
         dataset_id : Optional[str] | Omit
             Dataset ID to update the test case.
         demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a ``ChatMessageWithMetadataParam`` dict.
+            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
         messages : Optional[Iterable[ChatMessageParam]] | Omit
             Messages to update the test case.
         tags : Optional[SequenceNotStr[str]] | Omit
             Tags to update the test case.
         status : Optional[Literal["active", "draft"]] | Omit
             Status to update of the test case.
+        input_data : Optional[Iterable[ChatMessageParam]] | Omit
+            (Experimental) The input data (messages) to update the test case. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -259,15 +301,28 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty, or if both `messages` and `input_data` are provided.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+            )
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
         api_checks: Iterable[object] | Omit | None
         if checks is None or isinstance(checks, Omit):
             api_checks = checks  # type: ignore[assignment]
         else:
-            api_checks = _check_params_to_api(checks)
+            api_checks = check_params_to_specs(checks)
         api_demo_output = _normalize_demo_output(demo_output)
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
@@ -276,14 +331,17 @@ class TestCasesResource(SyncAPIResource):
                     "checks": api_checks,
                     "dataset_id": dataset_id,
                     "demo_output": api_demo_output,
-                    "messages": messages,
+                    "input_data": final_input_data,
                     "tags": tags,
                     "status": status,
                 },
                 TestCaseUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[TestCase],
         )
@@ -327,14 +385,17 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = self._delete(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -453,7 +514,10 @@ class TestCasesResource(SyncAPIResource):
                 TestCaseBulkUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[List[TestCase]],
         )
@@ -509,7 +573,10 @@ class TestCasesResource(SyncAPIResource):
                 BulkMoveTestCasesParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -545,11 +612,12 @@ class AsyncTestCasesResource(AsyncAPIResource):
         self,
         *,
         dataset_id: str,
-        messages: Iterable[ChatMessageParam],
+        messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -564,17 +632,19 @@ class AsyncTestCasesResource(AsyncAPIResource):
         ----------
         dataset_id : str
             Dataset ID to create the test case for.
-        messages : Iterable[ChatMessageParam]
+        messages : Iterable[ChatMessageParam] or Omit
             Messages to add to the test case.
         checks : Iterable[CheckConfigParam] | Omit
-            Checks to add to the test case. Each check should have an ``identifier``
-            and optionally ``params`` (check-specific fields) and ``enabled``.
+            Checks to add to the test case. Each check should have an `identifier`
+            and optionally `params` (check-specific fields) and `enabled`.
         demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a ``ChatMessageWithMetadataParam`` dict.
+            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
         status : Optional[Literal["active", "draft"]] | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
+        input_data : Iterable[ChatMessageParam] or Omit
+            (Experimental) The input data (messages) to add to the test case. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -591,15 +661,37 @@ class AsyncTestCasesResource(AsyncAPIResource):
         -------
         TestCase
             The newly created test case.
+
+        Raises
+        ------
+        ValueError
+            If both `messages` and `input_data` are provided, or if neither is provided.
         """
-        api_checks: Iterable[object] | Omit = _check_params_to_api(checks) if not isinstance(checks, Omit) else omit
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+            )
+
+        if not messages_provided and not input_data_provided:
+            raise ValueError(
+                "Must provide either 'messages' or 'input_data'. Please use 'input_data' as 'messages' is deprecated."
+            )
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
+        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
         api_demo_output = _normalize_demo_output(demo_output)
         response = await self._post(
             "/v2/test-cases",
             body=await async_maybe_transform(
                 {
                     "dataset_id": dataset_id,
-                    "messages": messages,
+                    "input_data": final_input_data,
                     "checks": api_checks,
                     "demo_output": api_demo_output,
                     "status": status,
@@ -608,7 +700,10 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 TestCaseCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[TestCase],
         )
@@ -653,14 +748,17 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = await self._get(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[TestCase],
         )
@@ -677,6 +775,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
+        input_data: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -692,18 +791,20 @@ class AsyncTestCasesResource(AsyncAPIResource):
         test_case_id : str
             Test Case ID to update.
         checks : Optional[Iterable[CheckConfigParam]] | Omit
-            Checks to update the test case. Each check should have an ``identifier``
-            and optionally ``params`` (check-specific fields) and ``enabled``.
+            Checks to update the test case. Each check should have an `identifier`
+            and optionally `params` (check-specific fields) and `enabled`.
         dataset_id : Optional[str] | Omit
             Dataset ID to update the test case.
         demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a ``ChatMessageWithMetadataParam`` dict.
+            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
         messages : Optional[Iterable[ChatMessageParam]] | Omit
             Messages to update the test case.
         tags : Optional[SequenceNotStr[str]] | Omit
             Tags to update the test case.
         status : Optional[Literal["active", "draft"]] | Omit
             Status to update of the test case.
+        input_data : Optional[Iterable[ChatMessageParam]] | Omit
+            (Experimental) The input data (messages) to update the test case. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -724,15 +825,28 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty, or if both `messages` and `input_data` are provided.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+            )
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
         api_checks: Iterable[object] | Omit | None
         if checks is None or isinstance(checks, Omit):
             api_checks = checks  # type: ignore[assignment]
         else:
-            api_checks = _check_params_to_api(checks)
+            api_checks = check_params_to_specs(checks)
         api_demo_output = _normalize_demo_output(demo_output)
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
@@ -741,14 +855,17 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "checks": api_checks,
                     "dataset_id": dataset_id,
                     "demo_output": api_demo_output,
-                    "messages": messages,
+                    "input_data": final_input_data,
                     "tags": tags,
                     "status": status,
                 },
                 TestCaseUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[TestCase],
         )
@@ -792,14 +909,17 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``test_case_id`` is empty.
+            If `test_case_id` is empty.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
         response = await self._delete(
             f"/v2/test-cases/{test_case_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -918,7 +1038,10 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 TestCaseBulkUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[List[TestCase]],
         )
@@ -974,7 +1097,10 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 BulkMoveTestCasesParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )

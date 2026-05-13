@@ -7,7 +7,7 @@ Types are organized by domain into consolidated modules:
 - user: User, UserReference
 - execution: ExecutionError, execution status types
 - agent: Agent, AgentOutput, MinimalAgent and params
-- check: Check, assertions, annotations and params
+- check: Check, spec, annotations and params
 - audit: Audit, AuditDisplay and params
 - task: Task, TaskStatus, TaskPriority, references and params
 - dataset: Dataset, DatasetSubset and params
@@ -49,6 +49,7 @@ from .chat import (
 
 # -- user ------------------------------------------------------------------
 from .user import (
+    GroupReference as GroupReference,
     User as User,
     UserReference as UserReference,
 )
@@ -84,6 +85,7 @@ from .agent import (
 
 # -- check -----------------------------------------------------------------
 from .check import (
+    Annotation as Annotation,
     Check as Check,
     CheckBulkDeleteParams as CheckBulkDeleteParams,
     CheckConfig as CheckConfig,
@@ -91,15 +93,19 @@ from .check import (
     CheckCreateParams as CheckCreateParams,
     CheckListParams as CheckListParams,
     CheckResult as CheckResult,
+    CheckSource as CheckSource,
     CheckType as CheckType,
     CheckTypeParam as CheckTypeParam,
     CheckUpdateParams as CheckUpdateParams,
     ConformityParams as ConformityParams,
     ConformityParamsParam as ConformityParamsParam,
+    ContextAnnotation as ContextAnnotation,
     CorrectnessParams as CorrectnessParams,
     CorrectnessParamsParam as CorrectnessParamsParam,
     GroundednessParams as GroundednessParams,
     GroundednessParamsParam as GroundednessParamsParam,
+    JsonPathRule as JsonPathRule,
+    JsonPathRuleParam as JsonPathRuleParam,
     MetadataParams as MetadataParams,
     MetadataParamsParam as MetadataParamsParam,
     OutputAnnotation as OutputAnnotation,
@@ -107,7 +113,6 @@ from .check import (
     SemanticSimilarityParamsParam as SemanticSimilarityParamsParam,
     StringMatchParams as StringMatchParams,
     StringMatchParamsParam as StringMatchParamsParam,
-    TestCaseCheckConfig as TestCaseCheckConfig,
     TestCaseCheckConfigParam as TestCaseCheckConfigParam,
 )
 
@@ -246,6 +251,7 @@ from .test_case import (
     TestCaseBulkUpdateParams as TestCaseBulkUpdateParams,
     TestCaseComment as TestCaseComment,
     TestCaseCreateParams as TestCaseCreateParams,
+    TestCaseStatus as TestCaseStatus,
     TestCaseUpdateParams as TestCaseUpdateParams,
 )
 
@@ -264,7 +270,6 @@ from .project import (
     ProjectCreateParams as ProjectCreateParams,
     ProjectUpdateParams as ProjectUpdateParams,
 )
-
 
 __all__ = [
     # common
@@ -288,6 +293,7 @@ __all__ = [
     "Header",
     "HeaderParam",
     # user
+    "GroupReference",
     "User",
     "UserReference",
     # execution
@@ -316,6 +322,7 @@ __all__ = [
     # check
     "Check",
     "CheckResult",
+    "CheckSource",
     "CheckType",
     "CheckTypeParam",
     "ConformityParams",
@@ -330,10 +337,13 @@ __all__ = [
     "SemanticSimilarityParamsParam",
     "MetadataParams",
     "MetadataParamsParam",
+    "JsonPathRule",
+    "JsonPathRuleParam",
+    "Annotation",
     "OutputAnnotation",
+    "ContextAnnotation",
     "CheckConfig",
     "CheckConfigParam",
-    "TestCaseCheckConfig",
     "TestCaseCheckConfigParam",
     "CheckListParams",
     "CheckCreateParams",
@@ -443,6 +453,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
     "TestCaseUpdateParams",

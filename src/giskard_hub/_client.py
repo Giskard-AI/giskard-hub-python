@@ -89,6 +89,7 @@ class HubClient(SyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        tenant_host: str | None = None,
         auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -107,7 +108,11 @@ class HubClient(SyncAPIClient):
         """Construct a new synchronous HubClient client instance.
 
         This automatically infers the `api_key` argument from the `GISKARD_HUB_API_KEY` environment variable if it is not provided.
+
         The `base_url` will have `/_api` appended automatically unless it is already present or `auto_add_api_suffix=False`.
+
+        Set `tenant_host` (or the `GISKARD_HUB_TENANT_HOST` environment variable) to attach an `X-Forwarded-Host`
+        header to every request. This is needed when the host in `base_url` is not the tenant host.
         """
         if api_key is None:
             api_key = os.environ.get("GISKARD_HUB_API_KEY")
@@ -124,6 +129,10 @@ class HubClient(SyncAPIClient):
                 "No base_url provided. Pass base_url to the client or set the GISKARD_HUB_BASE_URL environment variable."
             )
         base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
+
+        if tenant_host is None:
+            tenant_host = os.environ.get("GISKARD_HUB_TENANT_HOST") or None
+        self.tenant_host = tenant_host
 
         super().__init__(
             version=__version__,
@@ -175,6 +184,7 @@ class HubClient(SyncAPIClient):
         return {
             **super().default_headers,
             "X-Giskard-Async": "false",
+            **({"X-Forwarded-Host": self.tenant_host} if self.tenant_host else {}),
             **self._custom_headers,
         }
 
@@ -183,6 +193,7 @@ class HubClient(SyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        tenant_host: str | None = None,
         auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.Client | None = None,
@@ -218,6 +229,7 @@ class HubClient(SyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
+            tenant_host=tenant_host if tenant_host is not None else self.tenant_host,
             auto_add_api_suffix=auto_add_api_suffix if base_url is not None else False,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -298,6 +310,7 @@ class AsyncHubClient(AsyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        tenant_host: str | None = None,
         auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -316,7 +329,11 @@ class AsyncHubClient(AsyncAPIClient):
         """Construct a new async AsyncHubClient client instance.
 
         This automatically infers the `api_key` argument from the `GISKARD_HUB_API_KEY` environment variable if it is not provided.
+
         The `base_url` will have `/_api` appended automatically unless it is already present or `auto_add_api_suffix=False`.
+
+        Set `tenant_host` (or the `GISKARD_HUB_TENANT_HOST` environment variable) to attach an `X-Forwarded-Host`
+        header to every request. This is needed when the host in `base_url` is not the tenant host.
         """
         if api_key is None:
             api_key = os.environ.get("GISKARD_HUB_API_KEY")
@@ -333,6 +350,10 @@ class AsyncHubClient(AsyncAPIClient):
                 "No base_url provided. Pass base_url to the client or set the GISKARD_HUB_BASE_URL environment variable."
             )
         base_url = _normalize_base_url(str(base_url), auto_add_api_suffix=auto_add_api_suffix)
+
+        if tenant_host is None:
+            tenant_host = os.environ.get("GISKARD_HUB_TENANT_HOST") or None
+        self.tenant_host = tenant_host
 
         super().__init__(
             version=__version__,
@@ -386,6 +407,7 @@ class AsyncHubClient(AsyncAPIClient):
         return {
             **super().default_headers,
             "X-Giskard-Async": f"async:{get_async_library()}",
+            **({"X-Forwarded-Host": self.tenant_host} if self.tenant_host else {}),
             **self._custom_headers,
         }
 
@@ -394,6 +416,7 @@ class AsyncHubClient(AsyncAPIClient):
         *,
         api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
+        tenant_host: str | None = None,
         auto_add_api_suffix: bool = True,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.AsyncClient | None = None,
@@ -429,6 +452,7 @@ class AsyncHubClient(AsyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
+            tenant_host=tenant_host if tenant_host is not None else self.tenant_host,
             auto_add_api_suffix=auto_add_api_suffix if base_url is not None else False,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,

@@ -13,7 +13,16 @@ from .results import (
     ResultsResourceWithStreamingResponse,
     AsyncResultsResourceWithStreamingResponse,
 )
-from ..._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
+from ..._types import (
+    Body,
+    Omit,
+    Query,
+    Headers,
+    NotGiven,
+    SequenceNotStr,
+    omit,
+    not_given,
+)
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from .._included import embed_included_list, embed_included_single
@@ -31,6 +40,7 @@ from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
+from .._check_helpers import check_params_to_specs
 from ...types.evaluation import (
     Evaluation,
     EvaluationListParams,
@@ -62,8 +72,15 @@ def _validate_dataset_or_old_evaluation(
         raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
 
 
-def _check_params_to_api(checks: Iterable[CheckConfigParam]) -> Iterable[dict[str, object]]:
-    return [{"identifier": check["identifier"], **(check.get("params", {}))} for check in checks]
+def _normalize_agent_output(
+    agent_output: AgentOutputParam | str,
+) -> AgentOutputParam:
+    if isinstance(agent_output, str):
+        return cast(
+            AgentOutputParam,
+            {"response": {"role": "assistant", "content": agent_output}},
+        )
+    return agent_output
 
 
 class EvaluationsResource(SyncAPIResource):
@@ -120,13 +137,13 @@ class EvaluationsResource(SyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
         run_count : int or Omit
             The number of times to run each test case.
@@ -153,7 +170,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
 
@@ -163,7 +180,7 @@ class EvaluationsResource(SyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
             )
 
         response = self._post(
@@ -181,7 +198,10 @@ class EvaluationsResource(SyncAPIResource):
                 EvaluationCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -231,7 +251,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -294,7 +314,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -302,7 +322,10 @@ class EvaluationsResource(SyncAPIResource):
             f"/v2/evaluations/{evaluation_id}",
             body=maybe_transform({"name": name}, EvaluationUpdateParams),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -407,14 +430,17 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         response = self._delete(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -495,13 +521,13 @@ class EvaluationsResource(SyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
 
         Other Parameters
@@ -524,7 +550,7 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
@@ -533,7 +559,7 @@ class EvaluationsResource(SyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
             )
         elif old_evaluation_id is not omit:
             criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
@@ -549,7 +575,10 @@ class EvaluationsResource(SyncAPIResource):
                 EvaluationCreateLocalParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -596,14 +625,17 @@ class EvaluationsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         response = self._post(
             f"/v2/evaluations/{evaluation_id}/rerun-errored-results",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -614,10 +646,11 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         checks: Iterable[CheckConfigParam],
-        messages: Iterable[ChatMessageParam],
-        agent_output: AgentOutputParam,
+        messages: Iterable[ChatMessageParam] | Omit = omit,
+        agent_output: AgentOutputParam | str,
         agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
+        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -631,14 +664,17 @@ class EvaluationsResource(SyncAPIResource):
         ----------
         checks : iterable of CheckConfigParam
             The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam
+        messages : iterable of ChatMessageParam or Omit
             The messages to send to the agent.
-        agent_output : AgentOutputParam
-            The output from the agent.
+        agent_output : AgentOutputParam or str
+            The output from the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`.
         agent_description : str or Omit
             The description of the agent.
         project_id : str, optional
             The ID of the project to run the evaluation for.
+        input_data : iterable of ChatMessageParam or Omit
+            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -656,23 +692,46 @@ class EvaluationsResource(SyncAPIResource):
         -------
         list of CheckResult
             The results of the checks.
+
+        Raises
+        ------
+        ValueError
+            If both `messages` and `input_data` are provided, or if neither is provided.
         """
-        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+            )
+
+        if not messages_provided and not input_data_provided:
+            raise ValueError("Must provide either 'messages' or 'input_data'. ")
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
+        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
 
         response = self._post(
             "/v2/evaluations/run-single",
             body=maybe_transform(
                 {
                     "checks": api_checks,
-                    "messages": messages,
-                    "model_output": agent_output,
+                    "input_data": final_input_data,
+                    "model_output": _normalize_agent_output(agent_output),
                     "model_description": agent_description,
                     "project_id": project_id,
                 },
                 EvaluationRunSingleParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[List[CheckResult]],
         )
@@ -734,13 +793,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
         run_count : int or Omit
             The number of times to run each test case.
@@ -767,7 +826,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
 
@@ -777,7 +836,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
             )
 
         response = await self._post(
@@ -795,7 +854,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 EvaluationCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -845,7 +907,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -908,7 +970,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -916,7 +978,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             f"/v2/evaluations/{evaluation_id}",
             body=await async_maybe_transform({"name": name}, EvaluationUpdateParams),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -1021,14 +1086,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         response = await self._delete(
             f"/v2/evaluations/{evaluation_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[None],
         )
@@ -1109,13 +1177,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             The name of the evaluation.
         dataset_id : str, optional
             The ID of the dataset to draw test cases from. Exactly one of
-            ``dataset_id`` or ``old_evaluation_id`` must be provided.
+            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when ``dataset_id`` is provided.
+            tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
             The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of ``old_evaluation_id`` or ``dataset_id`` must be
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
 
         Other Parameters
@@ -1138,7 +1206,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If neither or both of ``dataset_id`` and ``old_evaluation_id`` are
+            If neither or both of `dataset_id` and `old_evaluation_id` are
             provided.
         """
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
@@ -1147,7 +1215,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
                 dataset_id=cast(str, dataset_id),
-                tags=None if tags is omit else cast(Optional[SequenceNotStr[str]], tags),
+                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
             )
         elif old_evaluation_id is not omit:
             criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
@@ -1163,7 +1231,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 EvaluationCreateLocalParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -1210,14 +1281,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         response = await self._post(
             f"/v2/evaluations/{evaluation_id}/rerun-errored-results",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[Evaluation],
         )
@@ -1228,10 +1302,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         checks: Iterable[CheckConfigParam],
-        messages: Iterable[ChatMessageParam],
-        agent_output: AgentOutputParam,
+        messages: Iterable[ChatMessageParam] | Omit = omit,
+        agent_output: AgentOutputParam | str,
         agent_description: str | Omit = omit,
         project_id: Optional[str] | Omit = omit,
+        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1245,14 +1320,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ----------
         checks : iterable of CheckConfigParam
             The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam
+        messages : iterable of ChatMessageParam or Omit
             The messages to send to the agent.
-        agent_output : AgentOutputParam
-            The output from the agent.
+        agent_output : AgentOutputParam or str
+            The output from the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`.
         agent_description : str or Omit
             The description of the agent.
         project_id : str, optional
             The ID of the project to run the evaluation for.
+        input_data : iterable of ChatMessageParam or Omit
+            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
 
         Other Parameters
         ----------------
@@ -1270,23 +1348,46 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         -------
         list of CheckResult
             The results of the checks.
+
+        Raises
+        ------
+        ValueError
+            If both `messages` and `input_data` are provided, or if neither is provided.
         """
-        api_checks: Iterable[dict[str, object]] = _check_params_to_api(checks)
+        # Validate backward compatibility: only one of messages or input_data should be provided
+        messages_provided = not isinstance(messages, Omit)
+        input_data_provided = not isinstance(input_data, Omit)
+
+        if messages_provided and input_data_provided:
+            raise ValueError(
+                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+            )
+
+        if not messages_provided and not input_data_provided:
+            raise ValueError("Must provide either 'messages' or 'input_data'. ")
+
+        # Use input_data if provided, otherwise fall back to messages
+        final_input_data = input_data if input_data_provided else messages
+
+        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
 
         response = await self._post(
             "/v2/evaluations/run-single",
             body=await async_maybe_transform(
                 {
                     "checks": api_checks,
-                    "messages": messages,
-                    "model_output": agent_output,
+                    "input_data": final_input_data,
+                    "model_output": _normalize_agent_output(agent_output),
                     "model_description": agent_description,
                     "project_id": project_id,
                 },
                 EvaluationRunSingleParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
             ),
             cast_to=APIResponse[List[CheckResult]],
         )
