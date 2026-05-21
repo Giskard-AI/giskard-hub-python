@@ -22,6 +22,7 @@ __all__ = [
     "EvaluationRetrieveParams",
     "EvaluationRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
+    "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
     "Criterion",
     "CriterionEvaluationDataset",
@@ -60,14 +61,21 @@ class EvaluationReference(BaseModel):
     name: str
 
 
+EvaluationSource = Literal["hub", "upload"]
+
+
 class Evaluation(BaseModel):
     id: str
     agent_roles: Optional[Dict[str, AgentRoleSnapshot]] = None
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
+    # For ``source == "upload"`` this is a sentinel reference (nil UUID,
+    # fixed name) since snapshot-only evaluations have no real dataset —
+    # check ``source`` before treating it as a navigable link.
     dataset: Dataset | DatasetReference
     failure_categories: Dict[str, int]
     local: bool
+    source: EvaluationSource = "hub"
     metrics: List[Metric]
     name: str
     old_evaluation_id: Optional[str] = None
@@ -184,6 +192,14 @@ class EvaluationCreateLocalParams(TypedDict, total=False):
     criteria: Required[Iterable[Criterion]]
     model: Required[MinimalAgentParam]
     name: Optional[str]
+
+
+class EvaluationUploadParams(TypedDict, total=False):
+    project_id: Required[str]
+    payload: Required[Dict[str, Any]]
+    agent_id: Optional[str]
+    name: Optional[str]
+    auto_classify_failures: Optional[bool]
 
 
 class EvaluationBulkDeleteParams(TypedDict, total=False):

@@ -52,6 +52,7 @@ from ...types.evaluation import (
     EvaluationListParams,
     EvaluationCreateParams,
     EvaluationUpdateParams,
+    EvaluationUploadParams,
     EvaluationRetrieveParams,
     CriterionEvaluationDataset,
     EvaluationBulkDeleteParams,
@@ -577,6 +578,79 @@ class EvaluationsResource(SyncAPIResource):
                     "name": name,
                 },
                 EvaluationCreateLocalParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[Evaluation],
+        )
+
+        return self._unwrap(response)
+
+    def upload(
+        self,
+        *,
+        project_id: str,
+        payload: dict[str, Any],
+        agent_id: Optional[str] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        auto_classify_failures: Optional[bool] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Evaluation:
+        """Upload a giskard.checks SuiteResult as a local Hub Evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to attach the uploaded evaluation to.
+        payload : dict
+            JSON payload produced by ``giskard.checks.SuiteResult.to_hub_format()``.
+        agent_id : str, optional
+            Optional Hub agent ID to associate with the uploaded evaluation.
+        name : str, optional
+            Optional name for the resulting evaluation; auto-generated when omitted.
+        auto_classify_failures : bool, optional
+            If true, the Hub runs its failure-category classifier on each failed
+            scenario synchronously. Adds latency proportional to the number of
+            failures. Defaults to false.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Evaluation
+            The newly created local evaluation. Each ScenarioResult in the
+            payload becomes a TestCaseEvaluation; each scenario step becomes
+            an InteractionResult with its check_results.
+        """
+        response = self._post(
+            "/v2/evaluations/upload",
+            body=maybe_transform(
+                {
+                    "project_id": project_id,
+                    "payload": payload,
+                    "agent_id": agent_id,
+                    "name": name,
+                    "auto_classify_failures": auto_classify_failures,
+                },
+                EvaluationUploadParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1249,6 +1323,79 @@ class AsyncEvaluationsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def upload(
+        self,
+        *,
+        project_id: str,
+        payload: dict[str, Any],
+        agent_id: Optional[str] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        auto_classify_failures: Optional[bool] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Evaluation:
+        """Upload a giskard.checks SuiteResult as a local Hub Evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to attach the uploaded evaluation to.
+        payload : dict
+            JSON payload produced by ``giskard.checks.SuiteResult.to_hub_format()``.
+        agent_id : str, optional
+            Optional Hub agent ID to associate with the uploaded evaluation.
+        name : str, optional
+            Optional name for the resulting evaluation; auto-generated when omitted.
+        auto_classify_failures : bool, optional
+            If true, the Hub runs its failure-category classifier on each failed
+            scenario synchronously. Adds latency proportional to the number of
+            failures. Defaults to false.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Evaluation
+            The newly created local evaluation. Each ScenarioResult in the
+            payload becomes a TestCaseEvaluation; each scenario step becomes
+            an InteractionResult with its check_results.
+        """
+        response = await self._post(
+            "/v2/evaluations/upload",
+            body=await async_maybe_transform(
+                {
+                    "project_id": project_id,
+                    "payload": payload,
+                    "agent_id": agent_id,
+                    "name": name,
+                    "auto_classify_failures": auto_classify_failures,
+                },
+                EvaluationUploadParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[Evaluation],
+        )
+
+        return self._unwrap(response)
+
     async def rerun_errored_results(
         self,
         evaluation_id: str,
@@ -1436,6 +1583,9 @@ class EvaluationsResourceWithRawResponse:
         self.create_local = to_raw_response_wrapper(
             evaluations.create_local,
         )
+        self.upload = to_raw_response_wrapper(
+            evaluations.upload,
+        )
         self.rerun_errored_results = to_raw_response_wrapper(
             evaluations.rerun_errored_results,
         )
@@ -1472,6 +1622,9 @@ class AsyncEvaluationsResourceWithRawResponse:
         )
         self.create_local = async_to_raw_response_wrapper(
             evaluations.create_local,
+        )
+        self.upload = async_to_raw_response_wrapper(
+            evaluations.upload,
         )
         self.rerun_errored_results = async_to_raw_response_wrapper(
             evaluations.rerun_errored_results,
@@ -1510,6 +1663,9 @@ class EvaluationsResourceWithStreamingResponse:
         self.create_local = to_streamed_response_wrapper(
             evaluations.create_local,
         )
+        self.upload = to_streamed_response_wrapper(
+            evaluations.upload,
+        )
         self.rerun_errored_results = to_streamed_response_wrapper(
             evaluations.rerun_errored_results,
         )
@@ -1546,6 +1702,9 @@ class AsyncEvaluationsResourceWithStreamingResponse:
         )
         self.create_local = async_to_streamed_response_wrapper(
             evaluations.create_local,
+        )
+        self.upload = async_to_streamed_response_wrapper(
+            evaluations.upload,
         )
         self.rerun_errored_results = async_to_streamed_response_wrapper(
             evaluations.rerun_errored_results,
