@@ -303,6 +303,32 @@ $ export GISKARD_HUB_LOG=info
 
 Or to `debug` for more verbose logging.
 
+### Telemetry
+
+The SDK reports anonymous product-usage events (client init, resource creations,
+evaluation outcomes) to help us prioritize improvements. The events are
+hash-anonymized against your API key — no API keys, prompts, responses, or
+dataset contents are sent.
+
+You can opt out at any time by setting any of the following environment
+variables to a truthy value (`1`, `true`, `yes`, `on`, `t`, `y`):
+
+```shell
+$ export GISKARD_HUB_TELEMETRY_DISABLED=1
+# Also accepted:
+$ export GISKARD_TELEMETRY_DISABLED=1
+$ export DO_NOT_TRACK=1
+```
+
+Set the variable before importing `giskard_hub` to avoid loading the PostHog
+client altogether. To opt out at runtime instead:
+
+```python
+from giskard_hub import disable_telemetry
+
+disable_telemetry()
+```
+
 ### How to tell whether `None` means `null` or missing
 
 In an API response, a field may be explicitly `null`, or missing entirely; in either case, its value is `None` in this library. You can differentiate the two cases with `.model_fields_set`:

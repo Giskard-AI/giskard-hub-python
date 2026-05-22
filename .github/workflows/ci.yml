@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GISKARD_HUB_TELEMETRY_DISABLED: "1"
+
 jobs:
   lint:
     timeout-minutes: 10

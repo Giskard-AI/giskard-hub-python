@@ -33,6 +33,7 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..._analytics import capture_event, make_distinct_id
 from ...types.chat import ChatMessageParam
 from ...types.agent import AgentOutputParam, MinimalAgentParam
 from ...types.check import CheckResult, CheckConfigParam
@@ -205,7 +206,9 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": result.id})
+        return result
 
     def retrieve(
         self,
@@ -580,7 +583,9 @@ class EvaluationsResource(SyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
+        return result
 
     def rerun_errored_results(
         self,
@@ -857,7 +862,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": result.id})
+        return result
 
     async def retrieve(
         self,
@@ -1232,7 +1239,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             cast_to=APIResponse[Evaluation],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
+        return result
 
     async def rerun_errored_results(
         self,

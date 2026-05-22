@@ -31,6 +31,7 @@ from .resources import (
     playground_chats,
     scheduled_evaluations,
 )
+from ._analytics import capture_event, make_distinct_id
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, HubClientError
 from ._base_client import (
@@ -160,6 +161,12 @@ class HubClient(SyncAPIClient):
         self.with_raw_response = HubClientWithRawResponse(self)
         self.with_streaming_response = HubClientWithStreamedResponse(self)
 
+        capture_event(
+            make_distinct_id(self.api_key),
+            "sdk_client_initialized",
+            {"sdk_version": __version__, "async": False},
+        )
+
     @property
     @override
     def qs(self) -> Querystring:
@@ -244,10 +251,17 @@ class HubClient(SyncAPIClient):
         body: object,
         response: httpx.Response,
     ) -> APIStatusError:
+        distinct_id = make_distinct_id(self.api_key)
+        capture_event(
+            distinct_id,
+            "api_error",
+            {"status_code": response.status_code},
+        )
         if response.status_code == 400:
             return _exceptions.BadRequestError(err_msg, response=response, body=body)
 
         if response.status_code == 401:
+            capture_event(distinct_id, "authentication_error", {"status_code": 401})
             return _exceptions.AuthenticationError(err_msg, response=response, body=body)
 
         if response.status_code == 403:
@@ -266,6 +280,7 @@ class HubClient(SyncAPIClient):
             return _exceptions.RateLimitError(err_msg, response=response, body=body)
 
         if response.status_code >= 500:
+            capture_event(distinct_id, "internal_server_error", {"status_code": response.status_code})
             return _exceptions.InternalServerError(err_msg, response=response, body=body)
         return APIStatusError(err_msg, response=response, body=body)
 
@@ -367,6 +382,12 @@ class AsyncHubClient(AsyncAPIClient):
         self.with_raw_response = AsyncHubClientWithRawResponse(self)
         self.with_streaming_response = AsyncHubClientWithStreamedResponse(self)
 
+        capture_event(
+            make_distinct_id(self.api_key),
+            "sdk_client_initialized",
+            {"sdk_version": __version__, "async": True},
+        )
+
     @property
     @override
     def qs(self) -> Querystring:
@@ -453,10 +474,17 @@ class AsyncHubClient(AsyncAPIClient):
         body: object,
         response: httpx.Response,
     ) -> APIStatusError:
+        distinct_id = make_distinct_id(self.api_key)
+        capture_event(
+            distinct_id,
+            "api_error",
+            {"status_code": response.status_code},
+        )
         if response.status_code == 400:
             return _exceptions.BadRequestError(err_msg, response=response, body=body)
 
         if response.status_code == 401:
+            capture_event(distinct_id, "authentication_error", {"status_code": 401})
             return _exceptions.AuthenticationError(err_msg, response=response, body=body)
 
         if response.status_code == 403:
@@ -475,6 +503,7 @@ class AsyncHubClient(AsyncAPIClient):
             return _exceptions.RateLimitError(err_msg, response=response, body=body)
 
         if response.status_code >= 500:
+            capture_event(distinct_id, "internal_server_error", {"status_code": response.status_code})
             return _exceptions.InternalServerError(err_msg, response=response, body=body)
         return APIStatusError(err_msg, response=response, body=body)
 

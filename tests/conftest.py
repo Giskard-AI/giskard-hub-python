@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import os
+
+# Mute telemetry for local pytest runs (must precede the giskard_hub import).
+os.environ["GISKARD_HUB_TELEMETRY_DISABLED"] = "1"
+
 import logging
 from typing import TYPE_CHECKING, Iterator, AsyncIterator
 

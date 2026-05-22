@@ -19,6 +19,7 @@ from ._display import (
     print_evaluation_metrics_table,
 )
 from .._resource import SyncAPIResource, AsyncAPIResource
+from .._analytics import capture_event, make_distinct_id
 from ..types.chat import ChatMessage
 from ..types.scan import ScanProbe, ScanProbeAttempt
 from ..types.agent import Agent, AgentOutputParam
@@ -87,20 +88,32 @@ class HelpersResource(SyncAPIResource):
         """
         retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
+        distinct_id = make_distinct_id(self._client.api_key)
 
         for _ in range(max_retries):
             current = cast(TStateful, retrieve(current.id))
 
             if current.state in error_states:
+                capture_event(
+                    distinct_id,
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": False},
+                )
                 if raise_on_error:
                     raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 return current
 
             if current.state not in running_states:
+                capture_event(
+                    distinct_id,
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": True},
+                )
                 return current
 
             time.sleep(poll_interval)
 
+        capture_event(distinct_id, "evaluation_wait_timeout", {"max_retries": max_retries})
         raise RuntimeError(
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
@@ -151,6 +164,12 @@ class HelpersResource(SyncAPIResource):
             cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
+
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "helpers_evaluate_called",
+            {"is_remote": isinstance(agent, (str, Agent))},
+        )
 
         if isinstance(agent, (str, Agent)):
             return self._evaluate_remote(agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags)
@@ -295,20 +314,32 @@ class AsyncHelpersResource(AsyncAPIResource):
         """
         retrieve = self._make_retriever(cast(BaseModel, entity))
         current: TStateful = entity
+        distinct_id = make_distinct_id(self._client.api_key)
 
         for _ in range(max_retries):
             current = cast(TStateful, await retrieve(current.id))
 
             if current.state in error_states:
+                capture_event(
+                    distinct_id,
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": False},
+                )
                 if raise_on_error:
                     raise ValueError(f"Entity {current.id} reached an error state: {current.state}")
                 return current
 
             if current.state not in running_states:
+                capture_event(
+                    distinct_id,
+                    "evaluation_wait_completed",
+                    {"final_state": current.state, "success": True},
+                )
                 return current
 
             await asyncio.sleep(poll_interval)
 
+        capture_event(distinct_id, "evaluation_wait_timeout", {"max_retries": max_retries})
         raise RuntimeError(
             f"Timeout waiting for entity {current.id} to complete "
             f"after {max_retries} retries (~{max_retries * poll_interval:.0f}s)"
@@ -359,6 +390,12 @@ class AsyncHelpersResource(AsyncAPIResource):
             cases do not include full `TestCase` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
+
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "helpers_evaluate_called",
+            {"is_remote": isinstance(agent, (str, Agent))},
+        )
 
         if isinstance(agent, (str, Agent)):
             return await self._evaluate_remote(

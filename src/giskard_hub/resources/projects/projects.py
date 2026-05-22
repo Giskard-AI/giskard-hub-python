@@ -22,6 +22,7 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..._analytics import capture_event, make_distinct_id
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
 from ...types.project import Project, ProjectCreateParams, ProjectUpdateParams, ProjectBulkDeleteParams
@@ -106,7 +107,9 @@ class ProjectsResource(SyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(make_distinct_id(self._client.api_key), "project_created", {"project_id": result.id})
+        return result
 
     def retrieve(
         self,
@@ -439,7 +442,9 @@ class AsyncProjectsResource(AsyncAPIResource):
             cast_to=APIResponse[Project],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(make_distinct_id(self._client.api_key), "project_created", {"project_id": result.id})
+        return result
 
     async def retrieve(
         self,

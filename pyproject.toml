@@ -16,6 +16,7 @@ dependencies = [
     "distro>=1.7.0, <2",
     "rich",
     "sniffio",
+    "posthog",
 ]
 requires-python = ">=3.10, <3.15"
 classifiers = [

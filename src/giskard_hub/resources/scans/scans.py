@@ -39,6 +39,7 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..._analytics import capture_event, make_distinct_id
 from ...types.scan import (
     ScanListParams,
     ScanCreateParams,
@@ -144,7 +145,16 @@ class ScansResource(SyncAPIResource):
             cast_to=APIResponse[Scan],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "scan_created",
+            {
+                "scan_id": result.id,
+                "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None,
+            },
+        )
+        return result
 
     def retrieve(
         self,
@@ -585,7 +595,16 @@ class AsyncScansResource(AsyncAPIResource):
             cast_to=APIResponse[Scan],
         )
 
-        return self._unwrap(response)
+        result = self._unwrap(response)
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "scan_created",
+            {
+                "scan_id": result.id,
+                "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None,
+            },
+        )
+        return result
 
     async def retrieve(
         self,
