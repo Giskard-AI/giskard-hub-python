@@ -1,6 +1,16 @@
 """Evaluation domain types."""
 
-from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Literal,
+    Iterable,
+    Optional,
+    TypeAlias,
+    TypedDict,
+)
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
@@ -66,15 +76,9 @@ class Evaluation(BaseModel):
     agent: AgentSnapshot
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
-    # For uploaded evaluations this is a sentinel reference (nil UUID, fixed
-    # name) since snapshot-only evaluations have no real dataset. Check
-    # ``is_upload`` before treating it as a navigable link.
     dataset: Dataset | DatasetReference
     failure_categories: Dict[str, int]
     local: bool
-    # True for read-only evaluations imported via ``evaluations.upload`` (a
-    # ``SuiteResult`` snapshot): no real dataset or agent, and not re-runnable.
-    is_upload: bool = False
     metrics: List[Metric]
     name: str
     old_evaluation_id: Optional[str] = None
@@ -83,6 +87,7 @@ class Evaluation(BaseModel):
     status: TaskProgress
     tags: List[Metric]
     updated_at: datetime
+    is_upload: bool = False
 
     @property
     def state(self) -> TaskState:

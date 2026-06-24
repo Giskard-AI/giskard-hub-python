@@ -47,7 +47,7 @@ class Agent(BaseModel):
     supported_languages: list[str]
     updated_at: datetime
     url: str
-    auto_bindings: Optional[Dict[str, str]] = None
+    auto_bindings: Optional[List[Dict[str, Any]]] = None
     input_schema: Optional[Dict[str, Any]] = None
     output_schema: Optional[Dict[str, Any]] = None
 
@@ -125,7 +125,7 @@ class AgentSnapshot(BaseModel):
     headers: List[Dict[str, Any]] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     input_schema: Dict[str, Any] = Field(default_factory=dict)
     output_schema: Dict[str, Any] = Field(default_factory=dict)
-    auto_bindings: Optional[Dict[str, str]] = None
+    auto_bindings: Optional[List[Dict[str, Any]]] = None
 
 
 class GenerateCompletionOutput(BaseModel):
