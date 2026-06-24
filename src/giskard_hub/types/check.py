@@ -374,7 +374,6 @@ class InteractionCheckConfigParam(TypedDict, total=False):
 
 class InteractionResultData(BaseModel):
     interaction_position: int
-    role_name: str = ""
     input: Optional[Dict[str, Any]] = None
     output: Optional[Dict[str, Any]] = None
     state: str = ""
@@ -384,7 +383,6 @@ class InteractionResultData(BaseModel):
 
 
 class Interaction(BaseModel):
-    role_id: str
     position: int
     input: Dict[str, Any]
     input_bindings: Optional[Dict[str, str]] = None
@@ -397,7 +395,6 @@ class Interaction(BaseModel):
 
 
 class InteractionParam(TypedDict, total=False):
-    role_id: Required[str]
     position: Required[int]
     input: Required[Dict[str, Any]]
     input_bindings: Optional[Dict[str, str]]

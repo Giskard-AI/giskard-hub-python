@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlia
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from .agent import AgentOutput, AgentOutputParam, AgentRoleSnapshot, MinimalAgentParam
+from .agent import AgentOutput, AgentSnapshot, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
@@ -61,21 +61,20 @@ class EvaluationReference(BaseModel):
     name: str
 
 
-EvaluationSource = Literal["hub", "upload"]
-
-
 class Evaluation(BaseModel):
     id: str
-    agent_roles: Optional[Dict[str, AgentRoleSnapshot]] = None
+    agent: AgentSnapshot
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
-    # For ``source == "upload"`` this is a sentinel reference (nil UUID,
-    # fixed name) since snapshot-only evaluations have no real dataset —
-    # check ``source`` before treating it as a navigable link.
+    # For uploaded evaluations this is a sentinel reference (nil UUID, fixed
+    # name) since snapshot-only evaluations have no real dataset. Check
+    # ``is_upload`` before treating it as a navigable link.
     dataset: Dataset | DatasetReference
     failure_categories: Dict[str, int]
     local: bool
-    source: EvaluationSource = "hub"
+    # True for read-only evaluations imported via ``evaluations.upload`` (a
+    # ``SuiteResult`` snapshot): no real dataset or agent, and not re-runnable.
+    is_upload: bool = False
     metrics: List[Metric]
     name: str
     old_evaluation_id: Optional[str] = None
@@ -157,7 +156,6 @@ class EvaluationListParams(TypedDict, total=False):
 class EvaluationCreateParams(TypedDict, total=False):
     project_id: Required[str]
     agent_id: Optional[str]
-    agent_roles: Optional[Dict[str, str]]
     criteria: Optional[DatasetSubsetParam]
     name: str
     old_evaluation_id: Optional[str]

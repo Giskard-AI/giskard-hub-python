@@ -1,10 +1,10 @@
 """Scheduled evaluation domain types."""
 
-from typing import Dict, List, Union, Literal, Optional, TypeAlias, TypedDict
+from typing import List, Union, Literal, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
-from .agent import AgentReference, AgentRoleSnapshot
+from .agent import AgentReference
 from .._types import SequenceNotStr
 from .dataset import DatasetReference
 from .._models import BaseModel
@@ -54,7 +54,6 @@ class ScheduledEvaluation(BaseModel):
     dataset_id: str
     agent: Optional[AgentReference] = None
     dataset: Optional[DatasetReference] = None
-    agent_roles: Optional[Dict[str, AgentRoleSnapshot]] = None
     tags: List[str]
     run_count: int
     frequency: FrequencyOption
@@ -85,7 +84,6 @@ class ScheduledEvaluationCreateParams(TypedDict, total=False):
     frequency: Required[FrequencyOption]
     time: Required[str]
     agent_id: Optional[str]
-    agent_roles: Optional[Dict[str, str]]
     tags: SequenceNotStr[str]
     run_count: int
     day_of_week: Optional[int]

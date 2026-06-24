@@ -10,50 +10,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Iterable, Optional, cast
 
 from .._types import Omit
-from ..types.role import Role
 from ..types.check import CheckConfigParam, InteractionParam
 
 if TYPE_CHECKING:
     from .._client import HubClient, AsyncHubClient
-
-
-_DEFAULT_ROLE_NAME = "default"
-
-# Schemas matching a chat-style agent (input.messages: list[ChatMessage] →
-# output.response: ChatMessage with optional metadata). Used when the legacy
-# translator needs to materialize a default role on a fresh dataset.
-_DEFAULT_CHAT_INPUT_SCHEMA: Dict[str, Any] = {
-    "type": "object",
-    "required": ["messages"],
-    "properties": {
-        "messages": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": ["role", "content"],
-                "properties": {
-                    "role": {"type": "string"},
-                    "content": {"type": "string"},
-                },
-            },
-        }
-    },
-}
-_DEFAULT_CHAT_OUTPUT_SCHEMA: Dict[str, Any] = {
-    "type": "object",
-    "required": ["response"],
-    "properties": {
-        "metadata": {"type": "object"},
-        "response": {
-            "type": "object",
-            "required": ["role", "content"],
-            "properties": {
-                "role": {"type": "string"},
-                "content": {"type": "string"},
-            },
-        },
-    },
-}
 
 
 # ---------------------------------------------------------------------------
@@ -72,9 +32,9 @@ def _coerce_messages(messages: Iterable[Mapping[str, Any]] | None | Omit) -> Lis
 
 
 def _normalize_demo_output(demo_output: Any) -> Optional[Dict[str, Any]]:
-    """Convert legacy `demo_output` into the role's structured `output` dict.
+    """Convert legacy `demo_output` into an interaction's structured `output` dict.
 
-    Mirrors the default chat role's `output_schema`:
+    Mirrors the default chat `output_schema`:
     `{"response": {role, content}, "metadata": {...}}`.
     """
     if _is_omit_or_none(demo_output):
@@ -119,11 +79,6 @@ def _build_check_configs(
     return configs
 
 
-def _pick_default_role_id(roles: List[Role]) -> str:
-    """Pick the `default` role's id, falling back to the first role."""
-    return next((r for r in roles if r.name == _DEFAULT_ROLE_NAME), roles[0]).id
-
-
 # ---------------------------------------------------------------------------
 # Legacy `datasets.upload` translation
 # ---------------------------------------------------------------------------
@@ -148,15 +103,11 @@ def translate_legacy_upload_item(
     """Convert one legacy test-case dict (as accepted by `datasets.upload`)
     into the new `{interactions: [...], tags: [...], status: ...}` import
     shape.
-
-    Uses `role_name="default"` (the import endpoint resolves it server-side,
-    so no role-id lookup is needed here).
     """
     raw_messages: List[Mapping[str, Any]] = item.get("input_data") or item.get("messages") or []
     msgs = [dict(m) for m in raw_messages]
 
     interaction: Dict[str, Any] = {
-        "role_name": _DEFAULT_ROLE_NAME,
         "position": 0,
         "input": {"messages": msgs},
     }
@@ -179,7 +130,6 @@ def translate_legacy_upload_item(
 
 def _assemble_interaction(
     *,
-    role_id: str,
     messages: List[Dict[str, Any]],
     demo_output: Any,
     checks: Iterable[CheckConfigParam] | None | Omit,
@@ -190,7 +140,6 @@ def _assemble_interaction(
     `identifier_to_id` is required iff `checks` is set.
     """
     interaction: Dict[str, Any] = {
-        "role_id": role_id,
         "position": 0,
         "input": {"messages": messages},
     }
@@ -223,26 +172,12 @@ def build_legacy_interaction_sync(
     """Build one `InteractionParam` from legacy create/update args."""
     msgs = _coerce_messages(messages)
 
-    project_id = client.datasets.retrieve(dataset_id).project_id
-
-    roles = client.roles.list(dataset_id, project_id=project_id)
-    if not roles:
-        roles = [
-            client.roles.create(
-                dataset_id,
-                project_id=project_id,
-                name=_DEFAULT_ROLE_NAME,
-                input_schema=_DEFAULT_CHAT_INPUT_SCHEMA,
-                output_schema=_DEFAULT_CHAT_OUTPUT_SCHEMA,
-            )
-        ]
-
     identifier_to_id: Optional[Dict[str, str]] = None
     if not _is_omit_or_none(checks):
+        project_id = client.datasets.retrieve(dataset_id).project_id
         identifier_to_id = {c.identifier: c.id for c in client.checks.list(project_id=project_id, filter_builtin=False)}
 
     return _assemble_interaction(
-        role_id=_pick_default_role_id(roles),
         messages=msgs,
         demo_output=demo_output,
         checks=checks,
@@ -261,28 +196,14 @@ async def build_legacy_interaction_async(
     """Async variant of :func:`build_legacy_interaction_sync`."""
     msgs = _coerce_messages(messages)
 
-    project_id = (await client.datasets.retrieve(dataset_id)).project_id
-
-    roles = await client.roles.list(dataset_id, project_id=project_id)
-    if not roles:
-        roles = [
-            await client.roles.create(
-                dataset_id,
-                project_id=project_id,
-                name=_DEFAULT_ROLE_NAME,
-                input_schema=_DEFAULT_CHAT_INPUT_SCHEMA,
-                output_schema=_DEFAULT_CHAT_OUTPUT_SCHEMA,
-            )
-        ]
-
     identifier_to_id: Optional[Dict[str, str]] = None
     if not _is_omit_or_none(checks):
+        project_id = (await client.datasets.retrieve(dataset_id)).project_id
         identifier_to_id = {
             c.identifier: c.id for c in await client.checks.list(project_id=project_id, filter_builtin=False)
         }
 
     return _assemble_interaction(
-        role_id=_pick_default_role_id(roles),
         messages=msgs,
         demo_output=demo_output,
         checks=checks,

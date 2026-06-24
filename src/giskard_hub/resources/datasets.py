@@ -43,7 +43,7 @@ __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 _LEGACY_UPLOAD_DEPRECATION = (
     "Passing legacy `messages` / `checks` / `demo_output` items to "
     "`datasets.upload` is deprecated. Use the new "
-    "`{interactions: [{role_name, position, input, output, checks}]}` shape."
+    "`{interactions: [{position, input, output, checks}]}` shape."
 )
 
 

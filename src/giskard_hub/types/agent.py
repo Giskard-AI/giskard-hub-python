@@ -19,7 +19,7 @@ __all__ = [
     "MinimalAgent",
     "MinimalAgentParam",
     "AgentDetectStatefulness",
-    "AgentRoleSnapshot",
+    "AgentSnapshot",
     "GenerateCompletionOutput",
     "AgentListParams",
     "AgentCreateParams",
@@ -116,12 +116,10 @@ class AgentDetectStatefulness(BaseModel):
     stateful: bool
 
 
-class AgentRoleSnapshot(BaseModel):
-    """Snapshot of an agent assignment for one role in an evaluation."""
+class AgentSnapshot(BaseModel):
+    """Snapshot of the agent used in an evaluation."""
 
     agent_id: str
-    role_id: Optional[str] = None
-    role_name: Optional[str] = None
     agent_name: str = ""
     url: str = ""
     headers: List[Dict[str, Any]] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
