@@ -73,7 +73,7 @@ class EvaluationReference(BaseModel):
 
 class Evaluation(BaseModel):
     id: str
-    agent: AgentSnapshot
+    agent: Optional[AgentSnapshot] = None
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
     dataset: Dataset | DatasetReference
