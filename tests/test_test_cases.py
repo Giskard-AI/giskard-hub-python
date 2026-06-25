@@ -28,7 +28,7 @@ def test_create_rejects_interactions_with_legacy(hub: HubClient) -> None:
     with pytest.raises(ValueError, match="Cannot mix `interactions` with legacy parameters"):
         hub.test_cases.create(
             dataset_id="d",
-            interactions=[{"role_id": "r", "position": 0, "input": {"messages": []}}],
+            interactions=[{"position": 0, "input": {"messages": []}}],
             messages=[{"role": "user", "content": "x"}],
         )
 
@@ -43,7 +43,7 @@ async def test_async_create_rejects_interactions_with_legacy(async_hub: AsyncHub
     with pytest.raises(ValueError, match="Cannot mix `interactions` with legacy parameters"):
         await async_hub.test_cases.create(
             dataset_id="d",
-            interactions=[{"role_id": "r", "position": 0, "input": {"messages": []}}],
+            interactions=[{"position": 0, "input": {"messages": []}}],
             messages=[{"role": "user", "content": "x"}],
         )
 
@@ -123,7 +123,6 @@ def test_build_check_configs_raises_when_identifier_unknown() -> None:
 
 def test_test_case_messages_synthesizes_from_first_interaction() -> None:
     interaction = Interaction.model_construct(  # type: ignore[arg-type]
-        role_id="r",
         position=0,
         input={
             "messages": [
@@ -146,7 +145,6 @@ def test_test_case_messages_returns_empty_when_no_interactions() -> None:
 
 def test_test_case_messages_returns_empty_when_input_has_no_messages_key() -> None:
     interaction = Interaction.model_construct(  # type: ignore[arg-type]
-        role_id="r",
         position=0,
         input={"some_other_shape": "x"},
     )

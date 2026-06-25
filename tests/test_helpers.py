@@ -384,7 +384,6 @@ def _make_test_case(messages: list[ChatMessage]) -> TestCase:
     from giskard_hub.types.check import Interaction
 
     interaction = Interaction.model_construct(  # type: ignore[arg-type]
-        role_id="role-default",
         position=0,
         input={"messages": [m.to_dict() for m in messages]},
     )

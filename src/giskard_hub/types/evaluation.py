@@ -1,10 +1,20 @@
 """Evaluation domain types."""
 
-from typing import Any, Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Literal,
+    Iterable,
+    Optional,
+    TypeAlias,
+    TypedDict,
+)
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from .agent import AgentOutput, AgentOutputParam, AgentRoleSnapshot, MinimalAgentParam
+from .agent import AgentOutput, AgentSnapshot, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
@@ -22,6 +32,7 @@ __all__ = [
     "EvaluationRetrieveParams",
     "EvaluationRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
+    "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
     "Criterion",
     "CriterionEvaluationDataset",
@@ -62,7 +73,7 @@ class EvaluationReference(BaseModel):
 
 class Evaluation(BaseModel):
     id: str
-    agent_roles: Optional[Dict[str, AgentRoleSnapshot]] = None
+    agent: Optional[AgentSnapshot] = None
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
     dataset: Dataset | DatasetReference
@@ -76,6 +87,7 @@ class Evaluation(BaseModel):
     status: TaskProgress
     tags: List[Metric]
     updated_at: datetime
+    is_upload: bool = False
 
     @property
     def state(self) -> TaskState:
@@ -149,7 +161,6 @@ class EvaluationListParams(TypedDict, total=False):
 class EvaluationCreateParams(TypedDict, total=False):
     project_id: Required[str]
     agent_id: Optional[str]
-    agent_roles: Optional[Dict[str, str]]
     criteria: Optional[DatasetSubsetParam]
     name: str
     old_evaluation_id: Optional[str]
@@ -184,6 +195,14 @@ class EvaluationCreateLocalParams(TypedDict, total=False):
     criteria: Required[Iterable[Criterion]]
     model: Required[MinimalAgentParam]
     name: Optional[str]
+
+
+class EvaluationUploadParams(TypedDict, total=False):
+    project_id: Required[str]
+    payload: Required[Dict[str, Any]]
+    agent_id: Optional[str]
+    name: Optional[str]
+    auto_classify_failures: Optional[bool]
 
 
 class EvaluationBulkDeleteParams(TypedDict, total=False):

@@ -21,7 +21,6 @@ from ._utils import is_given, get_async_library
 from ._version import __version__
 from .resources import (
     audit,
-    roles,
     tasks,
     agents,
     checks,
@@ -74,7 +73,6 @@ class HubClient(SyncAPIClient):
     knowledge_bases: knowledge_bases.KnowledgeBasesResource
     playground_chats: playground_chats.PlaygroundChatsResource
     projects: projects.ProjectsResource
-    roles: roles.RolesResource
     scans: scans.ScansResource
     scheduled_evaluations: scheduled_evaluations.ScheduledEvaluationsResource
     tasks: tasks.TasksResource
@@ -155,7 +153,6 @@ class HubClient(SyncAPIClient):
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResource(self)
         self.playground_chats = playground_chats.PlaygroundChatsResource(self)
         self.projects = projects.ProjectsResource(self)
-        self.roles = roles.RolesResource(self)
         self.scans = scans.ScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(self)
         self.tasks = tasks.TasksResource(self)
@@ -283,7 +280,6 @@ class AsyncHubClient(AsyncAPIClient):
     knowledge_bases: knowledge_bases.AsyncKnowledgeBasesResource
     playground_chats: playground_chats.AsyncPlaygroundChatsResource
     projects: projects.AsyncProjectsResource
-    roles: roles.AsyncRolesResource
     scans: scans.AsyncScansResource
     scheduled_evaluations: scheduled_evaluations.AsyncScheduledEvaluationsResource
     tasks: tasks.AsyncTasksResource
@@ -364,7 +360,6 @@ class AsyncHubClient(AsyncAPIClient):
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResource(self)
         self.playground_chats = playground_chats.AsyncPlaygroundChatsResource(self)
         self.projects = projects.AsyncProjectsResource(self)
-        self.roles = roles.AsyncRolesResource(self)
         self.scans = scans.AsyncScansResource(self)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
         self.tasks = tasks.AsyncTasksResource(self)
@@ -494,7 +489,6 @@ class HubClientWithRawResponse:
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
         self.playground_chats = playground_chats.PlaygroundChatsResourceWithRawResponse(client.playground_chats)
         self.projects = projects.ProjectsResourceWithRawResponse(client.projects)
-        self.roles = roles.RolesResourceWithRawResponse(client.roles)
         self.scans = scans.ScansResourceWithRawResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithRawResponse(
             client.scheduled_evaluations
@@ -514,7 +508,6 @@ class AsyncHubClientWithRawResponse:
         self.knowledge_bases = knowledge_bases.AsyncKnowledgeBasesResourceWithRawResponse(client.knowledge_bases)
         self.playground_chats = playground_chats.AsyncPlaygroundChatsResourceWithRawResponse(client.playground_chats)
         self.projects = projects.AsyncProjectsResourceWithRawResponse(client.projects)
-        self.roles = roles.AsyncRolesResourceWithRawResponse(client.roles)
         self.scans = scans.AsyncScansResourceWithRawResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithRawResponse(
             client.scheduled_evaluations
@@ -534,7 +527,6 @@ class HubClientWithStreamedResponse:
         self.knowledge_bases = knowledge_bases.KnowledgeBasesResourceWithStreamingResponse(client.knowledge_bases)
         self.playground_chats = playground_chats.PlaygroundChatsResourceWithStreamingResponse(client.playground_chats)
         self.projects = projects.ProjectsResourceWithStreamingResponse(client.projects)
-        self.roles = roles.RolesResourceWithStreamingResponse(client.roles)
         self.scans = scans.ScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResourceWithStreamingResponse(
             client.scheduled_evaluations
@@ -556,7 +548,6 @@ class AsyncHubClientWithStreamedResponse:
             client.playground_chats
         )
         self.projects = projects.AsyncProjectsResourceWithStreamingResponse(client.projects)
-        self.roles = roles.AsyncRolesResourceWithStreamingResponse(client.roles)
         self.scans = scans.AsyncScansResourceWithStreamingResponse(client.scans)
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResourceWithStreamingResponse(
             client.scheduled_evaluations

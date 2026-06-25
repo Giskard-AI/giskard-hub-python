@@ -79,7 +79,7 @@ from .agent import (
     AgentTestConnectionParams as AgentTestConnectionParams,
     AgentUpdateParams as AgentUpdateParams,
     AgentDetectStatefulness as AgentDetectStatefulness,
-    AgentRoleSnapshot as AgentRoleSnapshot,
+    AgentSnapshot as AgentSnapshot,
     GenerateCompletionOutput as GenerateCompletionOutput,
     MinimalAgent as MinimalAgent,
     MinimalAgentParam as MinimalAgentParam,
@@ -196,6 +196,7 @@ from .evaluation import (
     EvaluationRetrieveParams as EvaluationRetrieveParams,
     EvaluationRunInteractionChecksParams as EvaluationRunInteractionChecksParams,
     EvaluationUpdateParams as EvaluationUpdateParams,
+    EvaluationUploadParams as EvaluationUploadParams,
     FailureCategory as FailureCategory,
     FailureCategoryParam as FailureCategoryParam,
     Metric as Metric,
@@ -283,14 +284,6 @@ from .project import (
     ProjectUpdateParams as ProjectUpdateParams,
 )
 
-# -- role ------------------------------------------------------------------
-from .role import (
-    Role as Role,
-    RoleListParams as RoleListParams,
-    RoleCreateParams as RoleCreateParams,
-    RoleUpdateParams as RoleUpdateParams,
-)
-
 __all__ = [
     # common
     "APIResponse",
@@ -328,7 +321,7 @@ __all__ = [
     "AgentReference",
     "AgentOutput",
     "AgentOutputParam",
-    "AgentRoleSnapshot",
+    "AgentSnapshot",
     "GenerateCompletionOutput",
     "MinimalAgent",
     "MinimalAgentParam",
@@ -436,6 +429,7 @@ __all__ = [
     "EvaluationRetrieveParams",
     "EvaluationRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
+    "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
     "FailureCategory",
     "FailureCategoryParam",
@@ -503,9 +497,4 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
-    # role
-    "Role",
-    "RoleListParams",
-    "RoleCreateParams",
-    "RoleUpdateParams",
 ]

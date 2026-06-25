@@ -6,14 +6,6 @@ from .audit import (
     AuditLogsResourceWithStreamingResponse,
     AsyncAuditLogsResourceWithStreamingResponse,
 )
-from .roles import (
-    RolesResource,
-    AsyncRolesResource,
-    RolesResourceWithRawResponse,
-    AsyncRolesResourceWithRawResponse,
-    RolesResourceWithStreamingResponse,
-    AsyncRolesResourceWithStreamingResponse,
-)
 from .scans import (
     ScansResource,
     AsyncScansResource,
@@ -106,12 +98,6 @@ __all__ = [
     "AsyncAuditLogsResourceWithRawResponse",
     "AuditLogsResourceWithStreamingResponse",
     "AsyncAuditLogsResourceWithStreamingResponse",
-    "RolesResource",
-    "AsyncRolesResource",
-    "RolesResourceWithRawResponse",
-    "AsyncRolesResourceWithRawResponse",
-    "RolesResourceWithStreamingResponse",
-    "AsyncRolesResourceWithStreamingResponse",
     "ScansResource",
     "AsyncScansResource",
     "ScansResourceWithRawResponse",
