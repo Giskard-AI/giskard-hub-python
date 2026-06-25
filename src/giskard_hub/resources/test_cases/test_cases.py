@@ -146,7 +146,7 @@ class TestCasesResource(SyncAPIResource):
             Dataset ID to create the test case in.
         interactions : Iterable[InteractionParam] | Omit
             Interactions to attach to the test case. Each interaction needs a
-            a `position`, a structured `input` matching the agent's
+            `position`, a structured `input` matching the agent's
             `input_schema`, and optionally an `output` and a `checks` list.
         status : Literal["active", "draft"] | None | Omit
             Status of the test case.
