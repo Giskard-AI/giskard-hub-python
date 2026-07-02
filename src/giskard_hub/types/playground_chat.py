@@ -28,7 +28,7 @@ __all__ = [
 
 class PlaygroundExchange(BaseModel):
     input: Dict[str, Any]
-    output: Optional[Dict[str, Any]] = None
+    output: Dict[str, Any]
     metadata: Optional[Dict[str, Any]] = None
 
 
@@ -41,8 +41,7 @@ class PlaygroundChat(BaseModel):
     agent: Optional[AgentReference | Agent] = None
     agent_id: Optional[str] = None
     user_id: Optional[str] = None
-    exchanges: Optional[List[PlaygroundExchange]] = None
-    forwarded: Optional[Dict[str, Any]] = None
+    exchanges: List[PlaygroundExchange] = []
 
     @property
     @deprecated("`PlaygroundChat.messages` is deprecated; read `exchanges` directly.")
@@ -93,7 +92,7 @@ class PlaygroundChat(BaseModel):
 
 class PlaygroundExchangeParam(TypedDict, total=False):
     input: Required[Dict[str, Any]]
-    output: Optional[Dict[str, Any]]
+    output: Required[Dict[str, Any]]
     metadata: Optional[Dict[str, Any]]
 
 
@@ -101,13 +100,11 @@ class PlaygroundChatCreateParams(TypedDict, total=False):
     project_id: Required[str]
     agent_id: Optional[str]
     exchanges: Optional[Iterable[PlaygroundExchangeParam]]
-    forwarded: Optional[Dict[str, Any]]
 
 
 class PlaygroundChatUpdateParams(TypedDict, total=False):
     agent_id: Optional[str]
     exchanges: Optional[Iterable[PlaygroundExchangeParam]]
-    forwarded: Optional[Dict[str, Any]]
 
 
 class PlaygroundChatListParams(TypedDict, total=False):

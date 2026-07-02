@@ -18,7 +18,7 @@ from typing_extensions import Required
 import pydantic
 from pydantic import Field
 
-from .common import TaskState
+from .common import TaskState, JsonValue
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -374,8 +374,8 @@ class InteractionCheckConfigParam(TypedDict, total=False):
 
 class InteractionResultData(BaseModel):
     interaction_position: int
-    input: Optional[Dict[str, Any]] = None
-    output: Optional[Dict[str, Any]] = None
+    input: Optional[JsonValue] = None
+    output: Optional[JsonValue] = None
     state: str = ""
     check_results: List[CheckResult] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     error: Optional[str] = None

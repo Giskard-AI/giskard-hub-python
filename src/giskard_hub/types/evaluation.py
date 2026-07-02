@@ -16,7 +16,7 @@ from typing_extensions import Required
 
 from .agent import AgentOutput, AgentInterface, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
-from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
+from .common import TaskState, JsonValue, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
 from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
 from .._models import BaseModel
@@ -140,7 +140,7 @@ class TestCaseEvaluation(BaseModel):
     error: Optional[str] = None
     evaluation_id: str
     failure_category: Optional[FailureCategoryResult] = None
-    output: Optional[AgentOutput] = None
+    output: Optional[Union[AgentOutput, JsonValue]] = None
     results: List[CheckResult]
     state: TaskState
     test_case: TestCaseReference | TestCase
