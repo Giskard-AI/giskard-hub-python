@@ -108,9 +108,7 @@ def coerce_messages_to_input_dict(
             f"Use `{new_param}` (recommended) or `{deprecated_param}` (deprecated)."
         )
     if not has_input and not has_messages:
-        raise ValueError(
-            f"Must provide `{new_param}` (recommended) or `{deprecated_param}` (deprecated)."
-        )
+        raise ValueError(f"Must provide `{new_param}` (recommended) or `{deprecated_param}` (deprecated).")
 
     raw = input if has_input else messages
     if isinstance(raw, Mapping):
@@ -170,25 +168,15 @@ def needs_check_lookup(checks: Iterable[CheckConfigParam]) -> bool:
     return False
 
 
-def fetch_check_identifier_map(
-    client: "HubClient", *, project_id: str
-) -> Dict[str, str]:
+def fetch_check_identifier_map(client: "HubClient", *, project_id: str) -> Dict[str, str]:
     """Fetch all checks (built-in + custom) for a project and return an
     `identifier → check_id` map."""
-    return {
-        c.identifier: c.id
-        for c in client.checks.list(project_id=project_id, filter_builtin=False)
-    }
+    return {c.identifier: c.id for c in client.checks.list(project_id=project_id, filter_builtin=False)}
 
 
-async def fetch_check_identifier_map_async(
-    client: "AsyncHubClient", *, project_id: str
-) -> Dict[str, str]:
+async def fetch_check_identifier_map_async(client: "AsyncHubClient", *, project_id: str) -> Dict[str, str]:
     """Async variant of :func:`fetch_check_identifier_map`."""
-    return {
-        c.identifier: c.id
-        for c in await client.checks.list(project_id=project_id, filter_builtin=False)
-    }
+    return {c.identifier: c.id for c in await client.checks.list(project_id=project_id, filter_builtin=False)}
 
 
 def check_params_to_specs(

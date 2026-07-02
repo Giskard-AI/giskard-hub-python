@@ -15,7 +15,7 @@ from typing_extensions import Required
 
 from .agent import AgentOutput, AgentInterface, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
-from .common import TaskState, JsonValue, OrderByParam, TaskProgress, FilterValueParam
+from .common import JsonValue, TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
 from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
 from .._models import BaseModel

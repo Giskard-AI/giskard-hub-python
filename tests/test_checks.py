@@ -41,7 +41,17 @@ def test_identifier_to_kind_mapping() -> None:
 
 
 @pytest.mark.parametrize(
-    "identifier", ["llm_judge", "equals", "not_equals", "greater_than", "greater_than_equals", "less_than", "less_than_equals", "semantic_similarity"]
+    "identifier",
+    [
+        "llm_judge",
+        "equals",
+        "not_equals",
+        "greater_than",
+        "greater_than_equals",
+        "less_than",
+        "less_than_equals",
+        "semantic_similarity",
+    ],
 )
 def test_identifier_to_kind_falls_back_to_identity(identifier: str) -> None:
     """Identifiers not in IDENTIFIER_TO_KIND resolve to themselves via check_param_to_spec."""

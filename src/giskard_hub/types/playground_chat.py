@@ -70,7 +70,7 @@ class PlaygroundChat(BaseModel):
                     out.append(ChatMessageWithMetadata(role=role, content=content))
 
             outp = exchange.output
-            response = (outp.get("response") or outp) if outp is not None else None
+            response = outp.get("response") or outp
             if isinstance(response, dict):
                 resp_d = cast(Dict[str, Any], response)
                 role, content = resp_d.get("role"), resp_d.get("content")

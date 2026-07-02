@@ -18,7 +18,7 @@ from typing_extensions import Required
 import pydantic
 from pydantic import Field
 
-from .common import TaskState, JsonValue
+from .common import JsonValue, TaskState
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
