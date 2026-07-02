@@ -1,6 +1,6 @@
 """Task domain types."""
 
-from typing import Union, Optional, TypeAlias, TypedDict
+from typing import List, Union, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Literal, Required
 
@@ -42,8 +42,8 @@ class Task(BaseModel):
     status: TaskStatus
     description: str
     created_by: User
-    assignees: SequenceNotStr[User]
-    references: SequenceNotStr[Union[TestCaseEvaluationReference, ScanProbeAttemptReference, TestCaseReference]]
+    assignees: List[User]
+    references: List[Union[TestCaseEvaluationReference, ScanProbeAttemptReference, TestCaseReference]]
     created_at: datetime
     updated_at: datetime
 
