@@ -8,7 +8,6 @@ from typing import (
     Literal,
     Iterable,
     Optional,
-    TypeAlias,
     TypedDict,
 )
 from datetime import datetime  # noqa: I001
@@ -34,8 +33,6 @@ __all__ = [
     "EvaluationCreateLocalParams",
     "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
-    "Criterion",
-    "CriterionEvaluationDataset",
     "FailureCategory",
     "FailureCategoryParam",
     "TestCaseEvaluation",
@@ -183,16 +180,8 @@ class EvaluationRunInteractionChecksParams(TypedDict, total=False):
     checks: Required[Iterable[FlatCheckSpecParam]]
 
 
-class CriterionEvaluationDataset(TypedDict, total=False):
-    evaluation_id: Required[str]
-    target_type: Literal["evaluation"]
-
-
-Criterion: TypeAlias = Union[DatasetSubsetParam, CriterionEvaluationDataset]
-
-
 class EvaluationCreateLocalParams(TypedDict, total=False):
-    criteria: Required[Iterable[Criterion]]
+    criteria: Required[DatasetSubsetParam]
     model: Required[MinimalAgentParam]
     name: Optional[str]
 
