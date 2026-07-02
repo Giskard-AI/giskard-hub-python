@@ -1,7 +1,17 @@
 """Request-side helpers for converting `CheckConfigParam` into the wire format."""
 
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Iterable, Optional, FrozenSet, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Mapping,
+    Iterable,
+    Optional,
+    FrozenSet,
+    cast,
+)
 
 from .._types import Omit
 from .._models import BaseModel
@@ -22,8 +32,8 @@ _BUILTIN_CHECK_IDENTIFIERS: FrozenSet[str] = frozenset(
         "greater_than",
         "greater_than_equals",
         "groundedness",
-        "lesser_than",
-        "lesser_than_equals",
+        "less_than",
+        "less_than_equals",
         "llm_judge",
         "metadata",
         "not_equals",
@@ -35,14 +45,19 @@ _BUILTIN_CHECK_IDENTIFIERS: FrozenSet[str] = frozenset(
     }
 )
 
-# Maps a built-in check identifier to its `kind` discriminator.
+# Maps a built-in check identifier to its kind
 IDENTIFIER_TO_KIND: Dict[str, str] = {
+    # Hub
     "correctness": "hub_correctness",
     "conformity": "hub_conformity",
     "groundedness": "hub_groundedness",
-    "string_match": "string_matching",
     "metadata": "hub_metadata",
-    "semantic_similarity": "semantic_similarity",
+    # OSS
+    "oss_conformity": "conformity",
+    "oss_groundedness": "groundedness",
+    # Text matching
+    "string_match": "string_matching",
+    "regex_match": "regex_matching",
 }
 
 
@@ -93,7 +108,9 @@ def coerce_messages_to_input_dict(
             f"Use `{new_param}` (recommended) or `{deprecated_param}` (deprecated)."
         )
     if not has_input and not has_messages:
-        raise ValueError(f"Must provide `{new_param}` (recommended) or `{deprecated_param}` (deprecated).")
+        raise ValueError(
+            f"Must provide `{new_param}` (recommended) or `{deprecated_param}` (deprecated)."
+        )
 
     raw = input if has_input else messages
     if isinstance(raw, Mapping):
@@ -153,15 +170,25 @@ def needs_check_lookup(checks: Iterable[CheckConfigParam]) -> bool:
     return False
 
 
-def fetch_check_identifier_map(client: "HubClient", *, project_id: str) -> Dict[str, str]:
+def fetch_check_identifier_map(
+    client: "HubClient", *, project_id: str
+) -> Dict[str, str]:
     """Fetch all checks (built-in + custom) for a project and return an
     `identifier → check_id` map."""
-    return {c.identifier: c.id for c in client.checks.list(project_id=project_id, filter_builtin=False)}
+    return {
+        c.identifier: c.id
+        for c in client.checks.list(project_id=project_id, filter_builtin=False)
+    }
 
 
-async def fetch_check_identifier_map_async(client: "AsyncHubClient", *, project_id: str) -> Dict[str, str]:
+async def fetch_check_identifier_map_async(
+    client: "AsyncHubClient", *, project_id: str
+) -> Dict[str, str]:
     """Async variant of :func:`fetch_check_identifier_map`."""
-    return {c.identifier: c.id for c in await client.checks.list(project_id=project_id, filter_builtin=False)}
+    return {
+        c.identifier: c.id
+        for c in await client.checks.list(project_id=project_id, filter_builtin=False)
+    }
 
 
 def check_params_to_specs(
@@ -182,9 +209,17 @@ def check_params_to_specs(
         identifier = check["identifier"]
         params = check.get("params") or {}
         if flat:
-            result.append({"identifier": identifier, **{k: v for k, v in params.items() if k != "type"}})
+            result.append(
+                {
+                    "identifier": identifier,
+                    **{k: v for k, v in params.items() if k != "type"},
+                }
+            )
         else:
-            entry: Dict[str, Any] = {"identifier": identifier, "enabled": check.get("enabled", True)}
+            entry: Dict[str, Any] = {
+                "identifier": identifier,
+                "enabled": check.get("enabled", True),
+            }
             if params:
                 entry["spec"] = check_param_to_spec(identifier, params)
             result.append(entry)
