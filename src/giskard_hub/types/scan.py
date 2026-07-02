@@ -9,7 +9,7 @@ from typing_extensions import Required, deprecated
 from pydantic import Field
 
 from .chat import ChatMessage
-from .agent import Agent, AgentReference
+from .agent import Agent, AgentInterface
 from .common import TaskState, TaskProgress
 from .._types import SequenceNotStr
 from .._models import BaseModel
@@ -54,7 +54,7 @@ ReviewStatus: TypeAlias = Literal["pending", "ignored", "acknowledged", "correct
 
 class Scan(BaseModel):
     id: str
-    agent: AgentReference | Agent
+    agent: AgentInterface | Agent
     created_at: datetime
     grade: Optional[Literal["A", "B", "C", "D"]] = None
     knowledge_base: Optional[KnowledgeBaseReference | KnowledgeBase] = None

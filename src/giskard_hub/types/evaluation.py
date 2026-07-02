@@ -14,7 +14,7 @@ from typing import (
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from .agent import AgentOutput, AgentSnapshot, AgentOutputParam, MinimalAgentParam
+from .agent import AgentOutput, AgentInterface, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
 from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
@@ -73,7 +73,7 @@ class EvaluationReference(BaseModel):
 
 class Evaluation(BaseModel):
     id: str
-    agent: Optional[AgentSnapshot] = None
+    agent: AgentInterface
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
     dataset: Dataset | DatasetReference
