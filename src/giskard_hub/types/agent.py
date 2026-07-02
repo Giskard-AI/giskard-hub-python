@@ -18,7 +18,6 @@ __all__ = [
     "AgentOutputParam",
     "MinimalAgent",
     "MinimalAgentParam",
-    "AgentDetectStatefulness",
     "AgentInterface",
     "GenerateCompletionOutput",
     "AgentListParams",
@@ -28,7 +27,6 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
-    "AgentDetectStatefulnessParams",
 ]
 
 
@@ -110,10 +108,6 @@ class MinimalAgent(BaseModel):
 class MinimalAgentParam(TypedDict, total=False):
     name: Required[str]
     description: Optional[str]
-
-
-class AgentDetectStatefulness(BaseModel):
-    stateful: bool
 
 
 class AgentInterface(BaseModel):
@@ -217,8 +211,4 @@ class AgentGenerateCompletionParams(TypedDict, total=False):
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):
-    pass
-
-
-class AgentDetectStatefulnessParams(TypedDict, total=False):
     pass
