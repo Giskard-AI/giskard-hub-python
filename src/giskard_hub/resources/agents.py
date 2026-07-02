@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Iterable, Optional, cast
+from typing import Any, Dict, List, Tuple, Iterable, Optional, cast
 
 import httpx
 
@@ -19,6 +19,7 @@ from ..types.chat import HeaderParam, ChatMessageParam
 from ..types.agent import (
     Agent,
     AgentListParams,
+    AutoBindingParam,
     AgentCreateParams,
     AgentUpdateParams,
     AgentBulkDeleteParams,
@@ -73,7 +74,9 @@ class AgentsResource(SyncAPIResource):
         url: str,
         headers: Dict[str, str] | Omit = omit,
         description: Optional[str] | Omit = omit,
-        stateful: Optional[bool] | Omit = omit,
+        auto_bindings: Optional[Iterable[AutoBindingParam]] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -97,6 +100,13 @@ class AgentsResource(SyncAPIResource):
             HTTP headers to include when calling the agent.
         description : str | None | Omit
             Human-readable description of the agent.
+        auto_bindings : Iterable[AutoBindingParam] | None | Omit
+            Automatic input/output bindings for the agent (forward or
+            aggregate bindings).
+        input_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the agent's expected input.
+        output_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the agent's expected output.
 
         Other Parameters
         ----------------
@@ -132,7 +142,9 @@ class AgentsResource(SyncAPIResource):
                     "supported_languages": supported_languages,
                     "url": url,
                     "description": description,
-                    "stateful": stateful,
+                    "auto_bindings": auto_bindings,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 AgentCreateParams,
             ),
@@ -204,6 +216,9 @@ class AgentsResource(SyncAPIResource):
         name: Optional[str] | Omit = omit,
         supported_languages: Optional[SequenceNotStr[str]] | Omit = omit,
         url: Optional[str] | Omit = omit,
+        auto_bindings: Optional[Iterable[AutoBindingParam]] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -227,6 +242,12 @@ class AgentsResource(SyncAPIResource):
             Updated supported languages.
         url : str | None | Omit
             Updated URL endpoint of the agent.
+        auto_bindings : Iterable[AutoBindingParam] | None | Omit
+            Updated automatic input/output bindings for the agent.
+        input_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the agent's expected input.
+        output_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the agent's expected output.
 
         Other Parameters
         ----------------
@@ -270,6 +291,9 @@ class AgentsResource(SyncAPIResource):
                     "name": name,
                     "supported_languages": supported_languages,
                     "url": url,
+                    "auto_bindings": auto_bindings,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 AgentUpdateParams,
             ),
@@ -423,8 +447,9 @@ class AgentsResource(SyncAPIResource):
         agent_id: str,
         *,
         input: Dict[str, Any] | Omit = omit,
-        metadata: Dict[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
+        chat_id: Optional[str] | Omit = omit,
+        interactions: Iterable[Tuple[Dict[str, Any], Dict[str, Any]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -441,11 +466,16 @@ class AgentsResource(SyncAPIResource):
         input : Dict[str, Any] | Omit
             Structured input matching the agent's `input_schema`. For
             chat-style agents this is typically `{"messages": [...]}`.
-        metadata : Dict[str, Any] | Omit
-            Optional metadata to forward alongside the request.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Pass
             `input={"messages": [...]}` instead.
+        chat_id : str | None | Omit
+            ID of a playground chat to use as conversation context. If
+            given, the chat's prior exchanges are used as `interactions`
+            and any `interactions` passed here are ignored.
+        interactions : Iterable[Tuple[Dict[str, Any], Dict[str, Any]]] | Omit
+            Prior `(input, output)` turns to use as conversation context.
+            Ignored when `chat_id` is provided.
 
         Other Parameters
         ----------------
@@ -480,8 +510,10 @@ class AgentsResource(SyncAPIResource):
             method_name="agents.generate_completion",
         )
         body: Dict[str, Any] = {"input": resolved_input}
-        if not isinstance(metadata, Omit):
-            body["metadata"] = metadata
+        if not isinstance(chat_id, Omit):
+            body["chat_id"] = chat_id
+        if not isinstance(interactions, Omit):
+            body["interactions"] = interactions
 
         response = self._post(
             f"/v2/agents/{agent_id}/generate-completion",
@@ -646,7 +678,9 @@ class AsyncAgentsResource(AsyncAPIResource):
         url: str,
         headers: Dict[str, str] | Omit = omit,
         description: Optional[str] | Omit = omit,
-        stateful: Optional[bool] | Omit = omit,
+        auto_bindings: Optional[Iterable[AutoBindingParam]] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -670,6 +704,13 @@ class AsyncAgentsResource(AsyncAPIResource):
             HTTP headers to include when calling the agent.
         description : str | None | Omit
             Human-readable description of the agent.
+        auto_bindings : Iterable[AutoBindingParam] | None | Omit
+            Automatic input/output bindings for the agent (forward or
+            aggregate bindings).
+        input_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the agent's expected input.
+        output_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the agent's expected output.
 
         Other Parameters
         ----------------
@@ -705,7 +746,9 @@ class AsyncAgentsResource(AsyncAPIResource):
                     "supported_languages": supported_languages,
                     "url": url,
                     "description": description,
-                    "stateful": stateful,
+                    "auto_bindings": auto_bindings,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 AgentCreateParams,
             ),
@@ -777,6 +820,9 @@ class AsyncAgentsResource(AsyncAPIResource):
         name: Optional[str] | Omit = omit,
         supported_languages: Optional[SequenceNotStr[str]] | Omit = omit,
         url: Optional[str] | Omit = omit,
+        auto_bindings: Optional[Iterable[AutoBindingParam]] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -800,6 +846,12 @@ class AsyncAgentsResource(AsyncAPIResource):
             Updated supported languages.
         url : str | None | Omit
             Updated URL endpoint of the agent.
+        auto_bindings : Iterable[AutoBindingParam] | None | Omit
+            Updated automatic input/output bindings for the agent.
+        input_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the agent's expected input.
+        output_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the agent's expected output.
 
         Other Parameters
         ----------------
@@ -843,6 +895,9 @@ class AsyncAgentsResource(AsyncAPIResource):
                     "name": name,
                     "supported_languages": supported_languages,
                     "url": url,
+                    "auto_bindings": auto_bindings,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 AgentUpdateParams,
             ),
@@ -996,8 +1051,9 @@ class AsyncAgentsResource(AsyncAPIResource):
         agent_id: str,
         *,
         input: Dict[str, Any] | Omit = omit,
-        metadata: Dict[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
+        chat_id: Optional[str] | Omit = omit,
+        interactions: Iterable[Tuple[Dict[str, Any], Dict[str, Any]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1014,11 +1070,16 @@ class AsyncAgentsResource(AsyncAPIResource):
         input : Dict[str, Any] | Omit
             Structured input matching the agent's `input_schema`. For
             chat-style agents this is typically `{"messages": [...]}`.
-        metadata : Dict[str, Any] | Omit
-            Optional metadata to forward alongside the request.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Pass
             `input={"messages": [...]}` instead.
+        chat_id : str | None | Omit
+            ID of a playground chat to use as conversation context. If
+            given, the chat's prior exchanges are used as `interactions`
+            and any `interactions` passed here are ignored.
+        interactions : Iterable[Tuple[Dict[str, Any], Dict[str, Any]]] | Omit
+            Prior `(input, output)` turns to use as conversation context.
+            Ignored when `chat_id` is provided.
 
         Other Parameters
         ----------------
@@ -1053,8 +1114,10 @@ class AsyncAgentsResource(AsyncAPIResource):
             method_name="agents.generate_completion",
         )
         body: Dict[str, Any] = {"input": resolved_input}
-        if not isinstance(metadata, Omit):
-            body["metadata"] = metadata
+        if not isinstance(chat_id, Omit):
+            body["chat_id"] = chat_id
+        if not isinstance(interactions, Omit):
+            body["interactions"] = interactions
 
         response = await self._post(
             f"/v2/agents/{agent_id}/generate-completion",

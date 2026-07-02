@@ -1,6 +1,6 @@
 """Agent domain types."""
 
-from typing import Any, Dict, List, Iterable, Optional, TypedDict, cast
+from typing import Any, Dict, List, Tuple, Union, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
 from datetime import datetime
 from typing_extensions import Required, deprecated
 
@@ -19,6 +19,12 @@ __all__ = [
     "MinimalAgent",
     "MinimalAgentParam",
     "AgentInterface",
+    "ForwardBinding",
+    "ForwardBindingParam",
+    "AggregateBinding",
+    "AggregateBindingParam",
+    "AutoBinding",
+    "AutoBindingParam",
     "GenerateCompletionOutput",
     "AgentListParams",
     "AgentCreateParams",
@@ -35,6 +41,21 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
+class ForwardBinding(BaseModel):
+    mode: Literal["forward"] = "forward"
+    target: str
+    source: str
+
+
+class AggregateBinding(BaseModel):
+    mode: Literal["aggregate"] = "aggregate"
+    target: str
+    outputs_path: str
+
+
+AutoBinding: TypeAlias = Union[ForwardBinding, AggregateBinding]
+
+
 class Agent(BaseModel):
     id: str
     created_at: datetime
@@ -45,7 +66,7 @@ class Agent(BaseModel):
     supported_languages: list[str]
     updated_at: datetime
     url: str
-    auto_bindings: Optional[List[Dict[str, Any]]] = None
+    auto_bindings: Optional[List[AutoBinding]] = None
     input_schema: Optional[Dict[str, Any]] = None
     output_schema: Optional[Dict[str, Any]] = None
 
@@ -125,14 +146,10 @@ class GenerateCompletionOutput(BaseModel):
     older code that read `response` / `message` working.
     """
 
-    output: Optional[Dict[str, Any]] = None
+    output: Dict[str, Any]
     error: Optional[ExecutionError] = None
-    metadata: Optional[Dict[str, Any]] = None
-    forwarded: Optional[Dict[str, Any]] = None
 
     def _extract_response(self) -> Optional[ChatMessage]:
-        if self.output is None:
-            return None
         response = self.output.get("response")
         if isinstance(response, dict):
             r = cast(Dict[str, Any], response)
@@ -169,6 +186,21 @@ class AgentListParams(TypedDict, total=False):
     project_id: Optional[str]
 
 
+class ForwardBindingParam(TypedDict, total=False):
+    mode: Literal["forward"]
+    target: Required[str]
+    source: Required[str]
+
+
+class AggregateBindingParam(TypedDict, total=False):
+    mode: Literal["aggregate"]
+    target: Required[str]
+    outputs_path: Required[str]
+
+
+AutoBindingParam: TypeAlias = Union[ForwardBindingParam, AggregateBindingParam]
+
+
 class AgentCreateParams(TypedDict, total=False):
     headers: Required[Iterable[HeaderParam]]
     name: Required[str]
@@ -176,7 +208,7 @@ class AgentCreateParams(TypedDict, total=False):
     supported_languages: Required[SequenceNotStr[str]]
     url: Required[str]
     description: Optional[str]
-    auto_bindings: Optional[Dict[str, str]]
+    auto_bindings: Optional[Iterable[AutoBindingParam]]
     input_schema: Optional[Dict[str, Any]]
     output_schema: Optional[Dict[str, Any]]
 
@@ -187,7 +219,7 @@ class AgentUpdateParams(TypedDict, total=False):
     name: Optional[str]
     supported_languages: Optional[SequenceNotStr[str]]
     url: Optional[str]
-    auto_bindings: Optional[Dict[str, str]]
+    auto_bindings: Optional[Iterable[AutoBindingParam]]
     input_schema: Optional[Dict[str, Any]]
     output_schema: Optional[Dict[str, Any]]
 
@@ -206,8 +238,8 @@ class AgentTestConnectionParams(TypedDict, total=False):
 
 class AgentGenerateCompletionParams(TypedDict, total=False):
     input: Required[Dict[str, Any]]
-    metadata: Optional[Dict[str, Any]]
-    forwarded: Optional[Dict[str, Any]]
+    chat_id: Optional[str]
+    interactions: Iterable[Tuple[Dict[str, Any], Dict[str, Any]]]
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):

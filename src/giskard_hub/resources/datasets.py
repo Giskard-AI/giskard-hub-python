@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
+from typing import Any, Dict, List, Tuple, Literal, Mapping, Optional, cast, overload
 from pathlib import Path
 
 import httpx
@@ -215,6 +215,8 @@ class DatasetsResource(SyncAPIResource):
         name: str,
         project_id: str,
         description: Optional[str] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -232,6 +234,12 @@ class DatasetsResource(SyncAPIResource):
             Project ID to create the dataset in.
         description : Optional[str]
             Description of the dataset to create.
+        input_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case inputs.
+            Defaults to the chat input schema when omitted.
+        output_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case outputs.
+            Defaults to the chat output schema when omitted.
 
         Other Parameters
         ----------------
@@ -256,6 +264,8 @@ class DatasetsResource(SyncAPIResource):
                     "name": name,
                     "project_id": project_id,
                     "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetCreateParams,
             ),
@@ -407,6 +417,8 @@ class DatasetsResource(SyncAPIResource):
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         status: Optional[TaskProgressParam] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -426,6 +438,12 @@ class DatasetsResource(SyncAPIResource):
             Name of the dataset to update.
         status : Optional[TaskProgressParam]
             Status of the dataset to update.
+        input_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            inputs.
+        output_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            outputs.
 
         Other Parameters
         ----------------
@@ -457,6 +475,8 @@ class DatasetsResource(SyncAPIResource):
                     "description": description,
                     "name": name,
                     "status": status,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetUpdateParams,
             ),
@@ -1024,6 +1044,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         name: str,
         project_id: str,
         description: Optional[str] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1041,6 +1063,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
             Project ID to create the dataset in.
         description : Optional[str]
             Description of the dataset to create.
+        input_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case inputs.
+            Defaults to the chat input schema when omitted.
+        output_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case outputs.
+            Defaults to the chat output schema when omitted.
 
         Other Parameters
         ----------------
@@ -1065,6 +1093,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "name": name,
                     "project_id": project_id,
                     "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetCreateParams,
             ),
@@ -1213,6 +1243,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         status: Optional[TaskProgressParam] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1232,6 +1264,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
             Name of the dataset to update.
         status : Optional[TaskProgressParam]
             Status of the dataset to update.
+        input_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            inputs.
+        output_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            outputs.
 
         Other Parameters
         ----------------
@@ -1263,6 +1301,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "description": description,
                     "name": name,
                     "status": status,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetUpdateParams,
             ),

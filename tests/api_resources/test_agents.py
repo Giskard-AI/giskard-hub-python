@@ -39,7 +39,9 @@ class TestAgents:
             supported_languages=["string"],
             url="url",
             description="description",
-            stateful=True,
+            auto_bindings=[{"target": "target", "source": "source"}],
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Agent, agent, path=["response"])
 
@@ -140,6 +142,9 @@ class TestAgents:
             name="name",
             supported_languages=["string"],
             url="url",
+            auto_bindings=[{"target": "target", "source": "source"}],
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Agent, agent, path=["response"])
 
@@ -487,7 +492,9 @@ class TestAsyncAgents:
             supported_languages=["string"],
             url="url",
             description="description",
-            stateful=True,
+            auto_bindings=[{"target": "target", "source": "source"}],
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Agent, agent, path=["response"])
 
@@ -588,6 +595,9 @@ class TestAsyncAgents:
             name="name",
             supported_languages=["string"],
             url="url",
+            auto_bindings=[{"target": "target", "source": "source"}],
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Agent, agent, path=["response"])
 

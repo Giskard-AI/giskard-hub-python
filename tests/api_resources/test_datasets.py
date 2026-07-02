@@ -37,6 +37,8 @@ class TestDatasets:
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
@@ -182,6 +184,8 @@ class TestDatasets:
                 "error": "error",
                 "state": "skipped",
             },
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
@@ -639,6 +643,8 @@ class TestAsyncDatasets:
             name="name",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
@@ -784,6 +790,8 @@ class TestAsyncDatasets:
                 "error": "error",
                 "state": "skipped",
             },
+            input_schema={"foo": "bar"},
+            output_schema={"foo": "bar"},
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
