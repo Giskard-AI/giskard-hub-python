@@ -16,6 +16,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseSchemaValidation",
     "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
@@ -46,6 +47,11 @@ class TestCaseComment(BaseModel):
 class TestCaseReference(BaseModel):
     __test__ = False
     id: str
+
+
+class TestCaseSchemaValidation(BaseModel):
+    input_valid: bool = True
+    output_valid: bool = True
 
 
 def _first_interaction_messages(interactions: Optional[List[Interaction]]) -> List[ChatMessage]:
@@ -81,6 +87,7 @@ class TestCase(BaseModel):
     tags: List[str] = Field(default_factory=list)
     updated_at: datetime
     status: TestCaseStatus = "active"
+    schema_validation: TestCaseSchemaValidation = Field(default_factory=TestCaseSchemaValidation)
 
     @property
     @deprecated("`TestCase.messages` is deprecated; read `interactions[i].input` instead.")

@@ -133,8 +133,6 @@ from .check import (
 from .audit import (
     ActionType as ActionType,
     Audit as Audit,
-    AuditDiffItem as AuditDiffItem,
-    AuditDiffKind as AuditDiffKind,
     AuditDisplay as AuditDisplay,
     AuditFiltersParam as AuditFiltersParam,
     AuditListEntityParams as AuditListEntityParams,
@@ -261,6 +259,7 @@ from .test_case import (
     CommentEditParams as CommentEditParams,
     TestCase as TestCase,
     TestCaseReference as TestCaseReference,
+    TestCaseSchemaValidation as TestCaseSchemaValidation,
     TestCaseBulkDeleteParams as TestCaseBulkDeleteParams,
     TestCaseBulkUpdateParams as TestCaseBulkUpdateParams,
     TestCaseComment as TestCaseComment,
@@ -381,8 +380,6 @@ __all__ = [
     "CheckBulkDeleteParams",
     # audit
     "ActionType",
-    "AuditDiffKind",
-    "AuditDiffItem",
     "Audit",
     "AuditDisplay",
     "AuditListEntityParams",
@@ -484,6 +481,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseSchemaValidation",
     "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",

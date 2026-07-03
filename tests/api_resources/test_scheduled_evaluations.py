@@ -13,7 +13,6 @@ from giskard_hub.types import (
     Evaluation,
     ScheduledEvaluation,
 )
-from giskard_hub._utils import parse_datetime
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -148,11 +147,6 @@ class TestScheduledEvaluations:
             day_of_month=1,
             day_of_week=1,
             frequency="daily",
-            last_execution_at=parse_datetime("2019-12-27T18:11:19.117Z"),
-            last_execution_status={
-                "evaluation_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                "status": "success",
-            },
             name="name",
             paused=True,
             run_count=1,
@@ -491,11 +485,6 @@ class TestAsyncScheduledEvaluations:
             day_of_month=1,
             day_of_week=1,
             frequency="daily",
-            last_execution_at=parse_datetime("2019-12-27T18:11:19.117Z"),
-            last_execution_status={
-                "evaluation_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-                "status": "success",
-            },
             name="name",
             paused=True,
             run_count=1,

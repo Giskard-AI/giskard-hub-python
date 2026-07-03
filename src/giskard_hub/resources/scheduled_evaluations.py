@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Union, Literal, Optional
-from datetime import datetime
+from typing import List, Literal, Optional
 
 import httpx
 
@@ -27,7 +26,6 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.scheduled_evaluation import (
-    LastExecutionStatusParam,
     ScheduledEvaluationListParams,
     ScheduledEvaluationCreateParams,
     ScheduledEvaluationUpdateParams,
@@ -221,8 +219,6 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         time: Optional[str] | Omit = omit,
         day_of_week: Optional[int] | Omit = omit,
         day_of_month: Optional[int] | Omit = omit,
-        last_execution_at: Union[str, datetime, None] | Omit = omit,
-        last_execution_status: Optional[LastExecutionStatusParam] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -232,6 +228,10 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
         """Update an existing scheduled evaluation's configuration.
+
+        `last_execution_at` and `last_execution_status` are system-managed
+        (set automatically when the schedule runs) and cannot be updated
+        through this method.
 
         Parameters
         ----------
@@ -252,10 +252,6 @@ class ScheduledEvaluationsResource(SyncAPIResource):
             Day of the week to run the scheduled evaluation.
         day_of_month : int | None | Omit
             Day of the month to run the scheduled evaluation.
-        last_execution_at : str | datetime | None | Omit
-            The date and time of the last execution of the scheduled evaluation.
-        last_execution_status : LastExecutionStatusParam | None | Omit
-            The status of the last execution of the scheduled evaluation.
         paused : bool | None | Omit
             Whether the scheduled evaluation is paused.
 
@@ -291,8 +287,6 @@ class ScheduledEvaluationsResource(SyncAPIResource):
                     "day_of_month": day_of_month,
                     "day_of_week": day_of_week,
                     "frequency": frequency,
-                    "last_execution_at": last_execution_at,
-                    "last_execution_status": last_execution_status,
                     "name": name,
                     "paused": paused,
                     "run_count": run_count,
@@ -720,8 +714,6 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         time: Optional[str] | Omit = omit,
         day_of_week: Optional[int] | Omit = omit,
         day_of_month: Optional[int] | Omit = omit,
-        last_execution_at: Union[str, datetime, None] | Omit = omit,
-        last_execution_status: Optional[LastExecutionStatusParam] | Omit = omit,
         paused: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -731,6 +723,10 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ScheduledEvaluation:
         """Update an existing scheduled evaluation's configuration.
+
+        `last_execution_at` and `last_execution_status` are system-managed
+        (set automatically when the schedule runs) and cannot be updated
+        through this method.
 
         Parameters
         ----------
@@ -751,10 +747,6 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
             Day of the week to run the scheduled evaluation.
         day_of_month : int | None | Omit
             Day of the month to run the scheduled evaluation.
-        last_execution_at : str | datetime | None | Omit
-            The date and time of the last execution of the scheduled evaluation.
-        last_execution_status : LastExecutionStatusParam | None | Omit
-            The status of the last execution of the scheduled evaluation.
         paused : bool | None | Omit
             Whether the scheduled evaluation is paused.
 
@@ -790,8 +782,6 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
                     "day_of_month": day_of_month,
                     "day_of_week": day_of_week,
                     "frequency": frequency,
-                    "last_execution_at": last_execution_at,
-                    "last_execution_status": last_execution_status,
                     "name": name,
                     "paused": paused,
                     "run_count": run_count,

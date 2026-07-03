@@ -128,6 +128,7 @@ class TestCasesResource(SyncAPIResource):
         interactions: Iterable[InteractionParam] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        source_probe_attempt_id: Optional[str] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
@@ -152,6 +153,9 @@ class TestCasesResource(SyncAPIResource):
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
+        source_probe_attempt_id : str | None | Omit
+            ID of the scan probe attempt this test case was created from, if
+            any.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Translated into a single
             interaction against the dataset's default role with
@@ -211,6 +215,7 @@ class TestCasesResource(SyncAPIResource):
                     "interactions": interactions,
                     "status": status,
                     "tags": tags,
+                    "source_probe_attempt_id": source_probe_attempt_id,
                 },
                 TestCaseCreateParams,
             ),
@@ -656,6 +661,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
         interactions: Iterable[InteractionParam] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        source_probe_attempt_id: Optional[str] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
@@ -680,6 +686,9 @@ class AsyncTestCasesResource(AsyncAPIResource):
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
+        source_probe_attempt_id : str | None | Omit
+            ID of the scan probe attempt this test case was created from, if
+            any.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Translated into a single
             interaction against the dataset's default role with
@@ -739,6 +748,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "interactions": interactions,
                     "status": status,
                     "tags": tags,
+                    "source_probe_attempt_id": source_probe_attempt_id,
                 },
                 TestCaseCreateParams,
             ),
