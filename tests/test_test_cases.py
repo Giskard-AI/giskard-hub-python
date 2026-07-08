@@ -1,16 +1,20 @@
 """Tests for `TestCasesResource` argument validation (sync + async)."""
 # pyright: reportDeprecated=false
 
+from typing import Dict, List
+
 import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from giskard_hub._types import omit
-from giskard_hub.types.check import Interaction
+from giskard_hub.types.check import Interaction, InteractionParam
 from giskard_hub.types.test_case import TestCase
 from giskard_hub.resources._interaction_helpers import (
     _coerce_messages,
     _build_check_configs,
     _normalize_demo_output,
+    _resolve_interaction_checks,
+    resolve_interaction_checks_sync,
 )
 
 
@@ -114,6 +118,43 @@ def test_build_check_configs_raises_when_identifier_unknown() -> None:
             [{"identifier": "mystery"}],
             identifier_to_id={"correctness": "u-1"},
         )
+
+
+def test_resolve_interaction_checks_maps_identifiers_and_leaves_checkless_alone() -> None:
+    interactions: List[Dict[str, object]] = [
+        {
+            "position": 0,
+            "input": {"messages": []},
+            "checks": [{"identifier": "correctness", "params": {"reference": "r"}}],
+        },
+        {"position": 1, "input": {"messages": []}},
+    ]
+    resolved = _resolve_interaction_checks(interactions, {"correctness": "uuid-1"})
+
+    assert resolved[0]["checks"] == [
+        {"check_id": "uuid-1", "position": 0, "enabled": True, "override_spec": {"reference": "r"}}
+    ]
+    assert "checks" not in resolved[1]
+    # The caller's dicts are copied, not mutated in place.
+    assert interactions[0]["checks"] == [{"identifier": "correctness", "params": {"reference": "r"}}]
+
+
+def test_resolve_interaction_checks_sync_is_noop_without_checks(hub: HubClient) -> None:
+    # No interaction carries checks, so this must not touch the network.
+    interactions: List[InteractionParam] = [{"position": 0, "input": {"messages": []}}]
+    assert resolve_interaction_checks_sync(hub, interactions=interactions, dataset_id="d") == interactions
+
+
+def test_resolve_interaction_checks_sync_defaults_position_to_index(hub: HubClient) -> None:
+    # Omitted `position` falls back to the interaction's list index; an
+    # explicit position is left untouched. No checks, so no network call.
+    interactions: List[InteractionParam] = [
+        {"input": {"a": 1}},
+        {"position": 7, "input": {"b": 2}},
+        {"input": {"c": 3}},
+    ]
+    resolved = resolve_interaction_checks_sync(hub, interactions=interactions, dataset_id="d")
+    assert [i.get("position") for i in resolved] == [0, 7, 2]
 
 
 # ---------------------------------------------------------------------------

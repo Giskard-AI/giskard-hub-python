@@ -35,7 +35,12 @@ from ..types.dataset import (
     DatasetGenerateScenarioBasedParams,
 )
 from ..types.test_case import TestCase
-from ._interaction_helpers import is_legacy_upload_item, translate_legacy_upload_item
+from ._interaction_helpers import (
+    is_legacy_upload_item,
+    fill_upload_item_positions,
+    translate_legacy_upload_item,
+    upload_item_needs_position_fill,
+)
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
 
@@ -90,8 +95,14 @@ def _encode_items(items: List[dict[str, Any]], fmt: Literal["json", "jsonl"]) ->
 
 
 def _maybe_translate_items(items: List[dict[str, Any]], identifier_to_id: Mapping[str, str]) -> List[dict[str, Any]]:
-    """Translate any legacy items in the list, leaving new-shape items alone."""
-    return [translate_legacy_upload_item(it, identifier_to_id) if is_legacy_upload_item(it) else it for it in items]
+    """Translate legacy items; on new-shape items, default omitted interaction
+    positions to their list index."""
+    return [
+        translate_legacy_upload_item(it, identifier_to_id)
+        if is_legacy_upload_item(it)
+        else fill_upload_item_positions(it)
+        for it in items
+    ]
 
 
 def _checks_lookup_needed(items: List[dict[str, Any]]) -> bool:
@@ -112,15 +123,15 @@ def _prepare_upload_data_sync(
     if isinstance(data, list):
         items: List[dict[str, Any]] = data
         needs_translation = any(is_legacy_upload_item(it) for it in items)
+        identifier_to_id: dict[str, str] = {}
         if needs_translation:
             warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
-            identifier_to_id: dict[str, str] = {}
             if _checks_lookup_needed(items):
                 identifier_to_id = {
                     c.identifier: c.id
                     for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
                 }
-            items = _maybe_translate_items(items, identifier_to_id)
+        items = _maybe_translate_items(items, identifier_to_id)
         return ("test_cases.json", _encode_items(items, "json"))
 
     if isinstance(data, Path):
@@ -130,9 +141,11 @@ def _prepare_upload_data_sync(
             return data
         items, fmt = parsed
         needs_translation = any(is_legacy_upload_item(it) for it in items)
-        if not needs_translation:
+        needs_positions = any(upload_item_needs_position_fill(it) for it in items)
+        if not needs_translation and not needs_positions:
             return data
-        warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
         identifier_to_id = {}
         if _checks_lookup_needed(items):
             identifier_to_id = {
@@ -157,15 +170,15 @@ async def _prepare_upload_data_async(
     if isinstance(data, list):
         items: List[dict[str, Any]] = data
         needs_translation = any(is_legacy_upload_item(it) for it in items)
+        identifier_to_id: dict[str, str] = {}
         if needs_translation:
             warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
-            identifier_to_id: dict[str, str] = {}
             if _checks_lookup_needed(items):
                 identifier_to_id = {
                     c.identifier: c.id
                     for c in await resource._client.checks.list(project_id=project_id, filter_builtin=False)
                 }
-            items = _maybe_translate_items(items, identifier_to_id)
+        items = _maybe_translate_items(items, identifier_to_id)
         return ("test_cases.json", _encode_items(items, "json"))
 
     if isinstance(data, Path):
@@ -174,9 +187,11 @@ async def _prepare_upload_data_async(
             return data
         items, fmt = parsed
         needs_translation = any(is_legacy_upload_item(it) for it in items)
-        if not needs_translation:
+        needs_positions = any(upload_item_needs_position_fill(it) for it in items)
+        if not needs_translation and not needs_positions:
             return data
-        warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
         identifier_to_id = {}
         if _checks_lookup_needed(items):
             identifier_to_id = {

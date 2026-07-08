@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import List, Literal, Iterable, Optional
+from typing import List, Literal, Iterable, Optional, cast
 
 import httpx
 
@@ -47,6 +47,8 @@ from ...types.test_case import (
 from .._interaction_helpers import (
     build_legacy_interaction_sync,
     build_legacy_interaction_async,
+    resolve_interaction_checks_sync,
+    resolve_interaction_checks_async,
 )
 
 __all__ = ["TestCasesResource", "AsyncTestCasesResource"]
@@ -147,8 +149,9 @@ class TestCasesResource(SyncAPIResource):
             Dataset ID to create the test case in.
         interactions : Iterable[InteractionParam] | Omit
             Interactions to attach to the test case. Each interaction needs a
-            `position`, a structured `input` matching the agent's
-            `input_schema`, and optionally an `output` and a `checks` list.
+            structured `input` matching the agent's `input_schema`, and
+            optionally an `output` and a `checks` list. `position` defaults to
+            the interaction's index in the list when omitted.
         status : Literal["active", "draft"] | None | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
@@ -206,6 +209,10 @@ class TestCasesResource(SyncAPIResource):
                     checks=checks,
                 )
             ]
+        elif source == "interactions":
+            interactions = resolve_interaction_checks_sync(
+                self._client, interactions=cast("Iterable[InteractionParam]", interactions), dataset_id=dataset_id
+            )
 
         response = self._post(
             "/v2/test-cases",
@@ -371,6 +378,13 @@ class TestCasesResource(SyncAPIResource):
                     checks=checks,
                 )
             ]
+        elif source == "interactions":
+            interactions = resolve_interaction_checks_sync(
+                self._client,
+                interactions=cast("Iterable[InteractionParam]", interactions),
+                dataset_id=dataset_id if isinstance(dataset_id, str) else None,
+                test_case_id=test_case_id,
+            )
 
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
@@ -680,8 +694,9 @@ class AsyncTestCasesResource(AsyncAPIResource):
             Dataset ID to create the test case in.
         interactions : Iterable[InteractionParam] | Omit
             Interactions to attach to the test case. Each interaction needs a
-            `position`, a structured `input` matching the agent's
-            `input_schema`, and optionally an `output` and a `checks` list.
+            structured `input` matching the agent's `input_schema`, and
+            optionally an `output` and a `checks` list. `position` defaults to
+            the interaction's index in the list when omitted.
         status : Literal["active", "draft"] | None | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
@@ -739,6 +754,10 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     checks=checks,
                 )
             ]
+        elif source == "interactions":
+            interactions = await resolve_interaction_checks_async(
+                self._client, interactions=cast("Iterable[InteractionParam]", interactions), dataset_id=dataset_id
+            )
 
         response = await self._post(
             "/v2/test-cases",
@@ -906,6 +925,13 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     checks=checks,
                 )
             ]
+        elif source == "interactions":
+            interactions = await resolve_interaction_checks_async(
+                self._client,
+                interactions=cast("Iterable[InteractionParam]", interactions),
+                dataset_id=dataset_id if isinstance(dataset_id, str) else None,
+                test_case_id=test_case_id,
+            )
 
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",

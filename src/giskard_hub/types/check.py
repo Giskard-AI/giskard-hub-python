@@ -363,13 +363,12 @@ class InteractionCheckConfig(BaseModel):
 
 
 class InteractionCheckConfigParam(TypedDict, total=False):
-    check_id: Required[str]
-    name: Optional[str]
-    target: Optional[str]
+    # Same shape as `CheckConfigParam`: name the check by its `identifier`
+    # (e.g. "correctness") and pass its config in `params`. The SDK resolves
+    # the identifier to a `check_id` before sending.
+    identifier: Required[str]
     enabled: bool
-    override_spec: Optional[Dict[str, Any]]
-    position: int
-    spec: Optional[Dict[str, Any]]
+    params: Dict[str, Any]
 
 
 class InteractionResultData(BaseModel):
@@ -385,7 +384,6 @@ class InteractionResultData(BaseModel):
 class Interaction(BaseModel):
     position: int
     input: Dict[str, Any]
-    input_bindings: Optional[Dict[str, str]] = None
     output: Optional[Dict[str, Any]] = None
     simulator_config: Optional[Dict[str, Any]] = None
     created_at: Optional[datetime] = None
@@ -395,10 +393,7 @@ class Interaction(BaseModel):
 
 
 class InteractionParam(TypedDict, total=False):
-    position: Required[int]
-    input: Required[Dict[str, Any]]
-    input_bindings: Optional[Dict[str, str]]
-    output: Optional[Dict[str, Any]]
-    simulator_config: Optional[Dict[str, Any]]
-    test_case_id: Optional[str]
+    position: int
+    input: Required[JsonValue]
+    output: Optional[JsonValue]
     checks: Optional[Iterable[InteractionCheckConfigParam]]
