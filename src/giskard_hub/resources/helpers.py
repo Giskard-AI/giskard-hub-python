@@ -8,6 +8,7 @@ wrap lower-level API resources to offer convenience methods such as
 import time
 import asyncio
 import inspect
+import warnings
 from typing import Callable, Optional, Awaitable, Collection, cast
 from concurrent.futures import ThreadPoolExecutor
 
@@ -37,6 +38,29 @@ from ..types.test_case import TestCase, _first_interaction_messages
 from ..types.evaluation import Evaluation, TestCaseEvaluation
 
 __all__ = ["HelpersResource", "AsyncHelpersResource"]
+
+
+def _local_eval_skip_reason(test_case: TestCase) -> Optional[str]:
+    """Return why `test_case` cannot be evaluated locally, or None if it can."""
+    n = len(test_case.interactions or [])
+    if n != 1:
+        return (
+            f"Skipped by local evaluation: only single-interaction test cases are "
+            f"supported locally, but this one has {n} interactions. Run a remote "
+            f"evaluation (pass an agent id or `Agent`) to evaluate it."
+        )
+    return None
+
+
+def _warn_skipped_local(skipped: int, total: int) -> None:
+    """Warn once when some test cases were skipped by local evaluation."""
+    if skipped:
+        warnings.warn(
+            f"{skipped} of {total} test cases were skipped by local evaluation "
+            "because only single-interaction test cases are supported locally. "
+            "They are marked as errored; run a remote evaluation to score them.",
+            stacklevel=3,
+        )
 
 
 class HelpersResource(SyncAPIResource):
@@ -153,7 +177,13 @@ class HelpersResource(SyncAPIResource):
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
         if isinstance(agent, (str, Agent)):
-            return self._evaluate_remote(agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags)
+            return self._evaluate_remote(
+                agent=agent,
+                dataset_id=dataset_id,
+                project=project,
+                name=name,
+                tags=tags,
+            )
 
         return self._evaluate_local(agent=agent, dataset_id=dataset_id, name=name, tags=tags)
 
@@ -215,10 +245,21 @@ class HelpersResource(SyncAPIResource):
 
         entries = self._client.evaluations.results.list(evaluation_id=evaluation.id, include=["test_case"])
 
+        skipped = 0
         for entry in entries:
             test_case = entry.test_case
             if not isinstance(test_case, TestCase):
                 raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
+
+            skip_reason = _local_eval_skip_reason(test_case)
+            if skip_reason is not None:
+                skipped += 1
+                self._client.evaluations.results.submit_local_output(
+                    result_id=entry.id,
+                    evaluation_id=evaluation.id,
+                    error=skip_reason,
+                )
+                continue
 
             agent_output_model = normalize_agent_output(agent(_first_interaction_messages(test_case.interactions)))
             agent_output_param = cast(AgentOutputParam, agent_output_model.to_dict())
@@ -229,6 +270,7 @@ class HelpersResource(SyncAPIResource):
                 agent_output=agent_output_param,
             )
 
+        _warn_skipped_local(skipped, len(entries))
         return evaluation
 
     def _print_scan_metrics(self, entity: object) -> None:
@@ -239,7 +281,10 @@ class HelpersResource(SyncAPIResource):
         probe_results = self._client.scans.list_probes(scan_id=scan.id)
 
         def fetch_attempts(probe: ScanProbe) -> tuple[str, list[ScanProbeAttempt]]:
-            return (probe.id, self._client.scans.probes.list_attempts(probe_id=probe.id))
+            return (
+                probe.id,
+                self._client.scans.probes.list_attempts(probe_id=probe.id),
+            )
 
         with ThreadPoolExecutor() as executor:
             attempts_by_probe_id = dict(executor.map(fetch_attempts, probe_results))
@@ -317,7 +362,7 @@ class AsyncHelpersResource(AsyncAPIResource):
     async def evaluate(
         self,
         *,
-        agent: str | Agent | Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]],
+        agent: (str | Agent | Callable[[list[ChatMessage]], AgentReturn | Awaitable[AgentReturn]]),
         dataset: str | Dataset,
         project: Optional[str | Project] | Omit = omit,
         name: Optional[str] | Omit = omit,
@@ -362,7 +407,11 @@ class AsyncHelpersResource(AsyncAPIResource):
 
         if isinstance(agent, (str, Agent)):
             return await self._evaluate_remote(
-                agent=agent, dataset_id=dataset_id, project=project, name=name, tags=tags
+                agent=agent,
+                dataset_id=dataset_id,
+                project=project,
+                name=name,
+                tags=tags,
             )
 
         return await self._evaluate_local(agent=agent, dataset_id=dataset_id, name=name, tags=tags)
@@ -428,10 +477,19 @@ class AsyncHelpersResource(AsyncAPIResource):
             include=["test_case"],
         )
 
-        async def _process_entry(entry: TestCaseEvaluation) -> None:
+        async def _process_entry(entry: TestCaseEvaluation) -> bool:
             test_case = entry.test_case
             if not isinstance(test_case, TestCase):
                 raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
+
+            skip_reason = _local_eval_skip_reason(test_case)
+            if skip_reason is not None:
+                await self._client.evaluations.results.submit_local_output(
+                    result_id=entry.id,
+                    evaluation_id=evaluation.id,
+                    error=skip_reason,
+                )
+                return True
 
             output = agent(_first_interaction_messages(test_case.interactions))
             if inspect.isawaitable(output):
@@ -445,9 +503,11 @@ class AsyncHelpersResource(AsyncAPIResource):
                 evaluation_id=evaluation.id,
                 agent_output=agent_output_param,
             )
+            return False
 
-        await asyncio.gather(*(_process_entry(entry) for entry in entries))
+        results = await asyncio.gather(*(_process_entry(entry) for entry in entries))
 
+        _warn_skipped_local(sum(results), len(entries))
         return evaluation
 
     async def _print_scan_metrics(self, entity: object) -> None:
