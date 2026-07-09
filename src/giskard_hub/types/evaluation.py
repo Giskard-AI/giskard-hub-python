@@ -1,13 +1,21 @@
 """Evaluation domain types."""
 
-from typing import Dict, List, Union, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Literal,
+    Iterable,
+    Optional,
+    TypedDict,
+)
 from datetime import datetime  # noqa: I001
 from typing_extensions import Required
 
-from .chat import ChatMessageParam
-from .agent import Agent, AgentOutput, MinimalAgent, AgentReference, AgentOutputParam, MinimalAgentParam
-from .check import CheckResult
-from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
+from .agent import AgentOutput, AgentInterface, AgentOutputParam, MinimalAgentParam
+from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
+from .common import JsonValue, TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import SequenceNotStr
 from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
 from .._models import BaseModel
@@ -21,11 +29,10 @@ __all__ = [
     "EvaluationCreateParams",
     "EvaluationUpdateParams",
     "EvaluationRetrieveParams",
-    "EvaluationRunSingleParams",
+    "EvaluationRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
+    "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
-    "Criterion",
-    "CriterionEvaluationDataset",
     "FailureCategory",
     "FailureCategoryParam",
     "TestCaseEvaluation",
@@ -63,7 +70,7 @@ class EvaluationReference(BaseModel):
 
 class Evaluation(BaseModel):
     id: str
-    agent: AgentReference | MinimalAgent | Agent
+    agent: AgentInterface
     created_at: datetime
     criteria: Optional[DatasetSubset] = None
     dataset: Dataset | DatasetReference
@@ -77,6 +84,7 @@ class Evaluation(BaseModel):
     status: TaskProgress
     tags: List[Metric]
     updated_at: datetime
+    is_upload: bool = False
 
     @property
     def state(self) -> TaskState:
@@ -129,13 +137,13 @@ class TestCaseEvaluation(BaseModel):
     error: Optional[str] = None
     evaluation_id: str
     failure_category: Optional[FailureCategoryResult] = None
-    output: Optional[AgentOutput] = None
+    output: Optional[Union[AgentOutput, JsonValue]] = None
     results: List[CheckResult]
     state: TaskState
     test_case: TestCaseReference | TestCase
     hidden: bool
     test_case_exists: Optional[bool] = None
-    divergence_warnings: Optional[List[DivergenceWarning]] = None
+    interaction_results: Optional[List[InteractionResultData]] = None
 
 
 # ---------------------------------------------------------------------------
@@ -145,12 +153,11 @@ class TestCaseEvaluation(BaseModel):
 
 class EvaluationListParams(TypedDict, total=False):
     project_id: Required[str]
-    include: Optional[List[Literal["agent", "dataset"]]]
 
 
 class EvaluationCreateParams(TypedDict, total=False):
-    agent_id: Required[str]
     project_id: Required[str]
+    agent_id: Optional[str]
     criteria: Optional[DatasetSubsetParam]
     name: str
     old_evaluation_id: Optional[str]
@@ -163,29 +170,28 @@ class EvaluationUpdateParams(TypedDict, total=False):
 
 
 class EvaluationRetrieveParams(TypedDict, total=False):
-    include: Optional[List[Literal["agent", "dataset"]]]
+    pass
 
 
-class EvaluationRunSingleParams(TypedDict, total=False):
-    checks: Required[Iterable[Dict[str, object]]]
-    input_data: Required[Iterable[ChatMessageParam]]
-    model_output: Required[AgentOutputParam]
-    model_description: str
-    project_id: Optional[str]
-
-
-class CriterionEvaluationDataset(TypedDict, total=False):
-    evaluation_id: Required[str]
-    target_type: Literal["evaluation"]
-
-
-Criterion: TypeAlias = Union[DatasetSubsetParam, CriterionEvaluationDataset]
+class EvaluationRunInteractionChecksParams(TypedDict, total=False):
+    project_id: Required[str]
+    input_data: Required[Dict[str, Any]]
+    model_output: Required[Dict[str, Any]]
+    checks: Required[Iterable[FlatCheckSpecParam]]
 
 
 class EvaluationCreateLocalParams(TypedDict, total=False):
-    criteria: Required[Iterable[Criterion]]
+    criteria: Required[DatasetSubsetParam]
     model: Required[MinimalAgentParam]
     name: Optional[str]
+
+
+class EvaluationUploadParams(TypedDict, total=False):
+    project_id: Required[str]
+    payload: Required[Dict[str, Any]]
+    agent_id: Optional[str]
+    name: Optional[str]
+    auto_classify_failures: Optional[bool]
 
 
 class EvaluationBulkDeleteParams(TypedDict, total=False):

@@ -1,15 +1,15 @@
 """Audit domain types."""
 
-from typing import Any, Dict, List, Literal, Optional, TypeAlias, TypedDict
+from typing import Dict, List, Literal, Optional, TypeAlias, TypedDict
 from datetime import datetime
+
+from pydantic import Field
 
 from .common import OrderByParam, FilterValueParam
 from .._models import BaseModel
 
 __all__ = [
     "ActionType",
-    "AuditDiffKind",
-    "AuditDiffItem",
     "Audit",
     "AuditDisplay",
     "AuditDisplayDiffItem",
@@ -25,19 +25,11 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 ActionType: TypeAlias = Literal["insert", "update", "delete"]
-AuditDiffKind: TypeAlias = Literal["added", "removed", "changed"]
 
 
 # ---------------------------------------------------------------------------
 # Models
 # ---------------------------------------------------------------------------
-
-
-class AuditDiffItem(BaseModel):
-    kind: AuditDiffKind
-    field: str
-    old_value: Optional[Any] = None
-    new_value: Optional[Any] = None
 
 
 class Audit(BaseModel):
@@ -46,10 +38,13 @@ class Audit(BaseModel):
     entity_id: str
     entity_type: str
     created_at: datetime
-    user_id: Optional[str] = None
+    updated_at: datetime
+    user_id: str
     project_id: Optional[str] = None
-    diff: Optional[List[AuditDiffItem]] = None
-    metadata: Optional[Dict[str, object]] = None
+    user_name: Optional[str] = None
+    data: Dict[str, object] = Field(default_factory=dict)
+    triggered_by_entity_id: Optional[str] = None
+    triggered_by_entity_type: Optional[str] = None
 
 
 class AuditDisplayDiffItem(BaseModel):

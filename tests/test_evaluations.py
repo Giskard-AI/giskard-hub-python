@@ -4,8 +4,11 @@ from typing import Any
 
 import pytest
 
-from giskard_hub import HubClient, AsyncHubClient
-from giskard_hub.resources._check_helpers import check_params_to_specs
+from giskard_hub.resources._check_helpers import (
+    needs_check_lookup,
+    check_params_to_specs,
+    flat_check_specs_with_resolution,
+)
 from giskard_hub.resources.evaluations.evaluations import _normalize_agent_output
 
 # ---------------------------------------------------------------------------
@@ -35,37 +38,41 @@ def test_normalize_agent_output_passes_dict_through() -> None:
     assert _normalize_agent_output(payload) is payload
 
 
-# ---------------------------------------------------------------------------
-# run_single validation (sync + async). Validation raises before any HTTP.
-# ---------------------------------------------------------------------------
+def test_flat_check_specs_built_in_uses_identifier() -> None:
+    out = flat_check_specs_with_resolution(
+        [{"identifier": "correctness", "params": {"reference": "x", "type": "correctness"}}],
+        identifier_to_id={},
+    )
+    assert out == [{"identifier": "correctness", "override_spec": {"reference": "x"}}]
 
 
-@pytest.fixture
-def hub() -> HubClient:
-    return HubClient(api_key="test", base_url="http://localhost")
+def test_flat_check_specs_custom_uses_check_id() -> None:
+    out = flat_check_specs_with_resolution(
+        [{"identifier": "tone_pro", "params": {"reference": "x"}}],
+        identifier_to_id={"tone_pro": "uuid-1"},
+    )
+    assert out == [{"check_id": "uuid-1", "override_spec": {"reference": "x"}}]
 
 
-@pytest.fixture
-def async_hub() -> AsyncHubClient:
-    return AsyncHubClient(api_key="test", base_url="http://localhost")
-
-
-def test_run_single_rejects_both_messages_and_input_data(hub: HubClient) -> None:
-    with pytest.raises(ValueError, match="Cannot provide both 'messages' and 'input_data'"):
-        hub.evaluations.run_single(
-            checks=[],
-            agent_output={"response": {"role": "assistant", "content": "x"}},
-            messages=[{"role": "user", "content": "x"}],
-            input_data=[{"role": "user", "content": "x"}],
+def test_flat_check_specs_unknown_identifier_raises() -> None:
+    with pytest.raises(ValueError, match="not a built-in"):
+        flat_check_specs_with_resolution(
+            [{"identifier": "mystery"}],
+            identifier_to_id={},
         )
 
 
-@pytest.mark.asyncio
-async def test_async_run_single_rejects_both(async_hub: AsyncHubClient) -> None:
-    with pytest.raises(ValueError, match="Cannot provide both 'messages' and 'input_data'"):
-        await async_hub.evaluations.run_single(
-            checks=[],
-            agent_output={"response": {"role": "assistant", "content": "x"}},
-            messages=[{"role": "user", "content": "x"}],
-            input_data=[{"role": "user", "content": "x"}],
+def test_needs_check_lookup_true_for_custom() -> None:
+    assert needs_check_lookup([{"identifier": "tone_pro"}]) is True
+
+
+def test_needs_check_lookup_false_for_built_ins_only() -> None:
+    assert (
+        needs_check_lookup(
+            [
+                {"identifier": "correctness"},
+                {"identifier": "string_match"},
+            ]
         )
+        is False
+    )

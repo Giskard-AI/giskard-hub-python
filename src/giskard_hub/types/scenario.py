@@ -2,7 +2,9 @@
 
 from typing import Any, Dict, List, Optional, TypedDict
 from datetime import datetime
-from typing_extensions import Required
+from typing_extensions import Required, deprecated
+
+from pydantic import Field
 
 from .._types import SequenceNotStr
 from .._models import BaseModel
@@ -31,8 +33,14 @@ class Scenario(BaseModel):
 
 
 class ScenarioPreview(BaseModel):
-    conversation: List[Dict[str, Any]]
-    generated_rules: Optional[List[str]]
+    inputs: List[Dict[str, Any]] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    generated_rules: Optional[List[str]] = None
+
+    @property
+    @deprecated("`ScenarioPreview.conversation` is deprecated; read `inputs` instead.")
+    def conversation(self) -> List[Dict[str, Any]]:
+        """Deprecated alias for `inputs`."""
+        return self.inputs
 
 
 # ---------------------------------------------------------------------------

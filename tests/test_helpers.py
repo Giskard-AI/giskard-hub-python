@@ -299,12 +299,20 @@ class DummyEvaluations:
                 assert evaluation_id == outer.local_eval.id  # type: ignore[union-attr]
                 return outer.entries
 
-            def submit_local_output(self, *, result_id: str, evaluation_id: str, agent_output: dict[str, Any]) -> None:
+            def submit_local_output(
+                self,
+                *,
+                result_id: str,
+                evaluation_id: str,
+                agent_output: dict[str, Any] | None = None,
+                error: str | None = None,
+            ) -> None:
                 self.submissions.append(
                     {
                         "result_id": result_id,
                         "evaluation_id": evaluation_id,
                         "agent_output": agent_output,
+                        "error": error,
                     }
                 )
 
@@ -339,13 +347,19 @@ class AsyncDummyEvaluations:
                 return outer.entries
 
             async def submit_local_output(
-                self, *, result_id: str, evaluation_id: str, agent_output: dict[str, Any]
+                self,
+                *,
+                result_id: str,
+                evaluation_id: str,
+                agent_output: dict[str, Any] | None = None,
+                error: str | None = None,
             ) -> None:
                 self.submissions.append(
                     {
                         "result_id": result_id,
                         "evaluation_id": evaluation_id,
                         "agent_output": agent_output,
+                        "error": error,
                     }
                 )
 
@@ -394,7 +408,26 @@ def _make_evaluation(eval_id: str = "eval-1") -> Evaluation:
 
 
 def _make_test_case(messages: list[ChatMessage]) -> TestCase:
-    return TestCase.model_construct(id="tc-1", messages=messages)  # type: ignore[arg-type]
+    from giskard_hub.types.check import Interaction
+
+    interaction = Interaction.model_construct(  # type: ignore[arg-type]
+        position=0,
+        input={"messages": [m.to_dict() for m in messages]},
+    )
+    return TestCase.model_construct(id="tc-1", interactions=[interaction])  # type: ignore[arg-type]
+
+
+def _make_multi_interaction_test_case(n: int, test_case_id: str = "tc-multi") -> TestCase:
+    from giskard_hub.types.check import Interaction
+
+    interactions = [
+        Interaction.model_construct(  # type: ignore[arg-type]
+            position=i,
+            input={"messages": [{"role": "user", "content": f"turn {i}"}]},
+        )
+        for i in range(n)
+    ]
+    return TestCase.model_construct(id=test_case_id, interactions=interactions)  # type: ignore[arg-type]
 
 
 def _make_result_entry(test_case: TestCase, result_id: str = "res-1") -> Any:
@@ -514,6 +547,37 @@ def test_evaluate_local_with_callable_agent_output_dict() -> None:
     assert submitted["response"]["role"] == "assistant"
 
 
+def test_evaluate_local_skips_multi_interaction_test_cases() -> None:
+    remote_eval = _make_evaluation()
+    local_eval = _make_evaluation("local-eval")
+
+    single = _make_result_entry(_make_test_case([ChatMessage(role="user", content="hi")]), "res-single")
+    multi = _make_result_entry(_make_multi_interaction_test_case(2), "res-multi")
+
+    evaluations = DummyEvaluations(remote_eval, local_eval, entries=[single, multi])
+    client = DummyClient(evaluations)
+    helpers = HelpersWithDummyClient(client)  # type: ignore[arg-type]
+
+    calls: list[Any] = []
+
+    def agent_fn(msgs: list[ChatMessage]) -> str:
+        calls.append(msgs)
+        return "hello"
+
+    with pytest.warns(UserWarning, match="1 of 2 test cases were skipped"):
+        result = helpers.evaluate(agent=agent_fn, dataset="ds-1")
+
+    assert result is local_eval
+    # Agent invoked only for the single-interaction case.
+    assert len(calls) == 1
+
+    by_id = {s["result_id"]: s for s in evaluations.results.submissions}
+    assert by_id["res-single"]["agent_output"] is not None
+    assert by_id["res-single"]["error"] is None
+    assert by_id["res-multi"]["agent_output"] is None
+    assert "2 interactions" in by_id["res-multi"]["error"]
+
+
 # ---------------------------------------------------------------------------
 # async evaluate helpers
 # ---------------------------------------------------------------------------
@@ -628,3 +692,34 @@ async def test_evaluate_local_with_callable_agent_output_dict_async() -> None:
     submitted = submissions[0]["agent_output"]
     assert submitted["response"]["content"] == "dict response"
     assert submitted["response"]["role"] == "assistant"
+
+
+@pytest.mark.asyncio
+async def test_evaluate_local_skips_multi_interaction_test_cases_async() -> None:
+    remote_eval = _make_evaluation()
+    local_eval = _make_evaluation("local-eval")
+
+    single = _make_result_entry(_make_test_case([ChatMessage(role="user", content="hi")]), "res-single")
+    multi = _make_result_entry(_make_multi_interaction_test_case(3), "res-multi")
+
+    evaluations = AsyncDummyEvaluations(remote_eval, local_eval, entries=[single, multi])
+    client = AsyncDummyClient(evaluations)
+    helpers = AsyncHelpersWithDummyClient(client)  # type: ignore[arg-type]
+
+    calls: list[Any] = []
+
+    def agent_fn(msgs: list[ChatMessage]) -> str:
+        calls.append(msgs)
+        return "hello"
+
+    with pytest.warns(UserWarning, match="1 of 2 test cases were skipped"):
+        result = await helpers.evaluate(agent=agent_fn, dataset="ds-1")
+
+    assert result is local_eval
+    assert len(calls) == 1
+
+    by_id = {s["result_id"]: s for s in evaluations.results.submissions}
+    assert by_id["res-single"]["agent_output"] is not None
+    assert by_id["res-single"]["error"] is None
+    assert by_id["res-multi"]["agent_output"] is None
+    assert "3 interactions" in by_id["res-multi"]["error"]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Literal, Iterable, Optional
+import warnings
+from typing import List, Literal, Iterable, Optional, cast
 
 import httpx
 
@@ -33,10 +34,9 @@ from ..._response import (
     async_to_streamed_response_wrapper,
 )
 from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
-from ...types.check import CheckConfigParam
+from ...types.check import CheckConfigParam, InteractionParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from .._check_helpers import check_params_to_specs
 from ...types.test_case import (
     TestCase,
     TestCaseCreateParams,
@@ -44,20 +44,57 @@ from ...types.test_case import (
     TestCaseBulkDeleteParams,
     TestCaseBulkUpdateParams,
 )
+from .._interaction_helpers import (
+    build_legacy_interaction_sync,
+    build_legacy_interaction_async,
+    resolve_interaction_checks_sync,
+    resolve_interaction_checks_async,
+)
 
 __all__ = ["TestCasesResource", "AsyncTestCasesResource"]
 
 DemoOutput = ChatMessageWithMetadataParam | str
 
 
-def _normalize_demo_output(
-    demo_output: Optional[ChatMessageWithMetadataParam | str] | Omit,
-) -> Optional[ChatMessageWithMetadataParam] | Omit:
-    if isinstance(demo_output, (Omit, type(None))):
-        return demo_output
-    if isinstance(demo_output, str):
-        return ChatMessageWithMetadataParam(role="assistant", content=demo_output)
-    return demo_output
+_LEGACY_TC_PARAM_NAMES = ("messages", "checks", "demo_output")
+
+
+def _resolve_interaction_source(
+    *,
+    method: str,
+    require_one: bool,
+    interactions: Iterable[InteractionParam] | None | Omit,
+    messages: Iterable[ChatMessageParam] | None | Omit,
+    checks: Iterable[CheckConfigParam] | None | Omit,
+    demo_output: Optional[DemoOutput] | Omit,
+) -> Literal["interactions", "legacy", "none"]:
+    """Decide whether the call is using the new `interactions=` form, the
+    deprecated legacy form, or nothing.
+
+    Raises if both forms are mixed, or if neither is provided when
+    `require_one=True` (i.e. on `create`).
+    Emits a `DeprecationWarning` when the legacy form is selected.
+    """
+    using_interactions = not isinstance(interactions, Omit) and interactions is not None
+    using_legacy = any(not isinstance(value, Omit) for value in (messages, checks, demo_output))
+
+    if using_interactions and using_legacy:
+        raise ValueError(
+            "Cannot mix `interactions` with legacy parameters "
+            f"({', '.join(repr(n) for n in _LEGACY_TC_PARAM_NAMES)}). Pick one."
+        )
+    if require_one and not using_interactions and not using_legacy:
+        raise ValueError("Must provide either `interactions=` (recommended) or legacy `messages` (deprecated).")
+
+    if using_legacy:
+        warnings.warn(
+            f"Passing `messages` / `checks` / `demo_output` to "
+            f"`test_cases.{method}` is deprecated. Pass `interactions=[{{...}}]` instead.",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        return "legacy"
+    return "interactions" if using_interactions else "none"
 
 
 class TestCasesResource(SyncAPIResource):
@@ -90,12 +127,13 @@ class TestCasesResource(SyncAPIResource):
         self,
         *,
         dataset_id: str,
+        interactions: Iterable[InteractionParam] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        source_probe_attempt_id: Optional[str] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
-        status: Optional[Literal["active", "draft"]] | Omit = omit,
-        tags: SequenceNotStr[str] | Omit = omit,
-        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -103,26 +141,33 @@ class TestCasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
-        """
-        Create a new test case in a dataset with conversation messages and optional checks.
+        """Create a new test case in a dataset.
 
         Parameters
         ----------
         dataset_id : str
-            Dataset ID to create the test case from.
-        messages : Iterable[ChatMessageParam] or Omit
-            Messages to add to the test case.
-        checks : Iterable[CheckConfigParam] | Omit
-            Checks to add to the test case. Each check should have an `identifier`
-            and optionally `params` (check-specific fields) and `enabled`.
-        demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
-        status : Optional[Literal["active", "draft"]] | Omit
+            Dataset ID to create the test case in.
+        interactions : Iterable[InteractionParam] | Omit
+            Interactions to attach to the test case. Each interaction needs a
+            structured `input` matching the agent's `input_schema`, and
+            optionally an `output` and a `checks` list. `position` defaults to
+            the interaction's index in the list when omitted.
+        status : Literal["active", "draft"] | None | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
-        input_data : Iterable[ChatMessageParam] or Omit
-            (Experimental) The input data (messages) to add to the test case. Replaces `messages` but will be replaced soon by `interactions`.
+        source_probe_attempt_id : str | None | Omit
+            ID of the scan probe attempt this test case was created from, if
+            any.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
 
         Other Parameters
         ----------------
@@ -143,35 +188,41 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
+            If `interactions` is mixed with legacy parameters, or if neither
+            is provided.
         """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        source = _resolve_interaction_source(
+            method="create",
+            require_one=True,
+            interactions=interactions,
+            messages=messages,
+            checks=checks,
+            demo_output=demo_output,
+        )
+        if source == "legacy":
+            interactions = [
+                build_legacy_interaction_sync(
+                    self._client,
+                    dataset_id=dataset_id,
+                    messages=messages,
+                    demo_output=demo_output,
+                    checks=checks,
+                )
+            ]
+        elif source == "interactions":
+            interactions = resolve_interaction_checks_sync(
+                self._client, interactions=cast("Iterable[InteractionParam]", interactions), dataset_id=dataset_id
             )
 
-        if not messages_provided and not input_data_provided:
-            raise ValueError("Must provide either 'messages' or 'input_data'. ")
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
-        api_demo_output = _normalize_demo_output(demo_output)
         response = self._post(
             "/v2/test-cases",
             body=maybe_transform(
                 {
                     "dataset_id": dataset_id,
-                    "input_data": final_input_data,
-                    "checks": api_checks,
-                    "demo_output": api_demo_output,
+                    "interactions": interactions,
                     "status": status,
                     "tags": tags,
+                    "source_probe_attempt_id": source_probe_attempt_id,
                 },
                 TestCaseCreateParams,
             ),
@@ -245,13 +296,13 @@ class TestCasesResource(SyncAPIResource):
         self,
         test_case_id: str,
         *,
-        checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
+        interactions: Optional[Iterable[InteractionParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
-        demo_output: Optional[DemoOutput] | Omit = omit,
-        messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
-        input_data: Optional[Iterable[ChatMessageParam]] | Omit = omit,
+        messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
+        checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
+        demo_output: Optional[DemoOutput] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -259,28 +310,29 @@ class TestCasesResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
-        """
-        Update an existing test case's messages, checks, tags, or status.
+        """Update an existing test case.
 
         Parameters
         ----------
         test_case_id : str
             Test Case ID to update.
-        checks : Optional[Iterable[CheckConfigParam]] | Omit
-            Checks to update the test case. Each check should have an `identifier`
-            and optionally `params` (check-specific fields) and `enabled`.
-        dataset_id : Optional[str] | Omit
-            Dataset ID to update the test case.
-        demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
-        messages : Optional[Iterable[ChatMessageParam]] | Omit
-            Messages to update the test case.
-        tags : Optional[SequenceNotStr[str]] | Omit
-            Tags to update the test case.
-        status : Optional[Literal["active", "draft"]] | Omit
-            Status to update of the test case.
-        input_data : Optional[Iterable[ChatMessageParam]] | Omit
-            (Experimental) The input data (messages) to update the test case. Replaces `messages` but will be replaced soon by `interactions`.
+        interactions : Iterable[InteractionParam] | None | Omit
+            Replace the test case's interactions.
+        dataset_id : str | None | Omit
+            Move the test case to this dataset.
+        tags : SequenceNotStr[str] | None | Omit
+            Tags to set on the test case.
+        status : Literal["active", "draft"] | None | Omit
+            New status of the test case.
+        messages : Iterable[ChatMessageParam] | None | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | None | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
 
         Other Parameters
         ----------------
@@ -301,37 +353,45 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If `test_case_id` is empty, or if both `messages` and `input_data` are provided.
+            If `test_case_id` is empty, or if `interactions` is mixed with
+            legacy parameters.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
 
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        source = _resolve_interaction_source(
+            method="update",
+            require_one=False,
+            interactions=interactions,
+            messages=messages,
+            checks=checks,
+            demo_output=demo_output,
+        )
+        if source == "legacy":
+            target_dataset_id = dataset_id if isinstance(dataset_id, str) else self.retrieve(test_case_id).dataset_id
+            interactions = [
+                build_legacy_interaction_sync(
+                    self._client,
+                    dataset_id=target_dataset_id,
+                    messages=messages,
+                    demo_output=demo_output,
+                    checks=checks,
+                )
+            ]
+        elif source == "interactions":
+            interactions = resolve_interaction_checks_sync(
+                self._client,
+                interactions=cast("Iterable[InteractionParam]", interactions),
+                dataset_id=dataset_id if isinstance(dataset_id, str) else None,
+                test_case_id=test_case_id,
             )
 
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[object] | Omit | None
-        if checks is None or isinstance(checks, Omit):
-            api_checks = checks  # type: ignore[assignment]
-        else:
-            api_checks = check_params_to_specs(checks)
-        api_demo_output = _normalize_demo_output(demo_output)
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=maybe_transform(
                 {
-                    "checks": api_checks,
                     "dataset_id": dataset_id,
-                    "demo_output": api_demo_output,
-                    "input_data": final_input_data,
+                    "interactions": interactions,
                     "tags": tags,
                     "status": status,
                 },
@@ -566,7 +626,7 @@ class TestCasesResource(SyncAPIResource):
             "/v2/test-cases/bulk-move",
             body=maybe_transform(
                 {
-                    "chat_test_case_ids": test_case_ids,
+                    "test_case_ids": test_case_ids,
                     "dataset_id": target_dataset_id,
                     "duplicate": duplicate,
                 },
@@ -612,12 +672,13 @@ class AsyncTestCasesResource(AsyncAPIResource):
         self,
         *,
         dataset_id: str,
+        interactions: Iterable[InteractionParam] | Omit = omit,
+        status: Optional[Literal["active", "draft"]] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        source_probe_attempt_id: Optional[str] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
-        status: Optional[Literal["active", "draft"]] | Omit = omit,
-        tags: SequenceNotStr[str] | Omit = omit,
-        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -625,26 +686,33 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
-        """
-        Create a new test case in a dataset with conversation messages and optional checks.
+        """Create a new test case in a dataset.
 
         Parameters
         ----------
         dataset_id : str
-            Dataset ID to create the test case for.
-        messages : Iterable[ChatMessageParam] or Omit
-            Messages to add to the test case.
-        checks : Iterable[CheckConfigParam] | Omit
-            Checks to add to the test case. Each check should have an `identifier`
-            and optionally `params` (check-specific fields) and `enabled`.
-        demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
-        status : Optional[Literal["active", "draft"]] | Omit
+            Dataset ID to create the test case in.
+        interactions : Iterable[InteractionParam] | Omit
+            Interactions to attach to the test case. Each interaction needs a
+            structured `input` matching the agent's `input_schema`, and
+            optionally an `output` and a `checks` list. `position` defaults to
+            the interaction's index in the list when omitted.
+        status : Literal["active", "draft"] | None | Omit
             Status of the test case.
         tags : SequenceNotStr[str] | Omit
             Tags to apply to the test case.
-        input_data : Iterable[ChatMessageParam] or Omit
-            (Experimental) The input data (messages) to add to the test case. Replaces `messages` but will be replaced soon by `interactions`.
+        source_probe_attempt_id : str | None | Omit
+            ID of the scan probe attempt this test case was created from, if
+            any.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
 
         Other Parameters
         ----------------
@@ -665,37 +733,41 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
+            If `interactions` is mixed with legacy parameters, or if neither
+            is provided.
         """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        source = _resolve_interaction_source(
+            method="create",
+            require_one=True,
+            interactions=interactions,
+            messages=messages,
+            checks=checks,
+            demo_output=demo_output,
+        )
+        if source == "legacy":
+            interactions = [
+                await build_legacy_interaction_async(
+                    self._client,
+                    dataset_id=dataset_id,
+                    messages=messages,
+                    demo_output=demo_output,
+                    checks=checks,
+                )
+            ]
+        elif source == "interactions":
+            interactions = await resolve_interaction_checks_async(
+                self._client, interactions=cast("Iterable[InteractionParam]", interactions), dataset_id=dataset_id
             )
 
-        if not messages_provided and not input_data_provided:
-            raise ValueError(
-                "Must provide either 'messages' or 'input_data'. Please use 'input_data' as 'messages' is deprecated."
-            )
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[object] | Omit = check_params_to_specs(checks) if not isinstance(checks, Omit) else omit
-        api_demo_output = _normalize_demo_output(demo_output)
         response = await self._post(
             "/v2/test-cases",
             body=await async_maybe_transform(
                 {
                     "dataset_id": dataset_id,
-                    "input_data": final_input_data,
-                    "checks": api_checks,
-                    "demo_output": api_demo_output,
+                    "interactions": interactions,
                     "status": status,
                     "tags": tags,
+                    "source_probe_attempt_id": source_probe_attempt_id,
                 },
                 TestCaseCreateParams,
             ),
@@ -769,13 +841,13 @@ class AsyncTestCasesResource(AsyncAPIResource):
         self,
         test_case_id: str,
         *,
-        checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
+        interactions: Optional[Iterable[InteractionParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
-        demo_output: Optional[DemoOutput] | Omit = omit,
-        messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
         status: Optional[Literal["active", "draft"]] | Omit = omit,
-        input_data: Optional[Iterable[ChatMessageParam]] | Omit = omit,
+        messages: Optional[Iterable[ChatMessageParam]] | Omit = omit,
+        checks: Optional[Iterable[CheckConfigParam]] | Omit = omit,
+        demo_output: Optional[DemoOutput] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -783,28 +855,29 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TestCase:
-        """
-        Update an existing test case's messages, checks, tags, or status.
+        """Update an existing test case.
 
         Parameters
         ----------
         test_case_id : str
             Test Case ID to update.
-        checks : Optional[Iterable[CheckConfigParam]] | Omit
-            Checks to update the test case. Each check should have an `identifier`
-            and optionally `params` (check-specific fields) and `enabled`.
-        dataset_id : Optional[str] | Omit
-            Dataset ID to update the test case.
-        demo_output : Optional[DemoOutput] | Omit
-            Agent output. Can be a plain string or a `ChatMessageWithMetadataParam` dict.
-        messages : Optional[Iterable[ChatMessageParam]] | Omit
-            Messages to update the test case.
-        tags : Optional[SequenceNotStr[str]] | Omit
-            Tags to update the test case.
-        status : Optional[Literal["active", "draft"]] | Omit
-            Status to update of the test case.
-        input_data : Optional[Iterable[ChatMessageParam]] | Omit
-            (Experimental) The input data (messages) to update the test case. Replaces `messages` but will be replaced soon by `interactions`.
+        interactions : Iterable[InteractionParam] | None | Omit
+            Replace the test case's interactions.
+        dataset_id : str | None | Omit
+            Move the test case to this dataset.
+        tags : SequenceNotStr[str] | None | Omit
+            Tags to set on the test case.
+        status : Literal["active", "draft"] | None | Omit
+            New status of the test case.
+        messages : Iterable[ChatMessageParam] | None | Omit
+            (Deprecated) Conversation messages. Translated into a single
+            interaction against the dataset's default role with
+            `input={"messages": [...]}`.
+        checks : Iterable[CheckConfigParam] | None | Omit
+            (Deprecated) Checks attached to the synthesized interaction.
+            Each `identifier` is resolved to a `check_id`.
+        demo_output : DemoOutput | None | Omit
+            (Deprecated) Reference output for the synthesized interaction.
 
         Other Parameters
         ----------------
@@ -825,37 +898,47 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If `test_case_id` is empty, or if both `messages` and `input_data` are provided.
+            If `test_case_id` is empty, or if `interactions` is mixed with
+            legacy parameters.
         """
         if not test_case_id:
             raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
 
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        source = _resolve_interaction_source(
+            method="update",
+            require_one=False,
+            interactions=interactions,
+            messages=messages,
+            checks=checks,
+            demo_output=demo_output,
+        )
+        if source == "legacy":
+            target_dataset_id = (
+                dataset_id if isinstance(dataset_id, str) else (await self.retrieve(test_case_id)).dataset_id
+            )
+            interactions = [
+                await build_legacy_interaction_async(
+                    self._client,
+                    dataset_id=target_dataset_id,
+                    messages=messages,
+                    demo_output=demo_output,
+                    checks=checks,
+                )
+            ]
+        elif source == "interactions":
+            interactions = await resolve_interaction_checks_async(
+                self._client,
+                interactions=cast("Iterable[InteractionParam]", interactions),
+                dataset_id=dataset_id if isinstance(dataset_id, str) else None,
+                test_case_id=test_case_id,
             )
 
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[object] | Omit | None
-        if checks is None or isinstance(checks, Omit):
-            api_checks = checks  # type: ignore[assignment]
-        else:
-            api_checks = check_params_to_specs(checks)
-        api_demo_output = _normalize_demo_output(demo_output)
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
             body=await async_maybe_transform(
                 {
-                    "checks": api_checks,
                     "dataset_id": dataset_id,
-                    "demo_output": api_demo_output,
-                    "input_data": final_input_data,
+                    "interactions": interactions,
                     "tags": tags,
                     "status": status,
                 },
@@ -1090,7 +1173,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             "/v2/test-cases/bulk-move",
             body=await async_maybe_transform(
                 {
-                    "chat_test_case_ids": test_case_ids,
+                    "test_case_ids": test_case_ids,
                     "dataset_id": target_dataset_id,
                     "duplicate": duplicate,
                 },

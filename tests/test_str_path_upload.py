@@ -1,7 +1,10 @@
+import json
+from typing import Tuple, cast
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from giskard_hub import HubClient, AsyncHubClient
+from giskard_hub.resources.datasets import _prepare_upload_data_sync
 
 base_url = "http://127.0.0.1:4010"
 api_key = "test-api-key"
@@ -62,6 +65,33 @@ async def test_async_datasets_upload_converts_str_to_path(tmp_path: Path) -> Non
             assert files[0][0] == "file"
             assert isinstance(files[0][1], Path)
             assert files[0][1] == json_file
+
+
+def test_upload_list_defaults_interaction_positions() -> None:
+    # New-shape items with omitted `position` get the interaction's list index.
+    data = [{"interactions": [{"input": {"a": 1}}, {"position": 5, "input": {"b": 2}}, {"input": {"c": 3}}]}]
+    name, payload = cast("Tuple[str, bytes]", _prepare_upload_data_sync(MagicMock(), data, project_id="p"))
+    assert name == "test_cases.json"
+    items = json.loads(payload)
+    assert [i["position"] for i in items[0]["interactions"]] == [0, 5, 2]
+    # Caller's dicts are not mutated.
+    assert "position" not in data[0]["interactions"][0]
+
+
+def test_upload_file_defaults_interaction_positions(tmp_path: Path) -> None:
+    json_file = tmp_path / "tc.json"
+    json_file.write_text(json.dumps([{"interactions": [{"input": {"a": 1}}, {"input": {"b": 2}}]}]))
+    result = _prepare_upload_data_sync(MagicMock(), json_file, project_id="p")
+    assert isinstance(result, tuple)  # re-encoded, not passed through
+    items = json.loads(cast("bytes", result[1]))
+    assert [i["position"] for i in items[0]["interactions"]] == [0, 1]
+
+
+def test_upload_file_without_interactions_passes_through(tmp_path: Path) -> None:
+    json_file = tmp_path / "plain.json"
+    json_file.write_text(json.dumps([{"col1": "val1"}]))
+    # Nothing to translate or fill -> the original Path is forwarded unchanged.
+    assert _prepare_upload_data_sync(MagicMock(), json_file, project_id="p") == json_file
 
 
 async def test_async_knowledge_bases_create_converts_str_to_path(tmp_path: Path) -> None:

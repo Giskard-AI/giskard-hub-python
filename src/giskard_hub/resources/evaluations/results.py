@@ -160,7 +160,7 @@ class ResultsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -217,7 +217,7 @@ class ResultsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -279,7 +279,7 @@ class ResultsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -344,7 +344,7 @@ class ResultsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -463,7 +463,7 @@ class ResultsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -539,7 +539,7 @@ class ResultsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -686,7 +686,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -743,7 +743,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -805,7 +805,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -870,7 +870,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -989,7 +989,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` is empty.
+            If `evaluation_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
@@ -1067,7 +1067,7 @@ class AsyncResultsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``evaluation_id`` or ``result_id`` is empty.
+            If `evaluation_id` or `result_id` is empty.
         """
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")

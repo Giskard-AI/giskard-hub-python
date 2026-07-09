@@ -18,10 +18,13 @@ __all__ = [
     "TaskState",
     "TaskProgress",
     "TaskProgressParam",
+    "JsonValue",
 ]
 
 T = TypeVar("T")
 TIncluded = TypeVar("TIncluded")
+
+JsonValue: TypeAlias = Union[Dict[str, Any], List[Any], str, int, float, bool, None]
 
 
 # ---------------------------------------------------------------------------

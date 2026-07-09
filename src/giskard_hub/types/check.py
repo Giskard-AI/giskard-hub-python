@@ -16,8 +16,9 @@ from datetime import datetime
 from typing_extensions import Required
 
 import pydantic
+from pydantic import Field
 
-from .common import TaskState
+from .common import JsonValue, TaskState
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -51,6 +52,13 @@ __all__ = [
     "CheckCreateParams",
     "CheckUpdateParams",
     "CheckBulkDeleteParams",
+    "Interaction",
+    "InteractionParam",
+    "InteractionCheckConfig",
+    "InteractionCheckConfigParam",
+    "InteractionResultData",
+    "FlatCheckSpec",
+    "FlatCheckSpecParam",
 ]
 
 CheckSource: TypeAlias = Literal["builtin", "project"]
@@ -221,6 +229,9 @@ class CheckResult(BaseModel):
     reason: Optional[str] = None
     annotations: Optional[List[Annotation]] = None
     details: Optional[Dict[str, Any]] = None
+    spec: Optional[Dict[str, Any]] = None
+    target: Optional[str] = None
+    reference_text: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------
@@ -301,3 +312,88 @@ class CheckUpdateParams(TypedDict, total=False):
 
 class CheckBulkDeleteParams(TypedDict, total=False):
     check_ids: Required[SequenceNotStr[str]]
+
+
+# ---------------------------------------------------------------------------
+# Interaction types
+# ---------------------------------------------------------------------------
+
+
+# Back-compat re-export. The canonical home is
+# `giskard_hub.resources._check_helpers.IDENTIFIER_TO_KIND`.
+def __getattr__(name: str) -> Any:
+    if name == "_IDENTIFIER_TO_KIND":
+        import warnings
+
+        from ..resources._check_helpers import IDENTIFIER_TO_KIND
+
+        warnings.warn(
+            "Importing `_IDENTIFIER_TO_KIND` from `giskard_hub.types.check` is "
+            "deprecated; import `IDENTIFIER_TO_KIND` from "
+            "`giskard_hub.resources._check_helpers` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return IDENTIFIER_TO_KIND
+    raise AttributeError(f"module 'giskard_hub.types.check' has no attribute {name!r}")
+
+
+class FlatCheckSpec(BaseModel):
+    check_id: Optional[str] = None
+    identifier: Optional[str] = None
+    override_spec: Optional[Dict[str, Any]] = None
+    target: Optional[str] = None
+
+
+class FlatCheckSpecParam(TypedDict, total=False):
+    check_id: Optional[str]
+    identifier: Optional[str]
+    override_spec: Optional[Dict[str, Any]]
+    target: Optional[str]
+
+
+class InteractionCheckConfig(BaseModel):
+    check_id: str
+    name: Optional[str] = None
+    target: Optional[str] = None
+    enabled: bool = True
+    override_spec: Optional[Dict[str, Any]] = None
+    position: int = 0
+    spec: Optional[Dict[str, Any]] = None
+
+
+class InteractionCheckConfigParam(TypedDict, total=False):
+    # Same shape as `CheckConfigParam`: name the check by its `identifier`
+    # (e.g. "correctness") and pass its config in `params`. The SDK resolves
+    # the identifier to a `check_id` before sending.
+    identifier: Required[str]
+    enabled: bool
+    params: Dict[str, Any]
+
+
+class InteractionResultData(BaseModel):
+    interaction_position: int
+    input: Optional[JsonValue] = None
+    output: Optional[JsonValue] = None
+    state: str = ""
+    check_results: List[CheckResult] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    error: Optional[str] = None
+    checks: Optional[List[InteractionCheckConfig]] = None
+
+
+class Interaction(BaseModel):
+    position: int
+    input: Dict[str, Any]
+    output: Optional[Dict[str, Any]] = None
+    simulator_config: Optional[Dict[str, Any]] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    id: Optional[str] = None
+    checks: Optional[List[InteractionCheckConfig]] = None
+
+
+class InteractionParam(TypedDict, total=False):
+    position: int
+    input: Required[JsonValue]
+    output: Optional[JsonValue]
+    checks: Optional[Iterable[InteractionCheckConfigParam]]

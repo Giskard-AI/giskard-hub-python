@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
+import warnings
+from typing import Any, Dict, List, Tuple, Literal, Mapping, Optional, cast, overload
 from pathlib import Path
 
 import httpx
@@ -35,8 +36,173 @@ from ..types.dataset import (
     DatasetGenerateScenarioBasedParams,
 )
 from ..types.test_case import TestCase
+from ._interaction_helpers import (
+    is_legacy_upload_item,
+    fill_upload_item_positions,
+    translate_legacy_upload_item,
+    upload_item_needs_position_fill,
+)
 
 __all__ = ["DatasetsResource", "AsyncDatasetsResource"]
+
+
+_LEGACY_UPLOAD_DEPRECATION = (
+    "Passing legacy `messages` / `checks` / `demo_output` items to "
+    "`datasets.upload` is deprecated. Use the new "
+    "`{interactions: [{position, input, output, checks}]}` shape."
+)
+
+
+def _read_dataset_file(path: Path) -> Optional[Tuple[List[dict[str, Any]], Literal["json", "jsonl"]]]:
+    """Read a `.json` / `.jsonl` dataset file into a list of dicts.
+
+    Returns `(items, format)` or `None` if the file is not a recognized
+    JSON dataset (binary, unsupported extension, malformed, etc) — in that
+    case the caller should pass the file through unchanged so the backend
+    can return a clear error.
+    """
+    suffix = path.suffix.lower()
+    if suffix not in (".json", ".jsonl"):
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return None
+    try:
+        if suffix == ".json":
+            data = json.loads(text)
+            if not isinstance(data, list):
+                return None
+            return cast(List[dict[str, Any]], data), "json"
+        items: List[dict[str, Any]] = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            obj = json.loads(line)
+            if not isinstance(obj, dict):
+                return None
+            items.append(cast(dict[str, Any], obj))
+        return items, "jsonl"
+    except json.JSONDecodeError:
+        return None
+
+
+def _encode_items(items: List[dict[str, Any]], fmt: Literal["json", "jsonl"]) -> bytes:
+    """Re-encode a list of dicts back into the original JSON/JSONL format."""
+    if fmt == "jsonl":
+        return ("\n".join(json.dumps(it) for it in items) + "\n").encode("utf-8")
+    return json.dumps(items).encode("utf-8")
+
+
+def _maybe_translate_items(items: List[dict[str, Any]], identifier_to_id: Mapping[str, str]) -> List[dict[str, Any]]:
+    """Translate legacy items; on new-shape items, default omitted interaction
+    positions to their list index."""
+    return [
+        translate_legacy_upload_item(it, identifier_to_id)
+        if is_legacy_upload_item(it)
+        else fill_upload_item_positions(it)
+        for it in items
+    ]
+
+
+def _checks_lookup_needed(items: List[dict[str, Any]]) -> bool:
+    return any(item.get("checks") for item in items if is_legacy_upload_item(item))
+
+
+def _prepare_upload_data_sync(
+    resource: "DatasetsResource",
+    data: "FileTypes | list[dict[str, Any]] | str | Path",
+    *,
+    project_id: str,
+) -> "FileTypes | Tuple[str, bytes]":
+    """Translate legacy `data` (list, .json file, or .jsonl file) into the
+    new import shape; pass other `FileTypes` through unchanged."""
+    if isinstance(data, str):
+        data = Path(data)
+
+    if isinstance(data, list):
+        items: List[dict[str, Any]] = data
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        identifier_to_id: dict[str, str] = {}
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+            if _checks_lookup_needed(items):
+                identifier_to_id = {
+                    c.identifier: c.id
+                    for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
+                }
+        items = _maybe_translate_items(items, identifier_to_id)
+        return ("test_cases.json", _encode_items(items, "json"))
+
+    if isinstance(data, Path):
+        parsed = _read_dataset_file(data)
+        if parsed is None:
+            # Not a JSON/JSONL dataset we can introspect — pass through.
+            return data
+        items, fmt = parsed
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        needs_positions = any(upload_item_needs_position_fill(it) for it in items)
+        if not needs_translation and not needs_positions:
+            return data
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+        identifier_to_id = {}
+        if _checks_lookup_needed(items):
+            identifier_to_id = {
+                c.identifier: c.id for c in resource._client.checks.list(project_id=project_id, filter_builtin=False)
+            }
+        items = _maybe_translate_items(items, identifier_to_id)
+        return (data.name, _encode_items(items, fmt))
+
+    return data
+
+
+async def _prepare_upload_data_async(
+    resource: "AsyncDatasetsResource",
+    data: "FileTypes | list[dict[str, Any]] | str | Path",
+    *,
+    project_id: str,
+) -> "FileTypes | Tuple[str, bytes]":
+    """Async variant of :func:`_prepare_upload_data_sync`."""
+    if isinstance(data, str):
+        data = Path(data)
+
+    if isinstance(data, list):
+        items: List[dict[str, Any]] = data
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        identifier_to_id: dict[str, str] = {}
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+            if _checks_lookup_needed(items):
+                identifier_to_id = {
+                    c.identifier: c.id
+                    for c in await resource._client.checks.list(project_id=project_id, filter_builtin=False)
+                }
+        items = _maybe_translate_items(items, identifier_to_id)
+        return ("test_cases.json", _encode_items(items, "json"))
+
+    if isinstance(data, Path):
+        parsed = _read_dataset_file(data)
+        if parsed is None:
+            return data
+        items, fmt = parsed
+        needs_translation = any(is_legacy_upload_item(it) for it in items)
+        needs_positions = any(upload_item_needs_position_fill(it) for it in items)
+        if not needs_translation and not needs_positions:
+            return data
+        if needs_translation:
+            warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
+        identifier_to_id = {}
+        if _checks_lookup_needed(items):
+            identifier_to_id = {
+                c.identifier: c.id
+                for c in await resource._client.checks.list(project_id=project_id, filter_builtin=False)
+            }
+        items = _maybe_translate_items(items, identifier_to_id)
+        return (data.name, _encode_items(items, fmt))
+
+    return data
 
 
 class DatasetsResource(SyncAPIResource):
@@ -65,6 +231,8 @@ class DatasetsResource(SyncAPIResource):
         name: str,
         project_id: str,
         description: Optional[str] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -82,6 +250,12 @@ class DatasetsResource(SyncAPIResource):
             Project ID to create the dataset in.
         description : Optional[str]
             Description of the dataset to create.
+        input_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case inputs.
+            Defaults to the chat input schema when omitted.
+        output_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case outputs.
+            Defaults to the chat output schema when omitted.
 
         Other Parameters
         ----------------
@@ -106,6 +280,8 @@ class DatasetsResource(SyncAPIResource):
                     "name": name,
                     "project_id": project_id,
                     "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetCreateParams,
             ),
@@ -126,6 +302,8 @@ class DatasetsResource(SyncAPIResource):
         data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -138,11 +316,15 @@ class DatasetsResource(SyncAPIResource):
         project_id : str
             Project ID to import the dataset into.
         data : FileTypes | list[dict[str, Any]] | str
-            Data to upload.
-        dataset_id : Optional[str]
-            Dataset ID to update (optional).
-        name : Optional[str]
-            Name of the dataset (optional).
+            Data to upload. Accepts a list of dicts, a path to a `.json` /
+            `.jsonl` file, or any binary file-like supported by `FileTypes`.
+            Items in the legacy `messages` / `checks` / `demo_output` shape
+            are translated client-side to the new `interactions` format.
+        dataset_id : str | None | Omit
+            Dataset ID to merge the items into. If omitted, a new dataset is
+            created.
+        name : str | None | Omit
+            Name of the dataset. Used when creating a new dataset.
 
         Other Parameters
         ----------------
@@ -160,10 +342,7 @@ class DatasetsResource(SyncAPIResource):
         Dataset
             The uploaded dataset.
         """
-        if isinstance(data, str):
-            data = Path(data)
-        if isinstance(data, list):
-            data = ("test_cases.json", json.dumps(data).encode("utf-8"))
+        data = _prepare_upload_data_sync(self, data, project_id=project_id)
 
         body = deepcopy_minimal(
             {
@@ -235,7 +414,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -256,6 +435,8 @@ class DatasetsResource(SyncAPIResource):
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         status: Optional[TaskProgressParam] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -275,6 +456,12 @@ class DatasetsResource(SyncAPIResource):
             Name of the dataset to update.
         status : Optional[TaskProgressParam]
             Status of the dataset to update.
+        input_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            inputs.
+        output_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            outputs.
 
         Other Parameters
         ----------------
@@ -295,7 +482,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -306,6 +493,8 @@ class DatasetsResource(SyncAPIResource):
                     "description": description,
                     "name": name,
                     "status": status,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetUpdateParams,
             ),
@@ -401,7 +590,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -514,7 +703,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If neither ``dataset_id`` nor ``dataset_name`` is provided.
+            If neither `dataset_id` nor `dataset_name` is provided.
         """
 
         if dataset_id is omit and dataset_name is omit:
@@ -652,7 +841,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -705,7 +894,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -817,7 +1006,7 @@ class DatasetsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -873,6 +1062,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         name: str,
         project_id: str,
         description: Optional[str] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -890,6 +1081,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
             Project ID to create the dataset in.
         description : Optional[str]
             Description of the dataset to create.
+        input_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case inputs.
+            Defaults to the chat input schema when omitted.
+        output_schema : Dict[str, Any] | None | Omit
+            JSON schema describing the expected shape of test case outputs.
+            Defaults to the chat output schema when omitted.
 
         Other Parameters
         ----------------
@@ -914,6 +1111,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "name": name,
                     "project_id": project_id,
                     "description": description,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetCreateParams,
             ),
@@ -934,6 +1133,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         data: FileTypes | list[dict[str, Any]] | str,
         dataset_id: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -946,11 +1147,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         project_id : str
             Project ID to import the dataset into.
         data : FileTypes | list[dict[str, Any]] | str
-            Data to upload.
-        dataset_id : Optional[str]
-            Dataset ID to update (optional).
-        name : Optional[str]
-            Name of the dataset (optional).
+            Data to upload. Accepts a list of dicts, a path to a `.json` /
+            `.jsonl` file, or any binary file-like supported by `FileTypes`.
+            Items in the legacy `messages` / `checks` / `demo_output` shape
+            are translated client-side to the new `interactions` format.
+        dataset_id : str | None | Omit
+            Dataset ID to merge the items into. If omitted, a new dataset is
+            created.
+        name : str | None | Omit
+            Name of the dataset. Used when creating a new dataset.
 
         Other Parameters
         ----------------
@@ -968,10 +1173,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Dataset
             The uploaded dataset.
         """
-        if isinstance(data, str):
-            data = Path(data)
-        if isinstance(data, list):
-            data = ("test_cases.json", json.dumps(data).encode("utf-8"))
+        data = await _prepare_upload_data_async(self, data, project_id=project_id)
 
         body = deepcopy_minimal(
             {
@@ -1040,7 +1242,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1061,6 +1263,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
         status: Optional[TaskProgressParam] | Omit = omit,
+        input_schema: Optional[Dict[str, Any]] | Omit = omit,
+        output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1080,6 +1284,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
             Name of the dataset to update.
         status : Optional[TaskProgressParam]
             Status of the dataset to update.
+        input_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            inputs.
+        output_schema : Dict[str, Any] | None | Omit
+            Updated JSON schema describing the expected shape of test case
+            outputs.
 
         Other Parameters
         ----------------
@@ -1100,7 +1310,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1111,6 +1321,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "description": description,
                     "name": name,
                     "status": status,
+                    "input_schema": input_schema,
+                    "output_schema": output_schema,
                 },
                 DatasetUpdateParams,
             ),
@@ -1206,7 +1418,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1319,7 +1531,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If neither ``dataset_id`` nor ``dataset_name`` is provided.
+            If neither `dataset_id` nor `dataset_name` is provided.
         """
 
         if dataset_id is omit and dataset_name is omit:
@@ -1457,7 +1669,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1510,7 +1722,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
@@ -1622,7 +1834,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``dataset_id`` is empty.
+            If `dataset_id` is empty.
         """
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")

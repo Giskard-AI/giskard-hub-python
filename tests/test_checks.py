@@ -32,10 +32,32 @@ def test_identifier_to_kind_mapping() -> None:
         "correctness": "hub_correctness",
         "conformity": "hub_conformity",
         "groundedness": "hub_groundedness",
+        "oss_conformity": "conformity",
+        "oss_groundedness": "groundedness",
         "string_match": "string_matching",
+        "regex_match": "regex_matching",
         "metadata": "hub_metadata",
-        "semantic_similarity": "semantic_similarity",
     }
+
+
+@pytest.mark.parametrize(
+    "identifier",
+    [
+        "llm_judge",
+        "equals",
+        "not_equals",
+        "greater_than",
+        "greater_than_equals",
+        "less_than",
+        "less_than_equals",
+        "semantic_similarity",
+    ],
+)
+def test_identifier_to_kind_falls_back_to_identity(identifier: str) -> None:
+    """Identifiers not in IDENTIFIER_TO_KIND resolve to themselves via check_param_to_spec."""
+    assert identifier not in IDENTIFIER_TO_KIND
+    spec = check_param_to_spec(identifier, {})
+    assert spec["kind"] == identifier
 
 
 def test_check_param_to_spec_prefers_params_type_over_identifier() -> None:

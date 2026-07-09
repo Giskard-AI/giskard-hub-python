@@ -87,7 +87,7 @@ class AttemptsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``probe_attempt_id`` is empty.
+            If `probe_attempt_id` is empty.
         """
         if not probe_attempt_id:
             raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")
@@ -176,7 +176,7 @@ class AsyncAttemptsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``probe_attempt_id`` is empty.
+            If `probe_attempt_id` is empty.
         """
         if not probe_attempt_id:
             raise ValueError(f"Expected a non-empty value for `probe_attempt_id` but received {probe_attempt_id!r}")

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Literal, Iterable, Optional, cast
+import warnings
+from typing import Any, List, Literal, Mapping, Iterable, Optional, cast
 
 import httpx
 
@@ -40,17 +41,23 @@ from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
-from .._check_helpers import check_params_to_specs
+from .._check_helpers import (
+    needs_check_lookup,
+    fetch_check_identifier_map,
+    coerce_messages_to_input_dict,
+    fetch_check_identifier_map_async,
+    flat_check_specs_with_resolution,
+)
 from ...types.evaluation import (
     Evaluation,
     EvaluationListParams,
     EvaluationCreateParams,
     EvaluationUpdateParams,
+    EvaluationUploadParams,
     EvaluationRetrieveParams,
-    EvaluationRunSingleParams,
-    CriterionEvaluationDataset,
     EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams,
+    EvaluationRunInteractionChecksParams,
 )
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
@@ -175,7 +182,7 @@ class EvaluationsResource(SyncAPIResource):
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
+        criteria: DatasetSubsetParam | Omit = omit
 
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
@@ -499,10 +506,9 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         agent_info: MinimalAgentParam,
+        dataset_id: str,
         name: Optional[str] | Omit = omit,
-        dataset_id: Optional[str] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
-        old_evaluation_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -517,18 +523,13 @@ class EvaluationsResource(SyncAPIResource):
         agent_info : MinimalAgentParam
             Minimal agent information (name and optional description) to use
             for the evaluation.
+        dataset_id : str
+            The ID of the dataset to draw test cases from.
         name : str, optional
             The name of the evaluation.
-        dataset_id : str, optional
-            The ID of the dataset to draw test cases from. Exactly one of
-            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when `dataset_id` is provided.
-        old_evaluation_id : str, optional
-            The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of `old_evaluation_id` or `dataset_id` must be
-            provided.
+            tags.
 
         Other Parameters
         ----------------
@@ -546,29 +547,17 @@ class EvaluationsResource(SyncAPIResource):
         -------
         Evaluation
             The newly created local evaluation.
-
-        Raises
-        ------
-        ValueError
-            If neither or both of `dataset_id` and `old_evaluation_id` are
-            provided.
         """
-        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
-
-        if dataset_id is not omit:
-            criteria = DatasetSubsetParam(
-                dataset_id=cast(str, dataset_id),
-                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
-            )
-        elif old_evaluation_id is not omit:
-            criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
+        criteria = DatasetSubsetParam(
+            dataset_id=dataset_id,
+            tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
+        )
 
         response = self._post(
             "/v2/evaluations/create-local",
             body=maybe_transform(
                 {
-                    "criteria": [criteria],
+                    "criteria": criteria,
                     "model": agent_info,
                     "name": name,
                 },
@@ -586,6 +575,79 @@ class EvaluationsResource(SyncAPIResource):
         result = self._unwrap(response)
         capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
         return result
+
+    def upload(
+        self,
+        *,
+        project_id: str,
+        payload: dict[str, Any],
+        agent_id: Optional[str] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        auto_classify_failures: Optional[bool] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Evaluation:
+        """Upload a giskard.checks SuiteResult as a local Hub Evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to attach the uploaded evaluation to.
+        payload : dict
+            JSON payload produced by ``giskard.checks.SuiteResult.to_hub_format()``.
+        agent_id : str, optional
+            Optional Hub agent ID to associate with the uploaded evaluation.
+        name : str, optional
+            Optional name for the resulting evaluation; auto-generated when omitted.
+        auto_classify_failures : bool, optional
+            If true, the Hub runs its failure-category classifier on each failed
+            scenario synchronously. Adds latency proportional to the number of
+            failures. Defaults to false.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Evaluation
+            The newly created local evaluation. Each ScenarioResult in the
+            payload becomes a TestCaseEvaluation; each scenario step becomes
+            an InteractionResult with its check_results.
+        """
+        response = self._post(
+            "/v2/evaluations/upload",
+            body=maybe_transform(
+                {
+                    "project_id": project_id,
+                    "payload": payload,
+                    "agent_id": agent_id,
+                    "name": name,
+                    "auto_classify_failures": auto_classify_failures,
+                },
+                EvaluationUploadParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[Evaluation],
+        )
+
+        return self._unwrap(response)
 
     def rerun_errored_results(
         self,
@@ -645,12 +707,12 @@ class EvaluationsResource(SyncAPIResource):
     def run_single(
         self,
         *,
+        project_id: str,
         checks: Iterable[CheckConfigParam],
+        agent_output: AgentOutputParam | Mapping[str, Any] | str,
+        input_data: Mapping[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
-        agent_output: AgentOutputParam | str,
         agent_description: str | Omit = omit,
-        project_id: Optional[str] | Omit = omit,
-        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -658,74 +720,82 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
-        """Run a single check against a provided agent output without creating a full evaluation.
+        """Run checks against a single agent output without creating a full evaluation.
 
         Parameters
         ----------
-        checks : iterable of CheckConfigParam
-            The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam or Omit
-            The messages to send to the agent.
-        agent_output : AgentOutputParam or str
-            The output from the agent. A bare string is wrapped as
-            `{"response": {"role": "assistant", "content": <string>}}`.
-        agent_description : str or Omit
-            The description of the agent.
-        project_id : str, optional
-            The ID of the project to run the evaluation for.
-        input_data : iterable of ChatMessageParam or Omit
-            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
+        project_id : str
+            Project ID the checks belong to.
+        checks : Iterable[CheckConfigParam]
+            Checks to run. Each entry needs an `identifier` and may carry
+            `params` (which are sent as `override_spec`).
+        agent_output : AgentOutputParam | Mapping[str, Any] | str
+            The output produced by the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`;
+            a `Mapping` is forwarded verbatim as `model_output`.
+        input_data : Mapping[str, Any] | Omit
+            Structured input matching the role's `input_schema`. For
+            chat-style agents this is typically `{"messages": [...]}`.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages — wrapped as
+            `input_data={"messages": [...]}`. Pass `input_data` instead.
+        agent_description : str | Omit
+            (Deprecated) Ignored; the field was removed server-side.
 
         Other Parameters
         ----------------
-        extra_headers : Headers or None
+        extra_headers : Headers | None
             Send extra headers.
-        extra_query : Query or None
+        extra_query : Query | None
             Add additional query parameters to the request.
-        extra_body : Body or None
+        extra_body : Body | None
             Add additional JSON properties to the request.
-        timeout : float, httpx.Timeout, None, or NotGiven
-            Override the client-level default timeout for this request, in
-            seconds.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
         Returns
         -------
-        list of CheckResult
+        List[CheckResult]
             The results of the checks.
 
         Raises
         ------
         ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
+            If both `input_data` and `messages` are provided, or if neither is.
         """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        if not isinstance(agent_description, Omit):
+            warnings.warn(
+                "`agent_description` is no longer accepted by `evaluations.run_single`; ignoring it.",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
-        if not messages_provided and not input_data_provided:
-            raise ValueError("Must provide either 'messages' or 'input_data'. ")
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
+        resolved_input = coerce_messages_to_input_dict(
+            input=input_data,
+            messages=messages,
+            new_param="input_data",
+            deprecated_param="messages",
+            method_name="evaluations.run_single",
+        )
+        model_output = (
+            _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
+        )
+        check_list = list(checks)
+        identifier_to_id = (
+            fetch_check_identifier_map(self._client, project_id=project_id) if needs_check_lookup(check_list) else {}
+        )
+        api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
 
         response = self._post(
-            "/v2/evaluations/run-single",
+            "/v2/evaluations/run-interaction-checks",
             body=maybe_transform(
                 {
-                    "checks": api_checks,
-                    "input_data": final_input_data,
-                    "model_output": _normalize_agent_output(agent_output),
-                    "model_description": agent_description,
                     "project_id": project_id,
+                    "input_data": resolved_input,
+                    "model_output": model_output,
+                    "checks": api_checks,
                 },
-                EvaluationRunSingleParams,
+                EvaluationRunInteractionChecksParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -831,7 +901,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
+        criteria: DatasetSubsetParam | Omit = omit
 
         if dataset_id is not omit:
             criteria = DatasetSubsetParam(
@@ -1155,10 +1225,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         agent_info: MinimalAgentParam,
+        dataset_id: str,
         name: Optional[str] | Omit = omit,
-        dataset_id: Optional[str] | Omit = omit,
         tags: Optional[SequenceNotStr[str]] | Omit = omit,
-        old_evaluation_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1173,18 +1242,13 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         agent_info : MinimalAgentParam
             Minimal agent information (name and optional description) to use
             for the evaluation.
+        dataset_id : str
+            The ID of the dataset to draw test cases from.
         name : str, optional
             The name of the evaluation.
-        dataset_id : str, optional
-            The ID of the dataset to draw test cases from. Exactly one of
-            `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
             Optional tags to restrict the subset to test cases carrying those
-            tags. Only used when `dataset_id` is provided.
-        old_evaluation_id : str, optional
-            The ID of a previous evaluation whose test cases should be reused.
-            Exactly one of `old_evaluation_id` or `dataset_id` must be
-            provided.
+            tags.
 
         Other Parameters
         ----------------
@@ -1202,29 +1266,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         -------
         Evaluation
             The newly created local evaluation.
-
-        Raises
-        ------
-        ValueError
-            If neither or both of `dataset_id` and `old_evaluation_id` are
-            provided.
         """
-        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | CriterionEvaluationDataset | Omit = omit
-
-        if dataset_id is not omit:
-            criteria = DatasetSubsetParam(
-                dataset_id=cast(str, dataset_id),
-                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
-            )
-        elif old_evaluation_id is not omit:
-            criteria = CriterionEvaluationDataset(evaluation_id=cast(str, old_evaluation_id))
+        criteria = DatasetSubsetParam(
+            dataset_id=dataset_id,
+            tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
+        )
 
         response = await self._post(
             "/v2/evaluations/create-local",
             body=await async_maybe_transform(
                 {
-                    "criteria": [criteria],
+                    "criteria": criteria,
                     "model": agent_info,
                     "name": name,
                 },
@@ -1242,6 +1294,79 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         result = self._unwrap(response)
         capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
         return result
+
+    async def upload(
+        self,
+        *,
+        project_id: str,
+        payload: dict[str, Any],
+        agent_id: Optional[str] | Omit = omit,
+        name: Optional[str] | Omit = omit,
+        auto_classify_failures: Optional[bool] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Evaluation:
+        """Upload a giskard.checks SuiteResult as a local Hub Evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project to attach the uploaded evaluation to.
+        payload : dict
+            JSON payload produced by ``giskard.checks.SuiteResult.to_hub_format()``.
+        agent_id : str, optional
+            Optional Hub agent ID to associate with the uploaded evaluation.
+        name : str, optional
+            Optional name for the resulting evaluation; auto-generated when omitted.
+        auto_classify_failures : bool, optional
+            If true, the Hub runs its failure-category classifier on each failed
+            scenario synchronously. Adds latency proportional to the number of
+            failures. Defaults to false.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers or None
+            Send extra headers.
+        extra_query : Query or None
+            Add additional query parameters to the request.
+        extra_body : Body or None
+            Add additional JSON properties to the request.
+        timeout : float, httpx.Timeout, None, or NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Evaluation
+            The newly created local evaluation. Each ScenarioResult in the
+            payload becomes a TestCaseEvaluation; each scenario step becomes
+            an InteractionResult with its check_results.
+        """
+        response = await self._post(
+            "/v2/evaluations/upload",
+            body=await async_maybe_transform(
+                {
+                    "project_id": project_id,
+                    "payload": payload,
+                    "agent_id": agent_id,
+                    "name": name,
+                    "auto_classify_failures": auto_classify_failures,
+                },
+                EvaluationUploadParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[Evaluation],
+        )
+
+        return self._unwrap(response)
 
     async def rerun_errored_results(
         self,
@@ -1301,12 +1426,12 @@ class AsyncEvaluationsResource(AsyncAPIResource):
     async def run_single(
         self,
         *,
+        project_id: str,
         checks: Iterable[CheckConfigParam],
+        agent_output: AgentOutputParam | Mapping[str, Any] | str,
+        input_data: Mapping[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
-        agent_output: AgentOutputParam | str,
         agent_description: str | Omit = omit,
-        project_id: Optional[str] | Omit = omit,
-        input_data: Iterable[ChatMessageParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1314,74 +1439,84 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[CheckResult]:
-        """Run a single check against a provided agent output without creating a full evaluation.
+        """Run checks against a single agent output without creating a full evaluation.
 
         Parameters
         ----------
-        checks : iterable of CheckConfigParam
-            The checks to run for the evaluation.
-        messages : iterable of ChatMessageParam or Omit
-            The messages to send to the agent.
-        agent_output : AgentOutputParam or str
-            The output from the agent. A bare string is wrapped as
-            `{"response": {"role": "assistant", "content": <string>}}`.
-        agent_description : str or Omit
-            The description of the agent.
-        project_id : str, optional
-            The ID of the project to run the evaluation for.
-        input_data : iterable of ChatMessageParam or Omit
-            (Experimental) The input data (messages) to send to the agent. Replaces `messages` but will be replaced soon by `interactions`.
+        project_id : str
+            Project ID the checks belong to.
+        checks : Iterable[CheckConfigParam]
+            Checks to run. Each entry needs an `identifier` and may carry
+            `params` (which are sent as `override_spec`).
+        agent_output : AgentOutputParam | Mapping[str, Any] | str
+            The output produced by the agent. A bare string is wrapped as
+            `{"response": {"role": "assistant", "content": <string>}}`;
+            a `Mapping` is forwarded verbatim as `model_output`.
+        input_data : Mapping[str, Any] | Omit
+            Structured input matching the role's `input_schema`. For
+            chat-style agents this is typically `{"messages": [...]}`.
+        messages : Iterable[ChatMessageParam] | Omit
+            (Deprecated) Conversation messages — wrapped as
+            `input_data={"messages": [...]}`. Pass `input_data` instead.
+        agent_description : str | Omit
+            (Deprecated) Ignored; the field was removed server-side.
 
         Other Parameters
         ----------------
-        extra_headers : Headers or None
+        extra_headers : Headers | None
             Send extra headers.
-        extra_query : Query or None
+        extra_query : Query | None
             Add additional query parameters to the request.
-        extra_body : Body or None
+        extra_body : Body | None
             Add additional JSON properties to the request.
-        timeout : float, httpx.Timeout, None, or NotGiven
-            Override the client-level default timeout for this request, in
-            seconds.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
 
         Returns
         -------
-        list of CheckResult
+        List[CheckResult]
             The results of the checks.
 
         Raises
         ------
         ValueError
-            If both `messages` and `input_data` are provided, or if neither is provided.
+            If both `input_data` and `messages` are provided, or if neither is.
         """
-        # Validate backward compatibility: only one of messages or input_data should be provided
-        messages_provided = not isinstance(messages, Omit)
-        input_data_provided = not isinstance(input_data, Omit)
-
-        if messages_provided and input_data_provided:
-            raise ValueError(
-                "Cannot provide both 'messages' and 'input_data'. Use 'input_data' or 'messages' but not both."
+        if not isinstance(agent_description, Omit):
+            warnings.warn(
+                "`agent_description` is no longer accepted by `evaluations.run_single`; ignoring it.",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
-        if not messages_provided and not input_data_provided:
-            raise ValueError("Must provide either 'messages' or 'input_data'. ")
-
-        # Use input_data if provided, otherwise fall back to messages
-        final_input_data = input_data if input_data_provided else messages
-
-        api_checks: Iterable[dict[str, object]] = check_params_to_specs(checks, flat=True)
+        resolved_input = coerce_messages_to_input_dict(
+            input=input_data,
+            messages=messages,
+            new_param="input_data",
+            deprecated_param="messages",
+            method_name="evaluations.run_single",
+        )
+        model_output = (
+            _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
+        )
+        check_list = list(checks)
+        identifier_to_id = (
+            await fetch_check_identifier_map_async(self._client, project_id=project_id)
+            if needs_check_lookup(check_list)
+            else {}
+        )
+        api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
 
         response = await self._post(
-            "/v2/evaluations/run-single",
+            "/v2/evaluations/run-interaction-checks",
             body=await async_maybe_transform(
                 {
-                    "checks": api_checks,
-                    "input_data": final_input_data,
-                    "model_output": _normalize_agent_output(agent_output),
-                    "model_description": agent_description,
                     "project_id": project_id,
+                    "input_data": resolved_input,
+                    "model_output": model_output,
+                    "checks": api_checks,
                 },
-                EvaluationRunSingleParams,
+                EvaluationRunInteractionChecksParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1420,6 +1555,9 @@ class EvaluationsResourceWithRawResponse:
         self.create_local = to_raw_response_wrapper(
             evaluations.create_local,
         )
+        self.upload = to_raw_response_wrapper(
+            evaluations.upload,
+        )
         self.rerun_errored_results = to_raw_response_wrapper(
             evaluations.rerun_errored_results,
         )
@@ -1456,6 +1594,9 @@ class AsyncEvaluationsResourceWithRawResponse:
         )
         self.create_local = async_to_raw_response_wrapper(
             evaluations.create_local,
+        )
+        self.upload = async_to_raw_response_wrapper(
+            evaluations.upload,
         )
         self.rerun_errored_results = async_to_raw_response_wrapper(
             evaluations.rerun_errored_results,
@@ -1494,6 +1635,9 @@ class EvaluationsResourceWithStreamingResponse:
         self.create_local = to_streamed_response_wrapper(
             evaluations.create_local,
         )
+        self.upload = to_streamed_response_wrapper(
+            evaluations.upload,
+        )
         self.rerun_errored_results = to_streamed_response_wrapper(
             evaluations.rerun_errored_results,
         )
@@ -1530,6 +1674,9 @@ class AsyncEvaluationsResourceWithStreamingResponse:
         )
         self.create_local = async_to_streamed_response_wrapper(
             evaluations.create_local,
+        )
+        self.upload = async_to_streamed_response_wrapper(
+            evaluations.upload,
         )
         self.rerun_errored_results = async_to_streamed_response_wrapper(
             evaluations.rerun_errored_results,

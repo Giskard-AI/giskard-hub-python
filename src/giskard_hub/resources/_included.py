@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 
 def _unwrap(value: Any) -> Any:
-    """Return ``value.data`` if it's an APIResponse, otherwise ``value`` as-is."""
+    """Return `value.data` if it's an APIResponse, otherwise `value` as-is."""
     if isinstance(value, APIResponse):
         return cast(APIResponse[Any], value).data
     return value

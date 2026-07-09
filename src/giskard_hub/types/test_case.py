@@ -1,15 +1,14 @@
 """Test case domain types."""
 
-from typing import List, Literal, Iterable, Optional, TypeAlias, TypedDict
+from typing import Any, Dict, List, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
 from datetime import datetime
-from typing_extensions import Required
+from typing_extensions import Required, deprecated
 
 from pydantic import Field
 
-from .chat import ChatMessage, ChatMessageParam, ChatMessageWithMetadataParam
+from .chat import ChatMessage
 from .user import UserReference
-from .agent import AgentOutput
-from .check import CheckConfig, TestCaseCheckConfigParam
+from .check import Interaction, InteractionParam
 from .._types import SequenceNotStr
 from .._models import BaseModel
 
@@ -17,6 +16,7 @@ __all__ = [
     "TestCase",
     "TestCaseReference",
     "TestCaseComment",
+    "TestCaseSchemaValidation",
     "TestCaseStatus",
     "BulkMoveTestCasesParams",
     "TestCaseCreateParams",
@@ -49,19 +49,56 @@ class TestCaseReference(BaseModel):
     id: str
 
 
+class TestCaseSchemaValidation(BaseModel):
+    input_valid: bool = True
+    output_valid: bool = True
+
+
+def _first_interaction_messages(interactions: Optional[List[Interaction]]) -> List[ChatMessage]:
+    """Extract chat messages from `interactions[0].input["messages"]`.
+
+    Returns an empty list if there are no interactions or the input is not
+    shaped as `{"messages": [...]}`. Used by both `TestCase.messages` (the
+    deprecated public accessor) and `helpers._evaluate_local` (an internal
+    consumer that needs the same view without tripping the deprecation).
+    """
+    if not interactions:
+        return []
+    raw_messages = interactions[0].input.get("messages")
+    if not isinstance(raw_messages, list):
+        return []
+    out: List[ChatMessage] = []
+    for entry in cast(List[Any], raw_messages):
+        if isinstance(entry, dict):
+            entry_d = cast(Dict[str, Any], entry)
+            role, content = entry_d.get("role"), entry_d.get("content")
+            if isinstance(role, str) and isinstance(content, str):
+                out.append(ChatMessage(role=role, content=content))
+    return out
+
+
 class TestCase(BaseModel):
     __test__ = False
     id: str
-    checks: List[CheckConfig]
-    comments: List[TestCaseComment]
+    comments: List[TestCaseComment] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     created_at: datetime
     dataset_id: str
-    demo_output: Optional[AgentOutput] = None
-    messages: List[ChatMessage]
-    input_data: List[ChatMessage]
-    tags: List[str]
+    interactions: Optional[List[Interaction]] = None
+    tags: List[str] = Field(default_factory=list)
     updated_at: datetime
-    status: TestCaseStatus
+    status: TestCaseStatus = "active"
+    schema_validation: TestCaseSchemaValidation = Field(default_factory=TestCaseSchemaValidation)
+
+    @property
+    @deprecated("`TestCase.messages` is deprecated; read `interactions[i].input` instead.")
+    def messages(self) -> List[ChatMessage]:
+        """Deprecated flattened view of the first interaction's input messages.
+
+        Returns the input messages from `interactions[0].input["messages"]`
+        when present, falling back to an empty list otherwise. Prefer reading
+        `test_case.interactions` directly.
+        """
+        return _first_interaction_messages(self.interactions)
 
 
 # ---------------------------------------------------------------------------
@@ -71,19 +108,15 @@ class TestCase(BaseModel):
 
 class TestCaseCreateParams(TypedDict, total=False):
     dataset_id: Required[str]
-    input_data: Required[Iterable[ChatMessageParam]]
-    checks: Iterable[TestCaseCheckConfigParam]
-    demo_output: Optional[ChatMessageWithMetadataParam]
+    interactions: Optional[Iterable[InteractionParam]]
     status: Optional[TestCaseStatus]
     tags: SequenceNotStr[str]
     source_probe_attempt_id: Optional[str]
 
 
 class TestCaseUpdateParams(TypedDict, total=False):
-    checks: Optional[Iterable[TestCaseCheckConfigParam]]
     dataset_id: Optional[str]
-    demo_output: Optional[ChatMessageWithMetadataParam]
-    input_data: Optional[Iterable[ChatMessageParam]]
+    interactions: Optional[Iterable[InteractionParam]]
     tags: Optional[SequenceNotStr[str]]
     status: Optional[TestCaseStatus]
 
@@ -102,7 +135,7 @@ class TestCaseBulkUpdateParams(TypedDict, total=False):
 
 
 class BulkMoveTestCasesParams(TypedDict, total=False):
-    chat_test_case_ids: Required[SequenceNotStr[str]]
+    test_case_ids: Required[SequenceNotStr[str]]
     dataset_id: Required[str]
     duplicate: Optional[bool]
 

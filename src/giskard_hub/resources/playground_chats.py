@@ -67,7 +67,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         project_id : str
             Project ID to list playground chats for.
         include : list[Literal["agent"]] | None | Omit
-            Related resources to embed in the response (e.g. ``["agent"]``).
+            Related resources to embed in the response (e.g. `["agent"]`).
         limit : int | None | Omit
             Maximum number of playground chats to return.
         offset : int | None | Omit
@@ -152,7 +152,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``chat_id`` is empty.
+            If `chat_id` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -204,7 +204,7 @@ class PlaygroundChatsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If ``chat_id`` is empty.
+            If `chat_id` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -286,7 +286,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         project_id : str
             Project ID to list playground chats for.
         include : list[Literal["agent"]] | None | Omit
-            Related resources to embed in the response (e.g. ``["agent"]``).
+            Related resources to embed in the response (e.g. `["agent"]`).
         limit : int | None | Omit
             Maximum number of playground chats to return.
         offset : int | None | Omit
@@ -371,7 +371,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``chat_id`` is empty.
+            If `chat_id` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")
@@ -423,7 +423,7 @@ class AsyncPlaygroundChatsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If ``chat_id`` is empty.
+            If `chat_id` is empty.
         """
         if not chat_id:
             raise ValueError(f"Expected a non-empty value for `chat_id` but received {chat_id!r}")

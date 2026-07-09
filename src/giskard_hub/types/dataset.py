@@ -41,6 +41,8 @@ class Dataset(BaseModel):
     status: TaskProgress
     tags: List[str]
     updated_at: datetime
+    input_schema: Dict[str, Any]
+    output_schema: Dict[str, Any]
 
     @property
     def state(self) -> TaskState:
@@ -54,12 +56,14 @@ class DatasetReference(BaseModel):
 
 class DatasetSubset(BaseModel):
     dataset_id: str
+    dataset_name: Optional[str] = None
     tags: Optional[List[str]] = None
     target_type: Optional[Literal["dataset"]] = None
 
 
 class DatasetSubsetParam(TypedDict, total=False):
     dataset_id: Required[str]
+    dataset_name: Optional[str]
     tags: Optional[SequenceNotStr[str]]
     target_type: Literal["dataset"]
 
@@ -77,6 +81,8 @@ class DatasetCreateParams(TypedDict, total=False):
     name: Required[str]
     project_id: Required[str]
     description: Optional[str]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 class DatasetImportParams(TypedDict, total=False):
@@ -90,6 +96,8 @@ class DatasetUpdateParams(TypedDict, total=False):
     description: Optional[str]
     name: Optional[str]
     status: Optional[TaskProgressParam]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 class DatasetBulkDeleteParams(TypedDict, total=False):

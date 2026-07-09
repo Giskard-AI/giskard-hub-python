@@ -1,11 +1,12 @@
 """Scheduled evaluation domain types."""
 
-from typing import List, Union, Literal, Optional, Annotated, TypeAlias, TypedDict
+from typing import List, Union, Literal, Optional, TypeAlias, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
+from .agent import AgentReference
 from .._types import SequenceNotStr
-from .._utils import PropertyInfo
+from .dataset import DatasetReference
 from .._models import BaseModel
 from .execution import (
     ErrorExecutionStatus,
@@ -49,8 +50,10 @@ class ScheduledEvaluation(BaseModel):
     created_at: datetime
     updated_at: datetime
     name: str
-    agent_id: str
+    agent_id: Optional[str] = None
     dataset_id: str
+    agent: Optional[AgentReference] = None
+    dataset: Optional[DatasetReference] = None
     tags: List[str]
     run_count: int
     frequency: FrequencyOption
@@ -77,12 +80,12 @@ class ScheduledEvaluationListParams(TypedDict, total=False):
 class ScheduledEvaluationCreateParams(TypedDict, total=False):
     project_id: Required[str]
     name: Required[str]
-    agent_id: Required[str]
     dataset_id: Required[str]
-    tags: SequenceNotStr[str]
-    run_count: int
     frequency: Required[FrequencyOption]
     time: Required[str]
+    agent_id: Optional[str]
+    tags: SequenceNotStr[str]
+    run_count: int
     day_of_week: Optional[int]
     day_of_month: Optional[int]
 
@@ -97,8 +100,6 @@ class ScheduledEvaluationUpdateParams(TypedDict, total=False):
     time: Optional[str]
     day_of_week: Optional[int]
     day_of_month: Optional[int]
-    last_execution_at: Optional[Annotated[Union[str, datetime, None], PropertyInfo(format="iso8601")]]
-    last_execution_status: Optional[LastExecutionStatusParam]
     paused: Optional[bool]
 
 

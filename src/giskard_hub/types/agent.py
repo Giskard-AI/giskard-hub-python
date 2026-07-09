@@ -1,8 +1,8 @@
 """Agent domain types."""
 
-from typing import Any, Dict, Iterable, Optional, TypedDict, cast
+from typing import Any, Dict, List, Tuple, Union, Literal, Iterable, Optional, TypeAlias, TypedDict, cast
 from datetime import datetime
-from typing_extensions import Required
+from typing_extensions import Required, deprecated
 
 from pydantic import Field, AliasChoices, model_validator
 
@@ -18,7 +18,14 @@ __all__ = [
     "AgentOutputParam",
     "MinimalAgent",
     "MinimalAgentParam",
-    "AgentDetectStatefulness",
+    "AgentInterface",
+    "ForwardBinding",
+    "ForwardBindingParam",
+    "AggregateBinding",
+    "AggregateBindingParam",
+    "AutoBinding",
+    "AutoBindingParam",
+    "GenerateCompletionOutput",
     "AgentListParams",
     "AgentCreateParams",
     "AgentUpdateParams",
@@ -26,13 +33,27 @@ __all__ = [
     "AgentTestConnectionParams",
     "AgentGenerateCompletionParams",
     "AgentAutofillDescriptionParams",
-    "AgentDetectStatefulnessParams",
 ]
 
 
 # ---------------------------------------------------------------------------
 # Models
 # ---------------------------------------------------------------------------
+
+
+class ForwardBinding(BaseModel):
+    mode: Literal["forward"] = "forward"
+    target: str
+    source: str
+
+
+class AggregateBinding(BaseModel):
+    mode: Literal["aggregate"] = "aggregate"
+    target: str
+    outputs_path: str
+
+
+AutoBinding: TypeAlias = Union[ForwardBinding, AggregateBinding]
 
 
 class Agent(BaseModel):
@@ -42,10 +63,12 @@ class Agent(BaseModel):
     headers: Dict[str, str] = Field(default_factory=dict)
     name: str
     project_id: str
-    stateful: bool
     supported_languages: list[str]
     updated_at: datetime
     url: str
+    auto_bindings: Optional[List[AutoBinding]] = None
+    input_schema: Optional[Dict[str, Any]] = None
+    output_schema: Optional[Dict[str, Any]] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -108,8 +131,50 @@ class MinimalAgentParam(TypedDict, total=False):
     description: Optional[str]
 
 
-class AgentDetectStatefulness(BaseModel):
-    stateful: bool
+class AgentInterface(BaseModel):
+    id: str
+    name: str = ""
+    input_schema: Dict[str, Any] = Field(default_factory=dict)
+    output_schema: Dict[str, Any] = Field(default_factory=dict)
+
+
+class GenerateCompletionOutput(BaseModel):
+    """Result of `agents.generate_completion`.
+
+    The `output` field is the raw structured output of the agent
+    (matching its `output_schema`). Helper accessors are provided to keep
+    older code that read `response` / `message` working.
+    """
+
+    output: Dict[str, Any]
+    error: Optional[ExecutionError] = None
+
+    def _extract_response(self) -> Optional[ChatMessage]:
+        response = self.output.get("response")
+        if isinstance(response, dict):
+            r = cast(Dict[str, Any], response)
+            role, content = r.get("role"), r.get("content")
+            if isinstance(role, str) and isinstance(content, str):
+                return ChatMessage(role=role, content=content)
+        return None
+
+    @property
+    @deprecated(
+        "`GenerateCompletionOutput.response` is deprecated; read "
+        "`output['response']` from the structured `output` dict instead."
+    )
+    def response(self) -> Optional[ChatMessage]:
+        """Deprecated accessor for the `response` chat message."""
+        return self._extract_response()
+
+    @property
+    @deprecated(
+        "`GenerateCompletionOutput.message` is deprecated; read "
+        "`output['response']` from the structured `output` dict instead."
+    )
+    def message(self) -> Optional[ChatMessage]:
+        """Deprecated alias for `response`."""
+        return self._extract_response()
 
 
 # ---------------------------------------------------------------------------
@@ -121,6 +186,21 @@ class AgentListParams(TypedDict, total=False):
     project_id: Optional[str]
 
 
+class ForwardBindingParam(TypedDict, total=False):
+    mode: Literal["forward"]
+    target: Required[str]
+    source: Required[str]
+
+
+class AggregateBindingParam(TypedDict, total=False):
+    mode: Literal["aggregate"]
+    target: Required[str]
+    outputs_path: Required[str]
+
+
+AutoBindingParam: TypeAlias = Union[ForwardBindingParam, AggregateBindingParam]
+
+
 class AgentCreateParams(TypedDict, total=False):
     headers: Required[Iterable[HeaderParam]]
     name: Required[str]
@@ -128,7 +208,9 @@ class AgentCreateParams(TypedDict, total=False):
     supported_languages: Required[SequenceNotStr[str]]
     url: Required[str]
     description: Optional[str]
-    stateful: Optional[bool]
+    auto_bindings: Optional[Iterable[AutoBindingParam]]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 class AgentUpdateParams(TypedDict, total=False):
@@ -137,6 +219,9 @@ class AgentUpdateParams(TypedDict, total=False):
     name: Optional[str]
     supported_languages: Optional[SequenceNotStr[str]]
     url: Optional[str]
+    auto_bindings: Optional[Iterable[AutoBindingParam]]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 class AgentBulkDeleteParams(TypedDict, total=False):
@@ -145,16 +230,17 @@ class AgentBulkDeleteParams(TypedDict, total=False):
 
 class AgentTestConnectionParams(TypedDict, total=False):
     url: Required[str]
-    headers: Dict[str, str]
+    project_id: Required[str]
+    headers: Iterable[HeaderParam]
+    agent_id: Optional[str]
+    input_schema: Optional[Dict[str, Any]]
 
 
 class AgentGenerateCompletionParams(TypedDict, total=False):
-    messages: Required[Iterable[ChatMessageParam]]
+    input: Required[Dict[str, Any]]
+    chat_id: Optional[str]
+    interactions: Iterable[Tuple[Dict[str, Any], Dict[str, Any]]]
 
 
 class AgentAutofillDescriptionParams(TypedDict, total=False):
-    pass
-
-
-class AgentDetectStatefulnessParams(TypedDict, total=False):
     pass
