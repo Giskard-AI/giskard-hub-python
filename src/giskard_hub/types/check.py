@@ -71,22 +71,22 @@ CheckSource: TypeAlias = Literal["builtin", "project"]
 
 class ConformityParams(BaseModel):
     rules: List[str]
-    type: Optional[Literal["conformity"]] = None
+    type: Optional[Literal["hub_conformity"]] = None
 
 
 class CorrectnessParams(BaseModel):
     reference: str
-    type: Optional[Literal["correctness"]] = None
+    type: Optional[Literal["hub_correctness"]] = None
 
 
 class GroundednessParams(BaseModel):
     context: str
-    type: Optional[Literal["groundedness"]] = None
+    type: Optional[Literal["hub_groundedness"]] = None
 
 
 class StringMatchParams(BaseModel):
     keyword: str
-    type: Optional[Literal["string_match"]] = None
+    type: Optional[Literal["string_matching"]] = None
 
 
 class SemanticSimilarityParams(BaseModel):
@@ -103,7 +103,7 @@ class JsonPathRule(BaseModel):
 
 class MetadataParams(BaseModel):
     json_path_rules: List[JsonPathRule]
-    type: Optional[Literal["metadata"]] = None
+    type: Optional[Literal["hub_metadata"]] = None
 
 
 CheckType: TypeAlias = Union[
@@ -123,22 +123,22 @@ CheckType: TypeAlias = Union[
 
 class ConformityParamsParam(TypedDict, total=False):
     rules: Required[SequenceNotStr[str]]
-    type: Literal["conformity"]
+    type: Literal["hub_conformity"]
 
 
 class CorrectnessParamsParam(TypedDict, total=False):
     reference: Required[str]
-    type: Literal["correctness"]
+    type: Literal["hub_correctness"]
 
 
 class GroundednessParamsParam(TypedDict, total=False):
     context: Required[str]
-    type: Literal["groundedness"]
+    type: Literal["hub_groundedness"]
 
 
 class StringMatchParamsParam(TypedDict, total=False):
     keyword: Required[str]
-    type: Literal["string_match"]
+    type: Literal["string_matching"]
 
 
 class SemanticSimilarityParamsParam(TypedDict, total=False):
@@ -155,7 +155,7 @@ class JsonPathRuleParam(TypedDict, total=False):
 
 class MetadataParamsParam(TypedDict, total=False):
     json_path_rules: Required[Iterable[JsonPathRuleParam]]
-    type: Literal["metadata"]
+    type: Literal["hub_metadata"]
 
 
 CheckTypeParam: TypeAlias = Union[
@@ -319,23 +319,6 @@ class CheckBulkDeleteParams(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 
 
-# Back-compat re-export. The canonical home is
-# `giskard_hub.resources._check_helpers.IDENTIFIER_TO_KIND`.
-def __getattr__(name: str) -> Any:
-    if name == "_IDENTIFIER_TO_KIND":
-        import warnings
-
-        from ..resources._check_helpers import IDENTIFIER_TO_KIND
-
-        warnings.warn(
-            "Importing `_IDENTIFIER_TO_KIND` from `giskard_hub.types.check` is "
-            "deprecated; import `IDENTIFIER_TO_KIND` from "
-            "`giskard_hub.resources._check_helpers` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return IDENTIFIER_TO_KIND
-    raise AttributeError(f"module 'giskard_hub.types.check' has no attribute {name!r}")
 
 
 class FlatCheckSpec(BaseModel):
@@ -364,8 +347,8 @@ class InteractionCheckConfig(BaseModel):
 
 class InteractionCheckConfigParam(TypedDict, total=False):
     # Same shape as `CheckConfigParam`: name the check by its `identifier`
-    # (e.g. "correctness") and pass its config in `params`. The SDK resolves
-    # the identifier to a `check_id` before sending.
+    # (e.g. "hub_correctness") and pass its config in `params`. The API resolves
+    # the identifier server-side.
     identifier: Required[str]
     enabled: bool
     params: Dict[str, Any]

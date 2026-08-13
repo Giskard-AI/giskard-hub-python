@@ -7,14 +7,10 @@ pre-v3 documented snippets working unchanged.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Iterable, Optional, cast
+from typing import Any, Dict, List, Mapping, Iterable, cast
 
 from .._types import Omit
 from ..types.check import CheckConfigParam, InteractionParam
-
-if TYPE_CHECKING:
-    from .._client import HubClient, AsyncHubClient
-
 
 # ---------------------------------------------------------------------------
 # Pure helpers (no I/O)
@@ -33,7 +29,7 @@ def _coerce_messages(
     return [dict(m) for m in cast(Iterable[Mapping[str, Any]], messages)]
 
 
-def _normalize_demo_output(demo_output: Any) -> Optional[Dict[str, Any]]:
+def _normalize_demo_output(demo_output: Any) -> Dict[str, Any] | None:
     """Convert legacy `demo_output` into an interaction's structured `output` dict.
 
     Mirrors the default chat `output_schema`:
@@ -55,28 +51,20 @@ def _normalize_demo_output(demo_output: Any) -> Optional[Dict[str, Any]]:
 
 def _build_check_configs(
     checks: Iterable[CheckConfigParam],
-    identifier_to_id: Mapping[str, str],
 ) -> List[Dict[str, Any]]:
+    """Normalize check dicts for the API, which resolves `identifier` itself."""
     configs: List[Dict[str, Any]] = []
     for index, check in enumerate(checks):
-        identifier = check.get("identifier")
-        if not identifier:
-            raise ValueError("Each check must include an 'identifier'")
-        check_id = identifier_to_id.get(identifier)
-        if not check_id:
-            raise ValueError(
-                f"Check identifier {identifier!r} not found in project. "
-                "Make sure the check exists or pass a fully-formed `interactions` list."
-            )
-        params = check.get("params") or {}
-        override_spec = {k: v for k, v in params.items() if k != "type"}
-        entry: Dict[str, Any] = {
-            "check_id": check_id,
-            "position": index,
-            "enabled": bool(check.get("enabled", True)),
-        }
-        if override_spec:
-            entry["override_spec"] = override_spec
+        entry: Dict[str, Any] = dict(cast(Mapping[str, Any], check))
+        if not entry.get("identifier") and not entry.get("check_id"):
+            raise ValueError("Each check must include an 'identifier' or a 'check_id'")
+        params = entry.pop("params", None)
+        if params:
+            override_spec = {k: v for k, v in cast(Mapping[str, Any], params).items() if k != "type"}
+            if override_spec:
+                entry.setdefault("override_spec", override_spec)
+        entry.setdefault("position", index)
+        entry.setdefault("enabled", True)
         configs.append(entry)
     return configs
 
@@ -104,10 +92,7 @@ def is_legacy_upload_item(item: Mapping[str, Any]) -> bool:
     return any(k in item for k in _LEGACY_UPLOAD_KEYS)
 
 
-def translate_legacy_upload_item(
-    item: Mapping[str, Any],
-    identifier_to_id: Mapping[str, str],
-) -> Dict[str, Any]:
+def translate_legacy_upload_item(item: Mapping[str, Any]) -> Dict[str, Any]:
     """Convert one legacy test-case dict (as accepted by `datasets.upload`)
     into the new `{interactions: [...], tags: [...], status: ...}` import
     shape.
@@ -126,7 +111,7 @@ def translate_legacy_upload_item(
 
     raw_checks = item.get("checks")
     if raw_checks:
-        interaction["checks"] = _build_check_configs(cast(Iterable[CheckConfigParam], raw_checks), identifier_to_id)
+        interaction["checks"] = _build_check_configs(cast(Iterable[CheckConfigParam], raw_checks))
 
     out: Dict[str, Any] = {"interactions": [interaction]}
     if "tags" in item:
@@ -161,12 +146,8 @@ def _assemble_interaction(
     messages: List[Dict[str, Any]],
     demo_output: Any,
     checks: Iterable[CheckConfigParam] | None | Omit,
-    identifier_to_id: Optional[Mapping[str, str]],
 ) -> InteractionParam:
-    """Build one `InteractionParam` from already-resolved pieces.
-
-    `identifier_to_id` is required iff `checks` is set.
-    """
+    """Build one `InteractionParam` from already-normalized pieces."""
     interaction: Dict[str, Any] = {
         "position": 0,
         "input": {"messages": messages},
@@ -177,135 +158,43 @@ def _assemble_interaction(
         interaction["output"] = output
 
     if not _is_omit_or_none(checks):
-        if identifier_to_id is None:
-            raise RuntimeError("identifier_to_id must be provided when checks are present")
-        interaction["checks"] = _build_check_configs(checks, identifier_to_id)  # type: ignore[arg-type]
+        interaction["checks"] = _build_check_configs(
+            cast("Iterable[CheckConfigParam]", checks)
+        )
 
-    return interaction  # type: ignore[return-value]
+    return cast("InteractionParam", interaction)
 
 
 # ---------------------------------------------------------------------------
-# Sync/async builders — only differ in the awaited I/O.
+# Interaction builders
 # ---------------------------------------------------------------------------
 
 
-def build_legacy_interaction_sync(
-    client: "HubClient",
+def build_legacy_interaction(
     *,
-    dataset_id: str,
     messages: Iterable[Mapping[str, Any]] | None | Omit,
     demo_output: Any,
     checks: Iterable[CheckConfigParam] | None | Omit,
 ) -> InteractionParam:
     """Build one `InteractionParam` from legacy create/update args."""
-    msgs = _coerce_messages(messages)
-
-    identifier_to_id: Optional[Dict[str, str]] = None
-    if not _is_omit_or_none(checks):
-        project_id = client.datasets.retrieve(dataset_id).project_id
-        identifier_to_id = {c.identifier: c.id for c in client.checks.list(project_id=project_id, filter_builtin=False)}
-
     return _assemble_interaction(
-        messages=msgs,
+        messages=_coerce_messages(messages),
         demo_output=demo_output,
         checks=checks,
-        identifier_to_id=identifier_to_id,
     )
 
 
-async def build_legacy_interaction_async(
-    client: "AsyncHubClient",
-    *,
-    dataset_id: str,
-    messages: Iterable[Mapping[str, Any]] | None | Omit,
-    demo_output: Any,
-    checks: Iterable[CheckConfigParam] | None | Omit,
-) -> InteractionParam:
-    """Async variant of :func:`build_legacy_interaction_sync`."""
-    msgs = _coerce_messages(messages)
+def normalize_interactions(
+    interactions: Iterable[InteractionParam],
+) -> List[InteractionParam]:
+    """Fill default positions and normalize check dicts.
 
-    identifier_to_id: Optional[Dict[str, str]] = None
-    if not _is_omit_or_none(checks):
-        project_id = (await client.datasets.retrieve(dataset_id)).project_id
-        identifier_to_id = {
-            c.identifier: c.id for c in await client.checks.list(project_id=project_id, filter_builtin=False)
-        }
-
-    return _assemble_interaction(
-        messages=msgs,
-        demo_output=demo_output,
-        checks=checks,
-        identifier_to_id=identifier_to_id,
-    )
-
-
-def _interactions_have_checks(interactions: Iterable[Mapping[str, Any]]) -> bool:
-    return any(interaction.get("checks") for interaction in interactions)
-
-
-def _resolve_interaction_checks(
-    interactions: Iterable[Mapping[str, Any]],
-    identifier_to_id: Mapping[str, str],
-) -> List[Dict[str, Any]]:
-    resolved: List[Dict[str, Any]] = []
-    for interaction in interactions:
-        item: Dict[str, Any] = dict(interaction)
+    Check `identifier`s are passed through and resolved by the API.
+    """
+    materialized: List[Dict[str, Any]] = [dict(interaction) for interaction in interactions]
+    _fill_positions(materialized)
+    for item in materialized:
         checks = item.get("checks")
         if checks:
-            item["checks"] = _build_check_configs(cast(Iterable[CheckConfigParam], checks), identifier_to_id)
-        resolved.append(item)
-    return resolved
-
-
-def resolve_interaction_checks_sync(
-    client: "HubClient",
-    *,
-    interactions: Iterable[InteractionParam],
-    dataset_id: Optional[str] = None,
-    test_case_id: Optional[str] = None,
-) -> List[InteractionParam]:
-    """Resolve each interaction check's `identifier` to a `check_id`."""
-    materialized = [dict(interaction) for interaction in interactions]
-    _fill_positions(materialized)
-    if not _interactions_have_checks(materialized):
-        return cast("List[InteractionParam]", materialized)
-
-    if dataset_id is None:
-        if test_case_id is None:
-            raise RuntimeError("dataset_id or test_case_id is required to resolve interaction checks")
-        dataset_id = client.test_cases.retrieve(test_case_id).dataset_id
-
-    project_id = client.datasets.retrieve(dataset_id).project_id
-    identifier_to_id = {c.identifier: c.id for c in client.checks.list(project_id=project_id, filter_builtin=False)}
-    return cast(
-        "List[InteractionParam]",
-        _resolve_interaction_checks(materialized, identifier_to_id),
-    )
-
-
-async def resolve_interaction_checks_async(
-    client: "AsyncHubClient",
-    *,
-    interactions: Iterable[InteractionParam],
-    dataset_id: Optional[str] = None,
-    test_case_id: Optional[str] = None,
-) -> List[InteractionParam]:
-    """Async variant of :func:`resolve_interaction_checks_sync`."""
-    materialized = [dict(interaction) for interaction in interactions]
-    _fill_positions(materialized)
-    if not _interactions_have_checks(materialized):
-        return cast("List[InteractionParam]", materialized)
-
-    if dataset_id is None:
-        if test_case_id is None:
-            raise RuntimeError("dataset_id or test_case_id is required to resolve interaction checks")
-        dataset_id = (await client.test_cases.retrieve(test_case_id)).dataset_id
-
-    project_id = (await client.datasets.retrieve(dataset_id)).project_id
-    identifier_to_id = {
-        c.identifier: c.id for c in await client.checks.list(project_id=project_id, filter_builtin=False)
-    }
-    return cast(
-        "List[InteractionParam]",
-        _resolve_interaction_checks(materialized, identifier_to_id),
-    )
+            item["checks"] = _build_check_configs(cast("Iterable[CheckConfigParam]", checks))
+    return cast("List[InteractionParam]", materialized)

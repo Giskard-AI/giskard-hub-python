@@ -42,11 +42,8 @@ from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.dataset import DatasetSubsetParam
 from .._check_helpers import (
-    needs_check_lookup,
-    fetch_check_identifier_map,
+    flat_check_specs,
     coerce_messages_to_input_dict,
-    fetch_check_identifier_map_async,
-    flat_check_specs_with_resolution,
 )
 from ...types.evaluation import (
     Evaluation,
@@ -780,11 +777,7 @@ class EvaluationsResource(SyncAPIResource):
         model_output = (
             _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
         )
-        check_list = list(checks)
-        identifier_to_id = (
-            fetch_check_identifier_map(self._client, project_id=project_id) if needs_check_lookup(check_list) else {}
-        )
-        api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
+        api_checks = flat_check_specs(list(checks))
 
         response = self._post(
             "/v2/evaluations/run-interaction-checks",
@@ -1499,13 +1492,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         model_output = (
             _normalize_agent_output(agent_output) if not isinstance(agent_output, Mapping) else dict(agent_output)
         )
-        check_list = list(checks)
-        identifier_to_id = (
-            await fetch_check_identifier_map_async(self._client, project_id=project_id)
-            if needs_check_lookup(check_list)
-            else {}
-        )
-        api_checks = flat_check_specs_with_resolution(check_list, identifier_to_id)
+        api_checks = flat_check_specs(list(checks))
 
         response = await self._post(
             "/v2/evaluations/run-interaction-checks",

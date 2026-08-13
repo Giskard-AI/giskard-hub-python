@@ -45,10 +45,8 @@ from ...types.test_case import (
     TestCaseBulkUpdateParams,
 )
 from .._interaction_helpers import (
-    build_legacy_interaction_sync,
-    build_legacy_interaction_async,
-    resolve_interaction_checks_sync,
-    resolve_interaction_checks_async,
+    normalize_interactions,
+    build_legacy_interaction,
 )
 
 __all__ = ["TestCasesResource", "AsyncTestCasesResource"]
@@ -201,18 +199,14 @@ class TestCasesResource(SyncAPIResource):
         )
         if source == "legacy":
             interactions = [
-                build_legacy_interaction_sync(
-                    self._client,
-                    dataset_id=dataset_id,
+                build_legacy_interaction(
                     messages=messages,
                     demo_output=demo_output,
                     checks=checks,
                 )
             ]
         elif source == "interactions":
-            interactions = resolve_interaction_checks_sync(
-                self._client, interactions=cast("Iterable[InteractionParam]", interactions), dataset_id=dataset_id
-            )
+            interactions = normalize_interactions(cast("Iterable[InteractionParam]", interactions))
 
         response = self._post(
             "/v2/test-cases",
@@ -368,23 +362,15 @@ class TestCasesResource(SyncAPIResource):
             demo_output=demo_output,
         )
         if source == "legacy":
-            target_dataset_id = dataset_id if isinstance(dataset_id, str) else self.retrieve(test_case_id).dataset_id
             interactions = [
-                build_legacy_interaction_sync(
-                    self._client,
-                    dataset_id=target_dataset_id,
+                build_legacy_interaction(
                     messages=messages,
                     demo_output=demo_output,
                     checks=checks,
                 )
             ]
         elif source == "interactions":
-            interactions = resolve_interaction_checks_sync(
-                self._client,
-                interactions=cast("Iterable[InteractionParam]", interactions),
-                dataset_id=dataset_id if isinstance(dataset_id, str) else None,
-                test_case_id=test_case_id,
-            )
+            interactions = normalize_interactions(cast("Iterable[InteractionParam]", interactions))
 
         response = self._patch(
             f"/v2/test-cases/{test_case_id}",
@@ -746,18 +732,14 @@ class AsyncTestCasesResource(AsyncAPIResource):
         )
         if source == "legacy":
             interactions = [
-                await build_legacy_interaction_async(
-                    self._client,
-                    dataset_id=dataset_id,
+                build_legacy_interaction(
                     messages=messages,
                     demo_output=demo_output,
                     checks=checks,
                 )
             ]
         elif source == "interactions":
-            interactions = await resolve_interaction_checks_async(
-                self._client, interactions=cast("Iterable[InteractionParam]", interactions), dataset_id=dataset_id
-            )
+            interactions = normalize_interactions(cast("Iterable[InteractionParam]", interactions))
 
         response = await self._post(
             "/v2/test-cases",
@@ -913,25 +895,15 @@ class AsyncTestCasesResource(AsyncAPIResource):
             demo_output=demo_output,
         )
         if source == "legacy":
-            target_dataset_id = (
-                dataset_id if isinstance(dataset_id, str) else (await self.retrieve(test_case_id)).dataset_id
-            )
             interactions = [
-                await build_legacy_interaction_async(
-                    self._client,
-                    dataset_id=target_dataset_id,
+                build_legacy_interaction(
                     messages=messages,
                     demo_output=demo_output,
                     checks=checks,
                 )
             ]
         elif source == "interactions":
-            interactions = await resolve_interaction_checks_async(
-                self._client,
-                interactions=cast("Iterable[InteractionParam]", interactions),
-                dataset_id=dataset_id if isinstance(dataset_id, str) else None,
-                test_case_id=test_case_id,
-            )
+            interactions = normalize_interactions(cast("Iterable[InteractionParam]", interactions))
 
         response = await self._patch(
             f"/v2/test-cases/{test_case_id}",
