@@ -12,8 +12,8 @@ from giskard_hub.types import (
     JsonPathRule,
     OutputAnnotation,
     ContextAnnotation,
-    CorrectnessParams,
     JsonPathRuleParam,
+    HubCorrectnessParams,
 )
 from giskard_hub.types.check import _extract_check_params
 from giskard_hub.resources._check_helpers import (
@@ -68,7 +68,7 @@ def test_check_param_to_spec_raises_when_no_kind_derivable() -> None:
 
 
 def test_check_param_to_spec_accepts_basemodel() -> None:
-    spec = check_param_to_spec("hub_correctness", CorrectnessParams(reference="x"))
+    spec = check_param_to_spec("hub_correctness", HubCorrectnessParams(reference="x"))
     assert spec == {"kind": "hub_correctness", "reference": "x"}
 
 
@@ -99,7 +99,9 @@ def test_check_params_to_specs_omits_spec_when_no_params() -> None:
 
 
 def test_check_params_to_specs_strips_redundant_type() -> None:
-    api = check_params_to_specs([{"identifier": "string_matching", "params": {"type": "string_matching", "keyword": "k"}}])
+    api = check_params_to_specs(
+        [{"identifier": "string_matching", "params": {"type": "string_matching", "keyword": "k"}}]
+    )
     assert api == [
         {
             "identifier": "string_matching",

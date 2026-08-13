@@ -158,9 +158,7 @@ def _assemble_interaction(
         interaction["output"] = output
 
     if not _is_omit_or_none(checks):
-        interaction["checks"] = _build_check_configs(
-            cast("Iterable[CheckConfigParam]", checks)
-        )
+        interaction["checks"] = _build_check_configs(cast("Iterable[CheckConfigParam]", checks))
 
     return cast("InteractionParam", interaction)
 

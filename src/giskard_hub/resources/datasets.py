@@ -99,9 +99,7 @@ def _maybe_translate_items(items: List[dict[str, Any]]) -> List[dict[str, Any]]:
     """Translate legacy items; on new-shape items, default omitted interaction
     positions to their list index."""
     return [
-        translate_legacy_upload_item(it)
-        if is_legacy_upload_item(it)
-        else fill_upload_item_positions(it)
+        translate_legacy_upload_item(it) if is_legacy_upload_item(it) else fill_upload_item_positions(it)
         for it in items
     ]
 
