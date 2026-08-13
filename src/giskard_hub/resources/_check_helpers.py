@@ -117,7 +117,9 @@ def check_params_to_specs(
     """
     result: list[Dict[str, Any]] = []
     for check in checks:
-        identifier = check["identifier"]
+        identifier = check.get("identifier")
+        if not identifier:
+            raise ValueError("Each check must include an 'identifier'")
         params = check.get("params") or {}
         if flat:
             result.append(

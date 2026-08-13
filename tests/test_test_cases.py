@@ -1,7 +1,7 @@
 """Tests for `TestCasesResource` argument validation (sync + async)."""
 # pyright: reportDeprecated=false
 
-from typing import Dict, List
+from typing import List
 
 import pytest
 
@@ -130,7 +130,7 @@ def test_build_check_configs_raises_without_identifier_or_check_id() -> None:
 
 
 def test_normalize_interactions_normalizes_checks_and_leaves_checkless_alone() -> None:
-    interactions: List[Dict[str, object]] = [
+    interactions: List[InteractionParam] = [
         {
             "position": 0,
             "input": {"messages": []},
@@ -140,12 +140,12 @@ def test_normalize_interactions_normalizes_checks_and_leaves_checkless_alone() -
     ]
     resolved = normalize_interactions(interactions)
 
-    assert resolved[0]["checks"] == [
+    assert resolved[0].get("checks") == [
         {"identifier": "hub_correctness", "position": 0, "enabled": True, "override_spec": {"reference": "r"}}
     ]
     assert "checks" not in resolved[1]
     # The caller's dicts are copied, not mutated in place.
-    assert interactions[0]["checks"] == [{"identifier": "hub_correctness", "params": {"reference": "r"}}]
+    assert interactions[0].get("checks") == [{"identifier": "hub_correctness", "params": {"reference": "r"}}]
 
 
 def test_normalize_interactions_is_noop_without_checks() -> None:

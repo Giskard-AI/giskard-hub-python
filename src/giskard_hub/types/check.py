@@ -280,9 +280,11 @@ class CheckConfig(BaseModel):
 
 
 class CheckConfigParam(TypedDict, total=False):
-    identifier: Required[str]
+    identifier: str
+    check_id: str
     enabled: bool
     params: Dict[str, Any]
+    override_spec: Dict[str, Any]
 
 
 # ---------------------------------------------------------------------------
@@ -317,8 +319,6 @@ class CheckBulkDeleteParams(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 # Interaction types
 # ---------------------------------------------------------------------------
-
-
 
 
 class FlatCheckSpec(BaseModel):
@@ -359,7 +359,9 @@ class InteractionResultData(BaseModel):
     input: Optional[JsonValue] = None
     output: Optional[JsonValue] = None
     state: str = ""
-    check_results: List[CheckResult] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    check_results: List[CheckResult] = Field(
+        default_factory=list
+    )  # pyright: ignore[reportUnknownVariableType]
     error: Optional[str] = None
     checks: Optional[List[InteractionCheckConfig]] = None
 

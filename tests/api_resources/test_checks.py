@@ -123,7 +123,7 @@ class TestChecks:
             check_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             params={
                 "reference": "reference",
-                "type": "correctness",
+                "type": "hub_correctness",
             },
             description="description",
             identifier="identifier",
@@ -405,7 +405,7 @@ class TestAsyncChecks:
             check_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             params={
                 "reference": "reference",
-                "type": "correctness",
+                "type": "hub_correctness",
             },
             description="description",
             identifier="identifier",
