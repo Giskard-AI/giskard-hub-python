@@ -1,7 +1,7 @@
 """Tests for `TestCasesResource` argument validation (sync + async)."""
 # pyright: reportDeprecated=false
 
-from typing import Dict, List
+from typing import List
 
 import pytest
 
@@ -13,8 +13,7 @@ from giskard_hub.resources._interaction_helpers import (
     _coerce_messages,
     _build_check_configs,
     _normalize_demo_output,
-    _resolve_interaction_checks,
-    resolve_interaction_checks_sync,
+    normalize_interactions,
 )
 
 
@@ -88,23 +87,22 @@ def test_coerce_messages_returns_empty_for_omit() -> None:
     assert _coerce_messages(omit) == []
 
 
-def test_build_check_configs_resolves_identifier_to_check_id_and_strips_type() -> None:
+def test_build_check_configs_passes_identifier_through_and_strips_type() -> None:
     configs = _build_check_configs(
         [
-            {"identifier": "correctness", "params": {"reference": "x", "type": "correctness"}},
-            {"identifier": "string_match", "params": {"keyword": "k"}, "enabled": False},
+            {"identifier": "hub_correctness", "params": {"reference": "x", "type": "hub_correctness"}},
+            {"identifier": "string_matching", "params": {"keyword": "k"}, "enabled": False},
         ],
-        identifier_to_id={"correctness": "uuid-1", "string_match": "uuid-2"},
     )
     assert configs == [
         {
-            "check_id": "uuid-1",
+            "identifier": "hub_correctness",
             "position": 0,
             "enabled": True,
             "override_spec": {"reference": "x"},
         },
         {
-            "check_id": "uuid-2",
+            "identifier": "string_matching",
             "position": 1,
             "enabled": False,
             "override_spec": {"keyword": "k"},
@@ -112,48 +110,58 @@ def test_build_check_configs_resolves_identifier_to_check_id_and_strips_type() -
     ]
 
 
-def test_build_check_configs_raises_when_identifier_unknown() -> None:
-    with pytest.raises(ValueError, match="Check identifier 'mystery' not found"):
-        _build_check_configs(
-            [{"identifier": "mystery"}],
-            identifier_to_id={"correctness": "u-1"},
-        )
+def test_build_check_configs_passes_check_id_and_override_spec_through() -> None:
+    configs = _build_check_configs(
+        [{"check_id": "uuid-1", "override_spec": {"reference": "x"}}],
+    )
+    assert configs == [
+        {
+            "check_id": "uuid-1",
+            "position": 0,
+            "enabled": True,
+            "override_spec": {"reference": "x"},
+        }
+    ]
 
 
-def test_resolve_interaction_checks_maps_identifiers_and_leaves_checkless_alone() -> None:
-    interactions: List[Dict[str, object]] = [
+def test_build_check_configs_raises_without_identifier_or_check_id() -> None:
+    with pytest.raises(ValueError, match="'identifier' or a 'check_id'"):
+        _build_check_configs([{"enabled": True}])
+
+
+def test_normalize_interactions_normalizes_checks_and_leaves_checkless_alone() -> None:
+    interactions: List[InteractionParam] = [
         {
             "position": 0,
             "input": {"messages": []},
-            "checks": [{"identifier": "correctness", "params": {"reference": "r"}}],
+            "checks": [{"identifier": "hub_correctness", "params": {"reference": "r"}}],
         },
         {"position": 1, "input": {"messages": []}},
     ]
-    resolved = _resolve_interaction_checks(interactions, {"correctness": "uuid-1"})
+    resolved = normalize_interactions(interactions)
 
-    assert resolved[0]["checks"] == [
-        {"check_id": "uuid-1", "position": 0, "enabled": True, "override_spec": {"reference": "r"}}
+    assert resolved[0].get("checks") == [
+        {"identifier": "hub_correctness", "position": 0, "enabled": True, "override_spec": {"reference": "r"}}
     ]
     assert "checks" not in resolved[1]
     # The caller's dicts are copied, not mutated in place.
-    assert interactions[0]["checks"] == [{"identifier": "correctness", "params": {"reference": "r"}}]
+    assert interactions[0].get("checks") == [{"identifier": "hub_correctness", "params": {"reference": "r"}}]
 
 
-def test_resolve_interaction_checks_sync_is_noop_without_checks(hub: HubClient) -> None:
-    # No interaction carries checks, so this must not touch the network.
+def test_normalize_interactions_is_noop_without_checks() -> None:
     interactions: List[InteractionParam] = [{"position": 0, "input": {"messages": []}}]
-    assert resolve_interaction_checks_sync(hub, interactions=interactions, dataset_id="d") == interactions
+    assert normalize_interactions(interactions) == interactions
 
 
-def test_resolve_interaction_checks_sync_defaults_position_to_index(hub: HubClient) -> None:
+def test_normalize_interactions_defaults_position_to_index() -> None:
     # Omitted `position` falls back to the interaction's list index; an
-    # explicit position is left untouched. No checks, so no network call.
+    # explicit position is left untouched.
     interactions: List[InteractionParam] = [
         {"input": {"a": 1}},
         {"position": 7, "input": {"b": 2}},
         {"input": {"c": 3}},
     ]
-    resolved = resolve_interaction_checks_sync(hub, interactions=interactions, dataset_id="d")
+    resolved = normalize_interactions(interactions)
     assert [i.get("position") for i in resolved] == [0, 7, 2]
 
 

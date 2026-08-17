@@ -12,12 +12,11 @@ from giskard_hub.types import (
     JsonPathRule,
     OutputAnnotation,
     ContextAnnotation,
-    CorrectnessParams,
     JsonPathRuleParam,
+    HubCorrectnessParams,
 )
 from giskard_hub.types.check import _extract_check_params
 from giskard_hub.resources._check_helpers import (
-    IDENTIFIER_TO_KIND,
     check_param_to_spec,
     check_params_to_specs,
 )
@@ -27,46 +26,34 @@ from giskard_hub.resources._check_helpers import (
 # ---------------------------------------------------------------------------
 
 
-def test_identifier_to_kind_mapping() -> None:
-    assert IDENTIFIER_TO_KIND == {
-        "correctness": "hub_correctness",
-        "conformity": "hub_conformity",
-        "groundedness": "hub_groundedness",
-        "oss_conformity": "conformity",
-        "oss_groundedness": "groundedness",
-        "string_match": "string_matching",
-        "regex_match": "regex_matching",
-        "metadata": "hub_metadata",
-    }
-
-
 @pytest.mark.parametrize(
     "identifier",
     [
+        "hub_conformity",
+        "hub_correctness",
+        "hub_groundedness",
+        "hub_metadata",
+        "conformity",
+        "groundedness",
+        "string_matching",
+        "regex_matching",
         "llm_judge",
         "equals",
-        "not_equals",
-        "greater_than",
-        "greater_than_equals",
-        "less_than",
-        "less_than_equals",
         "semantic_similarity",
     ],
 )
-def test_identifier_to_kind_falls_back_to_identity(identifier: str) -> None:
-    """Identifiers not in IDENTIFIER_TO_KIND resolve to themselves via check_param_to_spec."""
-    assert identifier not in IDENTIFIER_TO_KIND
+def test_check_param_to_spec_uses_identifier_as_kind(identifier: str) -> None:
     spec = check_param_to_spec(identifier, {})
     assert spec["kind"] == identifier
 
 
 def test_check_param_to_spec_prefers_params_type_over_identifier() -> None:
-    spec = check_param_to_spec("custom_name", {"type": "conformity", "rules": ["r"]})
+    spec = check_param_to_spec("custom_name", {"type": "hub_conformity", "rules": ["r"]})
     assert spec == {"kind": "hub_conformity", "rules": ["r"]}
 
 
 def test_check_param_to_spec_falls_back_to_identifier() -> None:
-    spec = check_param_to_spec("correctness", {"reference": "x"})
+    spec = check_param_to_spec("hub_correctness", {"reference": "x"})
     assert spec == {"kind": "hub_correctness", "reference": "x"}
 
 
@@ -81,7 +68,7 @@ def test_check_param_to_spec_raises_when_no_kind_derivable() -> None:
 
 
 def test_check_param_to_spec_accepts_basemodel() -> None:
-    spec = check_param_to_spec("correctness", CorrectnessParams(reference="x"))
+    spec = check_param_to_spec("hub_correctness", HubCorrectnessParams(reference="x"))
     assert spec == {"kind": "hub_correctness", "reference": "x"}
 
 
@@ -96,10 +83,10 @@ def test_extract_check_params_empty_when_no_spec() -> None:
 
 
 def test_check_params_to_specs_emits_nested_with_kind() -> None:
-    api = check_params_to_specs([{"identifier": "correctness", "params": {"reference": "x"}}])
+    api = check_params_to_specs([{"identifier": "hub_correctness", "params": {"reference": "x"}}])
     assert api == [
         {
-            "identifier": "correctness",
+            "identifier": "hub_correctness",
             "enabled": True,
             "spec": {"kind": "hub_correctness", "reference": "x"},
         }
@@ -112,10 +99,12 @@ def test_check_params_to_specs_omits_spec_when_no_params() -> None:
 
 
 def test_check_params_to_specs_strips_redundant_type() -> None:
-    api = check_params_to_specs([{"identifier": "string_match", "params": {"type": "string_match", "keyword": "k"}}])
+    api = check_params_to_specs(
+        [{"identifier": "string_matching", "params": {"type": "string_matching", "keyword": "k"}}]
+    )
     assert api == [
         {
-            "identifier": "string_match",
+            "identifier": "string_matching",
             "enabled": True,
             "spec": {"kind": "string_matching", "keyword": "k"},
         }
