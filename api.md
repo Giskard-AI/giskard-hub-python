@@ -356,7 +356,7 @@ Types:
 from giskard_hub.types import (
     TestCase,
     TestCaseComment,
-    TestCaseCheckConfig,
+    TestCaseCheckConfigParam,
     ChatMessageWithMetadata,
 )
 ```
