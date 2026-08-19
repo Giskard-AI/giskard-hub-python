@@ -212,7 +212,7 @@ def async_hub() -> AsyncHubClient:
 def test_create_rejects_both_params_and_spec(hub: HubClient) -> None:
     with pytest.raises(ValueError, match="Cannot provide both 'params' and 'spec'"):
         hub.checks.create(
-            identifier="correctness",
+            identifier="custom_correctness",
             name="n",
             project_id="p",
             params={"reference": "r"},
@@ -222,7 +222,7 @@ def test_create_rejects_both_params_and_spec(hub: HubClient) -> None:
 
 def test_create_rejects_neither(hub: HubClient) -> None:
     with pytest.raises(ValueError, match="Must provide either 'params' or 'spec'"):
-        hub.checks.create(identifier="correctness", name="n", project_id="p")
+        hub.checks.create(identifier="custom_correctness", name="n", project_id="p")
 
 
 def test_update_rejects_both_params_and_spec(hub: HubClient) -> None:
@@ -238,7 +238,7 @@ def test_update_rejects_both_params_and_spec(hub: HubClient) -> None:
 async def test_async_create_rejects_both(async_hub: AsyncHubClient) -> None:
     with pytest.raises(ValueError, match="Cannot provide both 'params' and 'spec'"):
         await async_hub.checks.create(
-            identifier="correctness",
+            identifier="custom_correctness",
             name="n",
             project_id="p",
             params={"reference": "r"},

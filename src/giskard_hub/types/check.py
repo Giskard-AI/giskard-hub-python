@@ -149,7 +149,7 @@ class ConformityParams(BaseModel):
 
 class GroundednessParams(BaseModel):
     answer: Optional[str] = None
-    answer_key: Optional[str] = None
+    target_key: Optional[str] = None
     context: Optional[Union[str, List[str]]] = None
     context_key: Optional[str] = None
     type: Optional[Literal["groundedness"]] = None
@@ -159,7 +159,7 @@ class StringMatchingParams(BaseModel):
     keyword: Optional[str] = None
     keyword_key: Optional[str] = None
     text: Optional[str] = None
-    text_key: Optional[str] = None
+    target_key: Optional[str] = None
     normalization_form: Optional[NormalizationForm] = None
     case_sensitive: Optional[bool] = None
     type: Optional[Literal["string_matching"]] = None
@@ -169,13 +169,13 @@ class RegexMatchingParams(BaseModel):
     pattern: Optional[str] = None
     pattern_key: Optional[str] = None
     text: Optional[str] = None
-    text_key: Optional[str] = None
+    target_key: Optional[str] = None
     match_timeout_seconds: Optional[float] = None
     type: Optional[Literal["regex_matching"]] = None
 
 
 class _ComparisonParams(BaseModel):
-    key: Optional[str] = None
+    target_key: Optional[str] = None
     expected_value: Optional[ExpectedValue] = None
     expected_value_key: Optional[str] = None
     normalization_form: Optional[NormalizationForm] = None
@@ -209,14 +209,14 @@ class LessThanEqualsParams(_ComparisonParams):
 class SemanticSimilarityParams(BaseModel):
     reference_text: Optional[str] = None
     reference_text_key: Optional[str] = None
-    actual_answer_key: Optional[str] = None
+    target_key: Optional[str] = None
     threshold: Optional[float] = None
     type: Optional[Literal["semantic_similarity"]] = None
 
 
 class ContradictionParams(BaseModel):
     answer: Optional[str] = None
-    answer_key: Optional[str] = None
+    target_key: Optional[str] = None
     context: Optional[Union[str, List[str]]] = None
     context_key: Optional[str] = None
     type: Optional[Literal["contradiction"]] = None
@@ -225,7 +225,7 @@ class ContradictionParams(BaseModel):
 class ToxicityParams(BaseModel):
     categories: Optional[List[ToxicityCategory]] = None
     output: Optional[str] = None
-    output_key: Optional[str] = None
+    target_key: Optional[str] = None
     type: Optional[Literal["toxicity"]] = None
 
 
@@ -233,21 +233,21 @@ class AnswerRelevanceParams(BaseModel):
     question: Optional[str] = None
     question_key: Optional[str] = None
     answer: Optional[str] = None
-    answer_key: Optional[str] = None
+    target_key: Optional[str] = None
     context: Optional[str] = None
     include_history: Optional[bool] = None
     type: Optional[Literal["answer_relevance"]] = None
 
 
 class JsonValidParams(BaseModel):
-    key: Optional[str] = None
+    target_key: Optional[str] = None
     parse: Optional[bool] = None
     expected_schema: Optional[Dict[str, Any]] = None
     type: Optional[Literal["json_valid"]] = None
 
 
 class ReadabilityParams(BaseModel):
-    key: Optional[str] = None
+    target_key: Optional[str] = None
     metric: Optional[ReadabilityMetric] = None
     min_score: Optional[float] = None
     max_score: Optional[float] = None
@@ -327,7 +327,7 @@ class ConformityParamsParam(TypedDict, total=False):
 
 class GroundednessParamsParam(TypedDict, total=False):
     answer: str
-    answer_key: str
+    target_key: str
     context: Union[str, SequenceNotStr[str]]
     context_key: str
     type: Literal["groundedness"]
@@ -337,7 +337,7 @@ class StringMatchingParamsParam(TypedDict, total=False):
     keyword: str
     keyword_key: str
     text: str
-    text_key: str
+    target_key: str
     normalization_form: NormalizationForm
     case_sensitive: bool
     type: Literal["string_matching"]
@@ -347,13 +347,13 @@ class RegexMatchingParamsParam(TypedDict, total=False):
     pattern: str
     pattern_key: str
     text: str
-    text_key: str
+    target_key: str
     match_timeout_seconds: float
     type: Literal["regex_matching"]
 
 
 class _ComparisonParamsParam(TypedDict, total=False):
-    key: str
+    target_key: str
     expected_value: ExpectedValue
     expected_value_key: str
     normalization_form: NormalizationForm
@@ -387,14 +387,14 @@ class LessThanEqualsParamsParam(_ComparisonParamsParam, total=False):
 class SemanticSimilarityParamsParam(TypedDict, total=False):
     reference_text: str
     reference_text_key: str
-    actual_answer_key: str
+    target_key: str
     threshold: float
     type: Literal["semantic_similarity"]
 
 
 class ContradictionParamsParam(TypedDict, total=False):
     answer: str
-    answer_key: str
+    target_key: str
     context: Union[str, SequenceNotStr[str]]
     context_key: str
     type: Literal["contradiction"]
@@ -403,7 +403,7 @@ class ContradictionParamsParam(TypedDict, total=False):
 class ToxicityParamsParam(TypedDict, total=False):
     categories: SequenceNotStr[ToxicityCategory]
     output: str
-    output_key: str
+    target_key: str
     type: Literal["toxicity"]
 
 
@@ -411,21 +411,21 @@ class AnswerRelevanceParamsParam(TypedDict, total=False):
     question: str
     question_key: str
     answer: str
-    answer_key: str
+    target_key: str
     context: str
     include_history: bool
     type: Literal["answer_relevance"]
 
 
 class JsonValidParamsParam(TypedDict, total=False):
-    key: str
+    target_key: str
     parse: bool
     expected_schema: Dict[str, Any]
     type: Literal["json_valid"]
 
 
 class ReadabilityParamsParam(TypedDict, total=False):
-    key: str
+    target_key: str
     metric: ReadabilityMetric
     min_score: float
     max_score: float
@@ -641,9 +641,7 @@ class InteractionCheckConfig(BaseModel):
 
 
 class InteractionCheckConfigParam(TypedDict, total=False):
-    # Same shape as `CheckConfigParam`: name the check by its `identifier`
-    # (e.g. "hub_correctness") and pass its config in `params`. The API resolves
-    # the identifier server-side.
+    # Same shape as `CheckConfigParam`: identify the check via `identifier`, config in `params`.
     identifier: Required[str]
     enabled: bool
     params: Dict[str, Any]
