@@ -37,26 +37,24 @@ from ...types.chat import ChatMessageParam, ChatMessageWithMetadataParam
 from ...types.check import CheckConfigParam, InteractionParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.scenario import ScenarioBulkDeleteParams
-from ...types.test_case import (
-    TestCase,
-    TestCaseCreateParams,
-    TestCaseUpdateParams,
-    TestCaseBulkUpdateParams,
+from ...types.scenario import (
+    Scenario,
+    ScenarioCreateParams,
+    ScenarioUpdateParams,
+    ScenarioBulkDeleteParams,
+    ScenarioBulkUpdateParams,
 )
 from .._interaction_helpers import (
     normalize_interactions,
     build_legacy_interaction,
 )
 
-__all__ = ["TestCasesResource", "AsyncTestCasesResource"]
-
-_TEST_CASES_DEPRECATION = "`client.test_cases` is deprecated; use `client.scenarios` instead."
+__all__ = ["ScenariosResource", "AsyncScenariosResource"]
 
 DemoOutput = ChatMessageWithMetadataParam | str
 
 
-_LEGACY_TC_PARAM_NAMES = ("messages", "checks", "demo_output")
+_LEGACY_SCENARIO_PARAM_NAMES = ("messages", "checks", "demo_output")
 
 
 def _resolve_interaction_source(
@@ -81,7 +79,7 @@ def _resolve_interaction_source(
     if using_interactions and using_legacy:
         raise ValueError(
             "Cannot mix `interactions` with legacy parameters "
-            f"({', '.join(repr(n) for n in _LEGACY_TC_PARAM_NAMES)}). Pick one."
+            f"({', '.join(repr(n) for n in _LEGACY_SCENARIO_PARAM_NAMES)}). Pick one."
         )
     if require_one and not using_interactions and not using_legacy:
         raise ValueError("Must provide either `interactions=` (recommended) or legacy `messages` (deprecated).")
@@ -89,7 +87,7 @@ def _resolve_interaction_source(
     if using_legacy:
         warnings.warn(
             f"Passing `messages` / `checks` / `demo_output` to "
-            f"`test_cases.{method}` is deprecated. Pass `interactions=[{{...}}]` instead.",
+            f"`scenarios.{method}` is deprecated. Pass `interactions=[{{...}}]` instead.",
             DeprecationWarning,
             stacklevel=3,
         )
@@ -97,31 +95,29 @@ def _resolve_interaction_source(
     return "interactions" if using_interactions else "none"
 
 
-class TestCasesResource(SyncAPIResource):
-    __test__ = False
-
+class ScenariosResource(SyncAPIResource):
     @cached_property
     def comments(self) -> CommentsResource:
         return CommentsResource(self._client)
 
     @cached_property
-    def with_raw_response(self) -> TestCasesResourceWithRawResponse:
+    def with_raw_response(self) -> ScenariosResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return TestCasesResourceWithRawResponse(self)
+        return ScenariosResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> TestCasesResourceWithStreamingResponse:
+    def with_streaming_response(self) -> ScenariosResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return TestCasesResourceWithStreamingResponse(self)
+        return ScenariosResourceWithStreamingResponse(self)
 
     def create(
         self,
@@ -140,24 +136,24 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCase:
-        """Create a new test case in a dataset.
+    ) -> Scenario:
+        """Create a new scenario in a dataset.
 
         Parameters
         ----------
         dataset_id : str
-            Dataset ID to create the test case in.
+            Dataset ID to create the scenario in.
         interactions : Iterable[InteractionParam] | Omit
-            Interactions to attach to the test case. Each interaction needs a
+            Interactions to attach to the scenario. Each interaction needs a
             structured `input` matching the agent's `input_schema`, and
             optionally an `output` and a `checks` list. `position` defaults to
             the interaction's index in the list when omitted.
         status : Literal["active", "draft"] | None | Omit
-            Status of the test case.
+            Status of the scenario.
         tags : SequenceNotStr[str] | Omit
-            Tags to apply to the test case.
+            Tags to apply to the scenario.
         source_probe_attempt_id : str | None | Omit
-            ID of the scan probe attempt this test case was created from, if
+            ID of the scan probe attempt this scenario was created from, if
             any.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Translated into a single
@@ -182,8 +178,8 @@ class TestCasesResource(SyncAPIResource):
 
         Returns
         -------
-        TestCase
-            The newly created test case.
+        Scenario
+            The newly created scenario.
 
         Raises
         ------
@@ -191,7 +187,6 @@ class TestCasesResource(SyncAPIResource):
             If `interactions` is mixed with legacy parameters, or if neither
             is provided.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         source = _resolve_interaction_source(
             method="create",
             require_one=True,
@@ -221,7 +216,7 @@ class TestCasesResource(SyncAPIResource):
                     "tags": tags,
                     "source_probe_attempt_id": source_probe_attempt_id,
                 },
-                TestCaseCreateParams,
+                ScenarioCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -229,14 +224,14 @@ class TestCasesResource(SyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[TestCase],
+            cast_to=APIResponse[Scenario],
         )
 
         return self._unwrap(response)
 
     def retrieve(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -244,14 +239,14 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCase:
+    ) -> Scenario:
         """
-        Retrieve a test case by its ID.
+        Retrieve a scenario by its ID.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to retrieve.
+        scenario_id : str
+            Scenario ID to retrieve.
 
         Other Parameters
         ----------------
@@ -266,33 +261,32 @@ class TestCasesResource(SyncAPIResource):
 
         Returns
         -------
-        TestCase
-            The retrieved test case.
+        Scenario
+            The retrieved scenario.
 
         Raises
         ------
         ValueError
-            If `test_case_id` is empty.
+            If `scenario_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         response = self._get(
-            f"/v2/scenarios/{test_case_id}",
+            f"/v2/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[TestCase],
+            cast_to=APIResponse[Scenario],
         )
 
         return self._unwrap(response)
 
     def update(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         interactions: Optional[Iterable[InteractionParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
@@ -307,21 +301,21 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCase:
-        """Update an existing test case.
+    ) -> Scenario:
+        """Update an existing scenario.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to update.
+        scenario_id : str
+            Scenario ID to update.
         interactions : Iterable[InteractionParam] | None | Omit
-            Replace the test case's interactions.
+            Replace the scenario's interactions.
         dataset_id : str | None | Omit
-            Move the test case to this dataset.
+            Move the scenario to this dataset.
         tags : SequenceNotStr[str] | None | Omit
-            Tags to set on the test case.
+            Tags to set on the scenario.
         status : Literal["active", "draft"] | None | Omit
-            New status of the test case.
+            New status of the scenario.
         messages : Iterable[ChatMessageParam] | None | Omit
             (Deprecated) Conversation messages. Translated into a single
             interaction against the dataset's default role with
@@ -345,18 +339,17 @@ class TestCasesResource(SyncAPIResource):
 
         Returns
         -------
-        TestCase
-            The updated test case.
+        Scenario
+            The updated scenario.
 
         Raises
         ------
         ValueError
-            If `test_case_id` is empty, or if `interactions` is mixed with
+            If `scenario_id` is empty, or if `interactions` is mixed with
             legacy parameters.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
 
         source = _resolve_interaction_source(
             method="update",
@@ -378,7 +371,7 @@ class TestCasesResource(SyncAPIResource):
             interactions = normalize_interactions(cast("Iterable[InteractionParam]", interactions))
 
         response = self._patch(
-            f"/v2/scenarios/{test_case_id}",
+            f"/v2/scenarios/{scenario_id}",
             body=maybe_transform(
                 {
                     "dataset_id": dataset_id,
@@ -386,7 +379,7 @@ class TestCasesResource(SyncAPIResource):
                     "tags": tags,
                     "status": status,
                 },
-                TestCaseUpdateParams,
+                ScenarioUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -394,14 +387,14 @@ class TestCasesResource(SyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[TestCase],
+            cast_to=APIResponse[Scenario],
         )
 
         return self._unwrap(response)
 
     def delete(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -411,12 +404,12 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete a test case by its ID.
+        Delete a scenario by its ID.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to delete.
+        scenario_id : str
+            Scenario ID to delete.
 
         Other Parameters
         ----------------
@@ -436,13 +429,12 @@ class TestCasesResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If `test_case_id` is empty.
+            If `scenario_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         response = self._delete(
-            f"/v2/scenarios/{test_case_id}",
+            f"/v2/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -457,7 +449,7 @@ class TestCasesResource(SyncAPIResource):
     def bulk_delete(
         self,
         *,
-        test_case_ids: SequenceNotStr[str],
+        scenario_ids: SequenceNotStr[str],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -466,12 +458,12 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete multiple test cases at once.
+        Delete multiple scenarios at once.
 
         Parameters
         ----------
-        test_case_ids : SequenceNotStr[str]
-            Test Case IDs to delete.
+        scenario_ids : SequenceNotStr[str]
+            Scenario IDs to delete.
 
         Other Parameters
         ----------------
@@ -488,7 +480,6 @@ class TestCasesResource(SyncAPIResource):
         -------
         None
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         response = self._delete(
             "/v2/scenarios",
             options=make_request_options(
@@ -496,7 +487,7 @@ class TestCasesResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"scenario_ids": test_case_ids}, ScenarioBulkDeleteParams),
+                query=maybe_transform({"scenario_ids": scenario_ids}, ScenarioBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -506,7 +497,7 @@ class TestCasesResource(SyncAPIResource):
     def bulk_update(
         self,
         *,
-        test_case_ids: SequenceNotStr[str],
+        scenario_ids: SequenceNotStr[str],
         disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         added_tags: Optional[SequenceNotStr[str]] | Omit = omit,
@@ -518,24 +509,24 @@ class TestCasesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCase]:
+    ) -> List[Scenario]:
         """
-        Bulk update multiple test cases' checks, tags, or status.
+        Bulk update multiple scenarios' checks, tags, or status.
 
         Parameters
         ----------
-        test_case_ids : SequenceNotStr[str]
-            Test Case IDs to update.
+        scenario_ids : SequenceNotStr[str]
+            Scenario IDs to update.
         disabled_checks : Optional[SequenceNotStr[str]] | Omit
             Partial list of checks to be disabled.
         enabled_checks : Optional[SequenceNotStr[str]] | Omit
             Partial list of checks to be enabled.
         added_tags : Optional[SequenceNotStr[str]] | Omit
-            Tags to be added to the test cases.
+            Tags to be added to the scenarios.
         removed_tags : Optional[SequenceNotStr[str]] | Omit
-            Tags to be removed from the test cases.
+            Tags to be removed from the scenarios.
         status : Optional[Literal["active", "draft"]] | Omit
-            Status of the test cases.
+            Status of the scenarios.
 
         Other Parameters
         ----------------
@@ -550,22 +541,21 @@ class TestCasesResource(SyncAPIResource):
 
         Returns
         -------
-        List[TestCase]
-            The updated test cases.
+        List[Scenario]
+            The updated scenarios.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         response = self._patch(
             "/v2/scenarios",
             body=maybe_transform(
                 {
-                    "ids": test_case_ids,
+                    "ids": scenario_ids,
                     "disabled_checks": disabled_checks,
                     "enabled_checks": enabled_checks,
                     "added_tags": added_tags,
                     "removed_tags": removed_tags,
                     "status": status,
                 },
-                TestCaseBulkUpdateParams,
+                ScenarioBulkUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -573,7 +563,7 @@ class TestCasesResource(SyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[List[TestCase]],
+            cast_to=APIResponse[List[Scenario]],
         )
 
         return self._unwrap(response)
@@ -581,7 +571,7 @@ class TestCasesResource(SyncAPIResource):
     def bulk_move(
         self,
         *,
-        test_case_ids: List[str],
+        scenario_ids: List[str],
         target_dataset_id: str,
         duplicate: Optional[bool] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -590,16 +580,16 @@ class TestCasesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Move or copy test cases between datasets.
+        Move or copy scenarios between datasets.
 
         Parameters
         ----------
-        test_case_ids : List[str]
-            List of test case IDs to move.
+        scenario_ids : List[str]
+            List of scenario IDs to move.
         target_dataset_id : str
-            Target dataset ID to move test cases to.
+            Target dataset ID to move scenarios to.
         duplicate : Optional[bool] | Omit
-            If true, keep a copy of the test cases in the original dataset. Default is true.
+            If true, keep a copy of the scenarios in the original dataset. Default is true.
 
         Other Parameters
         ----------------
@@ -616,12 +606,11 @@ class TestCasesResource(SyncAPIResource):
         -------
         None
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         response = self._post(
             "/v2/scenarios/bulk-move",
             body=maybe_transform(
                 {
-                    "scenario_ids": test_case_ids,
+                    "scenario_ids": scenario_ids,
                     "dataset_id": target_dataset_id,
                     "duplicate": duplicate,
                 },
@@ -639,29 +628,29 @@ class TestCasesResource(SyncAPIResource):
         return self._unwrap(response)
 
 
-class AsyncTestCasesResource(AsyncAPIResource):
+class AsyncScenariosResource(AsyncAPIResource):
     @cached_property
     def comments(self) -> AsyncCommentsResource:
         return AsyncCommentsResource(self._client)
 
     @cached_property
-    def with_raw_response(self) -> AsyncTestCasesResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncScenariosResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncTestCasesResourceWithRawResponse(self)
+        return AsyncScenariosResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncTestCasesResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncScenariosResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AsyncTestCasesResourceWithStreamingResponse(self)
+        return AsyncScenariosResourceWithStreamingResponse(self)
 
     async def create(
         self,
@@ -680,24 +669,24 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCase:
-        """Create a new test case in a dataset.
+    ) -> Scenario:
+        """Create a new scenario in a dataset.
 
         Parameters
         ----------
         dataset_id : str
-            Dataset ID to create the test case in.
+            Dataset ID to create the scenario in.
         interactions : Iterable[InteractionParam] | Omit
-            Interactions to attach to the test case. Each interaction needs a
+            Interactions to attach to the scenario. Each interaction needs a
             structured `input` matching the agent's `input_schema`, and
             optionally an `output` and a `checks` list. `position` defaults to
             the interaction's index in the list when omitted.
         status : Literal["active", "draft"] | None | Omit
-            Status of the test case.
+            Status of the scenario.
         tags : SequenceNotStr[str] | Omit
-            Tags to apply to the test case.
+            Tags to apply to the scenario.
         source_probe_attempt_id : str | None | Omit
-            ID of the scan probe attempt this test case was created from, if
+            ID of the scan probe attempt this scenario was created from, if
             any.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Translated into a single
@@ -722,8 +711,8 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCase
-            The newly created test case.
+        Scenario
+            The newly created scenario.
 
         Raises
         ------
@@ -731,7 +720,6 @@ class AsyncTestCasesResource(AsyncAPIResource):
             If `interactions` is mixed with legacy parameters, or if neither
             is provided.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         source = _resolve_interaction_source(
             method="create",
             require_one=True,
@@ -761,7 +749,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "tags": tags,
                     "source_probe_attempt_id": source_probe_attempt_id,
                 },
-                TestCaseCreateParams,
+                ScenarioCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -769,14 +757,14 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[TestCase],
+            cast_to=APIResponse[Scenario],
         )
 
         return self._unwrap(response)
 
     async def retrieve(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -784,14 +772,14 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCase:
+    ) -> Scenario:
         """
-        Retrieve a test case by its ID.
+        Retrieve a scenario by its ID.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to retrieve.
+        scenario_id : str
+            Scenario ID to retrieve.
 
         Other Parameters
         ----------------
@@ -806,33 +794,32 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCase
-            The retrieved test case.
+        Scenario
+            The retrieved scenario.
 
         Raises
         ------
         ValueError
-            If `test_case_id` is empty.
+            If `scenario_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         response = await self._get(
-            f"/v2/scenarios/{test_case_id}",
+            f"/v2/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[TestCase],
+            cast_to=APIResponse[Scenario],
         )
 
         return self._unwrap(response)
 
     async def update(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         interactions: Optional[Iterable[InteractionParam]] | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
@@ -847,21 +834,21 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCase:
-        """Update an existing test case.
+    ) -> Scenario:
+        """Update an existing scenario.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to update.
+        scenario_id : str
+            Scenario ID to update.
         interactions : Iterable[InteractionParam] | None | Omit
-            Replace the test case's interactions.
+            Replace the scenario's interactions.
         dataset_id : str | None | Omit
-            Move the test case to this dataset.
+            Move the scenario to this dataset.
         tags : SequenceNotStr[str] | None | Omit
-            Tags to set on the test case.
+            Tags to set on the scenario.
         status : Literal["active", "draft"] | None | Omit
-            New status of the test case.
+            New status of the scenario.
         messages : Iterable[ChatMessageParam] | None | Omit
             (Deprecated) Conversation messages. Translated into a single
             interaction against the dataset's default role with
@@ -885,18 +872,17 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCase
-            The updated test case.
+        Scenario
+            The updated scenario.
 
         Raises
         ------
         ValueError
-            If `test_case_id` is empty, or if `interactions` is mixed with
+            If `scenario_id` is empty, or if `interactions` is mixed with
             legacy parameters.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
 
         source = _resolve_interaction_source(
             method="update",
@@ -918,7 +904,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
             interactions = normalize_interactions(cast("Iterable[InteractionParam]", interactions))
 
         response = await self._patch(
-            f"/v2/scenarios/{test_case_id}",
+            f"/v2/scenarios/{scenario_id}",
             body=await async_maybe_transform(
                 {
                     "dataset_id": dataset_id,
@@ -926,7 +912,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                     "tags": tags,
                     "status": status,
                 },
-                TestCaseUpdateParams,
+                ScenarioUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -934,14 +920,14 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[TestCase],
+            cast_to=APIResponse[Scenario],
         )
 
         return self._unwrap(response)
 
     async def delete(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -951,12 +937,12 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete a test case by its ID.
+        Delete a scenario by its ID.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to delete.
+        scenario_id : str
+            Scenario ID to delete.
 
         Other Parameters
         ----------------
@@ -976,13 +962,12 @@ class AsyncTestCasesResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If `test_case_id` is empty.
+            If `scenario_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         response = await self._delete(
-            f"/v2/scenarios/{test_case_id}",
+            f"/v2/scenarios/{scenario_id}",
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -997,7 +982,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
     async def bulk_delete(
         self,
         *,
-        test_case_ids: SequenceNotStr[str],
+        scenario_ids: SequenceNotStr[str],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1006,12 +991,12 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete multiple test cases at once.
+        Delete multiple scenarios at once.
 
         Parameters
         ----------
-        test_case_ids : SequenceNotStr[str]
-            Test Case IDs to delete.
+        scenario_ids : SequenceNotStr[str]
+            Scenario IDs to delete.
 
         Other Parameters
         ----------------
@@ -1028,7 +1013,6 @@ class AsyncTestCasesResource(AsyncAPIResource):
         -------
         None
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         response = await self._delete(
             "/v2/scenarios",
             options=make_request_options(
@@ -1036,7 +1020,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"scenario_ids": test_case_ids}, ScenarioBulkDeleteParams),
+                query=await async_maybe_transform({"scenario_ids": scenario_ids}, ScenarioBulkDeleteParams),
             ),
             cast_to=APIResponse[None],
         )
@@ -1046,7 +1030,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
     async def bulk_update(
         self,
         *,
-        test_case_ids: SequenceNotStr[str],
+        scenario_ids: SequenceNotStr[str],
         disabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         enabled_checks: Optional[SequenceNotStr[str]] | Omit = omit,
         added_tags: Optional[SequenceNotStr[str]] | Omit = omit,
@@ -1058,24 +1042,24 @@ class AsyncTestCasesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCase]:
+    ) -> List[Scenario]:
         """
-        Bulk update multiple test cases' checks, tags, or status.
+        Bulk update multiple scenarios' checks, tags, or status.
 
         Parameters
         ----------
-        test_case_ids : SequenceNotStr[str]
-            Test Case IDs to update.
+        scenario_ids : SequenceNotStr[str]
+            Scenario IDs to update.
         disabled_checks : Optional[SequenceNotStr[str]] | Omit
             Partial list of checks to be disabled.
         enabled_checks : Optional[SequenceNotStr[str]] | Omit
             Partial list of checks to be enabled.
         added_tags : Optional[SequenceNotStr[str]] | Omit
-            Tags to be added to the test cases.
+            Tags to be added to the scenarios.
         removed_tags : Optional[SequenceNotStr[str]] | Omit
-            Tags to be removed from the test cases.
+            Tags to be removed from the scenarios.
         status : Optional[Literal["active", "draft"]] | Omit
-            Status of the test cases.
+            Status of the scenarios.
 
         Other Parameters
         ----------------
@@ -1090,22 +1074,21 @@ class AsyncTestCasesResource(AsyncAPIResource):
 
         Returns
         -------
-        List[TestCase]
-            The updated test cases.
+        List[Scenario]
+            The updated scenarios.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         response = await self._patch(
             "/v2/scenarios",
             body=await async_maybe_transform(
                 {
-                    "ids": test_case_ids,
+                    "ids": scenario_ids,
                     "disabled_checks": disabled_checks,
                     "enabled_checks": enabled_checks,
                     "added_tags": added_tags,
                     "removed_tags": removed_tags,
                     "status": status,
                 },
-                TestCaseBulkUpdateParams,
+                ScenarioBulkUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1113,7 +1096,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
             ),
-            cast_to=APIResponse[List[TestCase]],
+            cast_to=APIResponse[List[Scenario]],
         )
 
         return self._unwrap(response)
@@ -1121,7 +1104,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
     async def bulk_move(
         self,
         *,
-        test_case_ids: List[str],
+        scenario_ids: List[str],
         target_dataset_id: str,
         duplicate: Optional[bool] | Omit = omit,
         extra_headers: Headers | None = None,
@@ -1130,16 +1113,16 @@ class AsyncTestCasesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Move or copy test cases between datasets.
+        Move or copy scenarios between datasets.
 
         Parameters
         ----------
-        test_case_ids : List[str]
-            List of test case IDs to move.
+        scenario_ids : List[str]
+            List of scenario IDs to move.
         target_dataset_id : str
-            Target dataset ID to move test cases to.
+            Target dataset ID to move scenarios to.
         duplicate : Optional[bool] | Omit
-            If true, keep a copy of the test cases in the original dataset. Default is true.
+            If true, keep a copy of the scenarios in the original dataset. Default is true.
 
         Other Parameters
         ----------------
@@ -1156,12 +1139,11 @@ class AsyncTestCasesResource(AsyncAPIResource):
         -------
         None
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
         response = await self._post(
             "/v2/scenarios/bulk-move",
             body=await async_maybe_transform(
                 {
-                    "scenario_ids": test_case_ids,
+                    "scenario_ids": scenario_ids,
                     "dataset_id": target_dataset_id,
                     "duplicate": duplicate,
                 },
@@ -1179,129 +1161,125 @@ class AsyncTestCasesResource(AsyncAPIResource):
         return self._unwrap(response)
 
 
-class TestCasesResourceWithRawResponse:
-    __test__ = False
-
-    def __init__(self, test_cases: TestCasesResource) -> None:
-        self._test_cases = test_cases
+class ScenariosResourceWithRawResponse:
+    def __init__(self, scenarios: ScenariosResource) -> None:
+        self._scenarios = scenarios
 
         self.create = to_raw_response_wrapper(
-            test_cases.create,
+            scenarios.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            test_cases.retrieve,
+            scenarios.retrieve,
         )
         self.update = to_raw_response_wrapper(
-            test_cases.update,
+            scenarios.update,
         )
         self.delete = to_raw_response_wrapper(
-            test_cases.delete,
+            scenarios.delete,
         )
         self.bulk_delete = to_raw_response_wrapper(
-            test_cases.bulk_delete,
+            scenarios.bulk_delete,
         )
         self.bulk_update = to_raw_response_wrapper(
-            test_cases.bulk_update,
+            scenarios.bulk_update,
         )
         self.bulk_move = to_raw_response_wrapper(
-            test_cases.bulk_move,
+            scenarios.bulk_move,
         )
 
     @cached_property
     def comments(self) -> CommentsResourceWithRawResponse:
-        return CommentsResourceWithRawResponse(self._test_cases.comments)
+        return CommentsResourceWithRawResponse(self._scenarios.comments)
 
 
-class AsyncTestCasesResourceWithRawResponse:
-    def __init__(self, test_cases: AsyncTestCasesResource) -> None:
-        self._test_cases = test_cases
+class AsyncScenariosResourceWithRawResponse:
+    def __init__(self, scenarios: AsyncScenariosResource) -> None:
+        self._scenarios = scenarios
 
         self.create = async_to_raw_response_wrapper(
-            test_cases.create,
+            scenarios.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            test_cases.retrieve,
+            scenarios.retrieve,
         )
         self.update = async_to_raw_response_wrapper(
-            test_cases.update,
+            scenarios.update,
         )
         self.delete = async_to_raw_response_wrapper(
-            test_cases.delete,
+            scenarios.delete,
         )
         self.bulk_delete = async_to_raw_response_wrapper(
-            test_cases.bulk_delete,
+            scenarios.bulk_delete,
         )
         self.bulk_update = async_to_raw_response_wrapper(
-            test_cases.bulk_update,
+            scenarios.bulk_update,
         )
         self.bulk_move = async_to_raw_response_wrapper(
-            test_cases.bulk_move,
+            scenarios.bulk_move,
         )
 
     @cached_property
     def comments(self) -> AsyncCommentsResourceWithRawResponse:
-        return AsyncCommentsResourceWithRawResponse(self._test_cases.comments)
+        return AsyncCommentsResourceWithRawResponse(self._scenarios.comments)
 
 
-class TestCasesResourceWithStreamingResponse:
-    __test__ = False
-
-    def __init__(self, test_cases: TestCasesResource) -> None:
-        self._test_cases = test_cases
+class ScenariosResourceWithStreamingResponse:
+    def __init__(self, scenarios: ScenariosResource) -> None:
+        self._scenarios = scenarios
 
         self.create = to_streamed_response_wrapper(
-            test_cases.create,
+            scenarios.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            test_cases.retrieve,
+            scenarios.retrieve,
         )
         self.update = to_streamed_response_wrapper(
-            test_cases.update,
+            scenarios.update,
         )
         self.delete = to_streamed_response_wrapper(
-            test_cases.delete,
+            scenarios.delete,
         )
         self.bulk_delete = to_streamed_response_wrapper(
-            test_cases.bulk_delete,
+            scenarios.bulk_delete,
         )
         self.bulk_update = to_streamed_response_wrapper(
-            test_cases.bulk_update,
+            scenarios.bulk_update,
         )
         self.bulk_move = to_streamed_response_wrapper(
-            test_cases.bulk_move,
+            scenarios.bulk_move,
         )
 
     @cached_property
     def comments(self) -> CommentsResourceWithStreamingResponse:
-        return CommentsResourceWithStreamingResponse(self._test_cases.comments)
+        return CommentsResourceWithStreamingResponse(self._scenarios.comments)
 
 
-class AsyncTestCasesResourceWithStreamingResponse:
-    def __init__(self, test_cases: AsyncTestCasesResource) -> None:
-        self._test_cases = test_cases
+class AsyncScenariosResourceWithStreamingResponse:
+    def __init__(self, scenarios: AsyncScenariosResource) -> None:
+        self._scenarios = scenarios
 
         self.create = async_to_streamed_response_wrapper(
-            test_cases.create,
+            scenarios.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            test_cases.retrieve,
+            scenarios.retrieve,
         )
         self.update = async_to_streamed_response_wrapper(
-            test_cases.update,
+            scenarios.update,
         )
         self.delete = async_to_streamed_response_wrapper(
-            test_cases.delete,
+            scenarios.delete,
         )
         self.bulk_delete = async_to_streamed_response_wrapper(
-            test_cases.bulk_delete,
+            scenarios.bulk_delete,
         )
         self.bulk_update = async_to_streamed_response_wrapper(
-            test_cases.bulk_update,
+            scenarios.bulk_update,
         )
         self.bulk_move = async_to_streamed_response_wrapper(
-            test_cases.bulk_move,
+            scenarios.bulk_move,
         )
 
     @cached_property
     def comments(self) -> AsyncCommentsResourceWithStreamingResponse:
-        return AsyncCommentsResourceWithStreamingResponse(self._test_cases.comments)
+        return AsyncCommentsResourceWithStreamingResponse(self._scenarios.comments)

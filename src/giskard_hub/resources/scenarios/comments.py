@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import warnings
-
 import httpx
 
-from ...types import TestCaseComment
+from ...types import ScenarioComment
 from ..._types import Body, Query, Headers, NotGiven, not_given
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
@@ -17,11 +15,9 @@ from ..._response import (
 )
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.test_case import CommentAddParams, CommentEditParams
+from ...types.scenario import ScenarioCommentAddParams, ScenarioCommentEditParams
 
 __all__ = ["CommentsResource", "AsyncCommentsResource"]
-
-_TEST_CASES_DEPRECATION = "`client.test_cases` is deprecated; use `client.scenarios` instead."
 
 
 class CommentsResource(SyncAPIResource):
@@ -48,7 +44,7 @@ class CommentsResource(SyncAPIResource):
         self,
         comment_id: str,
         *,
-        test_case_id: str,
+        scenario_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -57,14 +53,14 @@ class CommentsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete a comment from a test case.
+        Delete a comment from a scenario.
 
         Parameters
         ----------
         comment_id : str
             Comment ID to delete.
-        test_case_id : str
-            Test Case ID to delete the comment from.
+        scenario_id : str
+            Scenario ID to delete the comment from.
 
         Other Parameters
         ----------------
@@ -84,15 +80,14 @@ class CommentsResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If `test_case_id` or `comment_id` is empty.
+            If `scenario_id` or `comment_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         response = self._delete(
-            f"/v2/scenarios/{test_case_id}/comments/{comment_id}",
+            f"/v2/scenarios/{scenario_id}/comments/{comment_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -103,7 +98,7 @@ class CommentsResource(SyncAPIResource):
 
     def add(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -112,14 +107,14 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseComment:
+    ) -> ScenarioComment:
         """
-        Add a new comment to a test case.
+        Add a new comment to a scenario.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to add the comment to.
+        scenario_id : str
+            Scenario ID to add the comment to.
         content : str
             Content of the comment to add.
 
@@ -136,24 +131,23 @@ class CommentsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseComment
+        ScenarioComment
             The newly created comment.
 
         Raises
         ------
         ValueError
-            If `test_case_id` is empty.
+            If `scenario_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         response = self._post(
-            f"/v2/scenarios/{test_case_id}/comments",
-            body=maybe_transform({"comment": content}, CommentAddParams),
+            f"/v2/scenarios/{scenario_id}/comments",
+            body=maybe_transform({"comment": content}, ScenarioCommentAddParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseComment],
+            cast_to=APIResponse[ScenarioComment],
         )
 
         return self._unwrap(response)
@@ -162,7 +156,7 @@ class CommentsResource(SyncAPIResource):
         self,
         comment_id: str,
         *,
-        test_case_id: str,
+        scenario_id: str,
         content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -170,16 +164,16 @@ class CommentsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseComment:
+    ) -> ScenarioComment:
         """
-        Edit an existing comment on a test case.
+        Edit an existing comment on a scenario.
 
         Parameters
         ----------
         comment_id : str
             Comment ID to edit.
-        test_case_id : str
-            Test Case ID to edit the comment from.
+        scenario_id : str
+            Scenario ID to edit the comment from.
         content : str
             Content of the comment to edit.
 
@@ -196,26 +190,25 @@ class CommentsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseComment
+        ScenarioComment
             The edited comment.
 
         Raises
         ------
         ValueError
-            If `test_case_id` or `comment_id` is empty.
+            If `scenario_id` or `comment_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         response = self._patch(
-            f"/v2/scenarios/{test_case_id}/comments/{comment_id}",
-            body=maybe_transform({"comment": content}, CommentEditParams),
+            f"/v2/scenarios/{scenario_id}/comments/{comment_id}",
+            body=maybe_transform({"comment": content}, ScenarioCommentEditParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseComment],
+            cast_to=APIResponse[ScenarioComment],
         )
 
         return self._unwrap(response)
@@ -245,7 +238,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         self,
         comment_id: str,
         *,
-        test_case_id: str,
+        scenario_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -254,14 +247,14 @@ class AsyncCommentsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
         """
-        Delete a comment from a test case.
+        Delete a comment from a scenario.
 
         Parameters
         ----------
         comment_id : str
             Comment ID to delete.
-        test_case_id : str
-            Test Case ID to delete the comment from.
+        scenario_id : str
+            Scenario ID to delete the comment from.
 
         Other Parameters
         ----------------
@@ -281,15 +274,14 @@ class AsyncCommentsResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If `test_case_id` or `comment_id` is empty.
+            If `scenario_id` or `comment_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         response = await self._delete(
-            f"/v2/scenarios/{test_case_id}/comments/{comment_id}",
+            f"/v2/scenarios/{scenario_id}/comments/{comment_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -300,7 +292,7 @@ class AsyncCommentsResource(AsyncAPIResource):
 
     async def add(
         self,
-        test_case_id: str,
+        scenario_id: str,
         *,
         content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -309,14 +301,14 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseComment:
+    ) -> ScenarioComment:
         """
-        Add a new comment to a test case.
+        Add a new comment to a scenario.
 
         Parameters
         ----------
-        test_case_id : str
-            Test Case ID to add the comment to.
+        scenario_id : str
+            Scenario ID to add the comment to.
         content : str
             Content of the comment to add.
 
@@ -333,24 +325,23 @@ class AsyncCommentsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseComment
+        ScenarioComment
             The newly created comment.
 
         Raises
         ------
         ValueError
-            If `test_case_id` is empty.
+            If `scenario_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         response = await self._post(
-            f"/v2/scenarios/{test_case_id}/comments",
-            body=await async_maybe_transform({"comment": content}, CommentAddParams),
+            f"/v2/scenarios/{scenario_id}/comments",
+            body=await async_maybe_transform({"comment": content}, ScenarioCommentAddParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseComment],
+            cast_to=APIResponse[ScenarioComment],
         )
 
         return self._unwrap(response)
@@ -359,7 +350,7 @@ class AsyncCommentsResource(AsyncAPIResource):
         self,
         comment_id: str,
         *,
-        test_case_id: str,
+        scenario_id: str,
         content: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -367,16 +358,16 @@ class AsyncCommentsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseComment:
+    ) -> ScenarioComment:
         """
-        Edit an existing comment on a test case.
+        Edit an existing comment on a scenario.
 
         Parameters
         ----------
         comment_id : str
             Comment ID to edit.
-        test_case_id : str
-            Test Case ID to edit the comment from.
+        scenario_id : str
+            Scenario ID to edit the comment from.
         content : str
             Content of the comment to edit.
 
@@ -393,26 +384,25 @@ class AsyncCommentsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseComment
+        ScenarioComment
             The edited comment.
 
         Raises
         ------
         ValueError
-            If `test_case_id` or `comment_id` is empty.
+            If `scenario_id` or `comment_id` is empty.
         """
-        warnings.warn(_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
-        if not test_case_id:
-            raise ValueError(f"Expected a non-empty value for `test_case_id` but received {test_case_id!r}")
+        if not scenario_id:
+            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
         if not comment_id:
             raise ValueError(f"Expected a non-empty value for `comment_id` but received {comment_id!r}")
         response = await self._patch(
-            f"/v2/scenarios/{test_case_id}/comments/{comment_id}",
-            body=await async_maybe_transform({"comment": content}, CommentEditParams),
+            f"/v2/scenarios/{scenario_id}/comments/{comment_id}",
+            body=await async_maybe_transform({"comment": content}, ScenarioCommentEditParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseComment],
+            cast_to=APIResponse[ScenarioComment],
         )
 
         return self._unwrap(response)

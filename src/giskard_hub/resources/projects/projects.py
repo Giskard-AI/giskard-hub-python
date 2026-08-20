@@ -25,6 +25,14 @@ from ..._response import (
 from ..._analytics import capture_event, make_distinct_id
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
+from .prompt_presets import (
+    PromptPresetsResource,
+    AsyncPromptPresetsResource,
+    PromptPresetsResourceWithRawResponse,
+    AsyncPromptPresetsResourceWithRawResponse,
+    PromptPresetsResourceWithStreamingResponse,
+    AsyncPromptPresetsResourceWithStreamingResponse,
+)
 from ...types.project import Project, ProjectCreateParams, ProjectUpdateParams, ProjectBulkDeleteParams
 from ...types.evaluation import FailureCategoryParam
 
@@ -32,6 +40,10 @@ __all__ = ["ProjectsResource", "AsyncProjectsResource"]
 
 
 class ProjectsResource(SyncAPIResource):
+    @cached_property
+    def prompt_presets(self) -> PromptPresetsResource:
+        return PromptPresetsResource(self._client)
+
     @cached_property
     def scenarios(self) -> ScenariosResource:
         return ScenariosResource(self._client)
@@ -367,6 +379,10 @@ class ProjectsResource(SyncAPIResource):
 
 
 class AsyncProjectsResource(AsyncAPIResource):
+    @cached_property
+    def prompt_presets(self) -> AsyncPromptPresetsResource:
+        return AsyncPromptPresetsResource(self._client)
+
     @cached_property
     def scenarios(self) -> AsyncScenariosResource:
         return AsyncScenariosResource(self._client)
@@ -705,6 +721,7 @@ class ProjectsResourceWithRawResponse:
     def __init__(self, projects: ProjectsResource) -> None:
         self._projects = projects
 
+        self.prompt_presets = PromptPresetsResourceWithRawResponse(projects.prompt_presets)
         self.scenarios = ScenariosResourceWithRawResponse(projects.scenarios)
         self.create = to_raw_response_wrapper(
             projects.create,
@@ -730,6 +747,7 @@ class AsyncProjectsResourceWithRawResponse:
     def __init__(self, projects: AsyncProjectsResource) -> None:
         self._projects = projects
 
+        self.prompt_presets = AsyncPromptPresetsResourceWithRawResponse(projects.prompt_presets)
         self.scenarios = AsyncScenariosResourceWithRawResponse(projects.scenarios)
         self.create = async_to_raw_response_wrapper(
             projects.create,
@@ -755,6 +773,7 @@ class ProjectsResourceWithStreamingResponse:
     def __init__(self, projects: ProjectsResource) -> None:
         self._projects = projects
 
+        self.prompt_presets = PromptPresetsResourceWithStreamingResponse(projects.prompt_presets)
         self.scenarios = ScenariosResourceWithStreamingResponse(projects.scenarios)
         self.create = to_streamed_response_wrapper(
             projects.create,
@@ -780,6 +799,7 @@ class AsyncProjectsResourceWithStreamingResponse:
     def __init__(self, projects: AsyncProjectsResource) -> None:
         self._projects = projects
 
+        self.prompt_presets = AsyncPromptPresetsResourceWithStreamingResponse(projects.prompt_presets)
         self.scenarios = AsyncScenariosResourceWithStreamingResponse(projects.scenarios)
         self.create = async_to_streamed_response_wrapper(
             projects.create,

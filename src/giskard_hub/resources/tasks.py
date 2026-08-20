@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import List, Optional
 
 import httpx
@@ -27,6 +28,9 @@ from .._base_client import make_request_options
 from ..types.common import APIResponse
 
 __all__ = ["TasksResource", "AsyncTasksResource"]
+
+_DATASET_TEST_CASE_ID_DEPRECATION = "`dataset_test_case_id` is deprecated; use `dataset_scenario_id` instead."
+_SET_TEST_CASE_STATUS_DEPRECATION = "`set_test_case_status` is deprecated; use `set_scenario_status` instead."
 
 
 class TasksResource(SyncAPIResource):
@@ -58,6 +62,7 @@ class TasksResource(SyncAPIResource):
         description: str,
         assignee_ids: SequenceNotStr[str] | Omit = omit,
         evaluation_result_id: Optional[str] | Omit = omit,
+        dataset_scenario_id: Optional[str] | Omit = omit,
         dataset_test_case_id: Optional[str] | Omit = omit,
         probe_attempt_id: Optional[str] | Omit = omit,
         disable_test: bool | Omit = omit,
@@ -86,7 +91,10 @@ class TasksResource(SyncAPIResource):
             IDs of the users to assign the task to.
         evaluation_result_id : Optional[str] | Omit
             ID of the evaluation result to assign the task to.
+        dataset_scenario_id : Optional[str] | Omit
+            The ID of the dataset scenario to link the task to.
         dataset_test_case_id : Optional[str] | Omit
+            Deprecated alias of `dataset_scenario_id`.
             ID of the dataset test case to assign the task to.
         probe_attempt_id : Optional[str] | Omit
             ID of the probe attempt to assign the task to.
@@ -111,6 +119,10 @@ class TasksResource(SyncAPIResource):
         Task
             The newly created task.
         """
+        if not isinstance(dataset_test_case_id, Omit):
+            warnings.warn(_DATASET_TEST_CASE_ID_DEPRECATION, DeprecationWarning, stacklevel=2)
+            if isinstance(dataset_scenario_id, Omit):
+                dataset_scenario_id = dataset_test_case_id
         response = self._post(
             "/v2/tasks",
             body=maybe_transform(
@@ -121,7 +133,7 @@ class TasksResource(SyncAPIResource):
                     "description": description,
                     "assignee_ids": assignee_ids,
                     "evaluation_result_id": evaluation_result_id,
-                    "dataset_test_case_id": dataset_test_case_id,
+                    "dataset_scenario_id": dataset_scenario_id,
                     "probe_attempt_id": probe_attempt_id,
                     "disable_test": disable_test,
                     "hide_result": hide_result,
@@ -196,6 +208,7 @@ class TasksResource(SyncAPIResource):
         description: Optional[str] | Omit = omit,
         priority: Optional[TaskPriority] | Omit = omit,
         assignee_ids: Optional[SequenceNotStr[str]] | Omit = omit,
+        set_scenario_status: Optional[str] | Omit = omit,
         set_test_case_status: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -219,7 +232,10 @@ class TasksResource(SyncAPIResource):
             Priority of the task.
         assignee_ids : Optional[SequenceNotStr[str]] | Omit
             IDs of the users to assign the task to.
+        set_scenario_status : Optional[str] | Omit
+            Set the linked scenario status ("active" or "draft").
         set_test_case_status : Optional[str] | Omit
+            Deprecated alias of `set_scenario_status`.
             Status of the test case to set.
 
         Other Parameters
@@ -243,6 +259,10 @@ class TasksResource(SyncAPIResource):
         ValueError
             If `task_id` is empty.
         """
+        if not isinstance(set_test_case_status, Omit):
+            warnings.warn(_SET_TEST_CASE_STATUS_DEPRECATION, DeprecationWarning, stacklevel=2)
+            if isinstance(set_scenario_status, Omit):
+                set_scenario_status = set_test_case_status
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
         response = self._patch(
@@ -253,7 +273,7 @@ class TasksResource(SyncAPIResource):
                     "description": description,
                     "priority": priority,
                     "assignee_ids": assignee_ids,
-                    "set_test_case_status": set_test_case_status,
+                    "set_scenario_status": set_scenario_status,
                 },
                 TaskUpdateParams,
             ),
@@ -448,6 +468,7 @@ class AsyncTasksResource(AsyncAPIResource):
         description: str,
         assignee_ids: SequenceNotStr[str] | Omit = omit,
         evaluation_result_id: Optional[str] | Omit = omit,
+        dataset_scenario_id: Optional[str] | Omit = omit,
         dataset_test_case_id: Optional[str] | Omit = omit,
         probe_attempt_id: Optional[str] | Omit = omit,
         disable_test: bool | Omit = omit,
@@ -476,7 +497,10 @@ class AsyncTasksResource(AsyncAPIResource):
             IDs of the users to assign the task to.
         evaluation_result_id : Optional[str] | Omit
             ID of the evaluation result to assign the task to.
+        dataset_scenario_id : Optional[str] | Omit
+            The ID of the dataset scenario to link the task to.
         dataset_test_case_id : Optional[str] | Omit
+            Deprecated alias of `dataset_scenario_id`.
             ID of the dataset test case to assign the task to.
         probe_attempt_id : Optional[str] | Omit
             ID of the probe attempt to assign the task to.
@@ -501,6 +525,10 @@ class AsyncTasksResource(AsyncAPIResource):
         Task
             The newly created task.
         """
+        if not isinstance(dataset_test_case_id, Omit):
+            warnings.warn(_DATASET_TEST_CASE_ID_DEPRECATION, DeprecationWarning, stacklevel=2)
+            if isinstance(dataset_scenario_id, Omit):
+                dataset_scenario_id = dataset_test_case_id
         response = await self._post(
             "/v2/tasks",
             body=await async_maybe_transform(
@@ -511,7 +539,7 @@ class AsyncTasksResource(AsyncAPIResource):
                     "description": description,
                     "assignee_ids": assignee_ids,
                     "evaluation_result_id": evaluation_result_id,
-                    "dataset_test_case_id": dataset_test_case_id,
+                    "dataset_scenario_id": dataset_scenario_id,
                     "probe_attempt_id": probe_attempt_id,
                     "disable_test": disable_test,
                     "hide_result": hide_result,
@@ -586,6 +614,7 @@ class AsyncTasksResource(AsyncAPIResource):
         description: Optional[str] | Omit = omit,
         priority: Optional[TaskPriority] | Omit = omit,
         assignee_ids: Optional[SequenceNotStr[str]] | Omit = omit,
+        set_scenario_status: Optional[str] | Omit = omit,
         set_test_case_status: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -609,7 +638,10 @@ class AsyncTasksResource(AsyncAPIResource):
             Priority of the task.
         assignee_ids : Optional[SequenceNotStr[str]] | Omit
             IDs of the users to assign the task to.
+        set_scenario_status : Optional[str] | Omit
+            Set the linked scenario status ("active" or "draft").
         set_test_case_status : Optional[str] | Omit
+            Deprecated alias of `set_scenario_status`.
             Status of the test case to set.
 
         Other Parameters
@@ -633,6 +665,10 @@ class AsyncTasksResource(AsyncAPIResource):
         ValueError
             If `task_id` is empty.
         """
+        if not isinstance(set_test_case_status, Omit):
+            warnings.warn(_SET_TEST_CASE_STATUS_DEPRECATION, DeprecationWarning, stacklevel=2)
+            if isinstance(set_scenario_status, Omit):
+                set_scenario_status = set_test_case_status
         if not task_id:
             raise ValueError(f"Expected a non-empty value for `task_id` but received {task_id!r}")
         response = await self._patch(
@@ -643,7 +679,7 @@ class AsyncTasksResource(AsyncAPIResource):
                     "description": description,
                     "priority": priority,
                     "assignee_ids": assignee_ids,
-                    "set_test_case_status": set_test_case_status,
+                    "set_scenario_status": set_scenario_status,
                 },
                 TaskUpdateParams,
             ),

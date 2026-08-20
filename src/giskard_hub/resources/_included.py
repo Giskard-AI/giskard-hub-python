@@ -17,7 +17,8 @@ def _unwrap(value: Any) -> Any:
 def _apply_included_to_item(item: object, included_for_item: Dict[str, Any]) -> None:
     """Replace reference fields on *item* with fully-resolved included resources."""
     for field_name, related in included_for_item.items():
-        if not hasattr(item, field_name):
+        model_fields = getattr(type(item), "model_fields", None)
+        if not model_fields or field_name not in model_fields:
             continue
 
         if isinstance(related, list):

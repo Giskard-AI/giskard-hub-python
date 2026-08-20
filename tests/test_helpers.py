@@ -5,7 +5,7 @@ import pytest
 
 from giskard_hub.types.chat import ChatMessage
 from giskard_hub.types.common import TaskState
-from giskard_hub.types.test_case import TestCase
+from giskard_hub.types.scenario import Scenario
 from giskard_hub.types.evaluation import Evaluation
 from giskard_hub.resources.helpers import HelpersResource, AsyncHelpersResource
 
@@ -295,7 +295,7 @@ class DummyEvaluations:
                 self.submissions: list[dict[str, Any]] = []
 
             def list(self, *, evaluation_id: str, include: list[str]) -> list[Any]:
-                assert "test_case" in include
+                assert "scenario" in include
                 assert evaluation_id == outer.local_eval.id  # type: ignore[union-attr]
                 return outer.entries
 
@@ -342,7 +342,7 @@ class AsyncDummyEvaluations:
                 self.submissions: list[dict[str, Any]] = []
 
             async def list(self, *, evaluation_id: str, include: list[str]) -> list[Any]:
-                assert "test_case" in include
+                assert "scenario" in include
                 assert evaluation_id == outer.local_eval.id  # type: ignore[union-attr]
                 return outer.entries
 
@@ -407,17 +407,17 @@ def _make_evaluation(eval_id: str = "eval-1") -> Evaluation:
     return Evaluation.model_construct(id=eval_id)  # type: ignore[arg-type]
 
 
-def _make_test_case(messages: list[ChatMessage]) -> TestCase:
+def _make_scenario(messages: list[ChatMessage]) -> Scenario:
     from giskard_hub.types.check import Interaction
 
     interaction = Interaction.model_construct(  # type: ignore[arg-type]
         position=0,
         input={"messages": [m.to_dict() for m in messages]},
     )
-    return TestCase.model_construct(id="tc-1", interactions=[interaction])  # type: ignore[arg-type]
+    return Scenario.model_construct(id="scenario-1", interactions=[interaction])  # type: ignore[arg-type]
 
 
-def _make_multi_interaction_test_case(n: int, test_case_id: str = "tc-multi") -> TestCase:
+def _make_multi_interaction_scenario(n: int, scenario_id: str = "scenario-multi") -> Scenario:
     from giskard_hub.types.check import Interaction
 
     interactions = [
@@ -427,16 +427,16 @@ def _make_multi_interaction_test_case(n: int, test_case_id: str = "tc-multi") ->
         )
         for i in range(n)
     ]
-    return TestCase.model_construct(id=test_case_id, interactions=interactions)  # type: ignore[arg-type]
+    return Scenario.model_construct(id=scenario_id, interactions=interactions)  # type: ignore[arg-type]
 
 
-def _make_result_entry(test_case: TestCase, result_id: str = "res-1") -> Any:
+def _make_result_entry(scenario: Scenario, result_id: str = "res-1") -> Any:
     class Entry:
-        def __init__(self, id: str, test_case: TestCase) -> None:
+        def __init__(self, id: str, scenario: Scenario) -> None:
             self.id = id
-            self.test_case = test_case
+            self.scenario = scenario
 
-    return Entry(result_id, test_case)
+    return Entry(result_id, scenario)
 
 
 def test_evaluate_remote_with_ids() -> None:
@@ -483,8 +483,8 @@ def test_evaluate_local_with_callable_str_output() -> None:
     local_eval = _make_evaluation("local-eval")
 
     messages = [ChatMessage(role="user", content="hi")]
-    test_case = _make_test_case(messages)
-    entry = _make_result_entry(test_case, "res-1")
+    scenario = _make_scenario(messages)
+    entry = _make_result_entry(scenario, "res-1")
 
     evaluations = DummyEvaluations(remote_eval, local_eval, entries=[entry])
     client = DummyClient(evaluations)
@@ -517,8 +517,8 @@ def test_evaluate_local_with_callable_agent_output_dict() -> None:
     local_eval = _make_evaluation("local-eval")
 
     messages = [ChatMessage(role="user", content="hi")]
-    test_case = _make_test_case(messages)
-    entry = _make_result_entry(test_case, "res-1")
+    scenario = _make_scenario(messages)
+    entry = _make_result_entry(scenario, "res-1")
 
     evaluations = DummyEvaluations(remote_eval, local_eval, entries=[entry])
     client = DummyClient(evaluations)
@@ -547,12 +547,12 @@ def test_evaluate_local_with_callable_agent_output_dict() -> None:
     assert submitted["response"]["role"] == "assistant"
 
 
-def test_evaluate_local_skips_multi_interaction_test_cases() -> None:
+def test_evaluate_local_skips_multi_interaction_scenarios() -> None:
     remote_eval = _make_evaluation()
     local_eval = _make_evaluation("local-eval")
 
-    single = _make_result_entry(_make_test_case([ChatMessage(role="user", content="hi")]), "res-single")
-    multi = _make_result_entry(_make_multi_interaction_test_case(2), "res-multi")
+    single = _make_result_entry(_make_scenario([ChatMessage(role="user", content="hi")]), "res-single")
+    multi = _make_result_entry(_make_multi_interaction_scenario(2), "res-multi")
 
     evaluations = DummyEvaluations(remote_eval, local_eval, entries=[single, multi])
     client = DummyClient(evaluations)
@@ -564,7 +564,7 @@ def test_evaluate_local_skips_multi_interaction_test_cases() -> None:
         calls.append(msgs)
         return "hello"
 
-    with pytest.warns(UserWarning, match="1 of 2 test cases were skipped"):
+    with pytest.warns(UserWarning, match="1 of 2 scenarios were skipped"):
         result = helpers.evaluate(agent=agent_fn, dataset="ds-1")
 
     assert result is local_eval
@@ -630,8 +630,8 @@ async def test_evaluate_local_with_callable_str_output_async() -> None:
     local_eval = _make_evaluation("local-eval")
 
     messages = [ChatMessage(role="user", content="hi")]
-    test_case = _make_test_case(messages)
-    entry = _make_result_entry(test_case, "res-1")
+    scenario = _make_scenario(messages)
+    entry = _make_result_entry(scenario, "res-1")
 
     evaluations = AsyncDummyEvaluations(remote_eval, local_eval, entries=[entry])
     client = AsyncDummyClient(evaluations)
@@ -665,8 +665,8 @@ async def test_evaluate_local_with_callable_agent_output_dict_async() -> None:
     local_eval = _make_evaluation("local-eval")
 
     messages = [ChatMessage(role="user", content="hi")]
-    test_case = _make_test_case(messages)
-    entry = _make_result_entry(test_case, "res-1")
+    scenario = _make_scenario(messages)
+    entry = _make_result_entry(scenario, "res-1")
 
     evaluations = AsyncDummyEvaluations(remote_eval, local_eval, entries=[entry])
     client = AsyncDummyClient(evaluations)
@@ -695,12 +695,12 @@ async def test_evaluate_local_with_callable_agent_output_dict_async() -> None:
 
 
 @pytest.mark.asyncio
-async def test_evaluate_local_skips_multi_interaction_test_cases_async() -> None:
+async def test_evaluate_local_skips_multi_interaction_scenarios_async() -> None:
     remote_eval = _make_evaluation()
     local_eval = _make_evaluation("local-eval")
 
-    single = _make_result_entry(_make_test_case([ChatMessage(role="user", content="hi")]), "res-single")
-    multi = _make_result_entry(_make_multi_interaction_test_case(3), "res-multi")
+    single = _make_result_entry(_make_scenario([ChatMessage(role="user", content="hi")]), "res-single")
+    multi = _make_result_entry(_make_multi_interaction_scenario(3), "res-multi")
 
     evaluations = AsyncDummyEvaluations(remote_eval, local_eval, entries=[single, multi])
     client = AsyncDummyClient(evaluations)
@@ -712,7 +712,7 @@ async def test_evaluate_local_skips_multi_interaction_test_cases_async() -> None
         calls.append(msgs)
         return "hello"
 
-    with pytest.warns(UserWarning, match="1 of 2 test cases were skipped"):
+    with pytest.warns(UserWarning, match="1 of 2 scenarios were skipped"):
         result = await helpers.evaluate(agent=agent_fn, dataset="ds-1")
 
     assert result is local_eval

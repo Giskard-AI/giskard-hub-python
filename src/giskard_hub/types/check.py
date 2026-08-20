@@ -77,6 +77,7 @@ __all__ = [
     "Annotation",
     "OutputAnnotation",
     "ContextAnnotation",
+    "ScenarioCheckConfigParam",
     "TestCaseCheckConfigParam",
     "CheckListParams",
     "CheckCreateParams",
@@ -530,15 +531,18 @@ class CheckResult(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Test case check config
+# Scenario check config
 # ---------------------------------------------------------------------------
 
 
-class TestCaseCheckConfigParam(TypedDict, total=False):
+class ScenarioCheckConfigParam(TypedDict, total=False):
     identifier: Required[str]
     enabled: bool
     spec: Optional[Dict[str, Any]]
     position: int
+
+
+TestCaseCheckConfigParam = ScenarioCheckConfigParam
 
 
 # ---------------------------------------------------------------------------

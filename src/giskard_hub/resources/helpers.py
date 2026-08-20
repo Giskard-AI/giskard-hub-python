@@ -35,18 +35,18 @@ from ._helpers_types import (
     make_retriever,
     normalize_agent_output,
 )
-from ..types.test_case import TestCase, _first_interaction_messages
-from ..types.evaluation import Evaluation, TestCaseEvaluation
+from ..types.scenario import Scenario, _first_interaction_messages
+from ..types.evaluation import Evaluation, ScenarioEvaluation
 
 __all__ = ["HelpersResource", "AsyncHelpersResource"]
 
 
-def _local_eval_skip_reason(test_case: TestCase) -> Optional[str]:
-    """Return why `test_case` cannot be evaluated locally, or None if it can."""
-    n = len(test_case.interactions or [])
+def _local_eval_skip_reason(scenario: Scenario) -> Optional[str]:
+    """Return why `scenario` cannot be evaluated locally, or None if it can."""
+    n = len(scenario.interactions or [])
     if n != 1:
         return (
-            f"Skipped by local evaluation: only single-interaction test cases are "
+            f"Skipped by local evaluation: only single-interaction scenarios are "
             f"supported locally, but this one has {n} interactions. Run a remote "
             f"evaluation (pass an agent id or `Agent`) to evaluate it."
         )
@@ -54,11 +54,11 @@ def _local_eval_skip_reason(test_case: TestCase) -> Optional[str]:
 
 
 def _warn_skipped_local(skipped: int, total: int) -> None:
-    """Warn once when some test cases were skipped by local evaluation."""
+    """Warn once when some scenarios were skipped by local evaluation."""
     if skipped:
         warnings.warn(
-            f"{skipped} of {total} test cases were skipped by local evaluation "
-            "because only single-interaction test cases are supported locally. "
+            f"{skipped} of {total} scenarios were skipped by local evaluation "
+            "because only single-interaction scenarios are supported locally. "
             "They are marked as errored; run a remote evaluation to score them.",
             stacklevel=3,
         )
@@ -164,7 +164,7 @@ class HelpersResource(SyncAPIResource):
             Either a remote agent identifier (`str` or `Agent`) or a callable
             with signature `(messages: list[ChatMessage]) -> AgentReturn`.
         dataset :
-            Dataset identifier or `Dataset` instance containing the test cases
+            Dataset identifier or `Dataset` instance containing the scenarios
             to evaluate the agent on.
         project :
             Project identifier or `Project` instance.  Required when `agent`
@@ -172,7 +172,7 @@ class HelpersResource(SyncAPIResource):
         name :
             Optional name to assign to the created evaluation.
         tags :
-            Optional list of tags to filter the dataset's test cases.
+            Optional list of tags to filter the dataset's scenarios.
 
         Returns
         -------
@@ -185,7 +185,7 @@ class HelpersResource(SyncAPIResource):
             If `project` is not provided when running a remote evaluation.
         TypeError
             If the local agent callable returns an unsupported value, or if test
-            cases do not include full `TestCase` objects during local evaluation.
+            cases do not include full `Scenario` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
@@ -262,15 +262,15 @@ class HelpersResource(SyncAPIResource):
             tags=tags,
         )
 
-        entries = self._client.evaluations.results.list(evaluation_id=evaluation.id, include=["test_case"])
+        entries = self._client.evaluations.results.list(evaluation_id=evaluation.id, include=["scenario"])
 
         skipped = 0
         for entry in entries:
-            test_case = entry.test_case
-            if not isinstance(test_case, TestCase):
-                raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
+            scenario = entry.scenario
+            if not isinstance(scenario, Scenario):
+                raise TypeError("Expected `scenario` to be a full Scenario for local evaluation")
 
-            skip_reason = _local_eval_skip_reason(test_case)
+            skip_reason = _local_eval_skip_reason(scenario)
             if skip_reason is not None:
                 skipped += 1
                 self._client.evaluations.results.submit_local_output(
@@ -280,7 +280,7 @@ class HelpersResource(SyncAPIResource):
                 )
                 continue
 
-            agent_output_model = normalize_agent_output(agent(_first_interaction_messages(test_case.interactions)))
+            agent_output_model = normalize_agent_output(agent(_first_interaction_messages(scenario.interactions)))
             agent_output_param = cast(AgentOutputParam, agent_output_model.to_dict())
 
             self._client.evaluations.results.submit_local_output(
@@ -411,7 +411,7 @@ class AsyncHelpersResource(AsyncAPIResource):
             Either a remote agent identifier (`str` or `Agent`) or a callable
             with signature `(messages: list[ChatMessage]) -> AgentReturn`.
         dataset :
-            Dataset identifier or `Dataset` instance containing the test cases
+            Dataset identifier or `Dataset` instance containing the scenarios
             to evaluate the agent on.
         project :
             Project identifier or `Project` instance.  Required when `agent`
@@ -419,7 +419,7 @@ class AsyncHelpersResource(AsyncAPIResource):
         name :
             Optional name to assign to the created evaluation.
         tags :
-            Optional list of tags to filter the dataset's test cases.
+            Optional list of tags to filter the dataset's scenarios.
 
         Returns
         -------
@@ -432,7 +432,7 @@ class AsyncHelpersResource(AsyncAPIResource):
             If `project` is not provided when running a remote evaluation.
         TypeError
             If the local agent callable returns an unsupported value, or if test
-            cases do not include full `TestCase` objects during local evaluation.
+            cases do not include full `Scenario` objects during local evaluation.
         """
         dataset_id = dataset if isinstance(dataset, str) else dataset.id
 
@@ -511,15 +511,15 @@ class AsyncHelpersResource(AsyncAPIResource):
 
         entries = await self._client.evaluations.results.list(
             evaluation_id=evaluation.id,
-            include=["test_case"],
+            include=["scenario"],
         )
 
-        async def _process_entry(entry: TestCaseEvaluation) -> bool:
-            test_case = entry.test_case
-            if not isinstance(test_case, TestCase):
-                raise TypeError("Expected `test_case` to be a full TestCase for local evaluation")
+        async def _process_entry(entry: ScenarioEvaluation) -> bool:
+            scenario = entry.scenario
+            if not isinstance(scenario, Scenario):
+                raise TypeError("Expected `scenario` to be a full Scenario for local evaluation")
 
-            skip_reason = _local_eval_skip_reason(test_case)
+            skip_reason = _local_eval_skip_reason(scenario)
             if skip_reason is not None:
                 await self._client.evaluations.results.submit_local_output(
                     result_id=entry.id,
@@ -528,7 +528,7 @@ class AsyncHelpersResource(AsyncAPIResource):
                 )
                 return True
 
-            output = agent(_first_interaction_messages(test_case.interactions))
+            output = agent(_first_interaction_messages(scenario.interactions))
             if inspect.isawaitable(output):
                 output = await output
 

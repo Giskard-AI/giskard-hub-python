@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from typing import List, Optional
 
 import httpx
@@ -25,30 +24,28 @@ from ...types.prompt_preset import (
     PromptPresetPreviewParams,
 )
 
-__all__ = ["ScenariosResource", "AsyncScenariosResource"]
-
-_SCENARIOS_DEPRECATION = "`projects.scenarios` is deprecated; use `projects.prompt_presets` instead."
+__all__ = ["PromptPresetsResource", "AsyncPromptPresetsResource"]
 
 
-class ScenariosResource(SyncAPIResource):
+class PromptPresetsResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> ScenariosResourceWithRawResponse:
+    def with_raw_response(self) -> PromptPresetsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return ScenariosResourceWithRawResponse(self)
+        return PromptPresetsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> ScenariosResourceWithStreamingResponse:
+    def with_streaming_response(self) -> PromptPresetsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return ScenariosResourceWithStreamingResponse(self)
+        return PromptPresetsResourceWithStreamingResponse(self)
 
     def create(
         self,
@@ -64,18 +61,18 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPreset:
-        """Create a new scenario within a project.
+        """Create a new prompt preset within a project.
 
         Parameters
         ----------
         project_id : str
             The ID of the project.
         name : str
-            The name of the scenario.
+            The name of the prompt preset.
         description : str
-            The description of the scenario.
+            The description of the prompt preset.
         rules : SequenceNotStr[str]
-            The rules of the scenario.
+            The rules of the prompt preset.
 
         Other Parameters
         ----------------
@@ -91,14 +88,13 @@ class ScenariosResource(SyncAPIResource):
         Returns
         -------
         PromptPreset
-            The newly created scenario.
+            The newly created prompt preset.
 
         Raises
         ------
         ValueError
             If `project_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         response = self._post(
@@ -121,7 +117,7 @@ class ScenariosResource(SyncAPIResource):
 
     def retrieve(
         self,
-        scenario_id: str,
+        prompt_preset_id: str,
         *,
         project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -131,12 +127,12 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPreset:
-        """Retrieve a scenario by its ID within a project.
+        """Retrieve a prompt preset by its ID within a project.
 
         Parameters
         ----------
-        scenario_id : str
-            The ID of the scenario.
+        prompt_preset_id : str
+            The ID of the prompt preset.
         project_id : str
             The ID of the project.
 
@@ -154,20 +150,19 @@ class ScenariosResource(SyncAPIResource):
         Returns
         -------
         PromptPreset
-            The requested scenario.
+            The requested prompt preset.
 
         Raises
         ------
         ValueError
-            If `project_id` or `scenario_id` is empty.
+            If `project_id` or `prompt_preset_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        if not scenario_id:
-            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        if not prompt_preset_id:
+            raise ValueError(f"Expected a non-empty value for `prompt_preset_id` but received {prompt_preset_id!r}")
         response = self._get(
-            f"/v2/projects/{project_id}/prompt-presets/{scenario_id}",
+            f"/v2/projects/{project_id}/prompt-presets/{prompt_preset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -178,7 +173,7 @@ class ScenariosResource(SyncAPIResource):
 
     def update(
         self,
-        scenario_id: str,
+        prompt_preset_id: str,
         *,
         project_id: str,
         name: Optional[str] | Omit = omit,
@@ -191,20 +186,20 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPreset:
-        """Update an existing scenario's definition.
+        """Update an existing prompt preset's definition.
 
         Parameters
         ----------
-        scenario_id : str
-            The ID of the scenario.
+        prompt_preset_id : str
+            The ID of the prompt preset.
         project_id : str
             The ID of the project.
         name : str or None
-            Name of the scenario.
+            Name of the prompt preset.
         description : str or None
-            Description of the scenario.
+            Description of the prompt preset.
         rules : SequenceNotStr[str] or None
-            The rules of the scenario.
+            The rules of the prompt preset.
 
         Other Parameters
         ----------------
@@ -220,20 +215,19 @@ class ScenariosResource(SyncAPIResource):
         Returns
         -------
         PromptPreset
-            The updated scenario.
+            The updated prompt preset.
 
         Raises
         ------
         ValueError
-            If `project_id` or `scenario_id` is empty.
+            If `project_id` or `prompt_preset_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        if not scenario_id:
-            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        if not prompt_preset_id:
+            raise ValueError(f"Expected a non-empty value for `prompt_preset_id` but received {prompt_preset_id!r}")
         response = self._patch(
-            f"/v2/projects/{project_id}/prompt-presets/{scenario_id}",
+            f"/v2/projects/{project_id}/prompt-presets/{prompt_preset_id}",
             body=maybe_transform(
                 {
                     "name": name,
@@ -261,7 +255,7 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[PromptPreset]:
-        """List all scenarios for a project.
+        """List all prompt presets for a project.
 
         Parameters
         ----------
@@ -282,14 +276,13 @@ class ScenariosResource(SyncAPIResource):
         Returns
         -------
         list of PromptPreset
-            A list of all scenarios for the project.
+            A list of all prompt presets for the project.
 
         Raises
         ------
         ValueError
             If `project_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         response = self._get(
@@ -304,7 +297,7 @@ class ScenariosResource(SyncAPIResource):
 
     def delete(
         self,
-        scenario_id: str,
+        prompt_preset_id: str,
         *,
         project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -314,12 +307,12 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """Delete a scenario from a project.
+        """Delete a prompt preset from a project.
 
         Parameters
         ----------
-        scenario_id : str
-            The ID of the scenario.
+        prompt_preset_id : str
+            The ID of the prompt preset.
         project_id : str
             The ID of the project.
 
@@ -341,15 +334,14 @@ class ScenariosResource(SyncAPIResource):
         Raises
         ------
         ValueError
-            If `project_id` or `scenario_id` is empty.
+            If `project_id` or `prompt_preset_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        if not scenario_id:
-            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        if not prompt_preset_id:
+            raise ValueError(f"Expected a non-empty value for `prompt_preset_id` but received {prompt_preset_id!r}")
         response = self._delete(
-            f"/v2/projects/{project_id}/prompt-presets/{scenario_id}",
+            f"/v2/projects/{project_id}/prompt-presets/{prompt_preset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -372,14 +364,14 @@ class ScenariosResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPresetPreview:
-        """Generate a preview conversation for a scenario without persisting it.
+        """Generate a preview conversation for a prompt preset without persisting it.
 
         Parameters
         ----------
         project_id : str
             The ID of the project.
         description : str
-            Description of the scenario.
+            Description of the prompt preset.
         rules : SequenceNotStr[str]
             Rules to use for preview.
         agent_id : str or None
@@ -406,7 +398,6 @@ class ScenariosResource(SyncAPIResource):
         ValueError
             If `project_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         response = self._post(
@@ -431,25 +422,25 @@ class ScenariosResource(SyncAPIResource):
         return self._unwrap(response)
 
 
-class AsyncScenariosResource(AsyncAPIResource):
+class AsyncPromptPresetsResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncScenariosResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncPromptPresetsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncScenariosResourceWithRawResponse(self)
+        return AsyncPromptPresetsResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncScenariosResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncPromptPresetsResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/Giskard-AI/giskard-hub-python#with_streaming_response
         """
-        return AsyncScenariosResourceWithStreamingResponse(self)
+        return AsyncPromptPresetsResourceWithStreamingResponse(self)
 
     async def create(
         self,
@@ -465,18 +456,18 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPreset:
-        """Create a new scenario within a project.
+        """Create a new prompt preset within a project.
 
         Parameters
         ----------
         project_id : str
             The ID of the project.
         name : str
-            The name of the scenario.
+            The name of the prompt preset.
         description : str
-            The description of the scenario.
+            The description of the prompt preset.
         rules : SequenceNotStr[str]
-            The rules of the scenario.
+            The rules of the prompt preset.
 
         Other Parameters
         ----------------
@@ -492,14 +483,13 @@ class AsyncScenariosResource(AsyncAPIResource):
         Returns
         -------
         PromptPreset
-            The newly created scenario.
+            The newly created prompt preset.
 
         Raises
         ------
         ValueError
             If `project_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         response = await self._post(
@@ -522,7 +512,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
     async def retrieve(
         self,
-        scenario_id: str,
+        prompt_preset_id: str,
         *,
         project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -532,12 +522,12 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPreset:
-        """Retrieve a scenario by its ID within a project.
+        """Retrieve a prompt preset by its ID within a project.
 
         Parameters
         ----------
-        scenario_id : str
-            The ID of the scenario.
+        prompt_preset_id : str
+            The ID of the prompt preset.
         project_id : str
             The ID of the project.
 
@@ -555,20 +545,19 @@ class AsyncScenariosResource(AsyncAPIResource):
         Returns
         -------
         PromptPreset
-            The requested scenario.
+            The requested prompt preset.
 
         Raises
         ------
         ValueError
-            If `project_id` or `scenario_id` is empty.
+            If `project_id` or `prompt_preset_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        if not scenario_id:
-            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        if not prompt_preset_id:
+            raise ValueError(f"Expected a non-empty value for `prompt_preset_id` but received {prompt_preset_id!r}")
         response = await self._get(
-            f"/v2/projects/{project_id}/prompt-presets/{scenario_id}",
+            f"/v2/projects/{project_id}/prompt-presets/{prompt_preset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -579,7 +568,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
     async def update(
         self,
-        scenario_id: str,
+        prompt_preset_id: str,
         *,
         project_id: str,
         name: Optional[str] | Omit = omit,
@@ -592,20 +581,20 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPreset:
-        """Update an existing scenario's definition.
+        """Update an existing prompt preset's definition.
 
         Parameters
         ----------
-        scenario_id : str
-            The ID of the scenario.
+        prompt_preset_id : str
+            The ID of the prompt preset.
         project_id : str
             The ID of the project.
         name : str or None
-            Name of the scenario.
+            Name of the prompt preset.
         description : str or None
-            Description of the scenario.
+            Description of the prompt preset.
         rules : SequenceNotStr[str] or None
-            The rules of the scenario.
+            The rules of the prompt preset.
 
         Other Parameters
         ----------------
@@ -621,20 +610,19 @@ class AsyncScenariosResource(AsyncAPIResource):
         Returns
         -------
         PromptPreset
-            The updated scenario.
+            The updated prompt preset.
 
         Raises
         ------
         ValueError
-            If `project_id` or `scenario_id` is empty.
+            If `project_id` or `prompt_preset_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        if not scenario_id:
-            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        if not prompt_preset_id:
+            raise ValueError(f"Expected a non-empty value for `prompt_preset_id` but received {prompt_preset_id!r}")
         response = await self._patch(
-            f"/v2/projects/{project_id}/prompt-presets/{scenario_id}",
+            f"/v2/projects/{project_id}/prompt-presets/{prompt_preset_id}",
             body=await async_maybe_transform(
                 {
                     "name": name,
@@ -662,7 +650,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[PromptPreset]:
-        """List all scenarios for a project.
+        """List all prompt presets for a project.
 
         Parameters
         ----------
@@ -683,14 +671,13 @@ class AsyncScenariosResource(AsyncAPIResource):
         Returns
         -------
         list of PromptPreset
-            A list of all scenarios for the project.
+            A list of all prompt presets for the project.
 
         Raises
         ------
         ValueError
             If `project_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         response = await self._get(
@@ -705,7 +692,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
     async def delete(
         self,
-        scenario_id: str,
+        prompt_preset_id: str,
         *,
         project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -715,12 +702,12 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """Delete a scenario from a project.
+        """Delete a prompt preset from a project.
 
         Parameters
         ----------
-        scenario_id : str
-            The ID of the scenario.
+        prompt_preset_id : str
+            The ID of the prompt preset.
         project_id : str
             The ID of the project.
 
@@ -742,15 +729,14 @@ class AsyncScenariosResource(AsyncAPIResource):
         Raises
         ------
         ValueError
-            If `project_id` or `scenario_id` is empty.
+            If `project_id` or `prompt_preset_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
-        if not scenario_id:
-            raise ValueError(f"Expected a non-empty value for `scenario_id` but received {scenario_id!r}")
+        if not prompt_preset_id:
+            raise ValueError(f"Expected a non-empty value for `prompt_preset_id` but received {prompt_preset_id!r}")
         response = await self._delete(
-            f"/v2/projects/{project_id}/prompt-presets/{scenario_id}",
+            f"/v2/projects/{project_id}/prompt-presets/{prompt_preset_id}",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -773,14 +759,14 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PromptPresetPreview:
-        """Generate a preview conversation for a scenario without persisting it.
+        """Generate a preview conversation for a prompt preset without persisting it.
 
         Parameters
         ----------
         project_id : str
             The ID of the project.
         description : str
-            Description of the scenario.
+            Description of the prompt preset.
         rules : SequenceNotStr[str]
             Rules to use for preview.
         agent_id : str or None
@@ -807,7 +793,6 @@ class AsyncScenariosResource(AsyncAPIResource):
         ValueError
             If `project_id` is empty.
         """
-        warnings.warn(_SCENARIOS_DEPRECATION, DeprecationWarning, stacklevel=2)
         if not project_id:
             raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
         response = await self._post(
@@ -832,97 +817,97 @@ class AsyncScenariosResource(AsyncAPIResource):
         return self._unwrap(response)
 
 
-class ScenariosResourceWithRawResponse:
-    def __init__(self, scenarios: ScenariosResource) -> None:
-        self._scenarios = scenarios
+class PromptPresetsResourceWithRawResponse:
+    def __init__(self, prompt_presets: PromptPresetsResource) -> None:
+        self._prompt_presets = prompt_presets
 
         self.create = to_raw_response_wrapper(
-            scenarios.create,
+            prompt_presets.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            scenarios.retrieve,
+            prompt_presets.retrieve,
         )
         self.update = to_raw_response_wrapper(
-            scenarios.update,
+            prompt_presets.update,
         )
         self.list = to_raw_response_wrapper(
-            scenarios.list,
+            prompt_presets.list,
         )
         self.delete = to_raw_response_wrapper(
-            scenarios.delete,
+            prompt_presets.delete,
         )
         self.preview = to_raw_response_wrapper(
-            scenarios.preview,
+            prompt_presets.preview,
         )
 
 
-class AsyncScenariosResourceWithRawResponse:
-    def __init__(self, scenarios: AsyncScenariosResource) -> None:
-        self._scenarios = scenarios
+class AsyncPromptPresetsResourceWithRawResponse:
+    def __init__(self, prompt_presets: AsyncPromptPresetsResource) -> None:
+        self._prompt_presets = prompt_presets
 
         self.create = async_to_raw_response_wrapper(
-            scenarios.create,
+            prompt_presets.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            scenarios.retrieve,
+            prompt_presets.retrieve,
         )
         self.update = async_to_raw_response_wrapper(
-            scenarios.update,
+            prompt_presets.update,
         )
         self.list = async_to_raw_response_wrapper(
-            scenarios.list,
+            prompt_presets.list,
         )
         self.delete = async_to_raw_response_wrapper(
-            scenarios.delete,
+            prompt_presets.delete,
         )
         self.preview = async_to_raw_response_wrapper(
-            scenarios.preview,
+            prompt_presets.preview,
         )
 
 
-class ScenariosResourceWithStreamingResponse:
-    def __init__(self, scenarios: ScenariosResource) -> None:
-        self._scenarios = scenarios
+class PromptPresetsResourceWithStreamingResponse:
+    def __init__(self, prompt_presets: PromptPresetsResource) -> None:
+        self._prompt_presets = prompt_presets
 
         self.create = to_streamed_response_wrapper(
-            scenarios.create,
+            prompt_presets.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            scenarios.retrieve,
+            prompt_presets.retrieve,
         )
         self.update = to_streamed_response_wrapper(
-            scenarios.update,
+            prompt_presets.update,
         )
         self.list = to_streamed_response_wrapper(
-            scenarios.list,
+            prompt_presets.list,
         )
         self.delete = to_streamed_response_wrapper(
-            scenarios.delete,
+            prompt_presets.delete,
         )
         self.preview = to_streamed_response_wrapper(
-            scenarios.preview,
+            prompt_presets.preview,
         )
 
 
-class AsyncScenariosResourceWithStreamingResponse:
-    def __init__(self, scenarios: AsyncScenariosResource) -> None:
-        self._scenarios = scenarios
+class AsyncPromptPresetsResourceWithStreamingResponse:
+    def __init__(self, prompt_presets: AsyncPromptPresetsResource) -> None:
+        self._prompt_presets = prompt_presets
 
         self.create = async_to_streamed_response_wrapper(
-            scenarios.create,
+            prompt_presets.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            scenarios.retrieve,
+            prompt_presets.retrieve,
         )
         self.update = async_to_streamed_response_wrapper(
-            scenarios.update,
+            prompt_presets.update,
         )
         self.list = async_to_streamed_response_wrapper(
-            scenarios.list,
+            prompt_presets.list,
         )
         self.delete = async_to_streamed_response_wrapper(
-            scenarios.delete,
+            prompt_presets.delete,
         )
         self.preview = async_to_streamed_response_wrapper(
-            scenarios.preview,
+            prompt_presets.preview,
         )

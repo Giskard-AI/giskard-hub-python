@@ -50,6 +50,14 @@ from .datasets import (
     DatasetsResourceWithStreamingResponse,
     AsyncDatasetsResourceWithStreamingResponse,
 )
+from .scenarios import (
+    ScenariosResource,
+    AsyncScenariosResource,
+    ScenariosResourceWithRawResponse,
+    AsyncScenariosResourceWithRawResponse,
+    ScenariosResourceWithStreamingResponse,
+    AsyncScenariosResourceWithStreamingResponse,
+)
 from .test_cases import (
     TestCasesResource,
     AsyncTestCasesResource,
@@ -128,6 +136,12 @@ __all__ = [
     "AsyncDatasetsResourceWithRawResponse",
     "DatasetsResourceWithStreamingResponse",
     "AsyncDatasetsResourceWithStreamingResponse",
+    "ScenariosResource",
+    "AsyncScenariosResource",
+    "ScenariosResourceWithRawResponse",
+    "AsyncScenariosResourceWithRawResponse",
+    "ScenariosResourceWithStreamingResponse",
+    "AsyncScenariosResourceWithStreamingResponse",
     "TestCasesResource",
     "AsyncTestCasesResource",
     "TestCasesResourceWithRawResponse",

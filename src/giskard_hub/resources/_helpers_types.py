@@ -13,7 +13,7 @@ from ..types.scan import Scan, ScanProbe
 from ..types.agent import AgentOutput
 from ..types.common import TaskState
 from ..types.dataset import Dataset
-from ..types.evaluation import Evaluation, TestCaseEvaluation
+from ..types.evaluation import Evaluation, ScenarioEvaluation
 from ..types.knowledge_base import KnowledgeBase
 
 if TYPE_CHECKING:
@@ -96,7 +96,7 @@ def make_retriever(
 
     For most entity types the callable is the `retrieve` method of the
     corresponding API resource. For entity types whose `retrieve` requires
-    additional context (e.g. `TestCaseEvaluation` needs `evaluation_id`),
+    additional context (e.g. `ScenarioEvaluation` needs `evaluation_id`),
     the extra arguments are captured via `functools.partial`.
 
     Parameters
@@ -128,7 +128,7 @@ def make_retriever(
         return client.scans.retrieve
     if isinstance(entity, ScanProbe):
         return client.scans.probes.retrieve
-    if isinstance(entity, TestCaseEvaluation):
+    if isinstance(entity, ScenarioEvaluation):
         return cast(
             Retriever | AsyncRetriever,
             partial(client.evaluations.results.retrieve, evaluation_id=entity.evaluation_id),

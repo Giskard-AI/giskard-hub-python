@@ -92,9 +92,9 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         tags : SequenceNotStr[str] | Omit
             List of tags to apply to the scheduled evaluation.
         run_count : int | Omit
-            The number of times to run each test case. This is useful to get a more
+            The number of times to run each scenario. This is useful to get a more
             accurate result when the chatbot's generation is not deterministic. Testing
-            stops at the first failure. If all runs pass, the test case is considered
+            stops at the first failure. If all runs pass, the scenario is considered
             successful.
         frequency : FrequencyOption
             Frequency of the scheduled evaluation.
@@ -240,9 +240,9 @@ class ScheduledEvaluationsResource(SyncAPIResource):
         name : str | None | Omit
             Name of the scheduled evaluation.
         run_count : int | None | Omit
-            The number of times to run each test case. This is useful to get a more
+            The number of times to run each scenario. This is useful to get a more
             accurate result when the chatbot's generation is not deterministic. Testing
-            stops at the first failure. If all runs pass, the test case is considered
+            stops at the first failure. If all runs pass, the scenario is considered
             successful.
         frequency : FrequencyOption | None | Omit
             Frequency of the scheduled evaluation.
@@ -587,9 +587,9 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         tags : SequenceNotStr[str] | Omit
             List of tags to apply to the scheduled evaluation.
         run_count : int | Omit
-            The number of times to run each test case. This is useful to get a more
+            The number of times to run each scenario. This is useful to get a more
             accurate result when the chatbot's generation is not deterministic. Testing
-            stops at the first failure. If all runs pass, the test case is considered
+            stops at the first failure. If all runs pass, the scenario is considered
             successful.
         frequency : FrequencyOption
             Frequency of the scheduled evaluation.
@@ -735,9 +735,9 @@ class AsyncScheduledEvaluationsResource(AsyncAPIResource):
         name : str | None | Omit
             Name of the scheduled evaluation.
         run_count : int | None | Omit
-            The number of times to run each test case. This is useful to get a more
+            The number of times to run each scenario. This is useful to get a more
             accurate result when the chatbot's generation is not deterministic. Testing
-            stops at the first failure. If all runs pass, the test case is considered
+            stops at the first failure. If all runs pass, the scenario is considered
             successful.
         frequency : FrequencyOption | None | Omit
             Frequency of the scheduled evaluation.

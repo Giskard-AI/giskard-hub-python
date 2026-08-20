@@ -8,9 +8,9 @@ from pathlib import Path
 import httpx
 
 from ..types import (
-    TestCaseFiltersParam,
-    TestCaseOrderByParam,
-    DatasetSearchTestCasesParams,
+    ScenarioFiltersParam,
+    ScenarioOrderByParam,
+    DatasetSearchScenariosParams,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
@@ -32,10 +32,10 @@ from ..types.dataset import (
     DatasetImportParams,
     DatasetUpdateParams,
     DatasetBulkDeleteParams,
+    DatasetGeneratePresetBasedParams,
     DatasetGenerateDocumentBasedParams,
-    DatasetGenerateScenarioBasedParams,
 )
-from ..types.test_case import TestCase
+from ..types.scenario import Scenario
 from ._interaction_helpers import (
     is_legacy_upload_item,
     fill_upload_item_positions,
@@ -50,6 +50,14 @@ _LEGACY_UPLOAD_DEPRECATION = (
     "Passing legacy `messages` / `checks` / `demo_output` items to "
     "`datasets.upload` is deprecated. Use the new "
     "`{interactions: [{position, input, output, checks}]}` shape."
+)
+
+_LIST_TEST_CASES_DEPRECATION = "`datasets.list_test_cases` is deprecated; use `datasets.list_scenarios` instead."
+
+_SEARCH_TEST_CASES_DEPRECATION = "`datasets.search_test_cases` is deprecated; use `datasets.search_scenarios` instead."
+
+_GENERATE_SCENARIO_BASED_DEPRECATION = (
+    "`datasets.generate_scenario_based` is deprecated; use `datasets.generate_preset_based` instead."
 )
 
 
@@ -118,7 +126,7 @@ def _prepare_upload_data(
         if needs_translation:
             warnings.warn(_LEGACY_UPLOAD_DEPRECATION, DeprecationWarning, stacklevel=4)
         items = _maybe_translate_items(items)
-        return ("test_cases.json", _encode_items(items, "json"))
+        return ("scenarios.json", _encode_items(items, "json"))
 
     if isinstance(data, Path):
         parsed = _read_dataset_file(data)
@@ -184,10 +192,10 @@ class DatasetsResource(SyncAPIResource):
         description : Optional[str]
             Description of the dataset to create.
         input_schema : Dict[str, Any] | None | Omit
-            JSON schema describing the expected shape of test case inputs.
+            JSON schema describing the expected shape of scenario inputs.
             Defaults to the chat input schema when omitted.
         output_schema : Dict[str, Any] | None | Omit
-            JSON schema describing the expected shape of test case outputs.
+            JSON schema describing the expected shape of scenario outputs.
             Defaults to the chat output schema when omitted.
 
         Other Parameters
@@ -390,10 +398,10 @@ class DatasetsResource(SyncAPIResource):
         status : Optional[TaskProgressParam]
             Status of the dataset to update.
         input_schema : Dict[str, Any] | None | Omit
-            Updated JSON schema describing the expected shape of test case
+            Updated JSON schema describing the expected shape of scenario
             inputs.
         output_schema : Dict[str, Any] | None | Omit
-            Updated JSON schema describing the expected shape of test case
+            Updated JSON schema describing the expected shape of scenario
             outputs.
 
         Other Parameters
@@ -584,12 +592,12 @@ class DatasetsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
-    def generate_scenario_based(
+    def generate_preset_based(
         self,
         *,
         project_id: str,
         agent_id: str,
-        scenario_id: str,
+        prompt_preset_id: str,
         n_examples: int | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         dataset_name: Optional[str] | Omit = omit,
@@ -600,7 +608,7 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """Generate a dataset of test cases from scenario definitions.
+        """Generate a dataset of scenarios from a prompt preset.
 
         Parameters
         ----------
@@ -608,10 +616,10 @@ class DatasetsResource(SyncAPIResource):
             The ID of the project.
         agent_id : str
             The ID of the agent to use for generation.
-        scenario_id : str
-            The ID of the scenario to use.
+        prompt_preset_id : str
+            The ID of the prompt preset to use.
         n_examples : int
-            Total number of examples to generate.
+            Total number of scenarios to generate.
         dataset_id : Optional[str]
             The ID of the dataset to use (required when dataset_name is not provided).
         dataset_name : Optional[str]
@@ -643,17 +651,17 @@ class DatasetsResource(SyncAPIResource):
             raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
 
         response = self._post(
-            "/v2/datasets/generate-scenario-based",
+            "/v2/datasets/generate-preset-based",
             body=maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "scenario_id": scenario_id,
+                    "prompt_preset_id": prompt_preset_id,
                     "dataset_name": dataset_name,
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
                 },
-                DatasetGenerateScenarioBasedParams,
+                DatasetGeneratePresetBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -662,6 +670,75 @@ class DatasetsResource(SyncAPIResource):
         )
 
         return self._unwrap(response)
+
+    def generate_scenario_based(
+        self,
+        *,
+        project_id: str,
+        agent_id: str,
+        scenario_id: str,
+        n_examples: int | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        dataset_name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Dataset:
+        """Deprecated alias of `generate_preset_based`.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str
+            The ID of the agent to use for generation.
+        scenario_id : str
+            The ID of the prompt preset to use.
+        n_examples : int
+            Total number of examples to generate.
+        dataset_id : Optional[str]
+            The ID of the dataset to use (required when dataset_name is not provided).
+        dataset_name : Optional[str]
+            Name for the generated dataset.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Dataset
+            The generated dataset.
+
+        Raises
+        ------
+        ValueError
+            If neither `dataset_id` nor `dataset_name` is provided.
+        """
+
+        warnings.warn(_GENERATE_SCENARIO_BASED_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return self.generate_preset_based(
+            project_id=project_id,
+            agent_id=agent_id,
+            prompt_preset_id=scenario_id,
+            n_examples=n_examples,
+            dataset_id=dataset_id,
+            dataset_name=dataset_name,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
     def generate_document_based(
         self,
@@ -680,7 +757,7 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """Generate a dataset of test cases from knowledge base documents.
+        """Generate a dataset of scenarios from knowledge base documents.
 
         Parameters
         ----------
@@ -788,7 +865,7 @@ class DatasetsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
-    def list_test_cases(
+    def list_scenarios(
         self,
         dataset_id: str,
         *,
@@ -798,15 +875,15 @@ class DatasetsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCase]:
-        """List all test cases belonging to a dataset.
+    ) -> List[Scenario]:
+        """List all scenarios belonging to a dataset.
 
-        Fetches every page via :meth:`search_test_cases` (same as an unfiltered search).
+        Fetches every page via :meth:`search_scenarios` (same as an unfiltered search).
 
         Parameters
         ----------
         dataset_id : str
-            The ID of the dataset to list test cases for.
+            The ID of the dataset to list scenarios for.
 
         Other Parameters
         ----------------
@@ -821,8 +898,8 @@ class DatasetsResource(SyncAPIResource):
 
         Returns
         -------
-        List[TestCase]
-            A list of test cases.
+        List[Scenario]
+            A list of scenarios.
 
         Raises
         ------
@@ -832,10 +909,10 @@ class DatasetsResource(SyncAPIResource):
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
         page_limit = 100
-        all_items: List[TestCase] = []
+        all_items: List[Scenario] = []
         offset = 0
         while True:
-            page, meta = self.search_test_cases(
+            page, meta = self.search_scenarios(
                 dataset_id,
                 limit=page_limit,
                 offset=offset,
@@ -853,13 +930,13 @@ class DatasetsResource(SyncAPIResource):
         return all_items
 
     @overload
-    def search_test_cases(
+    def search_scenarios(
         self,
         dataset_id: str,
         *,
         query: Optional[str] | Omit = omit,
-        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
-        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         extra_headers: Headers | None = None,
@@ -867,16 +944,16 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[False] = False,
-    ) -> List[TestCase]: ...
+    ) -> List[Scenario]: ...
 
     @overload
-    def search_test_cases(
+    def search_scenarios(
         self,
         dataset_id: str,
         *,
         query: Optional[str] | Omit = omit,
-        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
-        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         extra_headers: Headers | None = None,
@@ -884,15 +961,15 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[True] = True,
-    ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
+    ) -> Tuple[List[Scenario], APIPaginatedMetadata]: ...
 
-    def search_test_cases(
+    def search_scenarios(
         self,
         dataset_id: str,
         *,
         query: Optional[str] | Omit = omit,
-        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
-        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -902,18 +979,18 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
-    ) -> List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]:
-        """Search test cases in a dataset using filters, sorting, and pagination.
+    ) -> List[Scenario] | Tuple[List[Scenario], APIPaginatedMetadata]:
+        """Search scenarios in a dataset using filters, sorting, and pagination.
 
         Parameters
         ----------
         dataset_id : str
-            The ID of the dataset to search test cases in.
+            The ID of the dataset to search scenarios in.
         query : Optional[str]
-            Search query for test cases.
-        order_by : Optional[List[TestCaseOrderByParam]]
-            Order by criteria for test cases.
-        filters : Optional[TestCaseFiltersParam]
+            Search query for scenarios.
+        order_by : Optional[List[ScenarioOrderByParam]]
+            Order by criteria for scenarios.
+        filters : Optional[ScenarioFiltersParam]
             Search filters to apply.
         limit : int
             Maximum number of results to return.
@@ -933,8 +1010,8 @@ class DatasetsResource(SyncAPIResource):
 
         Returns
         -------
-        List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]
-            A list of matching test cases, optionally with pagination metadata.
+        List[Scenario] | Tuple[List[Scenario], APIPaginatedMetadata]
+            A list of matching scenarios, optionally with pagination metadata.
 
         Raises
         ------
@@ -944,14 +1021,14 @@ class DatasetsResource(SyncAPIResource):
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
         response = self._post(
-            f"/v2/datasets/{dataset_id}/test-cases/search",
+            f"/v2/datasets/{dataset_id}/scenarios/search",
             body=maybe_transform(
                 {
                     "filters": filters,
                     "order_by": order_by,
                     "search": query,
                 },
-                DatasetSearchTestCasesParams,
+                DatasetSearchScenariosParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -960,13 +1037,76 @@ class DatasetsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {"limit": limit, "offset": offset},
-                    DatasetSearchTestCasesParams,
+                    DatasetSearchScenariosParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCase, None],
+            cast_to=APIPaginatedResponse[Scenario, None],
         )
 
         return self._unwrap_paginated(response, include_metadata)
+
+    def list_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[Scenario]:
+        """Deprecated alias of `list_scenarios`."""
+        warnings.warn(_LIST_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return self.list_scenarios(
+            dataset_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+    def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[Scenario] | Tuple[List[Scenario], APIPaginatedMetadata]:
+        """Deprecated alias of `search_scenarios`."""
+        warnings.warn(_SEARCH_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
+        if include_metadata:
+            return self.search_scenarios(
+                dataset_id,
+                query=query,
+                order_by=order_by,
+                filters=filters,
+                limit=limit,
+                offset=offset,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+        return self.search_scenarios(
+            dataset_id,
+            query=query,
+            order_by=order_by,
+            filters=filters,
+            limit=limit,
+            offset=offset,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
 
 class AsyncDatasetsResource(AsyncAPIResource):
@@ -1015,10 +1155,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
         description : Optional[str]
             Description of the dataset to create.
         input_schema : Dict[str, Any] | None | Omit
-            JSON schema describing the expected shape of test case inputs.
+            JSON schema describing the expected shape of scenario inputs.
             Defaults to the chat input schema when omitted.
         output_schema : Dict[str, Any] | None | Omit
-            JSON schema describing the expected shape of test case outputs.
+            JSON schema describing the expected shape of scenario outputs.
             Defaults to the chat output schema when omitted.
 
         Other Parameters
@@ -1218,10 +1358,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
         status : Optional[TaskProgressParam]
             Status of the dataset to update.
         input_schema : Dict[str, Any] | None | Omit
-            Updated JSON schema describing the expected shape of test case
+            Updated JSON schema describing the expected shape of scenario
             inputs.
         output_schema : Dict[str, Any] | None | Omit
-            Updated JSON schema describing the expected shape of test case
+            Updated JSON schema describing the expected shape of scenario
             outputs.
 
         Other Parameters
@@ -1412,12 +1552,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def generate_scenario_based(
+    async def generate_preset_based(
         self,
         *,
         project_id: str,
         agent_id: str,
-        scenario_id: str,
+        prompt_preset_id: str,
         n_examples: int | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         dataset_name: Optional[str] | Omit = omit,
@@ -1428,7 +1568,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """Generate a dataset of test cases from scenario definitions.
+        """Generate a dataset of scenarios from a prompt preset.
 
         Parameters
         ----------
@@ -1436,10 +1576,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
             The ID of the project.
         agent_id : str
             The ID of the agent to use for generation.
-        scenario_id : str
-            The ID of the scenario to use.
+        prompt_preset_id : str
+            The ID of the prompt preset to use.
         n_examples : int
-            Total number of examples to generate.
+            Total number of scenarios to generate.
         dataset_id : Optional[str]
             The ID of the dataset to use (required when dataset_name is not provided).
         dataset_name : Optional[str]
@@ -1471,17 +1611,17 @@ class AsyncDatasetsResource(AsyncAPIResource):
             raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
 
         response = await self._post(
-            "/v2/datasets/generate-scenario-based",
+            "/v2/datasets/generate-preset-based",
             body=await async_maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "scenario_id": scenario_id,
+                    "prompt_preset_id": prompt_preset_id,
                     "dataset_name": dataset_name,
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
                 },
-                DatasetGenerateScenarioBasedParams,
+                DatasetGeneratePresetBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -1490,6 +1630,75 @@ class AsyncDatasetsResource(AsyncAPIResource):
         )
 
         return self._unwrap(response)
+
+    async def generate_scenario_based(
+        self,
+        *,
+        project_id: str,
+        agent_id: str,
+        scenario_id: str,
+        n_examples: int | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        dataset_name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Dataset:
+        """Deprecated alias of `generate_preset_based`.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str
+            The ID of the agent to use for generation.
+        scenario_id : str
+            The ID of the prompt preset to use.
+        n_examples : int
+            Total number of examples to generate.
+        dataset_id : Optional[str]
+            The ID of the dataset to use (required when dataset_name is not provided).
+        dataset_name : Optional[str]
+            Name for the generated dataset.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Dataset
+            The generated dataset.
+
+        Raises
+        ------
+        ValueError
+            If neither `dataset_id` nor `dataset_name` is provided.
+        """
+
+        warnings.warn(_GENERATE_SCENARIO_BASED_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return await self.generate_preset_based(
+            project_id=project_id,
+            agent_id=agent_id,
+            prompt_preset_id=scenario_id,
+            n_examples=n_examples,
+            dataset_id=dataset_id,
+            dataset_name=dataset_name,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
     async def generate_document_based(
         self,
@@ -1508,7 +1717,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """Generate a dataset of test cases from knowledge base documents.
+        """Generate a dataset of scenarios from knowledge base documents.
 
         Parameters
         ----------
@@ -1616,7 +1825,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def list_test_cases(
+    async def list_scenarios(
         self,
         dataset_id: str,
         *,
@@ -1626,15 +1835,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCase]:
-        """List all test cases belonging to a dataset.
+    ) -> List[Scenario]:
+        """List all scenarios belonging to a dataset.
 
-        Fetches every page via :meth:`search_test_cases` (same as an unfiltered search).
+        Fetches every page via :meth:`search_scenarios` (same as an unfiltered search).
 
         Parameters
         ----------
         dataset_id : str
-            The ID of the dataset to list test cases for.
+            The ID of the dataset to list scenarios for.
 
         Other Parameters
         ----------------
@@ -1649,8 +1858,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         Returns
         -------
-        List[TestCase]
-            A list of test cases.
+        List[Scenario]
+            A list of scenarios.
 
         Raises
         ------
@@ -1660,10 +1869,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
         page_limit = 100
-        all_items: List[TestCase] = []
+        all_items: List[Scenario] = []
         offset = 0
         while True:
-            page, meta = await self.search_test_cases(
+            page, meta = await self.search_scenarios(
                 dataset_id,
                 limit=page_limit,
                 offset=offset,
@@ -1681,13 +1890,13 @@ class AsyncDatasetsResource(AsyncAPIResource):
         return all_items
 
     @overload
-    async def search_test_cases(
+    async def search_scenarios(
         self,
         dataset_id: str,
         *,
         query: Optional[str] | Omit = omit,
-        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
-        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         extra_headers: Headers | None = None,
@@ -1695,16 +1904,16 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[False] = False,
-    ) -> List[TestCase]: ...
+    ) -> List[Scenario]: ...
 
     @overload
-    async def search_test_cases(
+    async def search_scenarios(
         self,
         dataset_id: str,
         *,
         query: Optional[str] | Omit = omit,
-        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
-        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         extra_headers: Headers | None = None,
@@ -1712,15 +1921,15 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[True] = True,
-    ) -> Tuple[List[TestCase], APIPaginatedMetadata]: ...
+    ) -> Tuple[List[Scenario], APIPaginatedMetadata]: ...
 
-    async def search_test_cases(
+    async def search_scenarios(
         self,
         dataset_id: str,
         *,
         query: Optional[str] | Omit = omit,
-        order_by: Optional[List[TestCaseOrderByParam]] | Omit = omit,
-        filters: Optional[TestCaseFiltersParam] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1730,18 +1939,18 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
-    ) -> List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]:
-        """Search test cases in a dataset using filters, sorting, and pagination.
+    ) -> List[Scenario] | Tuple[List[Scenario], APIPaginatedMetadata]:
+        """Search scenarios in a dataset using filters, sorting, and pagination.
 
         Parameters
         ----------
         dataset_id : str
-            The ID of the dataset to search test cases in.
+            The ID of the dataset to search scenarios in.
         query : Optional[str]
-            Search query for test cases.
-        order_by : Optional[List[TestCaseOrderByParam]]
-            Order by criteria for test cases.
-        filters : Optional[TestCaseFiltersParam]
+            Search query for scenarios.
+        order_by : Optional[List[ScenarioOrderByParam]]
+            Order by criteria for scenarios.
+        filters : Optional[ScenarioFiltersParam]
             Search filters to apply.
         limit : int
             Maximum number of results to return.
@@ -1761,8 +1970,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         Returns
         -------
-        List[TestCase] | Tuple[List[TestCase], APIPaginatedMetadata]
-            A list of matching test cases, optionally with pagination metadata.
+        List[Scenario] | Tuple[List[Scenario], APIPaginatedMetadata]
+            A list of matching scenarios, optionally with pagination metadata.
 
         Raises
         ------
@@ -1772,14 +1981,14 @@ class AsyncDatasetsResource(AsyncAPIResource):
         if not dataset_id:
             raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
         response = await self._post(
-            f"/v2/datasets/{dataset_id}/test-cases/search",
+            f"/v2/datasets/{dataset_id}/scenarios/search",
             body=await async_maybe_transform(
                 {
                     "filters": filters,
                     "order_by": order_by,
                     "search": query,
                 },
-                DatasetSearchTestCasesParams,
+                DatasetSearchScenariosParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -1788,13 +1997,76 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform(
                     {"limit": limit, "offset": offset},
-                    DatasetSearchTestCasesParams,
+                    DatasetSearchScenariosParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCase, None],
+            cast_to=APIPaginatedResponse[Scenario, None],
         )
 
         return self._unwrap_paginated(response, include_metadata)
+
+    async def list_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> List[Scenario]:
+        """Deprecated alias of `list_scenarios`."""
+        warnings.warn(_LIST_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return await self.list_scenarios(
+            dataset_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+    async def search_test_cases(
+        self,
+        dataset_id: str,
+        *,
+        query: Optional[str] | Omit = omit,
+        order_by: Optional[List[ScenarioOrderByParam]] | Omit = omit,
+        filters: Optional[ScenarioFiltersParam] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+        include_metadata: bool = False,
+    ) -> List[Scenario] | Tuple[List[Scenario], APIPaginatedMetadata]:
+        """Deprecated alias of `search_scenarios`."""
+        warnings.warn(_SEARCH_TEST_CASES_DEPRECATION, DeprecationWarning, stacklevel=2)
+        if include_metadata:
+            return await self.search_scenarios(
+                dataset_id,
+                query=query,
+                order_by=order_by,
+                filters=filters,
+                limit=limit,
+                offset=offset,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                include_metadata=True,
+            )
+        return await self.search_scenarios(
+            dataset_id,
+            query=query,
+            order_by=order_by,
+            filters=filters,
+            limit=limit,
+            offset=offset,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
 
 class DatasetsResourceWithRawResponse:
@@ -1822,6 +2094,9 @@ class DatasetsResourceWithRawResponse:
         self.bulk_delete = to_raw_response_wrapper(
             datasets.bulk_delete,
         )
+        self.generate_preset_based = to_raw_response_wrapper(
+            datasets.generate_preset_based,
+        )
         self.generate_scenario_based = to_raw_response_wrapper(
             datasets.generate_scenario_based,
         )
@@ -1831,8 +2106,14 @@ class DatasetsResourceWithRawResponse:
         self.list_tags = to_raw_response_wrapper(
             datasets.list_tags,
         )
+        self.list_scenarios = to_raw_response_wrapper(
+            datasets.list_scenarios,
+        )
         self.list_test_cases = to_raw_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.search_scenarios = to_raw_response_wrapper(
+            datasets.search_scenarios,
         )
         self.search_test_cases = to_raw_response_wrapper(
             datasets.search_test_cases,
@@ -1864,6 +2145,9 @@ class AsyncDatasetsResourceWithRawResponse:
         self.bulk_delete = async_to_raw_response_wrapper(
             datasets.bulk_delete,
         )
+        self.generate_preset_based = async_to_raw_response_wrapper(
+            datasets.generate_preset_based,
+        )
         self.generate_scenario_based = async_to_raw_response_wrapper(
             datasets.generate_scenario_based,
         )
@@ -1873,8 +2157,14 @@ class AsyncDatasetsResourceWithRawResponse:
         self.list_tags = async_to_raw_response_wrapper(
             datasets.list_tags,
         )
+        self.list_scenarios = async_to_raw_response_wrapper(
+            datasets.list_scenarios,
+        )
         self.list_test_cases = async_to_raw_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.search_scenarios = async_to_raw_response_wrapper(
+            datasets.search_scenarios,
         )
         self.search_test_cases = async_to_raw_response_wrapper(
             datasets.search_test_cases,
@@ -1906,6 +2196,9 @@ class DatasetsResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
+        self.generate_preset_based = to_streamed_response_wrapper(
+            datasets.generate_preset_based,
+        )
         self.generate_scenario_based = to_streamed_response_wrapper(
             datasets.generate_scenario_based,
         )
@@ -1915,8 +2208,14 @@ class DatasetsResourceWithStreamingResponse:
         self.list_tags = to_streamed_response_wrapper(
             datasets.list_tags,
         )
+        self.list_scenarios = to_streamed_response_wrapper(
+            datasets.list_scenarios,
+        )
         self.list_test_cases = to_streamed_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.search_scenarios = to_streamed_response_wrapper(
+            datasets.search_scenarios,
         )
         self.search_test_cases = to_streamed_response_wrapper(
             datasets.search_test_cases,
@@ -1948,6 +2247,9 @@ class AsyncDatasetsResourceWithStreamingResponse:
         self.bulk_delete = async_to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
+        self.generate_preset_based = async_to_streamed_response_wrapper(
+            datasets.generate_preset_based,
+        )
         self.generate_scenario_based = async_to_streamed_response_wrapper(
             datasets.generate_scenario_based,
         )
@@ -1957,8 +2259,14 @@ class AsyncDatasetsResourceWithStreamingResponse:
         self.list_tags = async_to_streamed_response_wrapper(
             datasets.list_tags,
         )
+        self.list_scenarios = async_to_streamed_response_wrapper(
+            datasets.list_scenarios,
+        )
         self.list_test_cases = async_to_streamed_response_wrapper(
             datasets.list_test_cases,
+        )
+        self.search_scenarios = async_to_streamed_response_wrapper(
+            datasets.search_scenarios,
         )
         self.search_test_cases = async_to_streamed_response_wrapper(
             datasets.search_test_cases,
