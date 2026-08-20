@@ -135,6 +135,8 @@ TestCaseEvaluationReference = ScenarioEvaluationReference
 
 
 class ScenarioEvaluation(BaseModel):
+    __test__ = False
+
     id: str
     created_at: datetime
     updated_at: datetime
@@ -162,8 +164,7 @@ class ScenarioEvaluation(BaseModel):
         return self.scenario_exists
 
 
-class TestCaseEvaluation(ScenarioEvaluation):
-    __test__ = False
+TestCaseEvaluation = ScenarioEvaluation
 
 
 # ---------------------------------------------------------------------------

@@ -144,3 +144,11 @@ class TestScenariosEndpointMigration:
         assert route.called
         body = json.loads(route.calls.last.request.content)
         assert body["set_scenario_draft"] is True
+
+    def test_deprecated_types_are_plain_aliases(self) -> None:
+        from giskard_hub.types import ScenarioComment, TestCaseComment
+        from giskard_hub.types.evaluation import ScenarioEvaluation, TestCaseEvaluation
+
+        assert TestCase is Scenario
+        assert TestCaseComment is ScenarioComment
+        assert TestCaseEvaluation is ScenarioEvaluation

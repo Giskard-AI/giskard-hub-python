@@ -35,8 +35,7 @@ __all__ = [
 TestCaseStatus: TypeAlias = ScenarioStatus
 
 
-class TestCaseComment(ScenarioComment):
-    __test__ = False
+TestCaseComment = ScenarioComment
 
 
 TestCaseReference = ScenarioReference
@@ -45,8 +44,7 @@ TestCaseReference = ScenarioReference
 TestCaseSchemaValidation = ScenarioSchemaValidation
 
 
-class TestCase(Scenario):
-    __test__ = False
+TestCase = Scenario
 
 
 TestCaseCreateParams = ScenarioCreateParams

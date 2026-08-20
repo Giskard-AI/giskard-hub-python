@@ -36,6 +36,8 @@ ScenarioStatus: TypeAlias = Literal["active", "draft"]
 
 
 class ScenarioComment(BaseModel):
+    __test__ = False
+
     id: str
     content: str = Field(alias="comment")
     created_at: datetime
@@ -76,6 +78,8 @@ def _first_interaction_messages(interactions: Optional[List[Interaction]]) -> Li
 
 
 class Scenario(BaseModel):
+    __test__ = False
+
     id: str
     comments: List[ScenarioComment] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     created_at: datetime
