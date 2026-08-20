@@ -70,7 +70,7 @@ class ChecksResource(SyncAPIResource):
         Parameters
         ----------
         identifier : str
-            Unique identifier of the check.
+            Unique identifier of the check. Must start with `custom_` (e.g. `custom_my_check`).
         name : str
             Display name of the check.
         project_id : str
@@ -214,7 +214,7 @@ class ChecksResource(SyncAPIResource):
         description : str | None | Omit
             Updated description of the check.
         identifier : str | None | Omit
-            Updated identifier of the check.
+            Updated identifier of the check. Must start with `custom_` (e.g. `custom_my_check`).
         name : str | None | Omit
             Updated display name of the check.
 
@@ -466,7 +466,7 @@ class AsyncChecksResource(AsyncAPIResource):
         Parameters
         ----------
         identifier : str
-            Unique identifier of the check.
+            Unique identifier of the check. Must start with `custom_` (e.g. `custom_my_check`).
         name : str
             Display name of the check.
         project_id : str
@@ -610,7 +610,7 @@ class AsyncChecksResource(AsyncAPIResource):
         description : str | None | Omit
             Updated description of the check.
         identifier : str | None | Omit
-            Updated identifier of the check.
+            Updated identifier of the check. Must start with `custom_` (e.g. `custom_my_check`).
         name : str | None | Omit
             Updated display name of the check.
 
