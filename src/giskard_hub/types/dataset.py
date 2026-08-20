@@ -18,7 +18,10 @@ __all__ = [
     "DatasetImportParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
+    "DatasetSearchScenariosParams",
     "DatasetSearchTestCasesParams",
+    "ScenarioOrderByParam",
+    "ScenarioFiltersParam",
     "TestCaseOrderByParam",
     "TestCaseFiltersParam",
     "DatasetGenerateAdversarialParams",
@@ -108,19 +111,26 @@ class DatasetBulkDeleteParams(TypedDict, total=False):
 # Search params
 # ---------------------------------------------------------------------------
 
-TestCaseSortColumn = Literal["created_at", "id", "status", "updated_at"]
-TestCaseFilterColumn = Literal["metrics", "status", "tags"]
+ScenarioSortColumn = Literal["created_at", "id", "status", "updated_at"]
+ScenarioFilterColumn = Literal["metrics", "status", "tags"]
+TestCaseSortColumn = ScenarioSortColumn
+TestCaseFilterColumn = ScenarioFilterColumn
 
-TestCaseOrderByParam = OrderByParam[TestCaseSortColumn]
-TestCaseFiltersParam = Dict[TestCaseFilterColumn, FilterValueParam]
+ScenarioOrderByParam = OrderByParam[ScenarioSortColumn]
+ScenarioFiltersParam = Dict[ScenarioFilterColumn, FilterValueParam]
+TestCaseOrderByParam = ScenarioOrderByParam
+TestCaseFiltersParam = ScenarioFiltersParam
 
 
-class DatasetSearchTestCasesParams(TypedDict, total=False):
+class DatasetSearchScenariosParams(TypedDict, total=False):
     search: Optional[str]
-    order_by: Optional[List[TestCaseOrderByParam]]
-    filters: Optional[TestCaseFiltersParam]
+    order_by: Optional[List[ScenarioOrderByParam]]
+    filters: Optional[ScenarioFiltersParam]
     limit: int
     offset: int
+
+
+DatasetSearchTestCasesParams = DatasetSearchScenariosParams
 
 
 # ---------------------------------------------------------------------------

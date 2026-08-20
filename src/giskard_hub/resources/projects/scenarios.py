@@ -17,12 +17,12 @@ from ..._response import (
 )
 from ..._base_client import make_request_options
 from ...types.common import APIResponse
-from ...types.scenario import (
-    Scenario,
-    ScenarioPreview,
-    ScenarioCreateParams,
-    ScenarioUpdateParams,
-    ScenarioPreviewParams,
+from ...types.prompt_preset import (
+    PromptPreset,
+    PromptPresetPreview,
+    PromptPresetCreateParams,
+    PromptPresetUpdateParams,
+    PromptPresetPreviewParams,
 )
 
 __all__ = ["ScenariosResource", "AsyncScenariosResource"]
@@ -63,7 +63,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Scenario:
+    ) -> PromptPreset:
         """Create a new scenario within a project.
 
         Parameters
@@ -90,7 +90,7 @@ class ScenariosResource(SyncAPIResource):
 
         Returns
         -------
-        Scenario
+        PromptPreset
             The newly created scenario.
 
         Raises
@@ -109,12 +109,12 @@ class ScenariosResource(SyncAPIResource):
                     "description": description,
                     "rules": rules,
                 },
-                ScenarioCreateParams,
+                PromptPresetCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[Scenario],
+            cast_to=APIResponse[PromptPreset],
         )
 
         return self._unwrap(response)
@@ -130,7 +130,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Scenario:
+    ) -> PromptPreset:
         """Retrieve a scenario by its ID within a project.
 
         Parameters
@@ -153,7 +153,7 @@ class ScenariosResource(SyncAPIResource):
 
         Returns
         -------
-        Scenario
+        PromptPreset
             The requested scenario.
 
         Raises
@@ -171,7 +171,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[Scenario],
+            cast_to=APIResponse[PromptPreset],
         )
 
         return self._unwrap(response)
@@ -190,7 +190,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Scenario:
+    ) -> PromptPreset:
         """Update an existing scenario's definition.
 
         Parameters
@@ -219,7 +219,7 @@ class ScenariosResource(SyncAPIResource):
 
         Returns
         -------
-        Scenario
+        PromptPreset
             The updated scenario.
 
         Raises
@@ -240,12 +240,12 @@ class ScenariosResource(SyncAPIResource):
                     "description": description,
                     "rules": rules,
                 },
-                ScenarioUpdateParams,
+                PromptPresetUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[Scenario],
+            cast_to=APIResponse[PromptPreset],
         )
 
         return self._unwrap(response)
@@ -260,7 +260,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[Scenario]:
+    ) -> List[PromptPreset]:
         """List all scenarios for a project.
 
         Parameters
@@ -281,7 +281,7 @@ class ScenariosResource(SyncAPIResource):
 
         Returns
         -------
-        list of Scenario
+        list of PromptPreset
             A list of all scenarios for the project.
 
         Raises
@@ -297,7 +297,7 @@ class ScenariosResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[Scenario]],
+            cast_to=APIResponse[List[PromptPreset]],
         )
 
         return self._unwrap(response)
@@ -371,7 +371,7 @@ class ScenariosResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScenarioPreview:
+    ) -> PromptPresetPreview:
         """Generate a preview conversation for a scenario without persisting it.
 
         Parameters
@@ -398,7 +398,7 @@ class ScenariosResource(SyncAPIResource):
 
         Returns
         -------
-        ScenarioPreview
+        PromptPresetPreview
             The generated preview conversation.
 
         Raises
@@ -416,16 +416,16 @@ class ScenariosResource(SyncAPIResource):
                     "description": description,
                     "rules": rules,
                 },
-                ScenarioPreviewParams,
+                PromptPresetPreviewParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"agent_id": agent_id}, ScenarioPreviewParams),
+                query=maybe_transform({"agent_id": agent_id}, PromptPresetPreviewParams),
             ),
-            cast_to=APIResponse[ScenarioPreview],
+            cast_to=APIResponse[PromptPresetPreview],
         )
 
         return self._unwrap(response)
@@ -464,7 +464,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Scenario:
+    ) -> PromptPreset:
         """Create a new scenario within a project.
 
         Parameters
@@ -491,7 +491,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
         Returns
         -------
-        Scenario
+        PromptPreset
             The newly created scenario.
 
         Raises
@@ -510,12 +510,12 @@ class AsyncScenariosResource(AsyncAPIResource):
                     "description": description,
                     "rules": rules,
                 },
-                ScenarioCreateParams,
+                PromptPresetCreateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[Scenario],
+            cast_to=APIResponse[PromptPreset],
         )
 
         return self._unwrap(response)
@@ -531,7 +531,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Scenario:
+    ) -> PromptPreset:
         """Retrieve a scenario by its ID within a project.
 
         Parameters
@@ -554,7 +554,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
         Returns
         -------
-        Scenario
+        PromptPreset
             The requested scenario.
 
         Raises
@@ -572,7 +572,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[Scenario],
+            cast_to=APIResponse[PromptPreset],
         )
 
         return self._unwrap(response)
@@ -591,7 +591,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Scenario:
+    ) -> PromptPreset:
         """Update an existing scenario's definition.
 
         Parameters
@@ -620,7 +620,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
         Returns
         -------
-        Scenario
+        PromptPreset
             The updated scenario.
 
         Raises
@@ -641,12 +641,12 @@ class AsyncScenariosResource(AsyncAPIResource):
                     "description": description,
                     "rules": rules,
                 },
-                ScenarioUpdateParams,
+                PromptPresetUpdateParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[Scenario],
+            cast_to=APIResponse[PromptPreset],
         )
 
         return self._unwrap(response)
@@ -661,7 +661,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[Scenario]:
+    ) -> List[PromptPreset]:
         """List all scenarios for a project.
 
         Parameters
@@ -682,7 +682,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
         Returns
         -------
-        list of Scenario
+        list of PromptPreset
             A list of all scenarios for the project.
 
         Raises
@@ -698,7 +698,7 @@ class AsyncScenariosResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[List[Scenario]],
+            cast_to=APIResponse[List[PromptPreset]],
         )
 
         return self._unwrap(response)
@@ -772,7 +772,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ScenarioPreview:
+    ) -> PromptPresetPreview:
         """Generate a preview conversation for a scenario without persisting it.
 
         Parameters
@@ -799,7 +799,7 @@ class AsyncScenariosResource(AsyncAPIResource):
 
         Returns
         -------
-        ScenarioPreview
+        PromptPresetPreview
             The generated preview conversation.
 
         Raises
@@ -817,16 +817,16 @@ class AsyncScenariosResource(AsyncAPIResource):
                     "description": description,
                     "rules": rules,
                 },
-                ScenarioPreviewParams,
+                PromptPresetPreviewParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"agent_id": agent_id}, ScenarioPreviewParams),
+                query=await async_maybe_transform({"agent_id": agent_id}, PromptPresetPreviewParams),
             ),
-            cast_to=APIResponse[ScenarioPreview],
+            cast_to=APIResponse[PromptPresetPreview],
         )
 
         return self._unwrap(response)

@@ -71,7 +71,7 @@ def test_upload_list_defaults_interaction_positions() -> None:
     # New-shape items with omitted `position` get the interaction's list index.
     data = [{"interactions": [{"input": {"a": 1}}, {"position": 5, "input": {"b": 2}}, {"input": {"c": 3}}]}]
     name, payload = cast("Tuple[str, bytes]", _prepare_upload_data(data))
-    assert name == "test_cases.json"
+    assert name == "scenarios.json"
     items = json.loads(payload)
     assert [i["position"] for i in items[0]["interactions"]] == [0, 5, 2]
     # Caller's dicts are not mutated.

@@ -8,8 +8,8 @@ import pytest
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
 from giskard_hub.types import (
-    Scenario,
-    ScenarioPreview,
+    PromptPreset,
+    PromptPresetPreview,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -28,7 +28,7 @@ class TestScenarios:
             name="name",
             description="description",
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -39,7 +39,7 @@ class TestScenarios:
             description="description",
             rules=["rule1", "rule2"],
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -53,7 +53,7 @@ class TestScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = response.parse()
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -67,7 +67,7 @@ class TestScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = response.parse()
-            assert_matches_type(Scenario, scenario, path=["response"])
+            assert_matches_type(PromptPreset, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -91,7 +91,7 @@ class TestScenarios:
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -104,7 +104,7 @@ class TestScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = response.parse()
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -117,7 +117,7 @@ class TestScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = response.parse()
-            assert_matches_type(Scenario, scenario, path=["response"])
+            assert_matches_type(PromptPreset, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -149,7 +149,7 @@ class TestScenarios:
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -161,7 +161,7 @@ class TestScenarios:
             name="name",
             rules=["rule1", "rule2"],
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -174,7 +174,7 @@ class TestScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = response.parse()
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -187,7 +187,7 @@ class TestScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = response.parse()
-            assert_matches_type(Scenario, scenario, path=["response"])
+            assert_matches_type(PromptPreset, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -218,7 +218,7 @@ class TestScenarios:
         scenario = client.projects.scenarios.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(List[Scenario], scenario, path=["response"])
+        assert_matches_type(List[PromptPreset], scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -230,7 +230,7 @@ class TestScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = response.parse()
-        assert_matches_type(List[Scenario], scenario, path=["response"])
+        assert_matches_type(List[PromptPreset], scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -242,7 +242,7 @@ class TestScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = response.parse()
-            assert_matches_type(List[Scenario], scenario, path=["response"])
+            assert_matches_type(List[PromptPreset], scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -322,7 +322,7 @@ class TestScenarios:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         )
-        assert_matches_type(ScenarioPreview, scenario, path=["response"])
+        assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -333,7 +333,7 @@ class TestScenarios:
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             rules=["rule1", "rule2"],
         )
-        assert_matches_type(ScenarioPreview, scenario, path=["response"])
+        assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -346,7 +346,7 @@ class TestScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = response.parse()
-        assert_matches_type(ScenarioPreview, scenario, path=["response"])
+        assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -359,7 +359,7 @@ class TestScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = response.parse()
-            assert_matches_type(ScenarioPreview, scenario, path=["response"])
+            assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -392,7 +392,7 @@ class TestAsyncScenarios:
             name="name",
             description="description",
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -403,7 +403,7 @@ class TestAsyncScenarios:
             description="description",
             rules=["rule1", "rule2"],
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -417,7 +417,7 @@ class TestAsyncScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = await response.parse()
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -431,7 +431,7 @@ class TestAsyncScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = await response.parse()
-            assert_matches_type(Scenario, scenario, path=["response"])
+            assert_matches_type(PromptPreset, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -455,7 +455,7 @@ class TestAsyncScenarios:
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -468,7 +468,7 @@ class TestAsyncScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = await response.parse()
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -481,7 +481,7 @@ class TestAsyncScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = await response.parse()
-            assert_matches_type(Scenario, scenario, path=["response"])
+            assert_matches_type(PromptPreset, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -513,7 +513,7 @@ class TestAsyncScenarios:
             scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -525,7 +525,7 @@ class TestAsyncScenarios:
             name="name",
             rules=["rule1", "rule2"],
         )
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -538,7 +538,7 @@ class TestAsyncScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = await response.parse()
-        assert_matches_type(Scenario, scenario, path=["response"])
+        assert_matches_type(PromptPreset, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -551,7 +551,7 @@ class TestAsyncScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = await response.parse()
-            assert_matches_type(Scenario, scenario, path=["response"])
+            assert_matches_type(PromptPreset, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -582,7 +582,7 @@ class TestAsyncScenarios:
         scenario = await async_client.projects.scenarios.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        assert_matches_type(List[Scenario], scenario, path=["response"])
+        assert_matches_type(List[PromptPreset], scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -594,7 +594,7 @@ class TestAsyncScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = await response.parse()
-        assert_matches_type(List[Scenario], scenario, path=["response"])
+        assert_matches_type(List[PromptPreset], scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -606,7 +606,7 @@ class TestAsyncScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = await response.parse()
-            assert_matches_type(List[Scenario], scenario, path=["response"])
+            assert_matches_type(List[PromptPreset], scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -686,7 +686,7 @@ class TestAsyncScenarios:
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
         )
-        assert_matches_type(ScenarioPreview, scenario, path=["response"])
+        assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -697,7 +697,7 @@ class TestAsyncScenarios:
             agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             rules=["rule1", "rule2"],
         )
-        assert_matches_type(ScenarioPreview, scenario, path=["response"])
+        assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -710,7 +710,7 @@ class TestAsyncScenarios:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
         scenario = await response.parse()
-        assert_matches_type(ScenarioPreview, scenario, path=["response"])
+        assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
@@ -723,7 +723,7 @@ class TestAsyncScenarios:
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
             scenario = await response.parse()
-            assert_matches_type(ScenarioPreview, scenario, path=["response"])
+            assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

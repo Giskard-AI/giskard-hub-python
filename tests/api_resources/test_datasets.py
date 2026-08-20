@@ -17,7 +17,11 @@ from giskard_hub.types import (
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
-pytestmark = pytest.mark.filterwarnings("ignore:`datasets.generate_scenario_based` is deprecated:DeprecationWarning")
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`datasets.generate_scenario_based` is deprecated:DeprecationWarning"),
+    pytest.mark.filterwarnings("ignore:`datasets.list_test_cases` is deprecated:DeprecationWarning"),
+    pytest.mark.filterwarnings("ignore:`datasets.search_test_cases` is deprecated:DeprecationWarning"),
+]
 
 
 class TestDatasets:

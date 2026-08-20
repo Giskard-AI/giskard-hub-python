@@ -5,6 +5,10 @@ from typing import List
 
 import pytest
 
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`client.test_cases` is deprecated:DeprecationWarning"),
+]
+
 from giskard_hub import HubClient, AsyncHubClient
 from giskard_hub._types import omit
 from giskard_hub.types.check import Interaction, InteractionParam

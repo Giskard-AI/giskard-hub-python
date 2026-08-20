@@ -140,17 +140,17 @@ class EvaluationsResource(SyncAPIResource):
         name : str or Omit
             The name of the evaluation.
         dataset_id : str, optional
-            The ID of the dataset to draw test cases from. Exactly one of
+            The ID of the dataset to draw scenarios from. Exactly one of
             `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
-            Optional tags to restrict the subset to test cases carrying those
+            Optional tags to restrict the subset to scenarios carrying those
             tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
-            The ID of a previous evaluation whose test cases should be reused.
+            The ID of a previous evaluation whose scenarios should be reused.
             Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
         run_count : int or Omit
-            The number of times to run each test case.
+            The number of times to run each scenario.
         scheduled_evaluation_id : str, optional
             The ID of the scheduled evaluation to associate with.
 
@@ -521,11 +521,11 @@ class EvaluationsResource(SyncAPIResource):
             Minimal agent information (name and optional description) to use
             for the evaluation.
         dataset_id : str
-            The ID of the dataset to draw test cases from.
+            The ID of the dataset to draw scenarios from.
         name : str, optional
             The name of the evaluation.
         tags : sequence of str, optional
-            Optional tags to restrict the subset to test cases carrying those
+            Optional tags to restrict the subset to scenarios carrying those
             tags.
 
         Other Parameters
@@ -620,7 +620,7 @@ class EvaluationsResource(SyncAPIResource):
         -------
         Evaluation
             The newly created local evaluation. Each ScenarioResult in the
-            payload becomes a TestCaseEvaluation; each scenario step becomes
+            payload becomes a ScenarioEvaluation; each scenario step becomes
             an InteractionResult with its check_results.
         """
         response = self._post(
@@ -855,17 +855,17 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         name : str or Omit
             The name of the evaluation.
         dataset_id : str, optional
-            The ID of the dataset to draw test cases from. Exactly one of
+            The ID of the dataset to draw scenarios from. Exactly one of
             `dataset_id` or `old_evaluation_id` must be provided.
         tags : sequence of str, optional
-            Optional tags to restrict the subset to test cases carrying those
+            Optional tags to restrict the subset to scenarios carrying those
             tags. Only used when `dataset_id` is provided.
         old_evaluation_id : str, optional
-            The ID of a previous evaluation whose test cases should be reused.
+            The ID of a previous evaluation whose scenarios should be reused.
             Exactly one of `old_evaluation_id` or `dataset_id` must be
             provided.
         run_count : int or Omit
-            The number of times to run each test case.
+            The number of times to run each scenario.
         scheduled_evaluation_id : str, optional
             The ID of the scheduled evaluation to associate with.
 
@@ -1236,11 +1236,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             Minimal agent information (name and optional description) to use
             for the evaluation.
         dataset_id : str
-            The ID of the dataset to draw test cases from.
+            The ID of the dataset to draw scenarios from.
         name : str, optional
             The name of the evaluation.
         tags : sequence of str, optional
-            Optional tags to restrict the subset to test cases carrying those
+            Optional tags to restrict the subset to scenarios carrying those
             tags.
 
         Other Parameters
@@ -1335,7 +1335,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         -------
         Evaluation
             The newly created local evaluation. Each ScenarioResult in the
-            payload becomes a TestCaseEvaluation; each scenario step becomes
+            payload becomes a ScenarioEvaluation; each scenario step becomes
             an InteractionResult with its check_results.
         """
         response = await self._post(

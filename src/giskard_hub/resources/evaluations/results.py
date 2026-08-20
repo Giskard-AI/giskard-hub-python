@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Tuple, Literal, Optional, overload
+import warnings
+from typing import List, Tuple, Literal, Optional, cast, overload
 
 import httpx
 
@@ -18,18 +19,35 @@ from ..._response import (
 from ...types.agent import AgentOutputParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedMetadata, APIPaginatedResponse, APIResponseWithIncluded
-from ...types.test_case import TestCase
+from ...types.scenario import Scenario
 from ...types.evaluation import (
     ResultFiltersParam,
     ResultOrderByParam,
     ResultSearchParams,
     ResultUpdateParams,
-    TestCaseEvaluation,
+    ScenarioEvaluation,
     FailureCategoryParam,
     ResultRetrieveParams,
     ResultUpdateVisibilityParams,
     ResultSubmitLocalOutputParams,
 )
+
+_RERUN_TEST_CASE_DEPRECATION = "`results.rerun_test_case` is deprecated; use `results.rerun_scenario` instead."
+_INCLUDE_TEST_CASE_DEPRECATION = 'include=["test_case"] is deprecated; use include=["scenario"] instead.'
+_SET_TEST_CASE_DRAFT_DEPRECATION = "`set_test_case_draft` is deprecated; use `set_scenario_draft` instead."
+
+
+def _normalize_include(
+    include: Optional[List[Literal["scenario", "test_case"]]] | Omit,
+) -> Optional[List[Literal["scenario", "test_case"]]] | Omit:
+    if not isinstance(include, Omit) and include and "test_case" in include:
+        warnings.warn(_INCLUDE_TEST_CASE_DEPRECATION, DeprecationWarning, stacklevel=3)
+        return cast(
+            "List[Literal['scenario', 'test_case']]",
+            ["scenario" if item == "test_case" else item for item in include],
+        )
+    return include
+
 
 __all__ = ["ResultsResource", "AsyncResultsResource"]
 
@@ -59,14 +77,14 @@ class ResultsResource(SyncAPIResource):
         result_id: str,
         *,
         evaluation_id: str,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
+    ) -> ScenarioEvaluation:
         """Retrieve a specific evaluation result by its ID.
 
         Parameters
@@ -75,7 +93,7 @@ class ResultsResource(SyncAPIResource):
             The ID of the result to retrieve.
         evaluation_id : str
             The ID of the evaluation to retrieve the result for.
-        include : Optional[List[Literal["test_case"]]], optional
+        include : Optional[List[Literal["scenario", "test_case"]]], optional
             Related resources to include in response.
 
         Other Parameters
@@ -91,9 +109,10 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The retrieved evaluation result.
         """
+        include = _normalize_include(include)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -109,7 +128,7 @@ class ResultsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform({"include": include}, ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]],
+            cast_to=APIResponseWithIncluded[ScenarioEvaluation, APIResponse[Scenario]],
         )
 
         if include is not omit and include:
@@ -129,7 +148,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
+    ) -> ScenarioEvaluation:
         """Update the failure category of an evaluation result.
 
         Parameters
@@ -154,7 +173,7 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The updated evaluation result.
 
         Raises
@@ -172,12 +191,12 @@ class ResultsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
 
-    def rerun_test_case(
+    def rerun_scenario(
         self,
         result_id: str,
         *,
@@ -188,15 +207,15 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
-        """Rerun a single test case evaluation to get fresh results.
+    ) -> ScenarioEvaluation:
+        """Rerun a single scenario evaluation to get fresh results.
 
         Parameters
         ----------
         result_id : str
-            The ID of the result to rerun the test case for.
+            The ID of the result to rerun the scenario for.
         evaluation_id : str
-            The ID of the evaluation to rerun the test case for.
+            The ID of the evaluation to rerun the scenario for.
 
         Other Parameters
         ----------------
@@ -211,7 +230,7 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The rerun evaluation result.
 
         Raises
@@ -224,14 +243,35 @@ class ResultsResource(SyncAPIResource):
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
         response = self._post(
-            f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case",
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
+
+    def rerun_test_case(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ScenarioEvaluation:
+        """Deprecated alias of `rerun_scenario`."""
+        warnings.warn(_RERUN_TEST_CASE_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return self.rerun_scenario(
+            result_id,
+            evaluation_id=evaluation_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
     def submit_local_output(
         self,
@@ -246,7 +286,7 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
+    ) -> ScenarioEvaluation:
         """Submit a locally-generated agent output for evaluation and scoring.
 
         Parameters
@@ -273,7 +313,7 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The evaluation result with the submitted output.
 
         Raises
@@ -297,7 +337,7 @@ class ResultsResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
@@ -306,14 +346,14 @@ class ResultsResource(SyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCaseEvaluation]:
+    ) -> List[ScenarioEvaluation]:
         """List all results for a given evaluation.
 
         Fetches every page via :meth:`search` (same as an unfiltered search).
@@ -322,7 +362,7 @@ class ResultsResource(SyncAPIResource):
         ----------
         evaluation_id : str
             The ID of the evaluation to list the results for.
-        include : Optional[List[Literal["test_case"]]], optional
+        include : Optional[List[Literal["scenario", "test_case"]]], optional
             Related resources to include in response.
 
         Other Parameters
@@ -338,7 +378,7 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        List[TestCaseEvaluation]
+        List[ScenarioEvaluation]
             A list of evaluation results.
 
         Raises
@@ -346,11 +386,12 @@ class ResultsResource(SyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        include = _normalize_include(include)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
         page_limit = 100
-        all_items: List[TestCaseEvaluation] = []
+        all_items: List[ScenarioEvaluation] = []
         offset = 0
         while True:
             page, meta = self.search(
@@ -381,13 +422,13 @@ class ResultsResource(SyncAPIResource):
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[False] = False,
-    ) -> List[TestCaseEvaluation]: ...
+    ) -> List[ScenarioEvaluation]: ...
 
     @overload
     def search(
@@ -399,13 +440,13 @@ class ResultsResource(SyncAPIResource):
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[True],
-    ) -> Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]: ...
+    ) -> Tuple[List[ScenarioEvaluation], APIPaginatedMetadata]: ...
 
     def search(
         self,
@@ -416,7 +457,7 @@ class ResultsResource(SyncAPIResource):
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -424,7 +465,7 @@ class ResultsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
-    ) -> List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]:
+    ) -> List[ScenarioEvaluation] | Tuple[List[ScenarioEvaluation], APIPaginatedMetadata]:
         """Search evaluation results using filters, sorting, and pagination.
 
         Parameters
@@ -441,7 +482,7 @@ class ResultsResource(SyncAPIResource):
             Maximum number of results to return.
         offset : Optional[int], optional
             Number of results to skip.
-        include : Optional[List[Literal["test_case"]]], optional
+        include : Optional[List[Literal["scenario", "test_case"]]], optional
             Related resources to include in response.
 
         Other Parameters
@@ -457,7 +498,7 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]
+        List[ScenarioEvaluation] | Tuple[List[ScenarioEvaluation], APIPaginatedMetadata]
             The search results, optionally with pagination metadata.
 
         Raises
@@ -465,6 +506,7 @@ class ResultsResource(SyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        include = _normalize_include(include)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -485,7 +527,7 @@ class ResultsResource(SyncAPIResource):
                     ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]],
+            cast_to=APIPaginatedResponse[ScenarioEvaluation, APIResponse[Scenario]],
         )
 
         if include is not omit and include:
@@ -499,6 +541,7 @@ class ResultsResource(SyncAPIResource):
         *,
         evaluation_id: str,
         hidden: bool,
+        set_scenario_draft: Optional[bool] | Omit = omit,
         set_test_case_draft: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -506,8 +549,8 @@ class ResultsResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
-        """Update the visibility of an evaluation result, optionally setting the linked test case to draft.
+    ) -> ScenarioEvaluation:
+        """Update the visibility of an evaluation result, optionally setting the linked scenario to draft.
 
         Parameters
         ----------
@@ -517,8 +560,10 @@ class ResultsResource(SyncAPIResource):
             The ID of the evaluation to update the visibility for.
         hidden : bool
             Whether the result should be hidden.
+        set_scenario_draft : Optional[bool], optional
+            Whether the scenario should be set to draft.
         set_test_case_draft : Optional[bool], optional
-            Whether the test case should be set to draft.
+            Deprecated alias of `set_scenario_draft`.
 
         Other Parameters
         ----------------
@@ -533,7 +578,7 @@ class ResultsResource(SyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The updated evaluation result.
 
         Raises
@@ -541,6 +586,10 @@ class ResultsResource(SyncAPIResource):
         ValueError
             If `evaluation_id` or `result_id` is empty.
         """
+        if not isinstance(set_test_case_draft, Omit):
+            warnings.warn(_SET_TEST_CASE_DRAFT_DEPRECATION, DeprecationWarning, stacklevel=2)
+            if isinstance(set_scenario_draft, Omit):
+                set_scenario_draft = set_test_case_draft
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
@@ -548,13 +597,13 @@ class ResultsResource(SyncAPIResource):
         response = self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=maybe_transform(
-                {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
+                {"hidden": hidden, "set_scenario_draft": set_scenario_draft},
                 ResultUpdateVisibilityParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
@@ -585,14 +634,14 @@ class AsyncResultsResource(AsyncAPIResource):
         result_id: str,
         *,
         evaluation_id: str,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
+    ) -> ScenarioEvaluation:
         """Retrieve a specific evaluation result by its ID.
 
         Parameters
@@ -601,7 +650,7 @@ class AsyncResultsResource(AsyncAPIResource):
             The ID of the result to retrieve.
         evaluation_id : str
             The ID of the evaluation to retrieve the result for.
-        include : Optional[List[Literal["test_case"]]], optional
+        include : Optional[List[Literal["scenario", "test_case"]]], optional
             Related resources to include in response.
 
         Other Parameters
@@ -617,9 +666,10 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The retrieved evaluation result.
         """
+        include = _normalize_include(include)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -635,7 +685,7 @@ class AsyncResultsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=await async_maybe_transform({"include": include}, ResultRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[TestCaseEvaluation, APIResponse[TestCase]],
+            cast_to=APIResponseWithIncluded[ScenarioEvaluation, APIResponse[Scenario]],
         )
 
         if include is not omit and include:
@@ -655,7 +705,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
+    ) -> ScenarioEvaluation:
         """Update the failure category of an evaluation result.
 
         Parameters
@@ -680,7 +730,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The updated evaluation result.
 
         Raises
@@ -698,12 +748,12 @@ class AsyncResultsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
 
-    async def rerun_test_case(
+    async def rerun_scenario(
         self,
         result_id: str,
         *,
@@ -714,15 +764,15 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
-        """Rerun a single test case evaluation to get fresh results.
+    ) -> ScenarioEvaluation:
+        """Rerun a single scenario evaluation to get fresh results.
 
         Parameters
         ----------
         result_id : str
-            The ID of the result to rerun the test case for.
+            The ID of the result to rerun the scenario for.
         evaluation_id : str
-            The ID of the evaluation to rerun the test case for.
+            The ID of the evaluation to rerun the scenario for.
 
         Other Parameters
         ----------------
@@ -737,7 +787,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The rerun evaluation result.
 
         Raises
@@ -750,14 +800,35 @@ class AsyncResultsResource(AsyncAPIResource):
         if not result_id:
             raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
         response = await self._post(
-            f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case",
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
+
+    async def rerun_test_case(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ScenarioEvaluation:
+        """Deprecated alias of `rerun_scenario`."""
+        warnings.warn(_RERUN_TEST_CASE_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return await self.rerun_scenario(
+            result_id,
+            evaluation_id=evaluation_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
     async def submit_local_output(
         self,
@@ -772,7 +843,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
+    ) -> ScenarioEvaluation:
         """Submit a locally-generated agent output for evaluation and scoring.
 
         Parameters
@@ -799,7 +870,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The evaluation result with the submitted output.
 
         Raises
@@ -823,7 +894,7 @@ class AsyncResultsResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
@@ -832,14 +903,14 @@ class AsyncResultsResource(AsyncAPIResource):
         self,
         evaluation_id: str,
         *,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> List[TestCaseEvaluation]:
+    ) -> List[ScenarioEvaluation]:
         """List all results for a given evaluation.
 
         Fetches every page via :meth:`search` (same as an unfiltered search).
@@ -848,7 +919,7 @@ class AsyncResultsResource(AsyncAPIResource):
         ----------
         evaluation_id : str
             The ID of the evaluation to list the results for.
-        include : Optional[List[Literal["test_case"]]], optional
+        include : Optional[List[Literal["scenario", "test_case"]]], optional
             Related resources to include in response.
 
         Other Parameters
@@ -864,7 +935,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        List[TestCaseEvaluation]
+        List[ScenarioEvaluation]
             A list of evaluation results.
 
         Raises
@@ -872,11 +943,12 @@ class AsyncResultsResource(AsyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        include = _normalize_include(include)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
         page_limit = 100
-        all_items: List[TestCaseEvaluation] = []
+        all_items: List[ScenarioEvaluation] = []
         offset = 0
         while True:
             page, meta = await self.search(
@@ -907,13 +979,13 @@ class AsyncResultsResource(AsyncAPIResource):
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[False] = False,
-    ) -> List[TestCaseEvaluation]: ...
+    ) -> List[ScenarioEvaluation]: ...
 
     @overload
     async def search(
@@ -925,13 +997,13 @@ class AsyncResultsResource(AsyncAPIResource):
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: Literal[True],
-    ) -> Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]: ...
+    ) -> Tuple[List[ScenarioEvaluation], APIPaginatedMetadata]: ...
 
     async def search(
         self,
@@ -942,7 +1014,7 @@ class AsyncResultsResource(AsyncAPIResource):
         filters: Optional[ResultFiltersParam] | Omit = omit,
         limit: Optional[int] | Omit = omit,
         offset: Optional[int] | Omit = omit,
-        include: Optional[List[Literal["test_case"]]] | Omit = omit,
+        include: Optional[List[Literal["scenario", "test_case"]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -950,7 +1022,7 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
         include_metadata: bool = False,
-    ) -> List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]:
+    ) -> List[ScenarioEvaluation] | Tuple[List[ScenarioEvaluation], APIPaginatedMetadata]:
         """Search evaluation results using filters, sorting, and pagination.
 
         Parameters
@@ -967,7 +1039,7 @@ class AsyncResultsResource(AsyncAPIResource):
             Maximum number of results to return.
         offset : Optional[int], optional
             Number of results to skip.
-        include : Optional[List[Literal["test_case"]]], optional
+        include : Optional[List[Literal["scenario", "test_case"]]], optional
             Related resources to include in response.
 
         Other Parameters
@@ -983,7 +1055,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        List[TestCaseEvaluation] | Tuple[List[TestCaseEvaluation], APIPaginatedMetadata]
+        List[ScenarioEvaluation] | Tuple[List[ScenarioEvaluation], APIPaginatedMetadata]
             The search results, optionally with pagination metadata.
 
         Raises
@@ -991,6 +1063,7 @@ class AsyncResultsResource(AsyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        include = _normalize_include(include)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -1013,7 +1086,7 @@ class AsyncResultsResource(AsyncAPIResource):
                     ResultSearchParams,
                 ),
             ),
-            cast_to=APIPaginatedResponse[TestCaseEvaluation, APIResponse[TestCase]],
+            cast_to=APIPaginatedResponse[ScenarioEvaluation, APIResponse[Scenario]],
         )
 
         if include is not omit and include:
@@ -1027,6 +1100,7 @@ class AsyncResultsResource(AsyncAPIResource):
         *,
         evaluation_id: str,
         hidden: bool,
+        set_scenario_draft: Optional[bool] | Omit = omit,
         set_test_case_draft: Optional[bool] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1034,8 +1108,8 @@ class AsyncResultsResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> TestCaseEvaluation:
-        """Update the visibility of an evaluation result, optionally setting the linked test case to draft.
+    ) -> ScenarioEvaluation:
+        """Update the visibility of an evaluation result, optionally setting the linked scenario to draft.
 
         Parameters
         ----------
@@ -1045,8 +1119,10 @@ class AsyncResultsResource(AsyncAPIResource):
             The ID of the evaluation to update the visibility for.
         hidden : bool
             Whether the result should be hidden.
+        set_scenario_draft : Optional[bool], optional
+            Whether the scenario should be set to draft.
         set_test_case_draft : Optional[bool], optional
-            Whether the test case should be set to draft.
+            Deprecated alias of `set_scenario_draft`.
 
         Other Parameters
         ----------------
@@ -1061,7 +1137,7 @@ class AsyncResultsResource(AsyncAPIResource):
 
         Returns
         -------
-        TestCaseEvaluation
+        ScenarioEvaluation
             The updated evaluation result.
 
         Raises
@@ -1069,6 +1145,10 @@ class AsyncResultsResource(AsyncAPIResource):
         ValueError
             If `evaluation_id` or `result_id` is empty.
         """
+        if not isinstance(set_test_case_draft, Omit):
+            warnings.warn(_SET_TEST_CASE_DRAFT_DEPRECATION, DeprecationWarning, stacklevel=2)
+            if isinstance(set_scenario_draft, Omit):
+                set_scenario_draft = set_test_case_draft
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
         if not result_id:
@@ -1076,13 +1156,13 @@ class AsyncResultsResource(AsyncAPIResource):
         response = await self._patch(
             f"/v2/evaluations/{evaluation_id}/results/{result_id}/visibility",
             body=await async_maybe_transform(
-                {"hidden": hidden, "set_test_case_draft": set_test_case_draft},
+                {"hidden": hidden, "set_scenario_draft": set_scenario_draft},
                 ResultUpdateVisibilityParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=APIResponse[TestCaseEvaluation],
+            cast_to=APIResponse[ScenarioEvaluation],
         )
 
         return self._unwrap(response)
@@ -1097,6 +1177,9 @@ class ResultsResourceWithRawResponse:
         )
         self.update = to_raw_response_wrapper(
             results.update,
+        )
+        self.rerun_scenario = to_raw_response_wrapper(
+            results.rerun_scenario,
         )
         self.rerun_test_case = to_raw_response_wrapper(
             results.rerun_test_case,
@@ -1125,6 +1208,9 @@ class AsyncResultsResourceWithRawResponse:
         self.update = async_to_raw_response_wrapper(
             results.update,
         )
+        self.rerun_scenario = async_to_raw_response_wrapper(
+            results.rerun_scenario,
+        )
         self.rerun_test_case = async_to_raw_response_wrapper(
             results.rerun_test_case,
         )
@@ -1152,6 +1238,9 @@ class ResultsResourceWithStreamingResponse:
         self.update = to_streamed_response_wrapper(
             results.update,
         )
+        self.rerun_scenario = to_streamed_response_wrapper(
+            results.rerun_scenario,
+        )
         self.rerun_test_case = to_streamed_response_wrapper(
             results.rerun_test_case,
         )
@@ -1178,6 +1267,9 @@ class AsyncResultsResourceWithStreamingResponse:
         )
         self.update = async_to_streamed_response_wrapper(
             results.update,
+        )
+        self.rerun_scenario = async_to_streamed_response_wrapper(
+            results.rerun_scenario,
         )
         self.rerun_test_case = async_to_streamed_response_wrapper(
             results.rerun_test_case,

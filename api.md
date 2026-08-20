@@ -88,6 +88,7 @@ Types:
 ```python
 from giskard_hub.types import (
     Dataset,
+    Scenario,
     TestCase,
     TaskProgress,
     APIPaginatedMetadata,
@@ -107,8 +108,10 @@ Methods:
 - <code title="post /v2/datasets/generate-preset-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_scenario_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code> (deprecated alias of `generate_preset_based`)
 - <code title="post /v2/datasets/generate-document-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_document_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code>
 - <code title="get /v2/datasets/{dataset_id}/tags">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_tags</a>(dataset_id) -> List[str]</code>
-- <code title="get /v2/datasets/{dataset_id}/test-cases">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_test_cases</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]</code>
-- <code title="post /v2/datasets/{dataset_id}/test-cases/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">search_test_cases</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>] | Tuple[List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
+- <code title="get /v2/datasets/{dataset_id}/scenarios">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_scenarios</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="post /v2/datasets/{dataset_id}/scenarios/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">search_scenarios</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>] | Tuple[List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
+- <code title="get /v2/datasets/{dataset_id}/scenarios">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_test_cases</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]</code> (deprecated alias of `list_scenarios`)
+- <code title="post /v2/datasets/{dataset_id}/scenarios/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">search_test_cases</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>] | Tuple[List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code> (deprecated alias of `search_scenarios`)
 
 # Evaluations
 
@@ -181,23 +184,24 @@ Types:
 from giskard_hub.types.evaluation import (
     FailureCategory,
     TaskState,
-    TestCaseEvaluation,
+    ScenarioEvaluation,
 )
 from giskard_hub.types import (
-    TestCase,
+    Scenario,
     APIPaginatedMetadata,
 )
 ```
 
 Methods:
 
-- <code title="get /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">retrieve</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code>
-- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code>
-- <code title="get /v2/evaluations/{evaluation_id}/results">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">list</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a>]</code>
-- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-test-case">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_test_case</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code>
-- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">submit_local_output</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code>
-- <code title="post /v2/evaluations/{evaluation_id}/results/search">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">search</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a>] | Tuple[List[<a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
-- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}/visibility">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update_visibility</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code>
+- <code title="get /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">retrieve</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
+- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
+- <code title="get /v2/evaluations/{evaluation_id}/results">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">list</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a>]</code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_scenario</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_test_case</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code> (deprecated alias of `rerun_scenario`)
+- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">submit_local_output</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/search">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">search</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a>] | Tuple[List[<a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
+- <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}/visibility">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update_visibility</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
 
 # KnowledgeBases
 
@@ -264,25 +268,25 @@ Methods:
 
 ## Scenarios (deprecated)
 
-`client.projects.scenarios` is a deprecated alias of `client.projects.prompt_presets`. It calls the `/prompt-presets` endpoints and emits a `DeprecationWarning` on every method call. The `Scenario` types are aliases of the `PromptPreset` types.
+`client.projects.scenarios` is a deprecated alias of `client.projects.prompt_presets`. It calls the `/prompt-presets` endpoints and emits a `DeprecationWarning` on every method call. The methods use the `PromptPreset` types (`types.Scenario` now names the dataset item; the preset-type aliases from the first 3.2 betas are removed).
 
 Types:
 
 ```python
 from giskard_hub.types import (
-    Scenario,
-    ScenarioPreview,
+    PromptPreset,
+    PromptPresetPreview,
 )
 ```
 
 Methods:
 
-- <code title="post /v2/projects/{project_id}/prompt-presets">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
-- <code title="get /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">retrieve</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
-- <code title="patch /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">update</a>(scenario_id, \*, project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
-- <code title="get /v2/projects/{project_id}/prompt-presets">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">list</a>(project_id) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="post /v2/projects/{project_id}/prompt-presets">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/prompt_preset.py">params</a>) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a></code>
+- <code title="get /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">retrieve</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a></code>
+- <code title="patch /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">update</a>(scenario_id, \*, project_id, \*\*<a href="src/giskard_hub/types/prompt_preset.py">params</a>) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a></code>
+- <code title="get /v2/projects/{project_id}/prompt-presets">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">list</a>(project_id) -> List[<a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a>]</code>
 - <code title="delete /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">delete</a>(scenario_id, \*, project_id) -> None</code>
-- <code title="post /v2/projects/{project_id}/prompt-presets/preview">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">ScenarioPreview</a></code>
+- <code title="post /v2/projects/{project_id}/prompt-presets/preview">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/prompt_preset.py">params</a>) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPresetPreview</a></code>
 
 # Scans
 
@@ -369,7 +373,34 @@ Methods:
 - <code title="delete /v2/scheduled-evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/scheduled_evaluation.py">params</a>) -> None</code>
 - <code title="get /v2/scheduled-evaluations/{scheduled_evaluation_id}/evaluations">client.scheduled_evaluations.<a href="./src/giskard_hub/resources/scheduled_evaluations.py">list_evaluations</a>(scheduled_evaluation_id, \*\*<a href="src/giskard_hub/types/scheduled_evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]</code>
 
-# TestCases
+# Scenarios
+
+Types:
+
+```python
+from giskard_hub.types import (
+    Scenario,
+    ScenarioComment,
+    ScenarioCheckConfigParam,
+)
+```
+
+Methods:
+
+- <code title="post /v2/scenarios">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">create</a>(\*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
+- <code title="get /v2/scenarios/{scenario_id}">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">retrieve</a>(scenario_id) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
+- <code title="patch /v2/scenarios/{scenario_id}">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">update</a>(scenario_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
+- <code title="delete /v2/scenarios/{scenario_id}">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">delete</a>(scenario_id) -> None</code>
+- <code title="delete /v2/scenarios">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> None</code>
+- <code title="patch /v2/scenarios">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">bulk_update</a>(\*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="post /v2/scenarios/bulk-move">client.scenarios.<a href="./src/giskard_hub/resources/scenarios/scenarios.py">bulk_move</a>(\*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> None</code>
+- <code title="delete /v2/scenarios/{scenario_id}/comments/{comment_id}">client.scenarios.comments.<a href="./src/giskard_hub/resources/scenarios/comments.py">delete</a>(comment_id, \*, scenario_id) -> None</code>
+- <code title="post /v2/scenarios/{scenario_id}/comments">client.scenarios.comments.<a href="./src/giskard_hub/resources/scenarios/comments.py">add</a>(scenario_id, \*\*params) -> <a href="./src/giskard_hub/types/scenario.py">ScenarioComment</a></code>
+- <code title="patch /v2/scenarios/{scenario_id}/comments/{comment_id}">client.scenarios.comments.<a href="./src/giskard_hub/resources/scenarios/comments.py">edit</a>(comment_id, \*, scenario_id, \*\*params) -> <a href="./src/giskard_hub/types/scenario.py">ScenarioComment</a></code>
+
+# TestCases (deprecated)
+
+`client.test_cases` is a deprecated alias of `client.scenarios`. It calls the `/v2/scenarios` endpoints (mapping `test_case_ids` to `scenario_ids`) and emits a `DeprecationWarning` on every method call. The `TestCase` types are aliases of the `Scenario` types.
 
 Types:
 
@@ -384,13 +415,13 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/test-cases">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">create</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCase</a></code>
-- <code title="get /v2/test-cases/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">retrieve</a>(test_case_id) -> <a href="./src/giskard_hub/types/test_case.py">TestCase</a></code>
-- <code title="patch /v2/test-cases/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">update</a>(test_case_id, \*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCase</a></code>
-- <code title="delete /v2/test-cases/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">delete</a>(test_case_id) -> None</code>
-- <code title="delete /v2/test-cases">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> None</code>
-- <code title="patch /v2/test-cases">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_update</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]</code>
-- <code title="post /v2/test-cases/bulk-move">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_move</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> None</code>
+- <code title="post /v2/scenarios">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">create</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCase</a></code>
+- <code title="get /v2/scenarios/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">retrieve</a>(test_case_id) -> <a href="./src/giskard_hub/types/test_case.py">TestCase</a></code>
+- <code title="patch /v2/scenarios/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">update</a>(test_case_id, \*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCase</a></code>
+- <code title="delete /v2/scenarios/{test_case_id}">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">delete</a>(test_case_id) -> None</code>
+- <code title="delete /v2/scenarios">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> None</code>
+- <code title="patch /v2/scenarios">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_update</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]</code>
+- <code title="post /v2/scenarios/bulk-move">client.test_cases.<a href="./src/giskard_hub/resources/test_cases/test_cases.py">bulk_move</a>(\*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> None</code>
 
 ## Comments
 
@@ -404,9 +435,9 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="delete /v2/test-cases/{test_case_id}/comments/{comment_id}">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">delete</a>(comment_id, \*, test_case_id) -> None</code>
-- <code title="post /v2/test-cases/{test_case_id}/comments">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">add</a>(test_case_id, \*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCaseComment</a></code>
-- <code title="patch /v2/test-cases/{test_case_id}/comments/{comment_id}">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">edit</a>(comment_id, \*, test_case_id, \*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCaseComment</a></code>
+- <code title="delete /v2/scenarios/{test_case_id}/comments/{comment_id}">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">delete</a>(comment_id, \*, test_case_id) -> None</code>
+- <code title="post /v2/scenarios/{test_case_id}/comments">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">add</a>(test_case_id, \*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCaseComment</a></code>
+- <code title="patch /v2/scenarios/{test_case_id}/comments/{comment_id}">client.test_cases.comments.<a href="./src/giskard_hub/resources/test_cases/comments.py">edit</a>(comment_id, \*, test_case_id, \*\*<a href="src/giskard_hub/types/test_case.py">params</a>) -> <a href="./src/giskard_hub/types/test_case.py">TestCaseComment</a></code>
 
 # Tasks
 

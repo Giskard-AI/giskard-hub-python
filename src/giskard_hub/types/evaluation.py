@@ -11,7 +11,7 @@ from typing import (
     TypedDict,
 )
 from datetime import datetime  # noqa: I001
-from typing_extensions import Required
+from typing_extensions import Required, deprecated
 
 from .agent import AgentOutput, AgentInterface, AgentOutputParam, MinimalAgentParam
 from .check import CheckResult, FlatCheckSpecParam, InteractionResultData
@@ -19,7 +19,7 @@ from .common import JsonValue, TaskState, OrderByParam, TaskProgress, FilterValu
 from .._types import SequenceNotStr
 from .dataset import Dataset, DatasetSubset, DatasetReference, DatasetSubsetParam
 from .._models import BaseModel
-from .test_case import TestCase, TestCaseReference
+from .scenario import Scenario, ScenarioReference
 
 __all__ = [
     "Metric",
@@ -35,7 +35,9 @@ __all__ = [
     "EvaluationBulkDeleteParams",
     "FailureCategory",
     "FailureCategoryParam",
+    "ScenarioEvaluation",
     "TestCaseEvaluation",
+    "ScenarioEvaluationReference",
     "TestCaseEvaluationReference",
     "ResultListParams",
     "ResultRetrieveParams",
@@ -109,7 +111,7 @@ class FailureCategoryParam(TypedDict, total=False):
 
 
 # ---------------------------------------------------------------------------
-# Test case evaluation
+# Scenario evaluation
 # ---------------------------------------------------------------------------
 
 
@@ -125,12 +127,14 @@ class DivergenceWarning(BaseModel):
     actual: str
 
 
-class TestCaseEvaluationReference(BaseModel):
+class ScenarioEvaluationReference(BaseModel):
     id: str
 
 
-class TestCaseEvaluation(BaseModel):
-    __test__ = False
+TestCaseEvaluationReference = ScenarioEvaluationReference
+
+
+class ScenarioEvaluation(BaseModel):
     id: str
     created_at: datetime
     updated_at: datetime
@@ -140,10 +144,26 @@ class TestCaseEvaluation(BaseModel):
     output: Optional[Union[AgentOutput, JsonValue]] = None
     results: List[CheckResult]
     state: TaskState
-    test_case: TestCaseReference | TestCase
+    scenario: ScenarioReference | Scenario
     hidden: bool
-    test_case_exists: Optional[bool] = None
+    scenario_exists: Optional[bool] = None
     interaction_results: Optional[List[InteractionResultData]] = None
+
+    @property
+    @deprecated("`.test_case` is deprecated; read `.scenario` instead.")
+    def test_case(self) -> ScenarioReference | Scenario:
+        """Deprecated alias for `scenario`."""
+        return self.scenario
+
+    @property
+    @deprecated("`.test_case_exists` is deprecated; read `.scenario_exists` instead.")
+    def test_case_exists(self) -> Optional[bool]:
+        """Deprecated alias for `scenario_exists`."""
+        return self.scenario_exists
+
+
+class TestCaseEvaluation(ScenarioEvaluation):
+    __test__ = False
 
 
 # ---------------------------------------------------------------------------
@@ -211,11 +231,11 @@ ResultFiltersParam = Dict[ResultFilterColumn, FilterValueParam]
 
 
 class ResultListParams(TypedDict, total=False):
-    include: Optional[List[Literal["test_case"]]]
+    include: Optional[List[Literal["scenario", "test_case"]]]
 
 
 class ResultRetrieveParams(TypedDict, total=False):
-    include: Optional[List[Literal["test_case"]]]
+    include: Optional[List[Literal["scenario", "test_case"]]]
 
 
 class ResultSearchParams(TypedDict, total=False):
@@ -224,7 +244,7 @@ class ResultSearchParams(TypedDict, total=False):
     filters: Optional[ResultFiltersParam]
     limit: int
     offset: int
-    include: Optional[List[Literal["test_case"]]]
+    include: Optional[List[Literal["scenario", "test_case"]]]
 
 
 class ResultUpdateParams(TypedDict, total=False):
@@ -233,7 +253,7 @@ class ResultUpdateParams(TypedDict, total=False):
 
 class ResultUpdateVisibilityParams(TypedDict, total=False):
     hidden: Required[bool]
-    set_test_case_draft: Optional[bool]
+    set_scenario_draft: Optional[bool]
 
 
 class ResultSubmitLocalOutputParams(TypedDict, total=False):

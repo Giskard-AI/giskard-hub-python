@@ -1,7 +1,8 @@
 """Translate legacy `messages`/`demo_output`/`checks` args into the new
 `interactions` shape.
 
-Used by :class:`giskard_hub.resources.test_cases.TestCasesResource` to keep
+Used by :class:`giskard_hub.resources.scenarios.ScenariosResource` (and the
+deprecated TestCasesResource) to keep
 pre-v3 documented snippets working unchanged.
 """
 

@@ -8,8 +8,8 @@ from .scan import ScanProbeAttemptReference
 from .user import User
 from .._types import SequenceNotStr
 from .._models import BaseModel
-from .test_case import TestCaseReference
-from .evaluation import TestCaseEvaluationReference
+from .scenario import ScenarioReference
+from .evaluation import ScenarioEvaluationReference
 
 __all__ = [
     "Task",
@@ -43,7 +43,7 @@ class Task(BaseModel):
     description: str
     created_by: User
     assignees: List[User]
-    references: List[Union[TestCaseEvaluationReference, ScanProbeAttemptReference, TestCaseReference]]
+    references: List[Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference]]
     created_at: datetime
     updated_at: datetime
 
@@ -64,7 +64,7 @@ class TaskCreateParams(TypedDict, total=False):
     description: Required[str]
     assignee_ids: SequenceNotStr[str]
     evaluation_result_id: Optional[str]
-    dataset_test_case_id: Optional[str]
+    dataset_scenario_id: Optional[str]
     probe_attempt_id: Optional[str]
     disable_test: bool
     hide_result: bool
@@ -75,7 +75,7 @@ class TaskUpdateParams(TypedDict, total=False):
     description: Optional[str]
     priority: Optional[TaskPriority]
     status: Optional[TaskStatus]
-    set_test_case_status: Optional[str]
+    set_scenario_status: Optional[str]
 
 
 class TaskBulkDeleteParams(TypedDict, total=False):

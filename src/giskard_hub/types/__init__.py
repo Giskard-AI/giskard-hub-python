@@ -12,12 +12,12 @@ Types are organized by domain into consolidated modules:
 - task: Task, TaskStatus, TaskPriority, references and params
 - dataset: Dataset, DatasetSubset and params
 - knowledge_base: KnowledgeBase, document types and params
-- evaluation: Evaluation, Metric, TestCaseEvaluation, result params
+- evaluation: Evaluation, Metric, ScenarioEvaluation, result params
 - scan: Scan, ScanCategory, ScanProbe types and params
 - prompt_preset: PromptPreset, PromptPresetPreview and params
-- scenario: deprecated aliases of the prompt preset types
+- scenario: Scenario (dataset item), comments, params
+- test_case: deprecated aliases of the scenario types
 - scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
-- test_case: TestCase, TestCaseComment, comment params
 - playground_chat: PlaygroundChat and params
 - project: Project and params
 """
@@ -157,6 +157,7 @@ from .check import (
     SemanticSimilarityParamsParam as SemanticSimilarityParamsParam,
     StringMatchingParams as StringMatchingParams,
     StringMatchingParamsParam as StringMatchingParamsParam,
+    ScenarioCheckConfigParam as ScenarioCheckConfigParam,
     TestCaseCheckConfigParam as TestCaseCheckConfigParam,
 )
 
@@ -193,7 +194,10 @@ from .dataset import (
     DatasetImportParams as DatasetImportParams,
     DatasetListParams as DatasetListParams,
     DatasetReference as DatasetReference,
+    DatasetSearchScenariosParams as DatasetSearchScenariosParams,
     DatasetSearchTestCasesParams as DatasetSearchTestCasesParams,
+    ScenarioFiltersParam as ScenarioFiltersParam,
+    ScenarioOrderByParam as ScenarioOrderByParam,
     DatasetSubset as DatasetSubset,
     DatasetSubsetParam as DatasetSubsetParam,
     DatasetUpdateParams as DatasetUpdateParams,
@@ -241,7 +245,9 @@ from .evaluation import (
     ResultSubmitLocalOutputParams as ResultSubmitLocalOutputParams,
     ResultUpdateParams as ResultUpdateParams,
     ResultUpdateVisibilityParams as ResultUpdateVisibilityParams,
+    ScenarioEvaluation as ScenarioEvaluation,
     TestCaseEvaluation as TestCaseEvaluation,
+    ScenarioEvaluationReference as ScenarioEvaluationReference,
     TestCaseEvaluationReference as TestCaseEvaluationReference,
 )
 
@@ -273,10 +279,17 @@ from .prompt_preset import (
 
 # -- scenario --------------------------------------------------------------
 from .scenario import (
+    BulkMoveScenariosParams as BulkMoveScenariosParams,
     Scenario as Scenario,
+    ScenarioBulkDeleteParams as ScenarioBulkDeleteParams,
+    ScenarioBulkUpdateParams as ScenarioBulkUpdateParams,
+    ScenarioComment as ScenarioComment,
+    ScenarioCommentAddParams as ScenarioCommentAddParams,
+    ScenarioCommentEditParams as ScenarioCommentEditParams,
     ScenarioCreateParams as ScenarioCreateParams,
-    ScenarioPreview as ScenarioPreview,
-    ScenarioPreviewParams as ScenarioPreviewParams,
+    ScenarioReference as ScenarioReference,
+    ScenarioSchemaValidation as ScenarioSchemaValidation,
+    ScenarioStatus as ScenarioStatus,
     ScenarioUpdateParams as ScenarioUpdateParams,
 )
 
@@ -443,6 +456,7 @@ __all__ = [
     "ContextAnnotation",
     "CheckConfig",
     "CheckConfigParam",
+    "ScenarioCheckConfigParam",
     "TestCaseCheckConfigParam",
     "CheckListParams",
     "CheckCreateParams",
@@ -474,7 +488,10 @@ __all__ = [
     "DatasetImportParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
+    "DatasetSearchScenariosParams",
     "DatasetSearchTestCasesParams",
+    "ScenarioFiltersParam",
+    "ScenarioOrderByParam",
     "TestCaseOrderByParam",
     "TestCaseFiltersParam",
     "DatasetGenerateAdversarialParams",
@@ -508,7 +525,9 @@ __all__ = [
     "EvaluationBulkDeleteParams",
     "FailureCategory",
     "FailureCategoryParam",
+    "ScenarioEvaluation",
     "TestCaseEvaluation",
+    "ScenarioEvaluationReference",
     "TestCaseEvaluationReference",
     "ResultListParams",
     "ResultSearchParams",
@@ -540,10 +559,17 @@ __all__ = [
     "PromptPresetPreviewParams",
     # scenario
     "Scenario",
-    "ScenarioPreview",
+    "ScenarioReference",
+    "ScenarioComment",
+    "ScenarioSchemaValidation",
+    "ScenarioStatus",
+    "BulkMoveScenariosParams",
     "ScenarioCreateParams",
     "ScenarioUpdateParams",
-    "ScenarioPreviewParams",
+    "ScenarioBulkDeleteParams",
+    "ScenarioBulkUpdateParams",
+    "ScenarioCommentAddParams",
+    "ScenarioCommentEditParams",
     # scheduled evaluation
     "FrequencyOption",
     "ScheduledEvaluation",

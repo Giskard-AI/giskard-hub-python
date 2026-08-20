@@ -36,7 +36,7 @@ class TestTasks:
             status="open",
             assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
             evaluation_result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             disable_test=True,
             hide_result=False,
@@ -133,7 +133,7 @@ class TestTasks:
             description="description",
             priority="high",
             assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-            set_test_case_status="passed",
+            set_scenario_status="passed",
         )
         assert_matches_type(Task, task, path=["response"])
 
@@ -317,7 +317,7 @@ class TestAsyncTasks:
             status="open",
             assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
             evaluation_result_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_test_case_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_scenario_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             disable_test=True,
             hide_result=False,
@@ -414,7 +414,7 @@ class TestAsyncTasks:
             description="description",
             priority="high",
             assignee_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
-            set_test_case_status="passed",
+            set_scenario_status="passed",
         )
         assert_matches_type(Task, task, path=["response"])
 
