@@ -414,10 +414,10 @@ def _make_scenario(messages: list[ChatMessage]) -> Scenario:
         position=0,
         input={"messages": [m.to_dict() for m in messages]},
     )
-    return Scenario.model_construct(id="tc-1", interactions=[interaction])  # type: ignore[arg-type]
+    return Scenario.model_construct(id="scenario-1", interactions=[interaction])  # type: ignore[arg-type]
 
 
-def _make_multi_interaction_scenario(n: int, scenario_id: str = "tc-multi") -> Scenario:
+def _make_multi_interaction_scenario(n: int, scenario_id: str = "scenario-multi") -> Scenario:
     from giskard_hub.types.check import Interaction
 
     interactions = [

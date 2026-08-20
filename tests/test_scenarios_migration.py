@@ -59,11 +59,11 @@ class TestScenariosEndpointMigration:
         route = respx_mock.post("/v2/tasks").mock(return_value=httpx.Response(200, json={"data": {}}))
 
         with pytest.deprecated_call(match="dataset_test_case_id"):
-            client.tasks.with_raw_response.create(project_id="p", description="d", dataset_test_case_id="tc")
+            client.tasks.with_raw_response.create(project_id="p", description="d", dataset_test_case_id="sc-1")
 
         assert route.called
         body = json.loads(route.calls.last.request.content)
-        assert body["dataset_scenario_id"] == "tc"
+        assert body["dataset_scenario_id"] == "sc-1"
         assert "dataset_test_case_id" not in body
 
     @pytest.mark.respx(base_url=base_url)

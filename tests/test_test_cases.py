@@ -184,16 +184,16 @@ def test_test_case_messages_synthesizes_from_first_interaction() -> None:
             ]
         },
     )
-    tc = TestCase.model_construct(id="tc-1", interactions=[interaction])  # type: ignore[arg-type]
+    test_case = TestCase.model_construct(id="test_case-1", interactions=[interaction])  # type: ignore[arg-type]
     with pytest.deprecated_call():
-        msgs = tc.messages
+        msgs = test_case.messages
     assert [(m.role, m.content) for m in msgs] == [("user", "hi"), ("assistant", "hello")]
 
 
 def test_test_case_messages_returns_empty_when_no_interactions() -> None:
-    tc = TestCase.model_construct(id="tc-1", interactions=[])  # type: ignore[arg-type]
+    test_case = TestCase.model_construct(id="test_case-1", interactions=[])  # type: ignore[arg-type]
     with pytest.deprecated_call():
-        assert tc.messages == []
+        assert test_case.messages == []
 
 
 def test_test_case_messages_returns_empty_when_input_has_no_messages_key() -> None:
@@ -201,6 +201,6 @@ def test_test_case_messages_returns_empty_when_input_has_no_messages_key() -> No
         position=0,
         input={"some_other_shape": "x"},
     )
-    tc = TestCase.model_construct(id="tc-1", interactions=[interaction])  # type: ignore[arg-type]
+    test_case = TestCase.model_construct(id="test_case-1", interactions=[interaction])  # type: ignore[arg-type]
     with pytest.deprecated_call():
-        assert tc.messages == []
+        assert test_case.messages == []

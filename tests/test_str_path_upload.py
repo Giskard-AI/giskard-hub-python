@@ -79,7 +79,7 @@ def test_upload_list_defaults_interaction_positions() -> None:
 
 
 def test_upload_file_defaults_interaction_positions(tmp_path: Path) -> None:
-    json_file = tmp_path / "tc.json"
+    json_file = tmp_path / "scenario.json"
     json_file.write_text(json.dumps([{"interactions": [{"input": {"a": 1}}, {"input": {"b": 2}}]}]))
     result = _prepare_upload_data(json_file)
     assert isinstance(result, tuple)  # re-encoded, not passed through
