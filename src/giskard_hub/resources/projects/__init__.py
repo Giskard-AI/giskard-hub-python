@@ -14,6 +14,14 @@ from .scenarios import (
     ScenariosResourceWithStreamingResponse,
     AsyncScenariosResourceWithStreamingResponse,
 )
+from .prompt_presets import (
+    PromptPresetsResource,
+    AsyncPromptPresetsResource,
+    PromptPresetsResourceWithRawResponse,
+    AsyncPromptPresetsResourceWithRawResponse,
+    PromptPresetsResourceWithStreamingResponse,
+    AsyncPromptPresetsResourceWithStreamingResponse,
+)
 
 __all__ = [
     "ProjectsResource",
@@ -22,6 +30,12 @@ __all__ = [
     "AsyncProjectsResourceWithRawResponse",
     "ProjectsResourceWithStreamingResponse",
     "AsyncProjectsResourceWithStreamingResponse",
+    "PromptPresetsResource",
+    "AsyncPromptPresetsResource",
+    "PromptPresetsResourceWithRawResponse",
+    "AsyncPromptPresetsResourceWithRawResponse",
+    "PromptPresetsResourceWithStreamingResponse",
+    "AsyncPromptPresetsResourceWithStreamingResponse",
     "ScenariosResource",
     "AsyncScenariosResource",
     "ScenariosResourceWithRawResponse",

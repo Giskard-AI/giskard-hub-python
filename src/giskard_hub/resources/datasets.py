@@ -32,8 +32,8 @@ from ..types.dataset import (
     DatasetImportParams,
     DatasetUpdateParams,
     DatasetBulkDeleteParams,
+    DatasetGeneratePresetBasedParams,
     DatasetGenerateDocumentBasedParams,
-    DatasetGenerateScenarioBasedParams,
 )
 from ..types.test_case import TestCase
 from ._interaction_helpers import (
@@ -50,6 +50,10 @@ _LEGACY_UPLOAD_DEPRECATION = (
     "Passing legacy `messages` / `checks` / `demo_output` items to "
     "`datasets.upload` is deprecated. Use the new "
     "`{interactions: [{position, input, output, checks}]}` shape."
+)
+
+_GENERATE_SCENARIO_BASED_DEPRECATION = (
+    "`datasets.generate_scenario_based` is deprecated; use `datasets.generate_preset_based` instead."
 )
 
 
@@ -584,12 +588,12 @@ class DatasetsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
-    def generate_scenario_based(
+    def generate_preset_based(
         self,
         *,
         project_id: str,
         agent_id: str,
-        scenario_id: str,
+        prompt_preset_id: str,
         n_examples: int | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         dataset_name: Optional[str] | Omit = omit,
@@ -600,7 +604,7 @@ class DatasetsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """Generate a dataset of test cases from scenario definitions.
+        """Generate a dataset of scenarios from a prompt preset.
 
         Parameters
         ----------
@@ -608,10 +612,10 @@ class DatasetsResource(SyncAPIResource):
             The ID of the project.
         agent_id : str
             The ID of the agent to use for generation.
-        scenario_id : str
-            The ID of the scenario to use.
+        prompt_preset_id : str
+            The ID of the prompt preset to use.
         n_examples : int
-            Total number of examples to generate.
+            Total number of scenarios to generate.
         dataset_id : Optional[str]
             The ID of the dataset to use (required when dataset_name is not provided).
         dataset_name : Optional[str]
@@ -643,17 +647,17 @@ class DatasetsResource(SyncAPIResource):
             raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
 
         response = self._post(
-            "/v2/datasets/generate-scenario-based",
+            "/v2/datasets/generate-preset-based",
             body=maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "scenario_id": scenario_id,
+                    "prompt_preset_id": prompt_preset_id,
                     "dataset_name": dataset_name,
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
                 },
-                DatasetGenerateScenarioBasedParams,
+                DatasetGeneratePresetBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -662,6 +666,75 @@ class DatasetsResource(SyncAPIResource):
         )
 
         return self._unwrap(response)
+
+    def generate_scenario_based(
+        self,
+        *,
+        project_id: str,
+        agent_id: str,
+        scenario_id: str,
+        n_examples: int | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        dataset_name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Dataset:
+        """Deprecated alias of `generate_preset_based`.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str
+            The ID of the agent to use for generation.
+        scenario_id : str
+            The ID of the prompt preset to use.
+        n_examples : int
+            Total number of examples to generate.
+        dataset_id : Optional[str]
+            The ID of the dataset to use (required when dataset_name is not provided).
+        dataset_name : Optional[str]
+            Name for the generated dataset.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Dataset
+            The generated dataset.
+
+        Raises
+        ------
+        ValueError
+            If neither `dataset_id` nor `dataset_name` is provided.
+        """
+
+        warnings.warn(_GENERATE_SCENARIO_BASED_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return self.generate_preset_based(
+            project_id=project_id,
+            agent_id=agent_id,
+            prompt_preset_id=scenario_id,
+            n_examples=n_examples,
+            dataset_id=dataset_id,
+            dataset_name=dataset_name,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
     def generate_document_based(
         self,
@@ -1412,12 +1485,12 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def generate_scenario_based(
+    async def generate_preset_based(
         self,
         *,
         project_id: str,
         agent_id: str,
-        scenario_id: str,
+        prompt_preset_id: str,
         n_examples: int | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         dataset_name: Optional[str] | Omit = omit,
@@ -1428,7 +1501,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Dataset:
-        """Generate a dataset of test cases from scenario definitions.
+        """Generate a dataset of scenarios from a prompt preset.
 
         Parameters
         ----------
@@ -1436,10 +1509,10 @@ class AsyncDatasetsResource(AsyncAPIResource):
             The ID of the project.
         agent_id : str
             The ID of the agent to use for generation.
-        scenario_id : str
-            The ID of the scenario to use.
+        prompt_preset_id : str
+            The ID of the prompt preset to use.
         n_examples : int
-            Total number of examples to generate.
+            Total number of scenarios to generate.
         dataset_id : Optional[str]
             The ID of the dataset to use (required when dataset_name is not provided).
         dataset_name : Optional[str]
@@ -1471,17 +1544,17 @@ class AsyncDatasetsResource(AsyncAPIResource):
             raise ValueError("'dataset_name' is required when 'dataset_id' is not provided")
 
         response = await self._post(
-            "/v2/datasets/generate-scenario-based",
+            "/v2/datasets/generate-preset-based",
             body=await async_maybe_transform(
                 {
                     "agent_id": agent_id,
                     "project_id": project_id,
-                    "scenario_id": scenario_id,
+                    "prompt_preset_id": prompt_preset_id,
                     "dataset_name": dataset_name,
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
                 },
-                DatasetGenerateScenarioBasedParams,
+                DatasetGeneratePresetBasedParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -1490,6 +1563,75 @@ class AsyncDatasetsResource(AsyncAPIResource):
         )
 
         return self._unwrap(response)
+
+    async def generate_scenario_based(
+        self,
+        *,
+        project_id: str,
+        agent_id: str,
+        scenario_id: str,
+        n_examples: int | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        dataset_name: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Dataset:
+        """Deprecated alias of `generate_preset_based`.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project.
+        agent_id : str
+            The ID of the agent to use for generation.
+        scenario_id : str
+            The ID of the prompt preset to use.
+        n_examples : int
+            Total number of examples to generate.
+        dataset_id : Optional[str]
+            The ID of the dataset to use (required when dataset_name is not provided).
+        dataset_name : Optional[str]
+            Name for the generated dataset.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        Dataset
+            The generated dataset.
+
+        Raises
+        ------
+        ValueError
+            If neither `dataset_id` nor `dataset_name` is provided.
+        """
+
+        warnings.warn(_GENERATE_SCENARIO_BASED_DEPRECATION, DeprecationWarning, stacklevel=2)
+        return await self.generate_preset_based(
+            project_id=project_id,
+            agent_id=agent_id,
+            prompt_preset_id=scenario_id,
+            n_examples=n_examples,
+            dataset_id=dataset_id,
+            dataset_name=dataset_name,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
 
     async def generate_document_based(
         self,
@@ -1822,6 +1964,9 @@ class DatasetsResourceWithRawResponse:
         self.bulk_delete = to_raw_response_wrapper(
             datasets.bulk_delete,
         )
+        self.generate_preset_based = to_raw_response_wrapper(
+            datasets.generate_preset_based,
+        )
         self.generate_scenario_based = to_raw_response_wrapper(
             datasets.generate_scenario_based,
         )
@@ -1863,6 +2008,9 @@ class AsyncDatasetsResourceWithRawResponse:
         )
         self.bulk_delete = async_to_raw_response_wrapper(
             datasets.bulk_delete,
+        )
+        self.generate_preset_based = async_to_raw_response_wrapper(
+            datasets.generate_preset_based,
         )
         self.generate_scenario_based = async_to_raw_response_wrapper(
             datasets.generate_scenario_based,
@@ -1906,6 +2054,9 @@ class DatasetsResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             datasets.bulk_delete,
         )
+        self.generate_preset_based = to_streamed_response_wrapper(
+            datasets.generate_preset_based,
+        )
         self.generate_scenario_based = to_streamed_response_wrapper(
             datasets.generate_scenario_based,
         )
@@ -1947,6 +2098,9 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.bulk_delete = async_to_streamed_response_wrapper(
             datasets.bulk_delete,
+        )
+        self.generate_preset_based = async_to_streamed_response_wrapper(
+            datasets.generate_preset_based,
         )
         self.generate_scenario_based = async_to_streamed_response_wrapper(
             datasets.generate_scenario_based,

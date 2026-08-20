@@ -14,7 +14,8 @@ Types are organized by domain into consolidated modules:
 - knowledge_base: KnowledgeBase, document types and params
 - evaluation: Evaluation, Metric, TestCaseEvaluation, result params
 - scan: Scan, ScanCategory, ScanProbe types and params
-- scenario: Scenario, ScenarioPreview and params
+- prompt_preset: PromptPreset, PromptPresetPreview and params
+- scenario: deprecated aliases of the prompt preset types
 - scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
 - test_case: TestCase, TestCaseComment, comment params
 - playground_chat: PlaygroundChat and params
@@ -188,7 +189,7 @@ from .dataset import (
     DatasetCreateParams as DatasetCreateParams,
     DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams,
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
-    DatasetGenerateScenarioBasedParams as DatasetGenerateScenarioBasedParams,
+    DatasetGeneratePresetBasedParams as DatasetGeneratePresetBasedParams,
     DatasetImportParams as DatasetImportParams,
     DatasetListParams as DatasetListParams,
     DatasetReference as DatasetReference,
@@ -259,6 +260,15 @@ from .scan import (
     Scan as Scan,
     ScanRetrieveParams as ScanRetrieveParams,
     Severity as Severity,
+)
+
+# -- prompt_preset ---------------------------------------------------------
+from .prompt_preset import (
+    PromptPreset as PromptPreset,
+    PromptPresetCreateParams as PromptPresetCreateParams,
+    PromptPresetPreview as PromptPresetPreview,
+    PromptPresetPreviewParams as PromptPresetPreviewParams,
+    PromptPresetUpdateParams as PromptPresetUpdateParams,
 )
 
 # -- scenario --------------------------------------------------------------
@@ -469,7 +479,7 @@ __all__ = [
     "TestCaseFiltersParam",
     "DatasetGenerateAdversarialParams",
     "DatasetGenerateDocumentBasedParams",
-    "DatasetGenerateScenarioBasedParams",
+    "DatasetGeneratePresetBasedParams",
     # knowledge base
     "KnowledgeBase",
     "KnowledgeBaseReference",
@@ -522,6 +532,12 @@ __all__ = [
     "ScanProbeAttempt",
     "ScanProbeAttemptReference",
     "ScanProbeAttemptUpdateParams",
+    # prompt preset
+    "PromptPreset",
+    "PromptPresetPreview",
+    "PromptPresetCreateParams",
+    "PromptPresetUpdateParams",
+    "PromptPresetPreviewParams",
     # scenario
     "Scenario",
     "ScenarioPreview",

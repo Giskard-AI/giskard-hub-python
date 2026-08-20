@@ -23,7 +23,7 @@ __all__ = [
     "TestCaseFiltersParam",
     "DatasetGenerateAdversarialParams",
     "DatasetGenerateDocumentBasedParams",
-    "DatasetGenerateScenarioBasedParams",
+    "DatasetGeneratePresetBasedParams",
 ]
 
 
@@ -153,10 +153,9 @@ class DatasetGenerateDocumentBasedParams(TypedDict, total=False):
     topic_ids: SequenceNotStr[str]
 
 
-class DatasetGenerateScenarioBasedParams(TypedDict, total=False):
+class DatasetGeneratePresetBasedParams(TypedDict, total=False):
     agent_id: Required[str]
     project_id: Required[str]
-    scenario_id: Required[str]
+    prompt_preset_id: Required[str]
     dataset_name: Optional[str]
     n_examples: int
-    scenario_config: Optional[Dict[str, Any]]

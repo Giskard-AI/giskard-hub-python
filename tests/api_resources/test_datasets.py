@@ -17,6 +17,8 @@ from giskard_hub.types import (
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
+pytestmark = pytest.mark.filterwarnings("ignore:`datasets.generate_scenario_based` is deprecated:DeprecationWarning")
+
 
 class TestDatasets:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])

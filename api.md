@@ -103,7 +103,8 @@ Methods:
 - <code title="get /v2/datasets">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> List[<a href="./src/giskard_hub/types/dataset.py">Dataset</a>]</code>
 - <code title="delete /v2/datasets/{dataset_id}">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">delete</a>(dataset_id) -> None</code>
 - <code title="delete /v2/datasets">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> None</code>
-- <code title="post /v2/datasets/generate-scenario-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_scenario_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code>
+- <code title="post /v2/datasets/generate-preset-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_preset_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code>
+- <code title="post /v2/datasets/generate-preset-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_scenario_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code> (deprecated alias of `generate_preset_based`)
 - <code title="post /v2/datasets/generate-document-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_document_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code>
 - <code title="get /v2/datasets/{dataset_id}/tags">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_tags</a>(dataset_id) -> List[str]</code>
 - <code title="get /v2/datasets/{dataset_id}/test-cases">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_test_cases</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]</code>
@@ -241,7 +242,29 @@ Methods:
 - <code title="delete /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">delete</a>(project_id) -> None</code>
 - <code title="delete /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/project.py">params</a>) -> None</code>
 
-## Scenarios
+## Prompt Presets
+
+Types:
+
+```python
+from giskard_hub.types import (
+    PromptPreset,
+    PromptPresetPreview,
+)
+```
+
+Methods:
+
+- <code title="post /v2/projects/{project_id}/prompt-presets">client.projects.prompt_presets.<a href="./src/giskard_hub/resources/projects/prompt_presets.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/prompt_preset.py">params</a>) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a></code>
+- <code title="get /v2/projects/{project_id}/prompt-presets/{prompt_preset_id}">client.projects.prompt_presets.<a href="./src/giskard_hub/resources/projects/prompt_presets.py">retrieve</a>(prompt_preset_id, \*, project_id) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a></code>
+- <code title="patch /v2/projects/{project_id}/prompt-presets/{prompt_preset_id}">client.projects.prompt_presets.<a href="./src/giskard_hub/resources/projects/prompt_presets.py">update</a>(prompt_preset_id, \*, project_id, \*\*<a href="src/giskard_hub/types/prompt_preset.py">params</a>) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a></code>
+- <code title="get /v2/projects/{project_id}/prompt-presets">client.projects.prompt_presets.<a href="./src/giskard_hub/resources/projects/prompt_presets.py">list</a>(project_id) -> List[<a href="./src/giskard_hub/types/prompt_preset.py">PromptPreset</a>]</code>
+- <code title="delete /v2/projects/{project_id}/prompt-presets/{prompt_preset_id}">client.projects.prompt_presets.<a href="./src/giskard_hub/resources/projects/prompt_presets.py">delete</a>(prompt_preset_id, \*, project_id) -> None</code>
+- <code title="post /v2/projects/{project_id}/prompt-presets/preview">client.projects.prompt_presets.<a href="./src/giskard_hub/resources/projects/prompt_presets.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/prompt_preset.py">params</a>) -> <a href="./src/giskard_hub/types/prompt_preset.py">PromptPresetPreview</a></code>
+
+## Scenarios (deprecated)
+
+`client.projects.scenarios` is a deprecated alias of `client.projects.prompt_presets`. It calls the `/prompt-presets` endpoints and emits a `DeprecationWarning` on every method call. The `Scenario` types are aliases of the `PromptPreset` types.
 
 Types:
 
@@ -254,12 +277,12 @@ from giskard_hub.types import (
 
 Methods:
 
-- <code title="post /v2/projects/{project_id}/scenarios">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
-- <code title="get /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">retrieve</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
-- <code title="patch /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">update</a>(scenario_id, \*, project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
-- <code title="get /v2/projects/{project_id}/scenarios">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">list</a>(project_id) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
-- <code title="delete /v2/projects/{project_id}/scenarios/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">delete</a>(scenario_id, \*, project_id) -> None</code>
-- <code title="post /v2/projects/{project_id}/scenarios/preview">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">ScenarioPreview</a></code>
+- <code title="post /v2/projects/{project_id}/prompt-presets">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">create</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
+- <code title="get /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">retrieve</a>(scenario_id, \*, project_id) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
+- <code title="patch /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">update</a>(scenario_id, \*, project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">Scenario</a></code>
+- <code title="get /v2/projects/{project_id}/prompt-presets">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">list</a>(project_id) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
+- <code title="delete /v2/projects/{project_id}/prompt-presets/{scenario_id}">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">delete</a>(scenario_id, \*, project_id) -> None</code>
+- <code title="post /v2/projects/{project_id}/prompt-presets/preview">client.projects.scenarios.<a href="./src/giskard_hub/resources/projects/scenarios.py">preview</a>(project_id, \*\*<a href="src/giskard_hub/types/scenario.py">params</a>) -> <a href="./src/giskard_hub/types/scenario.py">ScenarioPreview</a></code>
 
 # Scans
 
