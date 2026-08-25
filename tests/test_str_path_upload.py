@@ -3,6 +3,8 @@ from typing import Tuple, cast
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from giskard_hub import HubClient, AsyncHubClient
 from giskard_hub.resources.datasets import _prepare_upload_data
 
@@ -19,6 +21,7 @@ def test_datasets_upload_converts_str_to_path(tmp_path: Path) -> None:
     with patch.object(client.datasets, "_post", return_value=MagicMock()) as mock_post:
         client.datasets.upload(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="282bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             data=str(json_file),
         )
 
@@ -27,6 +30,35 @@ def test_datasets_upload_converts_str_to_path(tmp_path: Path) -> None:
         assert files[0][0] == "file"
         assert isinstance(files[0][1], Path)
         assert files[0][1] == json_file
+
+
+def test_datasets_upload_creates_dataset_when_id_omitted(tmp_path: Path) -> None:
+    json_file = tmp_path / "test.json"
+    json_file.write_text('[{"col1": "val1"}]')
+
+    client = HubClient(base_url=base_url, api_key=api_key, auto_add_api_suffix=False)
+
+    created = MagicMock()
+    created.id = "382bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"
+    with (
+        patch.object(client.datasets, "create", return_value=created) as mock_create,
+        patch.object(client.datasets, "_post", return_value=MagicMock()) as mock_post,
+    ):
+        client.datasets.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="Imported Suite",
+            data=str(json_file),
+        )
+
+        mock_create.assert_called_once_with(project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", name="Imported Suite")
+        params = mock_post.call_args.kwargs["options"]["params"]
+        assert params["dataset_id"] == created.id
+
+    with pytest.raises(ValueError, match="'name' is required"):
+        client.datasets.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            data=str(json_file),
+        )
 
 
 def test_knowledge_bases_create_converts_str_to_path(tmp_path: Path) -> None:
@@ -57,6 +89,7 @@ async def test_async_datasets_upload_converts_str_to_path(tmp_path: Path) -> Non
         with patch.object(client.datasets, "_post", new_callable=AsyncMock, return_value=MagicMock()) as mock_post:
             await client.datasets.upload(
                 project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                dataset_id="282bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 data=str(json_file),
             )
 
