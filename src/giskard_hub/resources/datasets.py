@@ -283,6 +283,11 @@ class DatasetsResource(SyncAPIResource):
         Dataset
             The uploaded dataset.
         """
+        if isinstance(dataset_id, Omit) or dataset_id is None:
+            if isinstance(name, Omit) or name is None:
+                raise ValueError("'name' is required when 'dataset_id' is not provided")
+            dataset_id = self.create(project_id=project_id, name=name).id
+
         data = _prepare_upload_data(data)
 
         body = deepcopy_minimal(
@@ -1246,6 +1251,11 @@ class AsyncDatasetsResource(AsyncAPIResource):
         Dataset
             The uploaded dataset.
         """
+        if isinstance(dataset_id, Omit) or dataset_id is None:
+            if isinstance(name, Omit) or name is None:
+                raise ValueError("'name' is required when 'dataset_id' is not provided")
+            dataset_id = (await self.create(project_id=project_id, name=name)).id
+
         data = _prepare_upload_data(data)
 
         body = deepcopy_minimal(
