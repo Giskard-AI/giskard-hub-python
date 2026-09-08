@@ -16,6 +16,8 @@ __all__ = [
     "DatasetListParams",
     "DatasetCreateParams",
     "DatasetImportParams",
+    "DatasetImportPreview",
+    "DatasetImportPreviewParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
     "DatasetSearchScenariosParams",
@@ -62,6 +64,8 @@ class DatasetSubset(BaseModel):
     dataset_name: Optional[str] = None
     tags: Optional[List[str]] = None
     target_type: Optional[Literal["dataset"]] = None
+    input_schema: Optional[Dict[str, Any]] = None
+    output_schema: Optional[Dict[str, Any]] = None
 
 
 class DatasetSubsetParam(TypedDict, total=False):
@@ -69,6 +73,8 @@ class DatasetSubsetParam(TypedDict, total=False):
     dataset_name: Optional[str]
     tags: Optional[SequenceNotStr[str]]
     target_type: Literal["dataset"]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 # ---------------------------------------------------------------------------
@@ -93,6 +99,22 @@ class DatasetImportParams(TypedDict, total=False):
     project_id: Required[str]
     dataset_id: Optional[str]
     name: Optional[str]
+
+
+class DatasetImportPreview(BaseModel):
+    row_count: int
+    compatible: bool
+    dataset_type: str
+    import_type: str
+    message: Optional[str] = None
+    errors: List[str]
+    error_count: int
+
+
+class DatasetImportPreviewParams(TypedDict, total=False):
+    file: Required[FileTypes]
+    project_id: Required[str]
+    dataset_id: Required[str]
 
 
 class DatasetUpdateParams(TypedDict, total=False):
@@ -161,6 +183,7 @@ class DatasetGenerateDocumentBasedParams(TypedDict, total=False):
     description: Optional[str]
     n_examples: int
     topic_ids: SequenceNotStr[str]
+    target_path: Optional[str]
 
 
 class DatasetGeneratePresetBasedParams(TypedDict, total=False):

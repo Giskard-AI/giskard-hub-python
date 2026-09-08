@@ -528,6 +528,8 @@ class CheckResult(BaseModel):
     spec: Optional[Dict[str, Any]] = None
     target: Optional[str] = None
     reference_text: Optional[str] = None
+    check_id: Optional[str] = None
+    check_position: Optional[int] = None
 
 
 # ---------------------------------------------------------------------------
@@ -625,6 +627,7 @@ class FlatCheckSpec(BaseModel):
     identifier: Optional[str] = None
     override_spec: Optional[Dict[str, Any]] = None
     target: Optional[str] = None
+    position: Optional[int] = None
 
 
 class FlatCheckSpecParam(TypedDict, total=False):
@@ -632,6 +635,7 @@ class FlatCheckSpecParam(TypedDict, total=False):
     identifier: Optional[str]
     override_spec: Optional[Dict[str, Any]]
     target: Optional[str]
+    position: Optional[int]
 
 
 class InteractionCheckConfig(BaseModel):

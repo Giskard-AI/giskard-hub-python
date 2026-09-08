@@ -82,6 +82,14 @@ from .knowledge_bases import (
     KnowledgeBasesResourceWithStreamingResponse,
     AsyncKnowledgeBasesResourceWithStreamingResponse,
 )
+from .red_team_audits import (
+    RedTeamAuditsResource,
+    AsyncRedTeamAuditsResource,
+    RedTeamAuditsResourceWithRawResponse,
+    AsyncRedTeamAuditsResourceWithRawResponse,
+    RedTeamAuditsResourceWithStreamingResponse,
+    AsyncRedTeamAuditsResourceWithStreamingResponse,
+)
 from .playground_chats import (
     PlaygroundChatsResource,
     AsyncPlaygroundChatsResource,
@@ -106,6 +114,12 @@ __all__ = [
     "AsyncAuditLogsResourceWithRawResponse",
     "AuditLogsResourceWithStreamingResponse",
     "AsyncAuditLogsResourceWithStreamingResponse",
+    "RedTeamAuditsResource",
+    "AsyncRedTeamAuditsResource",
+    "RedTeamAuditsResourceWithRawResponse",
+    "AsyncRedTeamAuditsResourceWithRawResponse",
+    "RedTeamAuditsResourceWithStreamingResponse",
+    "AsyncRedTeamAuditsResourceWithStreamingResponse",
     "ScansResource",
     "AsyncScansResource",
     "ScansResourceWithRawResponse",
