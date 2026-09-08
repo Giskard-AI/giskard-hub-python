@@ -9,7 +9,6 @@ Types are organized by domain into consolidated modules:
 - agent: Agent, AgentOutput, MinimalAgent and params
 - check: Check, spec, annotations and params
 - audit: Audit, AuditDisplay and params
-- red_team_audit: RedTeamAudit, content, logs and params
 - task: Task, TaskStatus, TaskPriority, references and params
 - dataset: Dataset, DatasetSubset and params
 - knowledge_base: KnowledgeBase, document types and params
@@ -173,27 +172,6 @@ from .audit import (
     AuditSearchParams as AuditSearchParams,
 )
 
-# -- red team audit --------------------------------------------------------
-from .red_team_audit import (
-    RedTeamAudit as RedTeamAudit,
-    RedTeamAuditContent as RedTeamAuditContent,
-    RedTeamAuditCreateParams as RedTeamAuditCreateParams,
-    RedTeamAuditDownloadParams as RedTeamAuditDownloadParams,
-    RedTeamAuditDownloadType as RedTeamAuditDownloadType,
-    RedTeamAuditEvaluationUploadStatus as RedTeamAuditEvaluationUploadStatus,
-    RedTeamAuditFinding as RedTeamAuditFinding,
-    RedTeamAuditImportParams as RedTeamAuditImportParams,
-    RedTeamAuditListParams as RedTeamAuditListParams,
-    RedTeamAuditLogChunk as RedTeamAuditLogChunk,
-    RedTeamAuditLogStream as RedTeamAuditLogStream,
-    RedTeamAuditLogs as RedTeamAuditLogs,
-    RedTeamAuditLogsParams as RedTeamAuditLogsParams,
-    RedTeamAuditOverallAssessment as RedTeamAuditOverallAssessment,
-    RedTeamAuditRemediation as RedTeamAuditRemediation,
-    RedTeamAuditScanType as RedTeamAuditScanType,
-    RedTeamAuditStatus as RedTeamAuditStatus,
-)
-
 # -- task ------------------------------------------------------------------
 from .task import (
     Task as Task,
@@ -214,8 +192,6 @@ from .dataset import (
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
     DatasetGeneratePresetBasedParams as DatasetGeneratePresetBasedParams,
     DatasetImportParams as DatasetImportParams,
-    DatasetImportPreview as DatasetImportPreview,
-    DatasetImportPreviewParams as DatasetImportPreviewParams,
     DatasetListParams as DatasetListParams,
     DatasetReference as DatasetReference,
     DatasetSearchScenariosParams as DatasetSearchScenariosParams,
@@ -494,24 +470,6 @@ __all__ = [
     "AuditSearchParams",
     "AuditOrderByParam",
     "AuditFiltersParam",
-    # red team audit
-    "RedTeamAudit",
-    "RedTeamAuditContent",
-    "RedTeamAuditFinding",
-    "RedTeamAuditLogs",
-    "RedTeamAuditLogChunk",
-    "RedTeamAuditLogStream",
-    "RedTeamAuditOverallAssessment",
-    "RedTeamAuditRemediation",
-    "RedTeamAuditStatus",
-    "RedTeamAuditScanType",
-    "RedTeamAuditEvaluationUploadStatus",
-    "RedTeamAuditDownloadType",
-    "RedTeamAuditCreateParams",
-    "RedTeamAuditListParams",
-    "RedTeamAuditImportParams",
-    "RedTeamAuditLogsParams",
-    "RedTeamAuditDownloadParams",
     # task
     "Task",
     "TaskStatus",
@@ -528,8 +486,6 @@ __all__ = [
     "DatasetListParams",
     "DatasetCreateParams",
     "DatasetImportParams",
-    "DatasetImportPreview",
-    "DatasetImportPreviewParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
     "DatasetSearchScenariosParams",

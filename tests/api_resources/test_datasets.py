@@ -13,7 +13,6 @@ from giskard_hub.types import (
     Dataset,
     TestCase,
     APIPaginatedMetadata,
-    DatasetImportPreview,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -122,56 +121,6 @@ class TestDatasets:
 
             dataset = response.parse()
             assert_matches_type(Dataset, dataset, path=["response"])
-
-        assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_preview_import(self, client: HubClient) -> None:
-        dataset = client.datasets.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        )
-        assert_matches_type(DatasetImportPreview, dataset, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_method_preview_import_with_all_params(self, client: HubClient) -> None:
-        dataset = client.datasets.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        )
-        assert_matches_type(DatasetImportPreview, dataset, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_raw_response_preview_import(self, client: HubClient) -> None:
-        response = client.datasets.with_raw_response.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        )
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-        dataset = response.parse()
-        assert_matches_type(DatasetImportPreview, dataset, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    def test_streaming_response_preview_import(self, client: HubClient) -> None:
-        with client.datasets.with_streaming_response.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        ) as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            dataset = response.parse()
-            assert_matches_type(DatasetImportPreview, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -779,56 +728,6 @@ class TestAsyncDatasets:
 
             dataset = await response.parse()
             assert_matches_type(Dataset, dataset, path=["response"])
-
-        assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_preview_import(self, async_client: AsyncHubClient) -> None:
-        dataset = await async_client.datasets.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        )
-        assert_matches_type(DatasetImportPreview, dataset, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_method_preview_import_with_all_params(self, async_client: AsyncHubClient) -> None:
-        dataset = await async_client.datasets.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        )
-        assert_matches_type(DatasetImportPreview, dataset, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_raw_response_preview_import(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.datasets.with_raw_response.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        )
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-        dataset = await response.parse()
-        assert_matches_type(DatasetImportPreview, dataset, path=["response"])
-
-    @pytest.mark.skip(reason="Prism tests are disabled")
-    @parametrize
-    async def test_streaming_response_preview_import(self, async_client: AsyncHubClient) -> None:
-        async with async_client.datasets.with_streaming_response.preview_import(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            data=[{"id": "1", "value": "foo"}],
-        ) as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            dataset = await response.parse()
-            assert_matches_type(DatasetImportPreview, dataset, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

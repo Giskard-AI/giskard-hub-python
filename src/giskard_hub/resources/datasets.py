@@ -31,9 +31,7 @@ from ..types.dataset import (
     DatasetCreateParams,
     DatasetImportParams,
     DatasetUpdateParams,
-    DatasetImportPreview,
     DatasetBulkDeleteParams,
-    DatasetImportPreviewParams,
     DatasetGeneratePresetBasedParams,
     DatasetGenerateDocumentBasedParams,
 )
@@ -321,81 +319,6 @@ class DatasetsResource(SyncAPIResource):
                 ),
             ),
             cast_to=APIResponse[Dataset],
-        )
-
-        return self._unwrap(response)
-
-    def preview_import(
-        self,
-        *,
-        project_id: str,
-        dataset_id: str,
-        data: FileTypes | list[dict[str, Any]] | str,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DatasetImportPreview:
-        """Preview a dataset import without persisting it.
-
-        Parameters
-        ----------
-        project_id : str
-            Project ID the dataset belongs to.
-        dataset_id : str
-            Dataset ID to preview the import against.
-        data : FileTypes | list[dict[str, Any]] | str
-            Data to preview. Accepts a list of dicts, a path to a `.json` /
-            `.jsonl` file, or any binary file-like supported by `FileTypes`.
-            Items in the legacy `messages` / `checks` / `demo_output` shape
-            are translated client-side to the new `interactions` format.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers | None
-            Send extra headers.
-        extra_query : Query | None
-            Add additional query parameters to the request.
-        extra_body : Body | None
-            Add additional JSON properties to the request.
-        timeout : float | httpx.Timeout | None | NotGiven
-            Override the client-level default timeout for this request, in seconds.
-
-        Returns
-        -------
-        DatasetImportPreview
-            Compatibility, row counts, and any import errors.
-        """
-        data = _prepare_upload_data(data)
-
-        body = deepcopy_minimal(
-            {
-                "file": data,
-            }
-        )
-
-        files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
-
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
-
-        response = self._post(
-            "/v2/datasets/import/preview",
-            body=maybe_transform(body, DatasetImportPreviewParams),
-            files=files,
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "project_id": project_id,
-                        "dataset_id": dataset_id,
-                    },
-                    DatasetImportPreviewParams,
-                ),
-            ),
-            cast_to=APIResponse[DatasetImportPreview],
         )
 
         return self._unwrap(response)
@@ -1370,81 +1293,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def preview_import(
-        self,
-        *,
-        project_id: str,
-        dataset_id: str,
-        data: FileTypes | list[dict[str, Any]] | str,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DatasetImportPreview:
-        """Preview a dataset import without persisting it.
-
-        Parameters
-        ----------
-        project_id : str
-            Project ID the dataset belongs to.
-        dataset_id : str
-            Dataset ID to preview the import against.
-        data : FileTypes | list[dict[str, Any]] | str
-            Data to preview. Accepts a list of dicts, a path to a `.json` /
-            `.jsonl` file, or any binary file-like supported by `FileTypes`.
-            Items in the legacy `messages` / `checks` / `demo_output` shape
-            are translated client-side to the new `interactions` format.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers | None
-            Send extra headers.
-        extra_query : Query | None
-            Add additional query parameters to the request.
-        extra_body : Body | None
-            Add additional JSON properties to the request.
-        timeout : float | httpx.Timeout | None | NotGiven
-            Override the client-level default timeout for this request, in seconds.
-
-        Returns
-        -------
-        DatasetImportPreview
-            Compatibility, row counts, and any import errors.
-        """
-        data = _prepare_upload_data(data)
-
-        body = deepcopy_minimal(
-            {
-                "file": data,
-            }
-        )
-
-        files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
-
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
-
-        response = await self._post(
-            "/v2/datasets/import/preview",
-            body=await async_maybe_transform(body, DatasetImportPreviewParams),
-            files=files,
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {
-                        "project_id": project_id,
-                        "dataset_id": dataset_id,
-                    },
-                    DatasetImportPreviewParams,
-                ),
-            ),
-            cast_to=APIResponse[DatasetImportPreview],
-        )
-
-        return self._unwrap(response)
-
     async def retrieve(
         self,
         dataset_id: str,
@@ -2251,9 +2099,6 @@ class DatasetsResourceWithRawResponse:
         self.upload = to_raw_response_wrapper(
             datasets.upload,
         )
-        self.preview_import = to_raw_response_wrapper(
-            datasets.preview_import,
-        )
         self.retrieve = to_raw_response_wrapper(
             datasets.retrieve,
         )
@@ -2304,9 +2149,6 @@ class AsyncDatasetsResourceWithRawResponse:
         )
         self.upload = async_to_raw_response_wrapper(
             datasets.upload,
-        )
-        self.preview_import = async_to_raw_response_wrapper(
-            datasets.preview_import,
         )
         self.retrieve = async_to_raw_response_wrapper(
             datasets.retrieve,
@@ -2359,9 +2201,6 @@ class DatasetsResourceWithStreamingResponse:
         self.upload = to_streamed_response_wrapper(
             datasets.upload,
         )
-        self.preview_import = to_streamed_response_wrapper(
-            datasets.preview_import,
-        )
         self.retrieve = to_streamed_response_wrapper(
             datasets.retrieve,
         )
@@ -2412,9 +2251,6 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.upload = async_to_streamed_response_wrapper(
             datasets.upload,
-        )
-        self.preview_import = async_to_streamed_response_wrapper(
-            datasets.preview_import,
         )
         self.retrieve = async_to_streamed_response_wrapper(
             datasets.retrieve,

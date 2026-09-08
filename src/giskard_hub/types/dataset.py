@@ -16,8 +16,6 @@ __all__ = [
     "DatasetListParams",
     "DatasetCreateParams",
     "DatasetImportParams",
-    "DatasetImportPreview",
-    "DatasetImportPreviewParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
     "DatasetSearchScenariosParams",
@@ -99,22 +97,6 @@ class DatasetImportParams(TypedDict, total=False):
     project_id: Required[str]
     dataset_id: Optional[str]
     name: Optional[str]
-
-
-class DatasetImportPreview(BaseModel):
-    row_count: int
-    compatible: bool
-    dataset_type: str
-    import_type: str
-    message: Optional[str] = None
-    errors: List[str]
-    error_count: int
-
-
-class DatasetImportPreviewParams(TypedDict, total=False):
-    file: Required[FileTypes]
-    project_id: Required[str]
-    dataset_id: Required[str]
 
 
 class DatasetUpdateParams(TypedDict, total=False):
