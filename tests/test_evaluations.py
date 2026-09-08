@@ -1,12 +1,17 @@
 """Tests for `EvaluationsResource` helpers and `run_single` validation (sync + async)."""
 
+import inspect
 from typing import Any
 
 from giskard_hub.resources._check_helpers import (
     flat_check_specs,
     check_params_to_specs,
 )
-from giskard_hub.resources.evaluations.evaluations import _normalize_agent_output
+from giskard_hub.resources.evaluations.evaluations import (
+    EvaluationsResource,
+    AsyncEvaluationsResource,
+    _normalize_agent_output,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -45,3 +50,10 @@ def test_flat_check_specs_passes_identifier_through() -> None:
 def test_flat_check_specs_passes_custom_identifier_through() -> None:
     out = flat_check_specs([{"identifier": "tone_pro", "params": {"reference": "x"}}])
     assert out == [{"identifier": "tone_pro", "override_spec": {"reference": "x"}}]
+
+
+def test_retrieve_and_list_still_accept_include() -> None:
+    assert "include" in inspect.signature(EvaluationsResource.retrieve).parameters
+    assert "include" in inspect.signature(EvaluationsResource.list).parameters
+    assert "include" in inspect.signature(AsyncEvaluationsResource.retrieve).parameters
+    assert "include" in inspect.signature(AsyncEvaluationsResource.list).parameters

@@ -35,6 +35,9 @@ from ...types.evaluation import (
 _RERUN_TEST_CASE_DEPRECATION = "`results.rerun_test_case` is deprecated; use `results.rerun_scenario` instead."
 _INCLUDE_TEST_CASE_DEPRECATION = 'include=["test_case"] is deprecated; use include=["scenario"] instead.'
 _SET_TEST_CASE_DRAFT_DEPRECATION = "`set_test_case_draft` is deprecated; use `set_scenario_draft` instead."
+_CHAT_TEST_CASE_ID_FILTER_DEPRECATION = (
+    "`filters['chat_test_case_id']` is deprecated; use `filters['scenario_id']` instead."
+)
 
 
 def _normalize_include(
@@ -47,6 +50,19 @@ def _normalize_include(
             ["scenario" if item == "test_case" else item for item in include],
         )
     return include
+
+
+def _normalize_result_filters(
+    filters: Optional[ResultFiltersParam] | Omit,
+) -> Optional[ResultFiltersParam] | Omit:
+    if isinstance(filters, Omit) or filters is None or "chat_test_case_id" not in filters:
+        return filters
+    warnings.warn(_CHAT_TEST_CASE_ID_FILTER_DEPRECATION, DeprecationWarning, stacklevel=3)
+    normalized = dict(filters)
+    chat_id = normalized.pop("chat_test_case_id")
+    if normalized.get("scenario_id") is None:
+        normalized["scenario_id"] = chat_id
+    return cast(ResultFiltersParam, normalized)
 
 
 __all__ = ["ResultsResource", "AsyncResultsResource"]
@@ -507,6 +523,7 @@ class ResultsResource(SyncAPIResource):
             If `evaluation_id` is empty.
         """
         include = _normalize_include(include)
+        filters = _normalize_result_filters(filters)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -1064,6 +1081,7 @@ class AsyncResultsResource(AsyncAPIResource):
             If `evaluation_id` is empty.
         """
         include = _normalize_include(include)
+        filters = _normalize_result_filters(filters)
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 

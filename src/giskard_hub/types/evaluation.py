@@ -238,6 +238,7 @@ class ResultFiltersParam(TypedDict, total=False):
     tags: FilterValueParam
     visibility: FilterValueParam
     scenario_id: Optional[str]
+    chat_test_case_id: Optional[str]
 
 
 class ResultListParams(TypedDict, total=False):

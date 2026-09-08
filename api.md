@@ -136,7 +136,7 @@ from giskard_hub.types import (
 Methods:
 
 - <code title="post /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
-- <code title="get /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">retrieve</a>(evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
+- <code title="get /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">retrieve</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
 - <code title="patch /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">update</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
 - <code title="get /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">list</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/evaluation.py">Evaluation</a>]</code>
 - <code title="delete /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">delete</a>(evaluation_id) -> None</code>

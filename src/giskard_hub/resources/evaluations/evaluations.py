@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, List, Mapping, Iterable, Optional, cast
+from typing import Any, List, Literal, Mapping, Iterable, Optional, cast
 
 import httpx
 
@@ -55,6 +55,16 @@ from ...types.evaluation import (
 )
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
+
+_INCLUDE_REMOVED = (
+    "`include` is no longer accepted by `{method}`; the Hub no longer returns "
+    "included agent/dataset payloads. Ignoring it."
+)
+
+
+def _ignore_removed_include(include: object, *, method: str) -> None:
+    if not isinstance(include, Omit):
+        warnings.warn(_INCLUDE_REMOVED.format(method=method), DeprecationWarning, stacklevel=3)
 
 
 def _validate_dataset_or_old_evaluation(
@@ -215,6 +225,9 @@ class EvaluationsResource(SyncAPIResource):
         self,
         evaluation_id: str,
         *,
+        include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -226,6 +239,9 @@ class EvaluationsResource(SyncAPIResource):
         ----------
         evaluation_id : str
             The ID of the evaluation to retrieve.
+        include : list of {"agent", "dataset"}, optional
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -249,6 +265,7 @@ class EvaluationsResource(SyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        _ignore_removed_include(include, method="evaluations.retrieve")
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -328,6 +345,7 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
+        include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -339,6 +357,9 @@ class EvaluationsResource(SyncAPIResource):
         ----------
         project_id : str
             The ID of the project to list evaluations for.
+        include : list of {"agent", "dataset"}, optional
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -357,6 +378,7 @@ class EvaluationsResource(SyncAPIResource):
         list of Evaluation
             The evaluations belonging to the project.
         """
+        _ignore_removed_include(include, method="evaluations.list")
         response = self._get(
             "/v2/evaluations",
             options=make_request_options(
@@ -912,6 +934,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         evaluation_id: str,
         *,
+        include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -923,6 +946,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ----------
         evaluation_id : str
             The ID of the evaluation to retrieve.
+        include : list of {"agent", "dataset"}, optional
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -946,6 +972,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        _ignore_removed_include(include, method="evaluations.retrieve")
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -1025,6 +1052,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
+        include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -1036,6 +1064,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ----------
         project_id : str
             The ID of the project to list evaluations for.
+        include : list of {"agent", "dataset"}, optional
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -1054,6 +1085,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         list of Evaluation
             The evaluations belonging to the project.
         """
+        _ignore_removed_include(include, method="evaluations.list")
         response = await self._get(
             "/v2/evaluations",
             options=make_request_options(

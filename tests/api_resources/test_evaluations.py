@@ -84,6 +84,16 @@ class TestEvaluations:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
+    def test_method_retrieve_with_all_params(self, client: HubClient) -> None:
+        with pytest.deprecated_call():
+            evaluation = client.evaluations.retrieve(
+                evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
     def test_raw_response_retrieve(self, client: HubClient) -> None:
         response = client.evaluations.with_raw_response.retrieve(
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -174,6 +184,16 @@ class TestEvaluations:
         evaluation = client.evaluations.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
+        assert_matches_type(List[Evaluation], evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_list_with_all_params(self, client: HubClient) -> None:
+        with pytest.deprecated_call():
+            evaluation = client.evaluations.list(
+                project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
         assert_matches_type(List[Evaluation], evaluation, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -599,6 +619,16 @@ class TestAsyncEvaluations:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
+    async def test_method_retrieve_with_all_params(self, async_client: AsyncHubClient) -> None:
+        with pytest.deprecated_call():
+            evaluation = await async_client.evaluations.retrieve(
+                evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncHubClient) -> None:
         response = await async_client.evaluations.with_raw_response.retrieve(
             evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -689,6 +719,16 @@ class TestAsyncEvaluations:
         evaluation = await async_client.evaluations.list(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
+        assert_matches_type(List[Evaluation], evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_list_with_all_params(self, async_client: AsyncHubClient) -> None:
+        with pytest.deprecated_call():
+            evaluation = await async_client.evaluations.list(
+                project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
         assert_matches_type(List[Evaluation], evaluation, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
