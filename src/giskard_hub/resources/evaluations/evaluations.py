@@ -5,7 +5,6 @@ from typing import Any, List, Literal, Mapping, Iterable, Optional, cast
 
 import httpx
 
-from ...types import Agent, Dataset
 from .results import (
     ResultsResource,
     AsyncResultsResource,
@@ -26,7 +25,6 @@ from ..._types import (
 )
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
-from .._included import embed_included_list, embed_included_single
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
     to_raw_response_wrapper,
@@ -39,7 +37,7 @@ from ...types.chat import ChatMessageParam
 from ...types.agent import AgentOutputParam, MinimalAgentParam
 from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
-from ...types.common import APIResponse, APIResponseWithIncluded
+from ...types.common import APIResponse
 from ...types.dataset import DatasetSubsetParam
 from .._check_helpers import (
     flat_check_specs,
@@ -51,13 +49,22 @@ from ...types.evaluation import (
     EvaluationCreateParams,
     EvaluationUpdateParams,
     EvaluationUploadParams,
-    EvaluationRetrieveParams,
     EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams,
     EvaluationRunInteractionChecksParams,
 )
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
+
+_INCLUDE_REMOVED = (
+    "`include` is no longer accepted by `{method}`; the Hub no longer returns "
+    "included agent/dataset payloads. Ignoring it."
+)
+
+
+def _ignore_removed_include(include: object, *, method: str) -> None:
+    if not isinstance(include, Omit):
+        warnings.warn(_INCLUDE_REMOVED.format(method=method), DeprecationWarning, stacklevel=3)
 
 
 def _validate_dataset_or_old_evaluation(
@@ -226,14 +233,15 @@ class EvaluationsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """Retrieve an evaluation by its ID, with optional related resource inclusion.
+        """Retrieve an evaluation by its ID.
 
         Parameters
         ----------
         evaluation_id : str
             The ID of the evaluation to retrieve.
         include : list of {"agent", "dataset"}, optional
-            Related resources to include in response.
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -257,6 +265,7 @@ class EvaluationsResource(SyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        _ignore_removed_include(include, method="evaluations.retrieve")
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -267,13 +276,9 @@ class EvaluationsResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform({"include": include}, EvaluationRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]],
+            cast_to=APIResponse[Evaluation],
         )
-
-        if include is not omit and include:
-            response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
 
         return self._unwrap(response)
 
@@ -341,21 +346,20 @@ class EvaluationsResource(SyncAPIResource):
         *,
         project_id: str,
         include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Evaluation]:
-        """List all evaluations for a project, with optional related resource inclusion.
+        """List all evaluations for a project.
 
         Parameters
         ----------
         project_id : str
             The ID of the project to list evaluations for.
         include : list of {"agent", "dataset"}, optional
-            Related resources to include in response.
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -374,6 +378,7 @@ class EvaluationsResource(SyncAPIResource):
         list of Evaluation
             The evaluations belonging to the project.
         """
+        _ignore_removed_include(include, method="evaluations.list")
         response = self._get(
             "/v2/evaluations",
             options=make_request_options(
@@ -384,16 +389,12 @@ class EvaluationsResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "project_id": project_id,
-                        "include": include,
                     },
                     EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
+            cast_to=APIResponse[List[Evaluation]],
         )
-
-        if include is not omit and include:
-            response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
         return self._unwrap(response)
 
@@ -934,21 +935,20 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         evaluation_id: str,
         *,
         include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Evaluation:
-        """Retrieve an evaluation by its ID, with optional related resource inclusion.
+        """Retrieve an evaluation by its ID.
 
         Parameters
         ----------
         evaluation_id : str
             The ID of the evaluation to retrieve.
         include : list of {"agent", "dataset"}, optional
-            Related resources to include in response.
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -972,6 +972,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ValueError
             If `evaluation_id` is empty.
         """
+        _ignore_removed_include(include, method="evaluations.retrieve")
         if not evaluation_id:
             raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
 
@@ -982,13 +983,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform({"include": include}, EvaluationRetrieveParams),
             ),
-            cast_to=APIResponseWithIncluded[Evaluation, APIResponse[Agent | Dataset]],
+            cast_to=APIResponse[Evaluation],
         )
-
-        if include is not omit and include:
-            response = embed_included_single(response, id_getter=lambda evaluation: evaluation.id)
 
         return self._unwrap(response)
 
@@ -1056,21 +1053,20 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         *,
         project_id: str,
         include: Optional[List[Literal["agent", "dataset"]]] | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> List[Evaluation]:
-        """List all evaluations for a project, with optional related resource inclusion.
+        """List all evaluations for a project.
 
         Parameters
         ----------
         project_id : str
             The ID of the project to list evaluations for.
         include : list of {"agent", "dataset"}, optional
-            Related resources to include in response.
+            Deprecated. The Hub no longer returns included related resources;
+            this argument is ignored.
 
         Other Parameters
         ----------------
@@ -1089,6 +1085,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         list of Evaluation
             The evaluations belonging to the project.
         """
+        _ignore_removed_include(include, method="evaluations.list")
         response = await self._get(
             "/v2/evaluations",
             options=make_request_options(
@@ -1099,16 +1096,12 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 query=await async_maybe_transform(
                     {
                         "project_id": project_id,
-                        "include": include,
                     },
                     EvaluationListParams,
                 ),
             ),
-            cast_to=APIResponseWithIncluded[List[Evaluation], APIResponse[Agent | Dataset]],
+            cast_to=APIResponse[List[Evaluation]],
         )
-
-        if include is not omit and include:
-            response = embed_included_list(response, id_getter=lambda evaluation: evaluation.id)
 
         return self._unwrap(response)
 

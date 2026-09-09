@@ -6,6 +6,7 @@ Types:
 from giskard_hub.types import (
     Agent,
     AgentOutput,
+    GenerateCompletionOutput,
     ChatMessage,
     Header,
 )
@@ -19,8 +20,8 @@ Methods:
 - <code title="get /v2/agents">client.agents.<a href="./src/giskard_hub/resources/agents.py">list</a>(\*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> List[<a href="./src/giskard_hub/types/agent.py">Agent</a>]</code>
 - <code title="delete /v2/agents/{agent_id}">client.agents.<a href="./src/giskard_hub/resources/agents.py">delete</a>(agent_id) -> None</code>
 - <code title="delete /v2/agents">client.agents.<a href="./src/giskard_hub/resources/agents.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> None</code>
-- <code title="post /v2/agents/{agent_id}/generate-completion">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_completion</a>(agent_id, \*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">AgentOutput</a></code>
-- <code title="post /v2/agents/test-connection">client.agents.<a href="./src/giskard_hub/resources/agents.py">test_connection</a>(\*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">AgentOutput</a></code>
+- <code title="post /v2/agents/{agent_id}/generate-completion">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_completion</a>(agent_id, \*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> <a href="./src/giskard_hub/types/agent.py">GenerateCompletionOutput</a></code>
+- <code title="post /v2/agents/test-connection">client.agents.<a href="./src/giskard_hub/resources/agents.py">test_connection</a>(\*\*<a href="src/giskard_hub/types/agent.py">params</a>) -> dict</code>
 - <code title="post /v2/agents/{agent_id}/autofill-description">client.agents.<a href="./src/giskard_hub/resources/agents.py">generate_description</a>(agent_id) -> str</code>
 
 # Audit
@@ -141,8 +142,9 @@ Methods:
 - <code title="delete /v2/evaluations/{evaluation_id}">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">delete</a>(evaluation_id) -> None</code>
 - <code title="delete /v2/evaluations">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> None</code>
 - <code title="post /v2/evaluations/create-local">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create_local</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
+- <code title="post /v2/evaluations/upload">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">upload</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
 - <code title="post /v2/evaluations/{evaluation_id}/rerun-errored-results">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">rerun_errored_results</a>(evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
-- <code title="post /v2/evaluations/run-single">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">run_single</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/check.py">CheckResult</a>]</code>
+- <code title="post /v2/evaluations/run-interaction-checks">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">run_single</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/check.py">CheckResult</a>]</code>
 
 ## Helpers
 

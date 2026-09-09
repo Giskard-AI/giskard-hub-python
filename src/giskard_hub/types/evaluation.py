@@ -228,7 +228,17 @@ ResultSortColumn = Literal["failure_category_name", "id", "sample_success", "sta
 ResultFilterColumn = Literal["failure_category_name", "metrics", "sample_success", "status", "tags", "visibility"]
 
 ResultOrderByParam = OrderByParam[ResultSortColumn]
-ResultFiltersParam = Dict[ResultFilterColumn, FilterValueParam]
+
+
+class ResultFiltersParam(TypedDict, total=False):
+    failure_category_name: FilterValueParam
+    metrics: FilterValueParam
+    sample_success: FilterValueParam
+    status: FilterValueParam
+    tags: FilterValueParam
+    visibility: FilterValueParam
+    scenario_id: Optional[str]
+    chat_test_case_id: Optional[str]
 
 
 class ResultListParams(TypedDict, total=False):

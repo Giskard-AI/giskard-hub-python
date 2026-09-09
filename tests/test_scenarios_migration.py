@@ -145,6 +145,49 @@ class TestScenariosEndpointMigration:
         body = json.loads(route.calls.last.request.content)
         assert body["set_scenario_draft"] is True
 
+    @pytest.mark.respx(base_url=base_url)
+    def test_evaluations_retrieve_accepts_deprecated_include(self, respx_mock: MockRouter, client: HubClient) -> None:
+        route = respx_mock.get("/v2/evaluations/e").mock(return_value=httpx.Response(200, json={"data": {}}))
+
+        with pytest.deprecated_call(match="include"):
+            client.evaluations.with_raw_response.retrieve("e", include=["agent"])
+
+        assert route.called
+        assert "include=" not in str(route.calls.last.request.url)
+
+    @pytest.mark.respx(base_url=base_url)
+    def test_evaluations_list_accepts_deprecated_include(self, respx_mock: MockRouter, client: HubClient) -> None:
+        route = respx_mock.get("/v2/evaluations").mock(return_value=httpx.Response(200, json={"data": []}))
+
+        with pytest.deprecated_call(match="include"):
+            client.evaluations.with_raw_response.list(project_id="p", include=["dataset"])
+
+        assert route.called
+        assert "include=" not in str(route.calls.last.request.url)
+
+    @pytest.mark.respx(base_url=base_url)
+    def test_results_search_maps_deprecated_chat_test_case_id(self, respx_mock: MockRouter, client: HubClient) -> None:
+        route = respx_mock.post("/v2/evaluations/e/results/search").mock(
+            return_value=httpx.Response(
+                200,
+                json={
+                    "data": [],
+                    "metadata": {"total": 0, "offset": 0, "count": 0, "limit": 1},
+                },
+            )
+        )
+
+        with pytest.deprecated_call(match="chat_test_case_id"):
+            client.evaluations.results.with_raw_response.search(
+                "e",
+                filters={"chat_test_case_id": "s-1"},
+            )
+
+        assert route.called
+        body = json.loads(route.calls.last.request.content)
+        assert body["filters"]["scenario_id"] == "s-1"
+        assert "chat_test_case_id" not in body["filters"]
+
     def test_deprecated_types_are_plain_aliases(self) -> None:
         from giskard_hub.types import ScenarioComment, TestCaseComment
         from giskard_hub.types.evaluation import ScenarioEvaluation, TestCaseEvaluation

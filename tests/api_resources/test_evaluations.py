@@ -85,10 +85,11 @@ class TestEvaluations:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_retrieve_with_all_params(self, client: HubClient) -> None:
-        evaluation = client.evaluations.retrieve(
-            evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            include=["agent"],
-        )
+        with pytest.deprecated_call():
+            evaluation = client.evaluations.retrieve(
+                evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
         assert_matches_type(Evaluation, evaluation, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -188,10 +189,11 @@ class TestEvaluations:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_list_with_all_params(self, client: HubClient) -> None:
-        evaluation = client.evaluations.list(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            include=["agent"],
-        )
+        with pytest.deprecated_call():
+            evaluation = client.evaluations.list(
+                project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
         assert_matches_type(List[Evaluation], evaluation, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -341,6 +343,55 @@ class TestEvaluations:
         with client.evaluations.with_streaming_response.create_local(
             agent_info={"name": "name"},
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            evaluation = response.parse()
+            assert_matches_type(Evaluation, evaluation, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_upload(self, client: HubClient) -> None:
+        evaluation = client.evaluations.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
+        )
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_upload_with_all_params(self, client: HubClient) -> None:
+        evaluation = client.evaluations.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            auto_classify_failures=True,
+        )
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_upload(self, client: HubClient) -> None:
+        response = client.evaluations.with_raw_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        evaluation = response.parse()
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_upload(self, client: HubClient) -> None:
+        with client.evaluations.with_streaming_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -569,10 +620,11 @@ class TestAsyncEvaluations:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_retrieve_with_all_params(self, async_client: AsyncHubClient) -> None:
-        evaluation = await async_client.evaluations.retrieve(
-            evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            include=["agent"],
-        )
+        with pytest.deprecated_call():
+            evaluation = await async_client.evaluations.retrieve(
+                evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
         assert_matches_type(Evaluation, evaluation, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -672,10 +724,11 @@ class TestAsyncEvaluations:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncHubClient) -> None:
-        evaluation = await async_client.evaluations.list(
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            include=["agent"],
-        )
+        with pytest.deprecated_call():
+            evaluation = await async_client.evaluations.list(
+                project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+                include=["agent"],
+            )
         assert_matches_type(List[Evaluation], evaluation, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -825,6 +878,52 @@ class TestAsyncEvaluations:
         async with async_client.evaluations.with_streaming_response.create_local(
             agent_info={"name": "name"},
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_upload(self, async_client: AsyncHubClient) -> None:
+        evaluation = await async_client.evaluations.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
+        )
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_upload_with_all_params(self, async_client: AsyncHubClient) -> None:
+        evaluation = await async_client.evaluations.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            auto_classify_failures=True,
+        )
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_upload(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.evaluations.with_raw_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        evaluation = await response.parse()
+        assert_matches_type(Evaluation, evaluation, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_upload(self, async_client: AsyncHubClient) -> None:
+        async with async_client.evaluations.with_streaming_response.upload(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            payload={"foo": "bar"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"

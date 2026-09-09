@@ -62,6 +62,8 @@ class DatasetSubset(BaseModel):
     dataset_name: Optional[str] = None
     tags: Optional[List[str]] = None
     target_type: Optional[Literal["dataset"]] = None
+    input_schema: Optional[Dict[str, Any]] = None
+    output_schema: Optional[Dict[str, Any]] = None
 
 
 class DatasetSubsetParam(TypedDict, total=False):
@@ -69,6 +71,8 @@ class DatasetSubsetParam(TypedDict, total=False):
     dataset_name: Optional[str]
     tags: Optional[SequenceNotStr[str]]
     target_type: Literal["dataset"]
+    input_schema: Optional[Dict[str, Any]]
+    output_schema: Optional[Dict[str, Any]]
 
 
 # ---------------------------------------------------------------------------
@@ -161,6 +165,7 @@ class DatasetGenerateDocumentBasedParams(TypedDict, total=False):
     description: Optional[str]
     n_examples: int
     topic_ids: SequenceNotStr[str]
+    target_path: Optional[str]
 
 
 class DatasetGeneratePresetBasedParams(TypedDict, total=False):

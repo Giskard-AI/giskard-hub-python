@@ -421,6 +421,7 @@ class TestDatasets:
             description="description",
             n_examples=0,
             topic_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            target_path="target_path",
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
@@ -1027,6 +1028,7 @@ class TestAsyncDatasets:
             description="description",
             n_examples=0,
             topic_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+            target_path="target_path",
         )
         assert_matches_type(Dataset, dataset, path=["response"])
 
