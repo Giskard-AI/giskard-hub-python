@@ -110,9 +110,18 @@ def translate_legacy_upload_item(item: Mapping[str, Any]) -> Dict[str, Any]:
     if output is not None:
         interaction["output"] = output
 
-    raw_checks = item.get("checks")
+    raw_checks: List[CheckConfigParam] = []
+    for field, identifier, param in (
+        ("expected_output", "hub_correctness", "reference"),
+        ("rules", "hub_conformity", "rules"),
+        ("reference_context", "hub_groundedness", "context"),
+    ):
+        value = item.get(field)
+        if value:
+            raw_checks.append({"identifier": identifier, "params": {param: value}})
+    raw_checks.extend(item.get("checks") or [])
     if raw_checks:
-        interaction["checks"] = _build_check_configs(cast(Iterable[CheckConfigParam], raw_checks))
+        interaction["checks"] = _build_check_configs(raw_checks)
 
     out: Dict[str, Any] = {"interactions": [interaction]}
     if "tags" in item:
