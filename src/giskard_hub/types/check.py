@@ -114,8 +114,14 @@ ToxicityCategory: TypeAlias = Literal["hate_speech", "harassment", "threats", "s
 
 
 class HubConformityParams(BaseModel):
-    rules: List[str]
-    text_key: Optional[str] = None
+    rule: Optional[str] = None
+    rules: Optional[List[str]] = Field(
+        default=None, description="Deprecated: use `rule` instead.", json_schema_extra={"deprecated": True}
+    )
+    target_key: Optional[str] = None
+    text_key: Optional[str] = Field(
+        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+    )
     type: Optional[Literal["hub_conformity"]] = None
 
 
@@ -126,8 +132,13 @@ class HubCorrectnessParams(BaseModel):
 
 
 class HubGroundednessParams(BaseModel):
-    context: str
-    text_key: Optional[str] = None
+    answer: Optional[str] = None
+    context: Optional[Union[str, List[str]]] = None
+    context_key: Optional[str] = None
+    target_key: Optional[str] = None
+    text_key: Optional[str] = Field(
+        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+    )
     type: Optional[Literal["hub_groundedness"]] = None
 
 
@@ -144,13 +155,23 @@ class HubMetadataParams(BaseModel):
 
 
 class ConformityParams(BaseModel):
-    rule: str
+    rule: Optional[str] = None
+    rules: Optional[List[str]] = Field(
+        default=None, description="Deprecated: use `rule` instead.", json_schema_extra={"deprecated": True}
+    )
+    target_key: Optional[str] = None
+    text_key: Optional[str] = Field(
+        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+    )
     type: Optional[Literal["conformity"]] = None
 
 
 class GroundednessParams(BaseModel):
     answer: Optional[str] = None
     target_key: Optional[str] = None
+    text_key: Optional[str] = Field(
+        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+    )
     context: Optional[Union[str, List[str]]] = None
     context_key: Optional[str] = None
     type: Optional[Literal["groundedness"]] = None
@@ -292,8 +313,12 @@ CheckType: TypeAlias = Union[
 
 
 class HubConformityParamsParam(TypedDict, total=False):
-    rules: Required[SequenceNotStr[str]]
+    rule: str
+    rules: SequenceNotStr[str]
+    """Deprecated: use `rule` instead."""
+    target_key: str
     text_key: str
+    """Deprecated: use `target_key` instead."""
     type: Literal["hub_conformity"]
 
 
@@ -304,8 +329,12 @@ class HubCorrectnessParamsParam(TypedDict, total=False):
 
 
 class HubGroundednessParamsParam(TypedDict, total=False):
-    context: Required[str]
+    answer: str
+    context: Union[str, SequenceNotStr[str]]
+    context_key: str
+    target_key: str
     text_key: str
+    """Deprecated: use `target_key` instead."""
     type: Literal["hub_groundedness"]
 
 
@@ -322,13 +351,20 @@ class HubMetadataParamsParam(TypedDict, total=False):
 
 
 class ConformityParamsParam(TypedDict, total=False):
-    rule: Required[str]
+    rule: str
+    rules: SequenceNotStr[str]
+    """Deprecated: use `rule` instead."""
+    target_key: str
+    text_key: str
+    """Deprecated: use `target_key` instead."""
     type: Literal["conformity"]
 
 
 class GroundednessParamsParam(TypedDict, total=False):
     answer: str
     target_key: str
+    text_key: str
+    """Deprecated: use `target_key` instead."""
     context: Union[str, SequenceNotStr[str]]
     context_key: str
     type: Literal["groundedness"]
