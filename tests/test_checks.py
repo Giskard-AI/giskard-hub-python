@@ -1,7 +1,10 @@
 """Tests for `giskard_hub.types.check` helpers/models and `ChecksResource` validation."""
 
+import json
 from typing import Any, Dict
 
+import httpx
+import respx
 import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
@@ -10,11 +13,17 @@ from giskard_hub.types import (
     CheckConfig,
     CheckResult,
     JsonPathRule,
+    CheckTypeParam,
+    ConformityParams,
     OutputAnnotation,
     ContextAnnotation,
     JsonPathRuleParam,
+    GroundednessParams,
+    HubConformityParams,
     HubCorrectnessParams,
+    HubGroundednessParams,
 )
+from giskard_hub._models import BaseModel
 from giskard_hub.types.check import _extract_check_params
 from giskard_hub.resources._check_helpers import (
     check_param_to_spec,
@@ -70,6 +79,110 @@ def test_check_param_to_spec_raises_when_no_kind_derivable() -> None:
 def test_check_param_to_spec_accepts_basemodel() -> None:
     spec = check_param_to_spec("hub_correctness", HubCorrectnessParams(reference="x"))
     assert spec == {"kind": "hub_correctness", "reference": "x"}
+
+
+CHECK_PARAMETER_CASES: list[tuple[type[BaseModel], CheckTypeParam]] = [
+    (HubConformityParams, {"type": "hub_conformity", "rule": "Use English.", "target_key": "trace"}),
+    (
+        HubConformityParams,
+        {"type": "hub_conformity", "rules": ["Use English."], "text_key": "trace.last.outputs.response.content"},
+    ),
+    (
+        HubConformityParams,
+        {"type": "hub_conformity", "rule": "Use English.", "text_key": "trace.last.outputs.response.content"},
+    ),
+    (HubConformityParams, {"type": "hub_conformity", "rules": ["Use English."], "target_key": "trace"}),
+    (ConformityParams, {"type": "conformity", "rule": "Use English.", "target_key": "trace"}),
+    (
+        ConformityParams,
+        {"type": "conformity", "rules": ["Use English."], "text_key": "trace.last.outputs.response.content"},
+    ),
+    (
+        HubGroundednessParams,
+        {
+            "type": "hub_groundedness",
+            "context": "Paris is in France.",
+            "text_key": "trace.last.outputs.response.content",
+        },
+    ),
+    (
+        HubGroundednessParams,
+        {
+            "type": "hub_groundedness",
+            "context": ["Paris is in France."],
+            "target_key": "trace.last.outputs.response.content",
+        },
+    ),
+    (HubGroundednessParams, {"type": "hub_groundedness", "context_key": "trace.last.outputs.metadata.context"}),
+    (HubGroundednessParams, {"type": "hub_groundedness", "answer": "Paris", "context": "Paris is in France."}),
+    (
+        GroundednessParams,
+        {"type": "groundedness", "context": ["Paris is in France."], "text_key": "trace.last.outputs.response.content"},
+    ),
+    (GroundednessParams, {"type": "groundedness", "context_key": "trace.last.outputs.metadata.context"}),
+]
+
+
+@pytest.mark.parametrize("model_type,params", CHECK_PARAMETER_CASES)
+def test_check_parameter_model_preserves_supplied_fields(model_type: type[BaseModel], params: CheckTypeParam) -> None:
+    model = model_type.model_validate(params)
+    for name, value in params.items():
+        assert getattr(model, name) == value
+    assert model.model_dump(exclude_none=True) == params
+    assert check_param_to_spec("custom_example", model) == check_param_to_spec("custom_example", params)
+
+
+@pytest.mark.parametrize(
+    "model_type,deprecated_fields",
+    [
+        (HubConformityParams, {"rules", "text_key"}),
+        (ConformityParams, {"rules", "text_key"}),
+        (HubGroundednessParams, {"text_key"}),
+        (GroundednessParams, {"text_key"}),
+    ],
+)
+def test_check_parameter_schema_marks_legacy_fields_deprecated(
+    model_type: type[BaseModel], deprecated_fields: set[str]
+) -> None:
+    properties = model_type.model_json_schema()["properties"]
+    assert {name for name, schema in properties.items() if schema.get("deprecated")} == deprecated_fields
+
+
+@pytest.fixture(params=[params for _, params in CHECK_PARAMETER_CASES])
+def check_params(request: pytest.FixtureRequest) -> CheckTypeParam:
+    return request.param
+
+
+def test_create_and_update_preserve_check_params(
+    hub: HubClient, respx_mock: respx.MockRouter, check_params: CheckTypeParam
+) -> None:
+    spec = check_param_to_spec("custom_example", check_params)
+    response = httpx.Response(200, json={"data": _check_payload(spec=spec)})
+    create = respx_mock.post("http://localhost/_api/v2/checks").mock(return_value=response)
+    update = respx_mock.patch("http://localhost/_api/v2/checks/1").mock(return_value=response)
+
+    assert (
+        hub.checks.create(project_id="p", identifier="custom_example", name="Example", params=check_params).spec == spec
+    )
+    assert hub.checks.update("1", params=check_params).spec == spec
+    assert json.loads(create.calls.last.request.content)["spec"] == spec
+    assert json.loads(update.calls.last.request.content)["spec"] == spec
+
+
+async def test_async_create_and_update_preserve_check_params(
+    async_hub: AsyncHubClient, respx_mock: respx.MockRouter, check_params: CheckTypeParam
+) -> None:
+    spec = check_param_to_spec("custom_example", check_params)
+    response = httpx.Response(200, json={"data": _check_payload(spec=spec)})
+    create = respx_mock.post("http://localhost/_api/v2/checks").mock(return_value=response)
+    update = respx_mock.patch("http://localhost/_api/v2/checks/1").mock(return_value=response)
+
+    assert (
+        await async_hub.checks.create(project_id="p", identifier="custom_example", name="Example", params=check_params)
+    ).spec == spec
+    assert (await async_hub.checks.update("1", params=check_params)).spec == spec
+    assert json.loads(create.calls.last.request.content)["spec"] == spec
+    assert json.loads(update.calls.last.request.content)["spec"] == spec
 
 
 def test_extract_check_params_strips_kind() -> None:
