@@ -430,8 +430,8 @@ options.
 
 #### Undocumented response properties
 
-To access undocumented response properties, you can access the extra fields like `response.unknown_prop`.
-You can also get all the extra fields on the Pydantic model as a dict with
+To access undocumented response properties, you can access the extra fields like `response.unknown_prop`. You
+can also get all the extra fields on the Pydantic model as a dict with
 [`response.model_extra`](https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_extra).
 
 ### Configuring the HTTP client
