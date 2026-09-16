@@ -247,8 +247,8 @@ async def connect_local_agent(
         Tenant API key (sent as ``X-API-Key``).
     handler:
         Sync or async callable ``payload -> dict``. For chat agents, Hub sends
-        ``{\"messages\": [...]}`` and expects
-        ``{\"response\": {\"role\": \"assistant\", \"content\": \"...\"}}``.
+        ``{"messages": [...]}`` and expects
+        ``{"response": {"role": "assistant", "content": "..."}}``.
     name:
         Agent name shown in Hub.
     project_id:
@@ -274,13 +274,13 @@ async def connect_local_agent(
 
 
         async def echo(payload: dict) -> dict:
-            text = payload[\"messages\"][-1][\"content\"]
-            return {\"response\": {\"role\": \"assistant\", \"content\": text}}
+            text = payload["messages"][-1]["content"]
+            return {"response": {"role": "assistant", "content": text}}
 
 
         await connect_local_agent(
-            hub_url=\"https://app.llm.localhost\",
-            api_key=\"...\",
+            hub_url="https://app.llm.localhost",
+            api_key="...",
             handler=echo,
         )
     """
