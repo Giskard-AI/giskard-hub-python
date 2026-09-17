@@ -1,5 +1,6 @@
 import json
-from typing import Tuple, cast
+from copy import deepcopy
+from typing import Any, Dict, List, Tuple, cast
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -125,6 +126,70 @@ def test_upload_file_without_interactions_passes_through(tmp_path: Path) -> None
     json_file.write_text(json.dumps([{"col1": "val1"}]))
     # Nothing to translate or fill -> the original Path is forwarded unchanged.
     assert _prepare_upload_data(json_file) == json_file
+
+
+@pytest.mark.parametrize("upload_format", ["list", "json", "jsonl"])
+def test_upload_preserves_legacy_check_fields(tmp_path: Path, upload_format: str) -> None:
+    records: List[Dict[str, Any]] = [
+        {
+            "messages": [{"role": "user", "content": "Hello"}],
+            "expected_output": "Hello there.",
+            "rules": ["Use English.", "Be concise."],
+            "reference_context": "Reference text",
+            "checks": [
+                {"identifier": "hub_conformity", "params": {"rules": ["Keep this check."]}, "enabled": False},
+                {"identifier": "custom_policy"},
+            ],
+        }
+    ]
+    original = deepcopy(records)
+    data: List[Dict[str, Any]] | Path = records
+    if upload_format != "list":
+        data = tmp_path / f"legacy.{upload_format}"
+        data.write_text(json.dumps(records[0] if upload_format == "jsonl" else records))
+
+    with pytest.deprecated_call(match="legacy"):
+        _, payload = cast("Tuple[str, bytes]", _prepare_upload_data(data))
+
+    decoded = json.loads(payload)
+    scenario = decoded if upload_format == "jsonl" else decoded[0]
+    assert scenario["interactions"][0]["checks"] == [
+        {
+            "identifier": "hub_correctness",
+            "override_spec": {"reference": "Hello there."},
+            "enabled": True,
+            "position": 0,
+        },
+        {
+            "identifier": "hub_conformity",
+            "override_spec": {"rules": ["Use English.", "Be concise."]},
+            "enabled": True,
+            "position": 1,
+        },
+        {
+            "identifier": "hub_groundedness",
+            "override_spec": {"context": "Reference text"},
+            "enabled": True,
+            "position": 2,
+        },
+        {
+            "identifier": "hub_conformity",
+            "override_spec": {"rules": ["Keep this check."]},
+            "enabled": False,
+            "position": 3,
+        },
+        {"identifier": "custom_policy", "enabled": True, "position": 4},
+    ]
+    assert records == original
+
+
+def test_upload_ignores_empty_legacy_check_fields() -> None:
+    records: List[Dict[str, Any]] = [{"messages": [], "expected_output": "", "rules": [], "reference_context": None}]
+
+    with pytest.deprecated_call(match="legacy"):
+        _, payload = cast("Tuple[str, bytes]", _prepare_upload_data(records))
+
+    assert json.loads(payload) == [{"interactions": [{"position": 0, "input": {"messages": []}}]}]
 
 
 async def test_async_knowledge_bases_create_converts_str_to_path(tmp_path: Path) -> None:
