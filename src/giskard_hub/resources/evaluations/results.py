@@ -58,7 +58,7 @@ def _normalize_result_filters(
     if isinstance(filters, Omit) or filters is None or "chat_test_case_id" not in filters:
         return filters
     warnings.warn(_CHAT_TEST_CASE_ID_FILTER_DEPRECATION, DeprecationWarning, stacklevel=3)
-    normalized = dict(filters)
+    normalized: dict[str, object] = dict(filters.items())
     chat_id = normalized.pop("chat_test_case_id")
     if normalized.get("scenario_id") is None:
         normalized["scenario_id"] = chat_id

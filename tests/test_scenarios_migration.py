@@ -146,24 +146,22 @@ class TestScenariosEndpointMigration:
         assert body["set_scenario_draft"] is True
 
     @pytest.mark.respx(base_url=base_url)
-    def test_evaluations_retrieve_accepts_deprecated_include(self, respx_mock: MockRouter, client: HubClient) -> None:
+    def test_evaluations_retrieve_accepts_include(self, respx_mock: MockRouter, client: HubClient) -> None:
         route = respx_mock.get("/v2/evaluations/e").mock(return_value=httpx.Response(200, json={"data": {}}))
 
-        with pytest.deprecated_call(match="include"):
-            client.evaluations.with_raw_response.retrieve("e", include=["agent"])
+        client.evaluations.with_raw_response.retrieve("e", include=["agent"])
 
         assert route.called
-        assert "include=" not in str(route.calls.last.request.url)
+        assert route.calls.last.request.url.params.get_list("include") == ["agent"]
 
     @pytest.mark.respx(base_url=base_url)
-    def test_evaluations_list_accepts_deprecated_include(self, respx_mock: MockRouter, client: HubClient) -> None:
+    def test_evaluations_list_accepts_include(self, respx_mock: MockRouter, client: HubClient) -> None:
         route = respx_mock.get("/v2/evaluations").mock(return_value=httpx.Response(200, json={"data": []}))
 
-        with pytest.deprecated_call(match="include"):
-            client.evaluations.with_raw_response.list(project_id="p", include=["dataset"])
+        client.evaluations.with_raw_response.list(project_id="p", include=["dataset"])
 
         assert route.called
-        assert "include=" not in str(route.calls.last.request.url)
+        assert route.calls.last.request.url.params.get_list("include") == ["dataset"]
 
     @pytest.mark.respx(base_url=base_url)
     def test_results_search_maps_deprecated_chat_test_case_id(self, respx_mock: MockRouter, client: HubClient) -> None:

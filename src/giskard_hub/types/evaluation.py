@@ -230,7 +230,7 @@ ResultFilterColumn = Literal["failure_category_name", "metrics", "sample_success
 ResultOrderByParam = OrderByParam[ResultSortColumn]
 
 
-class ResultFiltersParam(TypedDict, total=False):
+class _ResultFilters(TypedDict, total=False):
     failure_category_name: FilterValueParam
     metrics: FilterValueParam
     sample_success: FilterValueParam
@@ -239,6 +239,10 @@ class ResultFiltersParam(TypedDict, total=False):
     visibility: FilterValueParam
     scenario_id: Optional[str]
     chat_test_case_id: Optional[str]
+    """Deprecated: use `scenario_id` instead. Remove in SDK 4.0."""
+
+
+ResultFiltersParam = Union[Dict[ResultFilterColumn, FilterValueParam], _ResultFilters]
 
 
 class ResultListParams(TypedDict, total=False):
