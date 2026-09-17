@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.0.1-12-gd7ca0458"
+    "version": "v3.0.3-7-g3dd1bf0f"
   },
   "paths": {
     "/v2/agents": {
@@ -886,22 +886,45 @@
         }
       }
     },
-    "/v2/auth/logout": {
+    "/v2/auth/login": {
       "get": {
         "tags": [
           "v2",
           "auth"
         ],
-        "summary": "Logout",
-        "operationId": "logout_v2_auth_logout_get",
+        "summary": "Login",
+        "operationId": "login_v2_auth_login_get",
         "parameters": [
           {
-            "name": "refresh_token",
+            "name": "return_to",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string",
-              "title": "Refresh Token"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Return To"
+            }
+          },
+          {
+            "name": "login_hint",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Login Hint"
             }
           }
         ],
@@ -910,9 +933,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponse_NoneType_"
-                }
+                "schema": {}
               }
             }
           },
@@ -923,6 +944,126 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/auth/callback": {
+      "get": {
+        "tags": [
+          "v2",
+          "auth"
+        ],
+        "summary": "Callback",
+        "operationId": "callback_v2_auth_callback_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "error",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Error"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/auth/logout": {
+      "post": {
+        "tags": [
+          "v2",
+          "auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_v2_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/auth/keepalive": {
+      "post": {
+        "tags": [
+          "v2",
+          "auth"
+        ],
+        "summary": "Keepalive",
+        "operationId": "keepalive_v2_auth_keepalive_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           }
@@ -23438,6 +23579,26 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
+          "evaluations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluations"
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__2": {
+        "properties": {
           "latest_runs": {
             "anyOf": [
               {
@@ -23456,7 +23617,7 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__2": {
+      "backend__http__responses__base__Included_list__3": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -23482,43 +23643,7 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__3": {
-        "properties": {
-          "agent": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
       "backend__http__responses__base__Included_list__4": {
-        "properties": {
-          "evaluations": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Evaluations"
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__5": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -23543,13 +23668,25 @@
         },
         "type": "object",
         "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__5": {
+        "properties": {
+          "agent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
       }
     },
     "securitySchemes": {
-      "HTTPBearer": {
-        "type": "http",
-        "scheme": "bearer"
-      },
       "APIKeyHeader": {
         "type": "apiKey",
         "in": "header",
