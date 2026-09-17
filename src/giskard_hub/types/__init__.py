@@ -9,6 +9,7 @@ Types are organized by domain into consolidated modules:
 - agent: Agent, AgentOutput, MinimalAgent and params
 - check: Check, spec, annotations and params
 - audit: Audit, AuditDisplay and params
+- auth: Auth login and callback params
 - task: Task, TaskStatus, TaskPriority, references and params
 - dataset: Dataset, DatasetSubset and params
 - knowledge_base: KnowledgeBase, document types and params
@@ -170,6 +171,12 @@ from .audit import (
     AuditListEntityParams as AuditListEntityParams,
     AuditOrderByParam as AuditOrderByParam,
     AuditSearchParams as AuditSearchParams,
+)
+
+# -- auth ------------------------------------------------------------------
+from .auth import (
+    AuthCallbackParams as AuthCallbackParams,
+    AuthLoginParams as AuthLoginParams,
 )
 
 # -- task ------------------------------------------------------------------
@@ -470,6 +477,9 @@ __all__ = [
     "AuditSearchParams",
     "AuditOrderByParam",
     "AuditFiltersParam",
+    # auth
+    "AuthLoginParams",
+    "AuthCallbackParams",
     # task
     "Task",
     "TaskStatus",

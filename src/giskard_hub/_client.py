@@ -20,6 +20,7 @@ from ._types import (
 from ._utils import is_given, get_async_library
 from ._version import __version__
 from .resources import (
+    auth,
     audit,
     tasks,
     agents,
@@ -68,6 +69,7 @@ def _normalize_base_url(base_url: str, *, auto_add_api_suffix: bool) -> str:
 class HubClient(SyncAPIClient):
     audit_logs: audit.AuditLogsResource
     agents: agents.AgentsResource
+    auth: auth.AuthResource
     checks: checks.ChecksResource
     datasets: datasets.DatasetsResource
     evaluations: evaluations.EvaluationsResource
@@ -149,6 +151,7 @@ class HubClient(SyncAPIClient):
 
         self.audit_logs = audit.AuditLogsResource(self)
         self.agents = agents.AgentsResource(self)
+        self.auth = auth.AuthResource(self)
         self.checks = checks.ChecksResource(self)
         self.datasets = datasets.DatasetsResource(self)
         self.evaluations = evaluations.EvaluationsResource(self)
@@ -291,6 +294,7 @@ class HubClient(SyncAPIClient):
 class AsyncHubClient(AsyncAPIClient):
     audit_logs: audit.AsyncAuditLogsResource
     agents: agents.AsyncAgentsResource
+    auth: auth.AsyncAuthResource
     checks: checks.AsyncChecksResource
     datasets: datasets.AsyncDatasetsResource
     evaluations: evaluations.AsyncEvaluationsResource
@@ -372,6 +376,7 @@ class AsyncHubClient(AsyncAPIClient):
 
         self.audit_logs = audit.AsyncAuditLogsResource(self)
         self.agents = agents.AsyncAgentsResource(self)
+        self.auth = auth.AsyncAuthResource(self)
         self.checks = checks.AsyncChecksResource(self)
         self.datasets = datasets.AsyncDatasetsResource(self)
         self.evaluations = evaluations.AsyncEvaluationsResource(self)
@@ -517,6 +522,7 @@ class HubClientWithRawResponse:
     def __init__(self, client: HubClient) -> None:
         self.audit_logs = audit.AuditLogsResourceWithRawResponse(client.audit_logs)
         self.agents = agents.AgentsResourceWithRawResponse(client.agents)
+        self.auth = auth.AuthResourceWithRawResponse(client.auth)
         self.checks = checks.ChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithRawResponse(client.datasets)
         self.evaluations = evaluations.EvaluationsResourceWithRawResponse(client.evaluations)
@@ -537,6 +543,7 @@ class AsyncHubClientWithRawResponse:
     def __init__(self, client: AsyncHubClient) -> None:
         self.audit_logs = audit.AsyncAuditLogsResourceWithRawResponse(client.audit_logs)
         self.agents = agents.AsyncAgentsResourceWithRawResponse(client.agents)
+        self.auth = auth.AsyncAuthResourceWithRawResponse(client.auth)
         self.checks = checks.AsyncChecksResourceWithRawResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithRawResponse(client.datasets)
         self.evaluations = evaluations.AsyncEvaluationsResourceWithRawResponse(client.evaluations)
@@ -557,6 +564,7 @@ class HubClientWithStreamedResponse:
     def __init__(self, client: HubClient) -> None:
         self.audit_logs = audit.AuditLogsResourceWithStreamingResponse(client.audit_logs)
         self.agents = agents.AgentsResourceWithStreamingResponse(client.agents)
+        self.auth = auth.AuthResourceWithStreamingResponse(client.auth)
         self.checks = checks.ChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.DatasetsResourceWithStreamingResponse(client.datasets)
         self.evaluations = evaluations.EvaluationsResourceWithStreamingResponse(client.evaluations)
@@ -577,6 +585,7 @@ class AsyncHubClientWithStreamedResponse:
     def __init__(self, client: AsyncHubClient) -> None:
         self.audit_logs = audit.AsyncAuditLogsResourceWithStreamingResponse(client.audit_logs)
         self.agents = agents.AsyncAgentsResourceWithStreamingResponse(client.agents)
+        self.auth = auth.AsyncAuthResourceWithStreamingResponse(client.auth)
         self.checks = checks.AsyncChecksResourceWithStreamingResponse(client.checks)
         self.datasets = datasets.AsyncDatasetsResourceWithStreamingResponse(client.datasets)
         self.evaluations = evaluations.AsyncEvaluationsResourceWithStreamingResponse(client.evaluations)

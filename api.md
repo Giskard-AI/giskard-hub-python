@@ -41,6 +41,24 @@ Methods:
 - <code title="post /v2/audit/search">client.audit_logs.<a href="./src/giskard_hub/resources/audit.py">search</a>(\*\*<a href="src/giskard_hub/types/audit.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/audit.py">Audit</a>] | Tuple[List[<a href="./src/giskard_hub/types/audit.py">Audit</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
 - <code title="get /v2/audit/{entity_type}/{entity_id}">client.audit_logs.<a href="./src/giskard_hub/resources/audit.py">list_entities</a>(entity_id, entity_type, \*\*<a href="src/giskard_hub/types/audit.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>] | Tuple[List[<a href="./src/giskard_hub/types/audit.py">AuditDisplay</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
 
+# Auth
+
+Types:
+
+```python
+from giskard_hub.types import (
+    AuthLoginParams,
+    AuthCallbackParams,
+)
+```
+
+Methods:
+
+- <code title="get /v2/auth/login">client.auth.<a href="./src/giskard_hub/resources/auth.py">login</a>(\*\*<a href="./src/giskard_hub/types/auth.py">params</a>) -> object</code>
+- <code title="get /v2/auth/callback">client.auth.<a href="./src/giskard_hub/resources/auth.py">callback</a>(\*\*<a href="./src/giskard_hub/types/auth.py">params</a>) -> object</code>
+- <code title="post /v2/auth/logout">client.auth.<a href="./src/giskard_hub/resources/auth.py">logout</a>() -> object</code>
+- <code title="post /v2/auth/keepalive">client.auth.<a href="./src/giskard_hub/resources/auth.py">keepalive</a>() -> object</code>
+
 # Checks
 
 Types:
