@@ -39,6 +39,11 @@ from ._base_client import (
     SyncAPIClient,
     AsyncAPIClient,
 )
+from .lib.local_agent import (
+    LocalAgentHandler,
+    connect_local_agent as run_local_agent_session,
+    connect_local_agent_sync as run_local_agent_session_sync,
+)
 from .resources.scans import scans
 from .resources.scenarios import scenarios
 from .resources.test_cases import test_cases
@@ -287,6 +292,44 @@ class HubClient(SyncAPIClient):
             return _exceptions.InternalServerError(err_msg, response=response, body=body)
         return APIStatusError(err_msg, response=response, body=body)
 
+    def connect_local_agent(
+        self,
+        handler: LocalAgentHandler,
+        *,
+        name: str = "Local agent",
+        project_id: str | None = None,
+        description: str | None = None,
+    ) -> dict[str, Any]:
+        """Connect ``handler`` to Hub as a local agent until the session closes.
+
+        Hub creates the agent on connect and deletes it on disconnect. This
+        method blocks for the life of the WebSocket. Use
+        :meth:`AsyncHubClient.connect_local_agent` with an async handler.
+
+        Parameters
+        ----------
+        handler:
+            Sync callable ``payload -> dict``. For chat agents, Hub sends
+            ``{"messages": [...]}`` and expects
+            ``{"response": {"role": "assistant", "content": "..."}}``.
+        name:
+            Agent name shown in Hub.
+        project_id:
+            Project UUID. When omitted, Hub uses the first project the key can
+            create agents in.
+        description:
+            Optional description stored on the Hub agent.
+        """
+        return run_local_agent_session_sync(
+            hub_url=str(self.base_url),
+            api_key=self.api_key,
+            handler=handler,
+            name=name,
+            project_id=project_id,
+            description=description,
+            tenant_host=self.tenant_host,
+        )
+
 
 class AsyncHubClient(AsyncAPIClient):
     audit_logs: audit.AsyncAuditLogsResource
@@ -511,6 +554,42 @@ class AsyncHubClient(AsyncAPIClient):
             capture_event(distinct_id, "internal_server_error", {"status_code": response.status_code})
             return _exceptions.InternalServerError(err_msg, response=response, body=body)
         return APIStatusError(err_msg, response=response, body=body)
+
+    async def connect_local_agent(
+        self,
+        handler: LocalAgentHandler,
+        *,
+        name: str = "Local agent",
+        project_id: str | None = None,
+        description: str | None = None,
+    ) -> dict[str, Any]:
+        """Connect ``handler`` to Hub as a local agent until the session closes.
+
+        Hub creates the agent on connect and deletes it on disconnect.
+
+        Parameters
+        ----------
+        handler:
+            Sync or async callable ``payload -> dict``. For chat agents, Hub
+            sends ``{"messages": [...]}`` and expects
+            ``{"response": {"role": "assistant", "content": "..."}}``.
+        name:
+            Agent name shown in Hub.
+        project_id:
+            Project UUID. When omitted, Hub uses the first project the key can
+            create agents in.
+        description:
+            Optional description stored on the Hub agent.
+        """
+        return await run_local_agent_session(
+            hub_url=str(self.base_url),
+            api_key=self.api_key,
+            handler=handler,
+            name=name,
+            project_id=project_id,
+            description=description,
+            tenant_host=self.tenant_host,
+        )
 
 
 class HubClientWithRawResponse:
