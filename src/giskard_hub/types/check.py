@@ -122,13 +122,13 @@ class HubConformityParams(BaseModel):
     text_key: Optional[str] = Field(
         default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
     )
-    type: Optional[Literal["hub_conformity"]] = None
+    type: Optional[Literal["hub_conformity", "conformity"]] = None
 
 
 class HubCorrectnessParams(BaseModel):
     reference: str
     text_key: Optional[str] = None
-    type: Optional[Literal["hub_correctness"]] = None
+    type: Optional[Literal["hub_correctness", "correctness"]] = None
 
 
 class HubGroundednessParams(BaseModel):
@@ -139,7 +139,7 @@ class HubGroundednessParams(BaseModel):
     text_key: Optional[str] = Field(
         default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
     )
-    type: Optional[Literal["hub_groundedness"]] = None
+    type: Optional[Literal["hub_groundedness", "groundedness"]] = None
 
 
 class JsonPathRule(BaseModel):
@@ -151,7 +151,7 @@ class JsonPathRule(BaseModel):
 class HubMetadataParams(BaseModel):
     json_path_rules: List[JsonPathRule]
     metadata_key: Optional[str] = None
-    type: Optional[Literal["hub_metadata"]] = None
+    type: Optional[Literal["hub_metadata", "metadata"]] = None
 
 
 class ConformityParams(BaseModel):
@@ -319,13 +319,13 @@ class HubConformityParamsParam(TypedDict, total=False):
     target_key: str
     text_key: str
     """Deprecated: use `target_key` instead."""
-    type: Literal["hub_conformity"]
+    type: Literal["hub_conformity", "conformity"]
 
 
 class HubCorrectnessParamsParam(TypedDict, total=False):
     reference: Required[str]
     text_key: str
-    type: Literal["hub_correctness"]
+    type: Literal["hub_correctness", "correctness"]
 
 
 class HubGroundednessParamsParam(TypedDict, total=False):
@@ -335,7 +335,7 @@ class HubGroundednessParamsParam(TypedDict, total=False):
     target_key: str
     text_key: str
     """Deprecated: use `target_key` instead."""
-    type: Literal["hub_groundedness"]
+    type: Literal["hub_groundedness", "groundedness"]
 
 
 class JsonPathRuleParam(TypedDict, total=False):
@@ -347,7 +347,7 @@ class JsonPathRuleParam(TypedDict, total=False):
 class HubMetadataParamsParam(TypedDict, total=False):
     json_path_rules: Required[Iterable[JsonPathRuleParam]]
     metadata_key: str
-    type: Literal["hub_metadata"]
+    type: Literal["hub_metadata", "metadata"]
 
 
 class ConformityParamsParam(TypedDict, total=False):
