@@ -17,6 +17,7 @@ from giskard_hub.types import (
     ConformityParams,
     OutputAnnotation,
     ContextAnnotation,
+    HubMetadataParams,
     JsonPathRuleParam,
     GroundednessParams,
     HubConformityParams,
@@ -42,6 +43,8 @@ from giskard_hub.resources._check_helpers import (
         "hub_correctness",
         "hub_groundedness",
         "hub_metadata",
+        "correctness",
+        "metadata",
         "conformity",
         "groundedness",
         "string_matching",
@@ -81,7 +84,17 @@ def test_check_param_to_spec_accepts_basemodel() -> None:
     assert spec == {"kind": "hub_correctness", "reference": "x"}
 
 
+METADATA_RULES: list[JsonPathRuleParam] = [
+    {"json_path": "source", "expected_value": "policy", "expected_value_type": "string"}
+]
+
 CHECK_PARAMETER_CASES: list[tuple[type[BaseModel], CheckTypeParam]] = [
+    (HubConformityParams, {"type": "conformity", "rule": "Use English."}),
+    (HubGroundednessParams, {"type": "groundedness", "context": "Reference"}),
+    (HubCorrectnessParams, {"type": "correctness", "reference": "Expected answer"}),
+    (HubCorrectnessParams, {"type": "hub_correctness", "reference": "Expected answer"}),
+    (HubMetadataParams, {"type": "metadata", "json_path_rules": METADATA_RULES}),
+    (HubMetadataParams, {"type": "hub_metadata", "json_path_rules": METADATA_RULES}),
     (HubConformityParams, {"type": "hub_conformity", "rule": "Use English.", "target_key": "trace"}),
     (
         HubConformityParams,
@@ -126,8 +139,6 @@ CHECK_PARAMETER_CASES: list[tuple[type[BaseModel], CheckTypeParam]] = [
 @pytest.mark.parametrize("model_type,params", CHECK_PARAMETER_CASES)
 def test_check_parameter_model_preserves_supplied_fields(model_type: type[BaseModel], params: CheckTypeParam) -> None:
     model = model_type.model_validate(params)
-    for name, value in params.items():
-        assert getattr(model, name) == value
     assert model.model_dump(exclude_none=True) == params
     assert check_param_to_spec("custom_example", model) == check_param_to_spec("custom_example", params)
 
