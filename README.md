@@ -105,6 +105,30 @@ completed = hub.helpers.wait_for_completion(evaluation)
 hub.helpers.print_metrics(completed)
 ```
 
+## Connect a local agent
+
+Expose a local Python callable as a live Hub agent over WebSocket
+(`/_api/v2/local-agents/connect`). Hub creates the agent on connect and
+deletes it when this process disconnects. There is no CLI.
+
+```python
+from giskard_hub import HubClient
+
+hub = HubClient()
+
+
+def echo(payload: dict) -> dict:
+    text = payload["messages"][-1]["content"]
+    return {"response": {"role": "assistant", "content": text}}
+
+
+# Blocks until the session closes. Async: AsyncHubClient.connect_local_agent
+# or `from giskard_hub import connect_local_agent`.
+hub.connect_local_agent(handler=echo, name="Local echo")
+```
+
+Requires a Hub build that serves the local-agent WebSocket (companion Hub PR).
+
 ## Async usage
 
 Simply import `AsyncHubClient` instead of `HubClient` and use `await` with each API call:
