@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.0.3-7-g3dd1bf0f"
+    "version": "v3.0.4-11-g8a03394c"
   },
   "paths": {
     "/v2/agents": {
@@ -9741,6 +9741,18 @@
                             ],
                             "title": "Simulator Config"
                           },
+                          "metadata": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "title": "Metadata"
+                          },
                           "created_at": {
                             "type": "string",
                             "format": "date-time",
@@ -9941,6 +9953,11 @@
                           },
                           "schema_validation": {
                             "$ref": "#/$defs/ScenarioSchemaValidationAPIResource"
+                          },
+                          "annotations": {
+                            "additionalProperties": true,
+                            "type": "object",
+                            "title": "Annotations"
                           }
                         },
                         "type": "object",
@@ -10087,6 +10104,18 @@
                             ],
                             "title": "Simulator Config"
                           },
+                          "metadata": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "title": "Metadata"
+                          },
                           "created_at": {
                             "type": "string",
                             "format": "date-time",
@@ -10287,6 +10316,11 @@
                           },
                           "schema_validation": {
                             "$ref": "#/$defs/ScenarioSchemaValidationAPIResource"
+                          },
+                          "annotations": {
+                            "additionalProperties": true,
+                            "type": "object",
+                            "title": "Annotations"
                           }
                         },
                         "type": "object",
@@ -18882,6 +18916,18 @@
             ],
             "title": "Simulator Config"
           },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -19031,6 +19077,18 @@
             ],
             "title": "Simulator Config"
           },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
           "test_case_id": {
             "anyOf": [
               {
@@ -19113,6 +19171,18 @@
             },
             "type": "array",
             "title": "Checks"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
           }
         },
         "type": "object",
@@ -21021,6 +21091,19 @@
             ],
             "title": "Agent Id"
           },
+          "test_case_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Case Id",
+            "description": "Source test case, if any -- used to resolve trace.annotations."
+          },
           "input_data": {
             "additionalProperties": true,
             "type": "object",
@@ -21041,14 +21124,38 @@
                 {
                   "additionalProperties": true,
                   "type": "object"
+                },
+                {
+                  "anyOf": [
+                    {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ],
               "type": "array",
-              "maxItems": 2,
-              "minItems": 2
+              "maxItems": 3,
+              "minItems": 3
             },
             "type": "array",
             "title": "Interactions"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata",
+            "description": "Interaction metadata to attach to the built trace, if known."
           },
           "checks": {
             "items": {
@@ -21458,6 +21565,11 @@
           },
           "schema_validation": {
             "$ref": "#/components/schemas/ScenarioSchemaValidationAPIResource"
+          },
+          "annotations": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Annotations"
           }
         },
         "type": "object",
@@ -23579,45 +23691,31 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
-          "evaluations": {
+          "agent": {
             "anyOf": [
               {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
+                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
               },
               {
                 "type": "null"
               }
-            ],
-            "title": "Evaluations"
+            ]
+          },
+          "knowledge_base": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_KnowledgeBaseAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
         "title": "Included_list"
       },
       "backend__http__responses__base__Included_list__2": {
-        "properties": {
-          "latest_runs": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Latest Runs"
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__3": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -23643,22 +23741,32 @@
         "type": "object",
         "title": "Included_list"
       },
+      "backend__http__responses__base__Included_list__3": {
+        "properties": {
+          "evaluations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluations"
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
       "backend__http__responses__base__Included_list__4": {
         "properties": {
           "agent": {
             "anyOf": [
               {
                 "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "knowledge_base": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_KnowledgeBaseAPIResource_"
               },
               {
                 "type": "null"
@@ -23671,15 +23779,19 @@
       },
       "backend__http__responses__base__Included_list__5": {
         "properties": {
-          "agent": {
+          "latest_runs": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
               },
               {
                 "type": "null"
               }
-            ]
+            ],
+            "title": "Latest Runs"
           }
         },
         "type": "object",
