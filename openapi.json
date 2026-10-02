@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.0.3-7-g3dd1bf0f"
+    "version": "v3.0.4-75-g8aefe55b"
   },
   "paths": {
     "/v2/agents": {
@@ -12,7 +12,7 @@
           "agents"
         ],
         "summary": "List Agents",
-        "operationId": "list_agents_v2_agents_get",
+        "operationId": "list_agents",
         "security": [
           {
             "APIKeyHeader": []
@@ -66,7 +66,7 @@
           "agents"
         ],
         "summary": "Create Agent",
-        "operationId": "create_agent_v2_agents_post",
+        "operationId": "create_agent",
         "security": [
           {
             "APIKeyHeader": []
@@ -111,7 +111,7 @@
           "agents"
         ],
         "summary": "Bulk Delete Agents",
-        "operationId": "bulk_delete_agents_v2_agents_delete",
+        "operationId": "bulk_delete_agents",
         "security": [
           {
             "APIKeyHeader": []
@@ -163,7 +163,7 @@
           "agents"
         ],
         "summary": "Retrieve Agent",
-        "operationId": "retrieve_agent_v2_agents__agent_id__get",
+        "operationId": "retrieve_agent",
         "security": [
           {
             "APIKeyHeader": []
@@ -210,7 +210,7 @@
           "agents"
         ],
         "summary": "Update Agent",
-        "operationId": "update_agent_v2_agents__agent_id__patch",
+        "operationId": "update_agent",
         "security": [
           {
             "APIKeyHeader": []
@@ -267,7 +267,7 @@
           "agents"
         ],
         "summary": "Delete Agent",
-        "operationId": "delete_agent_v2_agents__agent_id__delete",
+        "operationId": "delete_agent",
         "security": [
           {
             "APIKeyHeader": []
@@ -316,7 +316,7 @@
           "agents"
         ],
         "summary": "Generate Agent Completion",
-        "operationId": "generate_agent_completion_v2_agents__agent_id__generate_completion_post",
+        "operationId": "generate_agent_completion",
         "security": [
           {
             "APIKeyHeader": []
@@ -375,7 +375,7 @@
           "agents"
         ],
         "summary": "Test Agent Connection",
-        "operationId": "test_agent_connection_v2_agents_test_connection_post",
+        "operationId": "test_agent_connection",
         "requestBody": {
           "content": {
             "application/json": {
@@ -423,7 +423,7 @@
         ],
         "summary": "Autofill Agent Description",
         "description": "Generate an agent description through agentic discovery.\n\nThis endpoint probes the agent to discover its tone, features, goals,\nand constraints, then formats the findings into a human-readable description.",
-        "operationId": "autofill_agent_description_v2_agents__agent_id__autofill_description_post",
+        "operationId": "autofill_agent_description",
         "security": [
           {
             "APIKeyHeader": []
@@ -472,7 +472,7 @@
           "red team audits"
         ],
         "summary": "Create Audit",
-        "operationId": "create_audit_v2_red_team_audits_post",
+        "operationId": "create_audit",
         "security": [
           {
             "APIKeyHeader": []
@@ -517,7 +517,7 @@
           "red team audits"
         ],
         "summary": "List Red Team Audits",
-        "operationId": "list_red_team_audits_v2_red_team_audits_get",
+        "operationId": "list_red_team_audits",
         "security": [
           {
             "APIKeyHeader": []
@@ -573,12 +573,12 @@
           "red team audits"
         ],
         "summary": "Import Red Team Audit",
-        "operationId": "import_red_team_audit_v2_red_team_audits_import_post",
+        "operationId": "import_red_team_audit",
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_import_red_team_audit_v2_red_team_audits_import_post"
+                "$ref": "#/components/schemas/Body_import_red_team_audit"
               }
             }
           },
@@ -620,7 +620,7 @@
           "red team audits"
         ],
         "summary": "Get Red Team Audit",
-        "operationId": "get_red_team_audit_v2_red_team_audits__audit_id__get",
+        "operationId": "get_red_team_audit",
         "security": [
           {
             "APIKeyHeader": []
@@ -667,7 +667,7 @@
           "red team audits"
         ],
         "summary": "Delete Red Team Audit",
-        "operationId": "delete_red_team_audit_v2_red_team_audits__audit_id__delete",
+        "operationId": "delete_red_team_audit",
         "security": [
           {
             "APIKeyHeader": []
@@ -716,7 +716,7 @@
           "red team audits"
         ],
         "summary": "Get Red Team Audit Content",
-        "operationId": "get_red_team_audit_content_v2_red_team_audits__audit_id__content_get",
+        "operationId": "get_red_team_audit_content",
         "security": [
           {
             "APIKeyHeader": []
@@ -765,7 +765,7 @@
           "red team audits"
         ],
         "summary": "Get Red Team Audit Logs",
-        "operationId": "get_red_team_audit_logs_v2_red_team_audits__audit_id__logs_get",
+        "operationId": "get_red_team_audit_logs",
         "security": [
           {
             "APIKeyHeader": []
@@ -837,7 +837,7 @@
           "red team audits"
         ],
         "summary": "Download Red Team Audit",
-        "operationId": "download_red_team_audit_v2_red_team_audits__audit_id__download_get",
+        "operationId": "download_red_team_audit",
         "security": [
           {
             "APIKeyHeader": []
@@ -893,7 +893,7 @@
           "auth"
         ],
         "summary": "Login",
-        "operationId": "login_v2_auth_login_get",
+        "operationId": "login",
         "parameters": [
           {
             "name": "return_to",
@@ -957,7 +957,7 @@
           "auth"
         ],
         "summary": "Callback",
-        "operationId": "callback_v2_auth_callback_get",
+        "operationId": "callback",
         "parameters": [
           {
             "name": "code",
@@ -1037,7 +1037,7 @@
           "auth"
         ],
         "summary": "Logout",
-        "operationId": "logout_v2_auth_logout_post",
+        "operationId": "logout",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1057,7 +1057,7 @@
           "auth"
         ],
         "summary": "Keepalive",
-        "operationId": "keepalive_v2_auth_keepalive_post",
+        "operationId": "keepalive",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1077,7 +1077,7 @@
           "audit"
         ],
         "summary": "List Entity Audit Display Logs",
-        "operationId": "list_entity_audit_display_logs_v2_audit__entity_type___entity_id__get",
+        "operationId": "list_entity_audit_display_logs",
         "security": [
           {
             "APIKeyHeader": []
@@ -1158,7 +1158,7 @@
           "audit"
         ],
         "summary": "Search Audit Logs By Filters",
-        "operationId": "search_audit_logs_by_filters_v2_audit_search_post",
+        "operationId": "search_audit_logs_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -1230,7 +1230,7 @@
           "checks"
         ],
         "summary": "List Checks",
-        "operationId": "list_checks_v2_checks_get",
+        "operationId": "list_checks",
         "security": [
           {
             "APIKeyHeader": []
@@ -1287,7 +1287,7 @@
           "checks"
         ],
         "summary": "Create Check",
-        "operationId": "create_check_v2_checks_post",
+        "operationId": "create_check",
         "security": [
           {
             "APIKeyHeader": []
@@ -1332,7 +1332,7 @@
           "checks"
         ],
         "summary": "Bulk Delete Checks",
-        "operationId": "bulk_delete_checks_v2_checks_delete",
+        "operationId": "bulk_delete_checks",
         "security": [
           {
             "APIKeyHeader": []
@@ -1384,7 +1384,7 @@
           "checks"
         ],
         "summary": "Retrieve Check",
-        "operationId": "retrieve_check_v2_checks__check_id__get",
+        "operationId": "retrieve_check",
         "security": [
           {
             "APIKeyHeader": []
@@ -1431,7 +1431,7 @@
           "checks"
         ],
         "summary": "Update Check",
-        "operationId": "update_check_v2_checks__check_id__patch",
+        "operationId": "update_check",
         "security": [
           {
             "APIKeyHeader": []
@@ -1488,7 +1488,7 @@
           "checks"
         ],
         "summary": "Delete Check",
-        "operationId": "delete_check_v2_checks__check_id__delete",
+        "operationId": "delete_check",
         "security": [
           {
             "APIKeyHeader": []
@@ -1537,7 +1537,7 @@
           "datasets"
         ],
         "summary": "List Datasets",
-        "operationId": "list_datasets_v2_datasets_get",
+        "operationId": "list_datasets",
         "security": [
           {
             "APIKeyHeader": []
@@ -1591,7 +1591,7 @@
           "datasets"
         ],
         "summary": "Create Dataset",
-        "operationId": "create_dataset_v2_datasets_post",
+        "operationId": "create_dataset",
         "security": [
           {
             "APIKeyHeader": []
@@ -1636,7 +1636,7 @@
           "datasets"
         ],
         "summary": "Bulk Delete Datasets",
-        "operationId": "bulk_delete_datasets_v2_datasets_delete",
+        "operationId": "bulk_delete_datasets",
         "security": [
           {
             "APIKeyHeader": []
@@ -1688,7 +1688,7 @@
           "datasets"
         ],
         "summary": "Import Dataset",
-        "operationId": "import_dataset_v2_datasets_import_post",
+        "operationId": "import_dataset",
         "security": [
           {
             "APIKeyHeader": []
@@ -1744,7 +1744,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_import_dataset_v2_datasets_import_post"
+                "$ref": "#/components/schemas/Body_import_dataset"
               }
             }
           }
@@ -1780,7 +1780,7 @@
           "datasets"
         ],
         "summary": "Preview Dataset Import",
-        "operationId": "preview_dataset_import_v2_datasets_import_preview_post",
+        "operationId": "preview_dataset_import",
         "security": [
           {
             "APIKeyHeader": []
@@ -1813,7 +1813,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_preview_dataset_import_v2_datasets_import_preview_post"
+                "$ref": "#/components/schemas/Body_preview_dataset_import"
               }
             }
           }
@@ -1849,7 +1849,7 @@
           "datasets"
         ],
         "summary": "Retrieve Dataset",
-        "operationId": "retrieve_dataset_v2_datasets__dataset_id__get",
+        "operationId": "retrieve_dataset",
         "security": [
           {
             "APIKeyHeader": []
@@ -1896,7 +1896,7 @@
           "datasets"
         ],
         "summary": "Update Dataset",
-        "operationId": "update_dataset_v2_datasets__dataset_id__patch",
+        "operationId": "update_dataset",
         "security": [
           {
             "APIKeyHeader": []
@@ -1953,7 +1953,7 @@
           "datasets"
         ],
         "summary": "Delete Dataset",
-        "operationId": "delete_dataset_v2_datasets__dataset_id__delete",
+        "operationId": "delete_dataset",
         "security": [
           {
             "APIKeyHeader": []
@@ -2002,7 +2002,7 @@
           "datasets"
         ],
         "summary": "List Dataset Tags",
-        "operationId": "list_dataset_tags_v2_datasets__dataset_id__tags_get",
+        "operationId": "list_dataset_tags",
         "security": [
           {
             "APIKeyHeader": []
@@ -2051,7 +2051,7 @@
           "datasets"
         ],
         "summary": "Export Dataset Scenarios",
-        "operationId": "export_dataset_scenarios_v2_datasets__dataset_id__export_get",
+        "operationId": "export_dataset_scenarios",
         "security": [
           {
             "APIKeyHeader": []
@@ -2096,7 +2096,7 @@
           "datasets"
         ],
         "summary": "Export Selected Dataset Scenarios",
-        "operationId": "export_selected_dataset_scenarios_v2_datasets__dataset_id__export_post",
+        "operationId": "export_selected_dataset_scenarios",
         "security": [
           {
             "APIKeyHeader": []
@@ -2153,7 +2153,7 @@
           "datasets"
         ],
         "summary": "Search Dataset Scenarios By Filters",
-        "operationId": "search_dataset_scenarios_by_filters_v2_datasets__dataset_id__scenarios_search_post",
+        "operationId": "search_dataset_scenarios_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -2235,7 +2235,7 @@
           "datasets"
         ],
         "summary": "Search Simple Dataset Scenarios By Filters",
-        "operationId": "search_simple_dataset_scenarios_by_filters_v2_datasets__dataset_id__scenarios_simple_search_post",
+        "operationId": "search_simple_dataset_scenarios_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -2294,7 +2294,7 @@
           "datasets"
         ],
         "summary": "Get Dataset Scenarios Selection Summary",
-        "operationId": "get_dataset_scenarios_selection_summary_v2_datasets__dataset_id__scenarios_selection_summary_post",
+        "operationId": "get_dataset_scenarios_selection_summary",
         "security": [
           {
             "APIKeyHeader": []
@@ -2353,7 +2353,7 @@
           "datasets"
         ],
         "summary": "Get Dataset Scenario Navigation Info",
-        "operationId": "get_dataset_scenario_navigation_info_v2_datasets__dataset_id__scenarios__scenario_id__navigation_info_post",
+        "operationId": "get_dataset_scenario_navigation_info",
         "security": [
           {
             "APIKeyHeader": []
@@ -2422,7 +2422,7 @@
           "datasets"
         ],
         "summary": "Generate Document Based Dataset",
-        "operationId": "generate_document_based_dataset_v2_datasets_generate_document_based_post",
+        "operationId": "generate_document_based_dataset",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2470,7 +2470,7 @@
         ],
         "summary": "Generate Preset Based Dataset",
         "description": "Generate scenarios for a dataset from a prompt preset.\n\nCreates new dataset if dataset_id is None, otherwise appends to existing.\nProject is derived from the agent's project_id.",
-        "operationId": "generate_preset_based_dataset_v2_datasets_generate_preset_based_post",
+        "operationId": "generate_preset_based_dataset",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2517,7 +2517,7 @@
           "evaluations"
         ],
         "summary": "List Evaluations",
-        "operationId": "list_evaluations_v2_evaluations_get",
+        "operationId": "list_evaluations",
         "security": [
           {
             "APIKeyHeader": []
@@ -2564,7 +2564,7 @@
           "evaluations"
         ],
         "summary": "Create Evaluation",
-        "operationId": "create_evaluation_v2_evaluations_post",
+        "operationId": "create_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -2602,7 +2602,7 @@
           "evaluations"
         ],
         "summary": "Bulk Delete Evaluations",
-        "operationId": "bulk_delete_evaluations_v2_evaluations_delete",
+        "operationId": "bulk_delete_evaluations",
         "security": [
           {
             "APIKeyHeader": []
@@ -2654,7 +2654,7 @@
           "evaluations"
         ],
         "summary": "Create Local Evaluation",
-        "operationId": "create_local_evaluation_v2_evaluations_create_local_post",
+        "operationId": "create_local_evaluation",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2702,7 +2702,7 @@
         ],
         "summary": "Upload Evaluation",
         "description": "Uploads a Giskard OSS `SuiteResult` as a local Hub Evaluation.",
-        "operationId": "upload_evaluation_v2_evaluations_upload_post",
+        "operationId": "upload_evaluation",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2749,7 +2749,7 @@
           "evaluations"
         ],
         "summary": "Compare Evaluations",
-        "operationId": "compare_evaluations_v2_evaluations_compare_post",
+        "operationId": "compare_evaluations",
         "security": [
           {
             "APIKeyHeader": []
@@ -2821,7 +2821,7 @@
           "evaluations"
         ],
         "summary": "Get Compare Navigation Info",
-        "operationId": "get_compare_navigation_info_v2_evaluations_compare__scenario_id__navigation_info_post",
+        "operationId": "get_compare_navigation_info",
         "security": [
           {
             "APIKeyHeader": []
@@ -2881,7 +2881,7 @@
         ],
         "summary": "Run Interaction Checks",
         "description": "Run checks against a raw interaction input/output pair.",
-        "operationId": "run_interaction_checks_v2_evaluations_run_interaction_checks_post",
+        "operationId": "run_interaction_checks",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2928,7 +2928,7 @@
           "evaluations"
         ],
         "summary": "Retrieve Evaluation",
-        "operationId": "retrieve_evaluation_v2_evaluations__evaluation_id__get",
+        "operationId": "retrieve_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -2975,7 +2975,7 @@
           "evaluations"
         ],
         "summary": "Update Evaluation",
-        "operationId": "update_evaluation_v2_evaluations__evaluation_id__patch",
+        "operationId": "update_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -3032,7 +3032,7 @@
           "evaluations"
         ],
         "summary": "Delete Evaluation",
-        "operationId": "delete_evaluation_v2_evaluations__evaluation_id__delete",
+        "operationId": "delete_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -3081,7 +3081,7 @@
           "evaluations"
         ],
         "summary": "Rerun Errored Evaluation Results",
-        "operationId": "rerun_errored_evaluation_results_v2_evaluations__evaluation_id__rerun_errored_results_post",
+        "operationId": "rerun_errored_evaluation_results",
         "security": [
           {
             "APIKeyHeader": []
@@ -3130,7 +3130,7 @@
           "evaluations"
         ],
         "summary": "Retrieve Evaluation Result",
-        "operationId": "retrieve_evaluation_result_v2_evaluations__evaluation_id__results__result_id__get",
+        "operationId": "retrieve_evaluation_result",
         "security": [
           {
             "APIKeyHeader": []
@@ -3207,7 +3207,7 @@
           "evaluations"
         ],
         "summary": "Update Evaluation Result",
-        "operationId": "update_evaluation_result_v2_evaluations__evaluation_id__results__result_id__patch",
+        "operationId": "update_evaluation_result",
         "security": [
           {
             "APIKeyHeader": []
@@ -3276,7 +3276,7 @@
           "evaluations"
         ],
         "summary": "Submit Local Evaluation Result Output",
-        "operationId": "submit_local_evaluation_result_output_v2_evaluations__evaluation_id__results__result_id__submit_local_output_post",
+        "operationId": "submit_local_evaluation_result_output",
         "security": [
           {
             "APIKeyHeader": []
@@ -3345,7 +3345,7 @@
           "evaluations"
         ],
         "summary": "Rerun Scenario Evaluation",
-        "operationId": "rerun_scenario_evaluation_v2_evaluations__evaluation_id__results__result_id__rerun_scenario_post",
+        "operationId": "rerun_scenario_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -3405,7 +3405,7 @@
         ],
         "summary": "Update Evaluation Result Visibility",
         "description": "Update the visibility of an evaluation result.\n\nCan hide/unhide the result and optionally set the linked scenario to draft.",
-        "operationId": "update_evaluation_result_visibility_v2_evaluations__evaluation_id__results__result_id__visibility_patch",
+        "operationId": "update_evaluation_result_visibility",
         "security": [
           {
             "APIKeyHeader": []
@@ -3475,7 +3475,7 @@
         ],
         "summary": "Export Evaluation Dataset",
         "description": "Export evaluation scenario snapshots as a dataset JSON file (attachment).",
-        "operationId": "export_evaluation_dataset_v2_evaluations__evaluation_id__export_dataset_get",
+        "operationId": "export_evaluation_dataset",
         "security": [
           {
             "APIKeyHeader": []
@@ -3523,7 +3523,7 @@
         ],
         "summary": "Export Evaluation Data Json",
         "description": "Export evaluation data as JSON (attachment).",
-        "operationId": "export_evaluation_data_json_v2_evaluations__evaluation_id__export_data_get",
+        "operationId": "export_evaluation_data_json",
         "security": [
           {
             "APIKeyHeader": []
@@ -3582,7 +3582,7 @@
         ],
         "summary": "Search Evaluation Results By Filters",
         "description": "Search evaluation results with filtering, pagination and sorting.",
-        "operationId": "search_evaluation_results_by_filters_v2_evaluations__evaluation_id__results_search_post",
+        "operationId": "search_evaluation_results_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -3685,7 +3685,7 @@
         ],
         "summary": "Search Simple Evaluation Results By Filters",
         "description": "Return simplified evaluation results with ID and scenario_exists flag.",
-        "operationId": "search_simple_evaluation_results_by_filters_v2_evaluations__evaluation_id__results_simple_search_post",
+        "operationId": "search_simple_evaluation_results_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -3744,7 +3744,7 @@
           "evaluations"
         ],
         "summary": "Get Evaluation Result Navigation Info By Filters",
-        "operationId": "get_evaluation_result_navigation_info_by_filters_v2_evaluations__evaluation_id__results__result_id__navigation_info_post",
+        "operationId": "get_evaluation_result_navigation_info_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -3813,7 +3813,7 @@
           "groups"
         ],
         "summary": "List Groups",
-        "operationId": "list_groups_v2_groups_get",
+        "operationId": "list_groups",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3838,7 +3838,7 @@
           "groups"
         ],
         "summary": "Create Group",
-        "operationId": "create_group_v2_groups_post",
+        "operationId": "create_group",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3885,7 +3885,7 @@
           "groups"
         ],
         "summary": "Update Group",
-        "operationId": "update_group_v2_groups__group_id__patch",
+        "operationId": "update_group",
         "security": [
           {
             "APIKeyHeader": []
@@ -3942,7 +3942,7 @@
           "groups"
         ],
         "summary": "Delete Group",
-        "operationId": "delete_group_v2_groups__group_id__delete",
+        "operationId": "delete_group",
         "security": [
           {
             "APIKeyHeader": []
@@ -3989,7 +3989,7 @@
           "groups"
         ],
         "summary": "Get Group Detail",
-        "operationId": "get_group_detail_v2_groups__group_id__get",
+        "operationId": "get_group_detail",
         "security": [
           {
             "APIKeyHeader": []
@@ -4038,7 +4038,7 @@
           "knowledge bases"
         ],
         "summary": "List Knowledge Bases",
-        "operationId": "list_knowledge_bases_v2_knowledge_bases_get",
+        "operationId": "list_knowledge_bases",
         "security": [
           {
             "APIKeyHeader": []
@@ -4092,7 +4092,7 @@
           "knowledge bases"
         ],
         "summary": "Create Knowledge Base",
-        "operationId": "create_knowledge_base_v2_knowledge_bases_post",
+        "operationId": "create_knowledge_base",
         "security": [
           {
             "APIKeyHeader": []
@@ -4103,7 +4103,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_create_knowledge_base_v2_knowledge_bases_post"
+                "$ref": "#/components/schemas/Body_create_knowledge_base"
               }
             }
           }
@@ -4137,7 +4137,7 @@
           "knowledge bases"
         ],
         "summary": "Bulk Delete Knowledge Bases",
-        "operationId": "bulk_delete_knowledge_bases_v2_knowledge_bases_delete",
+        "operationId": "bulk_delete_knowledge_bases",
         "security": [
           {
             "APIKeyHeader": []
@@ -4189,7 +4189,7 @@
           "knowledge bases"
         ],
         "summary": "Retrieve Knowledge Base",
-        "operationId": "retrieve_knowledge_base_v2_knowledge_bases__knowledge_base_id__get",
+        "operationId": "retrieve_knowledge_base",
         "security": [
           {
             "APIKeyHeader": []
@@ -4236,7 +4236,7 @@
           "knowledge bases"
         ],
         "summary": "Update Knowledge Base",
-        "operationId": "update_knowledge_base_v2_knowledge_bases__knowledge_base_id__patch",
+        "operationId": "update_knowledge_base",
         "security": [
           {
             "APIKeyHeader": []
@@ -4293,7 +4293,7 @@
           "knowledge bases"
         ],
         "summary": "Delete Knowledge Base",
-        "operationId": "delete_knowledge_base_v2_knowledge_bases__knowledge_base_id__delete",
+        "operationId": "delete_knowledge_base",
         "security": [
           {
             "APIKeyHeader": []
@@ -4342,7 +4342,7 @@
           "knowledge bases"
         ],
         "summary": "Retrieve Knowledge Base Document",
-        "operationId": "retrieve_knowledge_base_document_v2_knowledge_bases__knowledge_base_id__documents__document_id__get",
+        "operationId": "retrieve_knowledge_base_document",
         "security": [
           {
             "APIKeyHeader": []
@@ -4401,7 +4401,7 @@
           "knowledge bases"
         ],
         "summary": "Search Knowledge Base Documents By Filters",
-        "operationId": "search_knowledge_base_documents_by_filters_v2_knowledge_bases__knowledge_base_id__documents_search_post",
+        "operationId": "search_knowledge_base_documents_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -4483,7 +4483,7 @@
           "knowledge bases"
         ],
         "summary": "Get Knowledge Base Document Navigation Info By Filters",
-        "operationId": "get_knowledge_base_document_navigation_info_by_filters_v2_knowledge_bases__knowledge_base_id__documents__document_id__navigation_info_post",
+        "operationId": "get_knowledge_base_document_navigation_info_by_filters",
         "security": [
           {
             "APIKeyHeader": []
@@ -4552,7 +4552,7 @@
           "knowledge bases"
         ],
         "summary": "Export Knowledge Base",
-        "operationId": "export_knowledge_base_v2_knowledge_bases__knowledge_base_id__export_get",
+        "operationId": "export_knowledge_base",
         "security": [
           {
             "APIKeyHeader": []
@@ -4610,7 +4610,7 @@
           "projects"
         ],
         "summary": "List Projects",
-        "operationId": "list_projects_v2_projects_get",
+        "operationId": "list_projects",
         "security": [
           {
             "APIKeyHeader": []
@@ -4635,7 +4635,7 @@
           "projects"
         ],
         "summary": "Create Project",
-        "operationId": "create_project_v2_projects_post",
+        "operationId": "create_project",
         "security": [
           {
             "APIKeyHeader": []
@@ -4680,7 +4680,7 @@
           "projects"
         ],
         "summary": "Bulk Delete Projects",
-        "operationId": "bulk_delete_projects_v2_projects_delete",
+        "operationId": "bulk_delete_projects",
         "security": [
           {
             "APIKeyHeader": []
@@ -4732,7 +4732,7 @@
           "projects"
         ],
         "summary": "Retrieve Project",
-        "operationId": "retrieve_project_v2_projects__project_id__get",
+        "operationId": "retrieve_project",
         "security": [
           {
             "APIKeyHeader": []
@@ -4779,7 +4779,7 @@
           "projects"
         ],
         "summary": "Update Project",
-        "operationId": "update_project_v2_projects__project_id__patch",
+        "operationId": "update_project",
         "security": [
           {
             "APIKeyHeader": []
@@ -4836,7 +4836,7 @@
           "projects"
         ],
         "summary": "Delete Project",
-        "operationId": "delete_project_v2_projects__project_id__delete",
+        "operationId": "delete_project",
         "security": [
           {
             "APIKeyHeader": []
@@ -4885,7 +4885,7 @@
           "playground chats"
         ],
         "summary": "List Playground Chats",
-        "operationId": "list_playground_chats_v2_playground_chats_get",
+        "operationId": "list_playground_chats",
         "security": [
           {
             "APIKeyHeader": []
@@ -4975,7 +4975,7 @@
           "playground chats"
         ],
         "summary": "Create Playground Chat",
-        "operationId": "create_playground_chat_v2_playground_chats_post",
+        "operationId": "create_playground_chat",
         "security": [
           {
             "APIKeyHeader": []
@@ -5020,7 +5020,7 @@
           "playground chats"
         ],
         "summary": "Delete Playground Chats",
-        "operationId": "delete_playground_chats_v2_playground_chats_delete",
+        "operationId": "delete_playground_chats",
         "security": [
           {
             "APIKeyHeader": []
@@ -5072,7 +5072,7 @@
           "playground chats"
         ],
         "summary": "Get Playground Chat",
-        "operationId": "get_playground_chat_v2_playground_chats__chat_id__get",
+        "operationId": "get_playground_chat",
         "security": [
           {
             "APIKeyHeader": []
@@ -5139,7 +5139,7 @@
           "playground chats"
         ],
         "summary": "Update Playground Chat",
-        "operationId": "update_playground_chat_v2_playground_chats__chat_id__patch",
+        "operationId": "update_playground_chat",
         "security": [
           {
             "APIKeyHeader": []
@@ -5198,7 +5198,7 @@
           "scans"
         ],
         "summary": "List Scans",
-        "operationId": "list_scans_v2_scans_get",
+        "operationId": "list_scans",
         "security": [
           {
             "APIKeyHeader": []
@@ -5275,7 +5275,7 @@
           "scans"
         ],
         "summary": "Create Scan",
-        "operationId": "create_scan_v2_scans_post",
+        "operationId": "create_scan",
         "security": [
           {
             "APIKeyHeader": []
@@ -5320,7 +5320,7 @@
           "scans"
         ],
         "summary": "Bulk Delete Scans",
-        "operationId": "bulk_delete_scans_v2_scans_delete",
+        "operationId": "bulk_delete_scans",
         "security": [
           {
             "APIKeyHeader": []
@@ -5372,7 +5372,7 @@
           "scans"
         ],
         "summary": "Retrieve Scan",
-        "operationId": "retrieve_scan_v2_scans__scan_result_id__get",
+        "operationId": "retrieve_scan",
         "security": [
           {
             "APIKeyHeader": []
@@ -5442,7 +5442,7 @@
           "scans"
         ],
         "summary": "Delete Scan",
-        "operationId": "delete_scan_v2_scans__scan_result_id__delete",
+        "operationId": "delete_scan",
         "security": [
           {
             "APIKeyHeader": []
@@ -5491,7 +5491,7 @@
           "scans"
         ],
         "summary": "List Scan Probes",
-        "operationId": "list_scan_probes_v2_scans__scan_result_id__probes_get",
+        "operationId": "list_scan_probes",
         "security": [
           {
             "APIKeyHeader": []
@@ -5541,7 +5541,7 @@
         ],
         "summary": "Export Scan",
         "description": "Export a scan result as a JSON file (attachment).",
-        "operationId": "export_scan_v2_scans__scan_result_id__export_get",
+        "operationId": "export_scan",
         "security": [
           {
             "APIKeyHeader": []
@@ -5588,7 +5588,7 @@
           "scans"
         ],
         "summary": "List Scan Categories",
-        "operationId": "list_scan_categories_v2_scan_categories_get",
+        "operationId": "list_scan_categories",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -5615,7 +5615,7 @@
           "scans"
         ],
         "summary": "List Available Probes",
-        "operationId": "list_available_probes_v2_scan_available_probes_get",
+        "operationId": "list_available_probes",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -5642,7 +5642,7 @@
           "scans"
         ],
         "summary": "Retrieve Scan Probe",
-        "operationId": "retrieve_scan_probe_v2_scan_probes__probe_result_id__get",
+        "operationId": "retrieve_scan_probe",
         "security": [
           {
             "APIKeyHeader": []
@@ -5691,7 +5691,7 @@
           "scans"
         ],
         "summary": "List Scan Probe Attempts",
-        "operationId": "list_scan_probe_attempts_v2_scan_probes__probe_result_id__attempts_get",
+        "operationId": "list_scan_probe_attempts",
         "security": [
           {
             "APIKeyHeader": []
@@ -5740,7 +5740,7 @@
           "scans"
         ],
         "summary": "Update Scan Probe Attempt",
-        "operationId": "update_scan_probe_attempt_v2_scan_attempts__probe_attempt_id__patch",
+        "operationId": "update_scan_probe_attempt",
         "security": [
           {
             "APIKeyHeader": []
@@ -5799,7 +5799,7 @@
           "scans"
         ],
         "summary": "Get Probe Attempt Navigation",
-        "operationId": "get_probe_attempt_navigation_v2_scan_attempts__probe_attempt_id__navigation_get",
+        "operationId": "get_probe_attempt_navigation",
         "security": [
           {
             "APIKeyHeader": []
@@ -5849,7 +5849,7 @@
         ],
         "summary": "List Prompt Presets",
         "description": "List all prompt presets for a project.",
-        "operationId": "list_prompt_presets_v2_projects__project_id__prompt_presets_get",
+        "operationId": "list_prompt_presets",
         "security": [
           {
             "APIKeyHeader": []
@@ -5897,7 +5897,7 @@
         ],
         "summary": "Create Prompt Preset",
         "description": "Create a new prompt preset.",
-        "operationId": "create_prompt_preset_v2_projects__project_id__prompt_presets_post",
+        "operationId": "create_prompt_preset",
         "security": [
           {
             "APIKeyHeader": []
@@ -5957,7 +5957,7 @@
         ],
         "summary": "Retrieve Prompt Preset",
         "description": "Retrieve a prompt preset by ID.",
-        "operationId": "retrieve_prompt_preset_v2_projects__project_id__prompt_presets__prompt_preset_id__get",
+        "operationId": "retrieve_prompt_preset",
         "security": [
           {
             "APIKeyHeader": []
@@ -6015,7 +6015,7 @@
         ],
         "summary": "Update Prompt Preset",
         "description": "Update a prompt preset.",
-        "operationId": "update_prompt_preset_v2_projects__project_id__prompt_presets__prompt_preset_id__patch",
+        "operationId": "update_prompt_preset",
         "security": [
           {
             "APIKeyHeader": []
@@ -6083,7 +6083,7 @@
         ],
         "summary": "Delete Prompt Preset",
         "description": "Delete a prompt preset.",
-        "operationId": "delete_prompt_preset_v2_projects__project_id__prompt_presets__prompt_preset_id__delete",
+        "operationId": "delete_prompt_preset",
         "security": [
           {
             "APIKeyHeader": []
@@ -6143,7 +6143,7 @@
         ],
         "summary": "Preview Prompt Preset",
         "description": "Generate a preview conversation for a prompt preset without persisting it.\n\nUses the same ScenarioBasedGenerator as the final dataset generation,\nthen calls the specified agent to get a response.",
-        "operationId": "preview_prompt_preset_v2_projects__project_id__prompt_presets_preview_post",
+        "operationId": "preview_prompt_preset",
         "security": [
           {
             "APIKeyHeader": []
@@ -6215,7 +6215,7 @@
         ],
         "summary": "List Project Scheduled Evaluation Runs",
         "description": "List all evaluation runs triggered by a schedule for a project, grouped by scheduled evaluation.\n\nKept for compatibility with the existing dashboard data needs.",
-        "operationId": "list_project_scheduled_evaluation_runs_v2_scheduled_evaluations_runs_get",
+        "operationId": "list_project_scheduled_evaluation_runs",
         "security": [
           {
             "APIKeyHeader": []
@@ -6305,7 +6305,7 @@
         ],
         "summary": "List Scheduled Evaluations",
         "description": "List all scheduled evaluations for a project.\n\nOptional `last_days` filters by evaluation creation date.",
-        "operationId": "list_scheduled_evaluations_v2_scheduled_evaluations_get",
+        "operationId": "list_scheduled_evaluations",
         "security": [
           {
             "APIKeyHeader": []
@@ -6392,7 +6392,7 @@
           "scheduled-evaluations"
         ],
         "summary": "Create Scheduled Evaluation",
-        "operationId": "create_scheduled_evaluation_v2_scheduled_evaluations_post",
+        "operationId": "create_scheduled_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -6437,7 +6437,7 @@
           "scheduled-evaluations"
         ],
         "summary": "Bulk Delete Scheduled Evaluations",
-        "operationId": "bulk_delete_scheduled_evaluations_v2_scheduled_evaluations_delete",
+        "operationId": "bulk_delete_scheduled_evaluations",
         "security": [
           {
             "APIKeyHeader": []
@@ -6489,7 +6489,7 @@
           "scheduled-evaluations"
         ],
         "summary": "Retrieve Scheduled Evaluation",
-        "operationId": "retrieve_scheduled_evaluation_v2_scheduled_evaluations__scheduled_evaluation_id__get",
+        "operationId": "retrieve_scheduled_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -6556,7 +6556,7 @@
           "scheduled-evaluations"
         ],
         "summary": "Update Scheduled Evaluation",
-        "operationId": "update_scheduled_evaluation_v2_scheduled_evaluations__scheduled_evaluation_id__patch",
+        "operationId": "update_scheduled_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -6613,7 +6613,7 @@
           "scheduled-evaluations"
         ],
         "summary": "Delete Scheduled Evaluation",
-        "operationId": "delete_scheduled_evaluation_v2_scheduled_evaluations__scheduled_evaluation_id__delete",
+        "operationId": "delete_scheduled_evaluation",
         "security": [
           {
             "APIKeyHeader": []
@@ -6662,7 +6662,7 @@
           "scheduled-evaluations"
         ],
         "summary": "List Scheduled Evaluation Evaluations",
-        "operationId": "list_scheduled_evaluation_evaluations_v2_scheduled_evaluations__scheduled_evaluation_id__evaluations_get",
+        "operationId": "list_scheduled_evaluation_evaluations",
         "security": [
           {
             "APIKeyHeader": []
@@ -6734,7 +6734,7 @@
           "table-views"
         ],
         "summary": "List Table Views",
-        "operationId": "list_table_views_v2_projects__project_id__table_views_get",
+        "operationId": "list_table_views",
         "security": [
           {
             "APIKeyHeader": []
@@ -6790,7 +6790,7 @@
           "table-views"
         ],
         "summary": "Create Table View",
-        "operationId": "create_table_view_v2_projects__project_id__table_views_post",
+        "operationId": "create_table_view",
         "security": [
           {
             "APIKeyHeader": []
@@ -6849,7 +6849,7 @@
           "table-views"
         ],
         "summary": "Update Table View",
-        "operationId": "update_table_view_v2_projects__project_id__table_views__view_id__patch",
+        "operationId": "update_table_view",
         "security": [
           {
             "APIKeyHeader": []
@@ -6916,7 +6916,7 @@
           "table-views"
         ],
         "summary": "Delete Table View",
-        "operationId": "delete_table_view_v2_projects__project_id__table_views__view_id__delete",
+        "operationId": "delete_table_view",
         "security": [
           {
             "APIKeyHeader": []
@@ -6976,7 +6976,7 @@
         ],
         "summary": "List Tasks",
         "description": "List tasks for a project (ordered by created_at DESC).",
-        "operationId": "list_tasks_v2_tasks_get",
+        "operationId": "list_tasks",
         "security": [
           {
             "APIKeyHeader": []
@@ -7026,7 +7026,7 @@
         ],
         "summary": "Create Task",
         "description": "Create a new task.",
-        "operationId": "create_task_v2_tasks_post",
+        "operationId": "create_task",
         "security": [
           {
             "APIKeyHeader": []
@@ -7072,7 +7072,7 @@
         ],
         "summary": "Bulk Delete Tasks",
         "description": "Delete tasks by IDs.",
-        "operationId": "bulk_delete_tasks_v2_tasks_delete",
+        "operationId": "bulk_delete_tasks",
         "security": [
           {
             "APIKeyHeader": []
@@ -7125,7 +7125,7 @@
         ],
         "summary": "Retrieve Task",
         "description": "Get a single task.",
-        "operationId": "retrieve_task_v2_tasks__task_id__get",
+        "operationId": "retrieve_task",
         "security": [
           {
             "APIKeyHeader": []
@@ -7173,7 +7173,7 @@
         ],
         "summary": "Update Task",
         "description": "Update a task.",
-        "operationId": "update_task_v2_tasks__task_id__patch",
+        "operationId": "update_task",
         "security": [
           {
             "APIKeyHeader": []
@@ -7231,7 +7231,7 @@
         ],
         "summary": "Delete Task",
         "description": "Delete a task.",
-        "operationId": "delete_task_v2_tasks__task_id__delete",
+        "operationId": "delete_task",
         "security": [
           {
             "APIKeyHeader": []
@@ -7280,7 +7280,7 @@
           "scenarios"
         ],
         "summary": "Create Scenario",
-        "operationId": "create_scenario_v2_scenarios_post",
+        "operationId": "create_scenario",
         "security": [
           {
             "APIKeyHeader": []
@@ -7325,7 +7325,7 @@
           "scenarios"
         ],
         "summary": "Bulk Delete Scenarios",
-        "operationId": "bulk_delete_scenarios_v2_scenarios_delete",
+        "operationId": "bulk_delete_scenarios",
         "security": [
           {
             "APIKeyHeader": []
@@ -7375,7 +7375,7 @@
           "scenarios"
         ],
         "summary": "Bulk Update Scenarios",
-        "operationId": "bulk_update_scenarios_v2_scenarios_patch",
+        "operationId": "bulk_update_scenarios",
         "security": [
           {
             "APIKeyHeader": []
@@ -7422,7 +7422,7 @@
           "scenarios"
         ],
         "summary": "Retrieve Scenario",
-        "operationId": "retrieve_scenario_v2_scenarios__scenario_id__get",
+        "operationId": "retrieve_scenario",
         "security": [
           {
             "APIKeyHeader": []
@@ -7469,7 +7469,7 @@
           "scenarios"
         ],
         "summary": "Update Scenario",
-        "operationId": "update_scenario_v2_scenarios__scenario_id__patch",
+        "operationId": "update_scenario",
         "security": [
           {
             "APIKeyHeader": []
@@ -7526,7 +7526,7 @@
           "scenarios"
         ],
         "summary": "Delete Scenario",
-        "operationId": "delete_scenario_v2_scenarios__scenario_id__delete",
+        "operationId": "delete_scenario",
         "security": [
           {
             "APIKeyHeader": []
@@ -7575,7 +7575,7 @@
           "scenarios"
         ],
         "summary": "Add Scenario Comment",
-        "operationId": "add_scenario_comment_v2_scenarios__scenario_id__comments_post",
+        "operationId": "add_scenario_comment",
         "security": [
           {
             "APIKeyHeader": []
@@ -7634,7 +7634,7 @@
           "scenarios"
         ],
         "summary": "Edit Scenario Comment",
-        "operationId": "edit_scenario_comment_v2_scenarios__scenario_id__comments__comment_id__patch",
+        "operationId": "edit_scenario_comment",
         "security": [
           {
             "APIKeyHeader": []
@@ -7701,7 +7701,7 @@
           "scenarios"
         ],
         "summary": "Delete Scenario Comment",
-        "operationId": "delete_scenario_comment_v2_scenarios__scenario_id__comments__comment_id__delete",
+        "operationId": "delete_scenario_comment",
         "security": [
           {
             "APIKeyHeader": []
@@ -7761,7 +7761,7 @@
         ],
         "summary": "Bulk Move Scenarios",
         "description": "Bulk move or copy scenarios between datasets.",
-        "operationId": "bulk_move_scenarios_v2_scenarios_bulk_move_post",
+        "operationId": "bulk_move_scenarios",
         "requestBody": {
           "content": {
             "application/json": {
@@ -7809,7 +7809,7 @@
         ],
         "summary": "Discover Tenant",
         "description": "Discovery endpoint used by the frontend (server-side) to configure auth per host.\n\nThe middleware already resolved the tenant from the request host and set it in\nthe TenantContext. We simply return the public OIDC discovery inputs.\n\nNote: this endpoint is intentionally unauthenticated. It returns only public\nOIDC discovery inputs (issuer + client id). Secrets are never returned.",
-        "operationId": "discover_tenant_v2_tenancy_discovery_get",
+        "operationId": "discover_tenant",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -7833,7 +7833,7 @@
         ],
         "summary": "Tenant Health",
         "description": "Tenant-scoped health endpoint.\n\nRequires tenant resolution (middleware). Checks tenant DB connectivity and\ntenant Keycloak realm reachability.",
-        "operationId": "tenant_health_v2_tenancy_health_get",
+        "operationId": "tenant_health",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -7859,7 +7859,7 @@
         ],
         "summary": "Find which tenant(s) an email belongs to",
         "description": "Cross-tenant email lookup for the tenant finder portal.\n\nThis endpoint is **exempted from the tenant middleware** \u2014 it operates\non the control-plane data directly.  Protected by Cloudflare Turnstile.",
-        "operationId": "find_tenant_v2_tenancy_find_tenant_post",
+        "operationId": "find_tenant",
         "requestBody": {
           "content": {
             "application/json": {
@@ -7901,7 +7901,7 @@
           "users"
         ],
         "summary": "List Users",
-        "operationId": "list_users_v2_users_get",
+        "operationId": "list_users",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -7928,7 +7928,7 @@
           "users"
         ],
         "summary": "Get Current User",
-        "operationId": "get_current_user_v2_users_current_get",
+        "operationId": "get_current_user",
         "security": [
           {
             "APIKeyHeader": []
@@ -7987,7 +7987,7 @@
           "users"
         ],
         "summary": "Get Current User Preferences",
-        "operationId": "get_current_user_preferences_v2_users_current_preferences_get",
+        "operationId": "get_current_user_preferences",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -8014,7 +8014,7 @@
           "users"
         ],
         "summary": "Update Notification Preferences",
-        "operationId": "update_notification_preferences_v2_users_current_preferences_notifications_patch",
+        "operationId": "update_notification_preferences",
         "requestBody": {
           "content": {
             "application/json": {
@@ -8061,7 +8061,7 @@
           "users"
         ],
         "summary": "Get User Detail",
-        "operationId": "get_user_detail_v2_users__user_id__get",
+        "operationId": "get_user_detail",
         "security": [
           {
             "APIKeyHeader": []
@@ -8128,7 +8128,7 @@
           "users"
         ],
         "summary": "Delete User",
-        "operationId": "delete_user_v2_users__user_id__delete",
+        "operationId": "delete_user",
         "security": [
           {
             "APIKeyHeader": []
@@ -8177,7 +8177,7 @@
           "users"
         ],
         "summary": "Update User Permissions",
-        "operationId": "update_user_permissions_v2_users_permissions__user_id__patch",
+        "operationId": "update_user_permissions",
         "security": [
           {
             "APIKeyHeader": []
@@ -8241,7 +8241,7 @@
           "users"
         ],
         "summary": "Invite User",
-        "operationId": "invite_user_v2_users_invite_post",
+        "operationId": "invite_user",
         "requestBody": {
           "content": {
             "application/json": {
@@ -8288,7 +8288,7 @@
           "users"
         ],
         "summary": "Request Password Reset",
-        "operationId": "request_password_reset_v2_users__user_id__request_reset_password_put",
+        "operationId": "request_password_reset",
         "security": [
           {
             "APIKeyHeader": []
@@ -8337,7 +8337,7 @@
           "users"
         ],
         "summary": "Get User Groups",
-        "operationId": "get_user_groups_v2_users__user_id__groups_get",
+        "operationId": "get_user_groups",
         "security": [
           {
             "APIKeyHeader": []
@@ -8384,7 +8384,7 @@
           "users"
         ],
         "summary": "Update User Groups",
-        "operationId": "update_user_groups_v2_users__user_id__groups_patch",
+        "operationId": "update_user_groups",
         "security": [
           {
             "APIKeyHeader": []
@@ -9741,6 +9741,18 @@
                             ],
                             "title": "Simulator Config"
                           },
+                          "metadata": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "title": "Metadata"
+                          },
                           "created_at": {
                             "type": "string",
                             "format": "date-time",
@@ -9941,6 +9953,11 @@
                           },
                           "schema_validation": {
                             "$ref": "#/$defs/ScenarioSchemaValidationAPIResource"
+                          },
+                          "annotations": {
+                            "additionalProperties": true,
+                            "type": "object",
+                            "title": "Annotations"
                           }
                         },
                         "type": "object",
@@ -10087,6 +10104,18 @@
                             ],
                             "title": "Simulator Config"
                           },
+                          "metadata": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": true,
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "title": "Metadata"
+                          },
                           "created_at": {
                             "type": "string",
                             "format": "date-time",
@@ -10287,6 +10316,11 @@
                           },
                           "schema_validation": {
                             "$ref": "#/$defs/ScenarioSchemaValidationAPIResource"
+                          },
+                          "annotations": {
+                            "additionalProperties": true,
+                            "type": "object",
+                            "title": "Annotations"
                           }
                         },
                         "type": "object",
@@ -15956,7 +15990,7 @@
         "type": "object",
         "title": "AuditSearchFilters"
       },
-      "Body_create_knowledge_base_v2_knowledge_bases_post": {
+      "Body_create_knowledge_base": {
         "properties": {
           "file": {
             "type": "string",
@@ -16000,9 +16034,9 @@
           "project_id",
           "name"
         ],
-        "title": "Body_create_knowledge_base_v2_knowledge_bases_post"
+        "title": "Body_create_knowledge_base"
       },
-      "Body_import_dataset_v2_datasets_import_post": {
+      "Body_import_dataset": {
         "properties": {
           "file": {
             "type": "string",
@@ -16014,9 +16048,9 @@
         "required": [
           "file"
         ],
-        "title": "Body_import_dataset_v2_datasets_import_post"
+        "title": "Body_import_dataset"
       },
-      "Body_import_red_team_audit_v2_red_team_audits_import_post": {
+      "Body_import_red_team_audit": {
         "properties": {
           "project_id": {
             "type": "string",
@@ -16063,9 +16097,9 @@
           "target_agent_id",
           "content"
         ],
-        "title": "Body_import_red_team_audit_v2_red_team_audits_import_post"
+        "title": "Body_import_red_team_audit"
       },
-      "Body_preview_dataset_import_v2_datasets_import_preview_post": {
+      "Body_preview_dataset_import": {
         "properties": {
           "file": {
             "type": "string",
@@ -16077,7 +16111,7 @@
         "required": [
           "file"
         ],
-        "title": "Body_preview_dataset_import_v2_datasets_import_preview_post"
+        "title": "Body_preview_dataset_import"
       },
       "BulkMoveScenariosRequest": {
         "properties": {
@@ -18882,6 +18916,18 @@
             ],
             "title": "Simulator Config"
           },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -19031,6 +19077,18 @@
             ],
             "title": "Simulator Config"
           },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
+          },
           "test_case_id": {
             "anyOf": [
               {
@@ -19113,6 +19171,18 @@
             },
             "type": "array",
             "title": "Checks"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata"
           }
         },
         "type": "object",
@@ -19807,12 +19877,17 @@
           "task_assignment": {
             "type": "boolean",
             "title": "Task Assignment"
+          },
+          "audit_runs": {
+            "type": "boolean",
+            "title": "Audit Runs"
           }
         },
         "type": "object",
         "required": [
           "scheduled_runs",
-          "task_assignment"
+          "task_assignment",
+          "audit_runs"
         ],
         "title": "NotificationPreferencesAPIResource"
       },
@@ -21021,6 +21096,19 @@
             ],
             "title": "Agent Id"
           },
+          "test_case_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Case Id",
+            "description": "Source test case, if any -- used to resolve trace.annotations."
+          },
           "input_data": {
             "additionalProperties": true,
             "type": "object",
@@ -21041,14 +21129,38 @@
                 {
                   "additionalProperties": true,
                   "type": "object"
+                },
+                {
+                  "anyOf": [
+                    {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ],
               "type": "array",
-              "maxItems": 2,
-              "minItems": 2
+              "maxItems": 3,
+              "minItems": 3
             },
             "type": "array",
             "title": "Interactions"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadata",
+            "description": "Interaction metadata to attach to the built trace, if known."
           },
           "checks": {
             "items": {
@@ -21458,6 +21570,11 @@
           },
           "schema_validation": {
             "$ref": "#/components/schemas/ScenarioSchemaValidationAPIResource"
+          },
+          "annotations": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Annotations"
           }
         },
         "type": "object",
@@ -22840,12 +22957,17 @@
           "task_assignment": {
             "type": "boolean",
             "title": "Task Assignment"
+          },
+          "audit_runs": {
+            "type": "boolean",
+            "title": "Audit Runs"
           }
         },
         "type": "object",
         "required": [
           "scheduled_runs",
-          "task_assignment"
+          "task_assignment",
+          "audit_runs"
         ],
         "title": "UpdateNotificationPreferencesRequest"
       },
@@ -23579,26 +23701,6 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
-          "evaluations": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Evaluations"
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__2": {
-        "properties": {
           "latest_runs": {
             "anyOf": [
               {
@@ -23617,33 +23719,7 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__3": {
-        "properties": {
-          "agent": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "dataset": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__4": {
+      "backend__http__responses__base__Included_list__2": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -23669,7 +23745,7 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__5": {
+      "backend__http__responses__base__Included_list__3": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -23680,6 +23756,52 @@
                 "type": "null"
               }
             ]
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__4": {
+        "properties": {
+          "agent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dataset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__5": {
+        "properties": {
+          "evaluations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluations"
           }
         },
         "type": "object",
