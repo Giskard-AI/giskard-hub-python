@@ -49,6 +49,11 @@ from ._base_client import (
     DefaultAsyncHttpxClient,
 )
 from ._utils._logs import setup_logging as _setup_logging
+from .lib.local_agent import (
+    LocalAgentHandler as LocalAgentHandler,
+    connect_local_agent as connect_local_agent,
+    connect_local_agent_sync as connect_local_agent_sync,
+)
 
 __all__ = [
     "types",
@@ -93,6 +98,9 @@ __all__ = [
     "DefaultAsyncHttpxClient",
     "DefaultAioHttpClient",
     "disable_telemetry",
+    "LocalAgentHandler",
+    "connect_local_agent",
+    "connect_local_agent_sync",
 ]
 
 if not _t.TYPE_CHECKING:
