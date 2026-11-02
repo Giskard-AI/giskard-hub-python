@@ -21,7 +21,7 @@ Types are organized by domain into consolidated modules:
 - playground_chat: PlaygroundChat and params
 - project: Project, ProjectOnboarding and params
 - credit: CreditEstimate, CreditUsageSummary
-- red_team_audit: red team audit estimate params
+- red_team_audit: RedTeamAudit, RedTeamAuditContent, RedTeamAuditLogs and params
 """
 
 # -- common ----------------------------------------------------------------
@@ -360,8 +360,39 @@ from .credit import (
 
 # -- red team audit --------------------------------------------------------
 from .red_team_audit import (
+    RedTeamAudit as RedTeamAudit,
+    RedTeamAuditContent as RedTeamAuditContent,
+    RedTeamAuditCoverage as RedTeamAuditCoverage,
     RedTeamAuditCoverageMode as RedTeamAuditCoverageMode,
+    RedTeamAuditCreateParams as RedTeamAuditCreateParams,
+    RedTeamAuditDownloadParams as RedTeamAuditDownloadParams,
+    RedTeamAuditDownloadType as RedTeamAuditDownloadType,
     RedTeamAuditEstimateParams as RedTeamAuditEstimateParams,
+    RedTeamAuditEvaluationUploadStatus as RedTeamAuditEvaluationUploadStatus,
+    RedTeamAuditFinding as RedTeamAuditFinding,
+    RedTeamAuditFindingEvidence as RedTeamAuditFindingEvidence,
+    RedTeamAuditImpactGrade as RedTeamAuditImpactGrade,
+    RedTeamAuditListParams as RedTeamAuditListParams,
+    RedTeamAuditLogChunk as RedTeamAuditLogChunk,
+    RedTeamAuditLogStream as RedTeamAuditLogStream,
+    RedTeamAuditLogs as RedTeamAuditLogs,
+    RedTeamAuditOverallAssessment as RedTeamAuditOverallAssessment,
+    RedTeamAuditRemediation as RedTeamAuditRemediation,
+    RedTeamAuditRetrieveLogsParams as RedTeamAuditRetrieveLogsParams,
+    RedTeamAuditRiskModel as RedTeamAuditRiskModel,
+    RedTeamAuditRiskModelAssumption as RedTeamAuditRiskModelAssumption,
+    RedTeamAuditRiskModelBusinessAsset as RedTeamAuditRiskModelBusinessAsset,
+    RedTeamAuditRiskModelFearedEvent as RedTeamAuditRiskModelFearedEvent,
+    RedTeamAuditRiskModelMeta as RedTeamAuditRiskModelMeta,
+    RedTeamAuditRiskModelMission as RedTeamAuditRiskModelMission,
+    RedTeamAuditRiskModelRiskOrigin as RedTeamAuditRiskModelRiskOrigin,
+    RedTeamAuditRiskModelScenario as RedTeamAuditRiskModelScenario,
+    RedTeamAuditRiskModelScope as RedTeamAuditRiskModelScope,
+    RedTeamAuditRiskModelSupportingAsset as RedTeamAuditRiskModelSupportingAsset,
+    RedTeamAuditRiskModelSurface as RedTeamAuditRiskModelSurface,
+    RedTeamAuditScanType as RedTeamAuditScanType,
+    RedTeamAuditStatus as RedTeamAuditStatus,
+    RedTeamAuditUploadParams as RedTeamAuditUploadParams,
 )
 
 __all__ = [
@@ -643,6 +674,37 @@ __all__ = [
     "CreditUsageSummary",
     "UsageRetrieveCreditsParams",
     # red team audit
+    "RedTeamAudit",
+    "RedTeamAuditContent",
+    "RedTeamAuditCoverage",
     "RedTeamAuditCoverageMode",
+    "RedTeamAuditCreateParams",
+    "RedTeamAuditDownloadParams",
+    "RedTeamAuditDownloadType",
     "RedTeamAuditEstimateParams",
+    "RedTeamAuditEvaluationUploadStatus",
+    "RedTeamAuditFinding",
+    "RedTeamAuditFindingEvidence",
+    "RedTeamAuditImpactGrade",
+    "RedTeamAuditListParams",
+    "RedTeamAuditLogChunk",
+    "RedTeamAuditLogStream",
+    "RedTeamAuditLogs",
+    "RedTeamAuditOverallAssessment",
+    "RedTeamAuditRemediation",
+    "RedTeamAuditRetrieveLogsParams",
+    "RedTeamAuditRiskModel",
+    "RedTeamAuditRiskModelAssumption",
+    "RedTeamAuditRiskModelBusinessAsset",
+    "RedTeamAuditRiskModelFearedEvent",
+    "RedTeamAuditRiskModelMeta",
+    "RedTeamAuditRiskModelMission",
+    "RedTeamAuditRiskModelRiskOrigin",
+    "RedTeamAuditRiskModelScenario",
+    "RedTeamAuditRiskModelScope",
+    "RedTeamAuditRiskModelSupportingAsset",
+    "RedTeamAuditRiskModelSurface",
+    "RedTeamAuditScanType",
+    "RedTeamAuditStatus",
+    "RedTeamAuditUploadParams",
 ]

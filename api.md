@@ -502,12 +502,26 @@ Types:
 ```python
 from giskard_hub.types import (
     CreditEstimate,
+    RedTeamAudit,
+    RedTeamAuditContent,
     RedTeamAuditCoverageMode,
+    RedTeamAuditDownloadType,
+    RedTeamAuditLogs,
+    RedTeamAuditScanType,
+    RedTeamAuditStatus,
 )
 ```
 
 Methods:
 
+- <code title="post /v2/red-team-audits">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">create</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAudit</a></code>
+- <code title="post /v2/red-team-audits/import">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">upload</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAudit</a></code>
+- <code title="get /v2/red-team-audits/{audit_id}">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve</a>(audit_id) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAudit</a></code>
+- <code title="get /v2/red-team-audits">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">list</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> List[<a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAudit</a>]</code>
+- <code title="delete /v2/red-team-audits/{audit_id}">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">delete</a>(audit_id) -> None</code>
+- <code title="get /v2/red-team-audits/{audit_id}/content">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_content</a>(audit_id) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAuditContent</a></code>
+- <code title="get /v2/red-team-audits/{audit_id}/logs">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_logs</a>(audit_id, \*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAuditLogs</a></code>
+- <code title="get /v2/red-team-audits/{audit_id}/download">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">download</a>(audit_id, \*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> BinaryAPIResponse</code>
 - <code title="post /v2/red-team-audits/estimate">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">estimate</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 
 # Usage
