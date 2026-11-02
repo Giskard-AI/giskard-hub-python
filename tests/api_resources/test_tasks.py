@@ -177,7 +177,9 @@ class TestTasks:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_list(self, client: HubClient) -> None:
-        task = client.tasks.list()
+        task = client.tasks.list(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
         assert_matches_type(List[Task], task, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -191,7 +193,9 @@ class TestTasks:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_list(self, client: HubClient) -> None:
-        response = client.tasks.with_raw_response.list()
+        response = client.tasks.with_raw_response.list(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -201,7 +205,9 @@ class TestTasks:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_list(self, client: HubClient) -> None:
-        with client.tasks.with_streaming_response.list() as response:
+        with client.tasks.with_streaming_response.list(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 
@@ -458,7 +464,9 @@ class TestAsyncTasks:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncHubClient) -> None:
-        task = await async_client.tasks.list()
+        task = await async_client.tasks.list(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
         assert_matches_type(List[Task], task, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
@@ -472,7 +480,9 @@ class TestAsyncTasks:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncHubClient) -> None:
-        response = await async_client.tasks.with_raw_response.list()
+        response = await async_client.tasks.with_raw_response.list(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -482,7 +492,9 @@ class TestAsyncTasks:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncHubClient) -> None:
-        async with async_client.tasks.with_streaming_response.list() as response:
+        async with async_client.tasks.with_streaming_response.list(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
 

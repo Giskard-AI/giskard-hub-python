@@ -10,9 +10,11 @@ from .evaluation import FailureCategory, FailureCategoryParam
 
 __all__ = [
     "Project",
+    "ProjectOnboarding",
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
+    "ProjectOnboardingUpdateDismissalParams",
 ]
 
 
@@ -28,6 +30,14 @@ class Project(BaseModel):
     failure_categories: List[FailureCategory]
     name: str
     updated_at: datetime
+
+
+class ProjectOnboarding(BaseModel):
+    agent_connected: bool
+    playground_tried: bool
+    audit_launched: bool
+    dismissed: bool
+    restarted_at: Optional[datetime] = None
 
 
 # ---------------------------------------------------------------------------
@@ -48,3 +58,7 @@ class ProjectUpdateParams(TypedDict, total=False):
 
 class ProjectBulkDeleteParams(TypedDict, total=False):
     project_ids: Required[SequenceNotStr[str]]
+
+
+class ProjectOnboardingUpdateDismissalParams(TypedDict, total=False):
+    dismissed: Required[bool]

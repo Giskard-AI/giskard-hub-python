@@ -33,7 +33,14 @@ from .prompt_presets import (
     PromptPresetsResourceWithStreamingResponse,
     AsyncPromptPresetsResourceWithStreamingResponse,
 )
-from ...types.project import Project, ProjectCreateParams, ProjectUpdateParams, ProjectBulkDeleteParams
+from ...types.project import (
+    Project,
+    ProjectOnboarding,
+    ProjectCreateParams,
+    ProjectUpdateParams,
+    ProjectBulkDeleteParams,
+    ProjectOnboardingUpdateDismissalParams,
+)
 from ...types.evaluation import FailureCategoryParam
 
 __all__ = ["ProjectsResource", "AsyncProjectsResource"]
@@ -377,6 +384,168 @@ class ProjectsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    def retrieve_onboarding(
+        self,
+        project_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ProjectOnboarding:
+        """Retrieve the onboarding state of a project.
+
+        Parameters
+        ----------
+        project_id : str
+            ID of the project.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        ProjectOnboarding
+            The project's onboarding state.
+
+        Raises
+        ------
+        ValueError
+            If `project_id` is empty.
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        response = self._get(
+            f"/v2/projects/{project_id}/onboarding",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProjectOnboarding],
+        )
+
+        return self._unwrap(response)
+
+    def update_onboarding_dismissal(
+        self,
+        project_id: str,
+        *,
+        dismissed: bool,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ProjectOnboarding:
+        """Update whether onboarding is dismissed for a project.
+
+        Parameters
+        ----------
+        project_id : str
+            ID of the project.
+        dismissed : bool
+            Whether onboarding should be dismissed.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        ProjectOnboarding
+            The updated onboarding state.
+
+        Raises
+        ------
+        ValueError
+            If `project_id` is empty.
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        response = self._put(
+            f"/v2/projects/{project_id}/onboarding/dismissal",
+            body=maybe_transform(
+                {
+                    "dismissed": dismissed,
+                },
+                ProjectOnboardingUpdateDismissalParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProjectOnboarding],
+        )
+
+        return self._unwrap(response)
+
+    def restart_onboarding(
+        self,
+        project_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ProjectOnboarding:
+        """Restart onboarding for a project.
+
+        Parameters
+        ----------
+        project_id : str
+            ID of the project.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        ProjectOnboarding
+            The restarted onboarding state.
+
+        Raises
+        ------
+        ValueError
+            If `project_id` is empty.
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        response = self._post(
+            f"/v2/projects/{project_id}/onboarding/restart",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProjectOnboarding],
+        )
+
+        return self._unwrap(response)
+
 
 class AsyncProjectsResource(AsyncAPIResource):
     @cached_property
@@ -716,6 +885,168 @@ class AsyncProjectsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def retrieve_onboarding(
+        self,
+        project_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ProjectOnboarding:
+        """Retrieve the onboarding state of a project.
+
+        Parameters
+        ----------
+        project_id : str
+            ID of the project.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        ProjectOnboarding
+            The project's onboarding state.
+
+        Raises
+        ------
+        ValueError
+            If `project_id` is empty.
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        response = await self._get(
+            f"/v2/projects/{project_id}/onboarding",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProjectOnboarding],
+        )
+
+        return self._unwrap(response)
+
+    async def update_onboarding_dismissal(
+        self,
+        project_id: str,
+        *,
+        dismissed: bool,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ProjectOnboarding:
+        """Update whether onboarding is dismissed for a project.
+
+        Parameters
+        ----------
+        project_id : str
+            ID of the project.
+        dismissed : bool
+            Whether onboarding should be dismissed.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        ProjectOnboarding
+            The updated onboarding state.
+
+        Raises
+        ------
+        ValueError
+            If `project_id` is empty.
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        response = await self._put(
+            f"/v2/projects/{project_id}/onboarding/dismissal",
+            body=await async_maybe_transform(
+                {
+                    "dismissed": dismissed,
+                },
+                ProjectOnboardingUpdateDismissalParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProjectOnboarding],
+        )
+
+        return self._unwrap(response)
+
+    async def restart_onboarding(
+        self,
+        project_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ProjectOnboarding:
+        """Restart onboarding for a project.
+
+        Parameters
+        ----------
+        project_id : str
+            ID of the project.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        ProjectOnboarding
+            The restarted onboarding state.
+
+        Raises
+        ------
+        ValueError
+            If `project_id` is empty.
+        """
+        if not project_id:
+            raise ValueError(f"Expected a non-empty value for `project_id` but received {project_id!r}")
+        response = await self._post(
+            f"/v2/projects/{project_id}/onboarding/restart",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[ProjectOnboarding],
+        )
+
+        return self._unwrap(response)
+
 
 class ProjectsResourceWithRawResponse:
     def __init__(self, projects: ProjectsResource) -> None:
@@ -740,6 +1071,15 @@ class ProjectsResourceWithRawResponse:
         )
         self.bulk_delete = to_raw_response_wrapper(
             projects.bulk_delete,
+        )
+        self.retrieve_onboarding = to_raw_response_wrapper(
+            projects.retrieve_onboarding,
+        )
+        self.update_onboarding_dismissal = to_raw_response_wrapper(
+            projects.update_onboarding_dismissal,
+        )
+        self.restart_onboarding = to_raw_response_wrapper(
+            projects.restart_onboarding,
         )
 
 
@@ -767,6 +1107,15 @@ class AsyncProjectsResourceWithRawResponse:
         self.bulk_delete = async_to_raw_response_wrapper(
             projects.bulk_delete,
         )
+        self.retrieve_onboarding = async_to_raw_response_wrapper(
+            projects.retrieve_onboarding,
+        )
+        self.update_onboarding_dismissal = async_to_raw_response_wrapper(
+            projects.update_onboarding_dismissal,
+        )
+        self.restart_onboarding = async_to_raw_response_wrapper(
+            projects.restart_onboarding,
+        )
 
 
 class ProjectsResourceWithStreamingResponse:
@@ -793,6 +1142,15 @@ class ProjectsResourceWithStreamingResponse:
         self.bulk_delete = to_streamed_response_wrapper(
             projects.bulk_delete,
         )
+        self.retrieve_onboarding = to_streamed_response_wrapper(
+            projects.retrieve_onboarding,
+        )
+        self.update_onboarding_dismissal = to_streamed_response_wrapper(
+            projects.update_onboarding_dismissal,
+        )
+        self.restart_onboarding = to_streamed_response_wrapper(
+            projects.restart_onboarding,
+        )
 
 
 class AsyncProjectsResourceWithStreamingResponse:
@@ -818,4 +1176,13 @@ class AsyncProjectsResourceWithStreamingResponse:
         )
         self.bulk_delete = async_to_streamed_response_wrapper(
             projects.bulk_delete,
+        )
+        self.retrieve_onboarding = async_to_streamed_response_wrapper(
+            projects.retrieve_onboarding,
+        )
+        self.update_onboarding_dismissal = async_to_streamed_response_wrapper(
+            projects.update_onboarding_dismissal,
+        )
+        self.restart_onboarding = async_to_streamed_response_wrapper(
+            projects.restart_onboarding,
         )

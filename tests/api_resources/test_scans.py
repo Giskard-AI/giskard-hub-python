@@ -13,6 +13,7 @@ from giskard_hub.types import (
     Scan,
     ScanProbe,
     ScanCategory,
+    CreditEstimate,
     ScanAvailableProbe,
 )
 
@@ -342,6 +343,44 @@ class TestScans:
 
         assert cast(Any, response.is_closed) is True
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_estimate(self, client: HubClient) -> None:
+        estimate = client.scans.estimate()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_estimate(self, client: HubClient) -> None:
+        response = client.scans.with_raw_response.estimate()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        estimate = response.parse()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_estimate(self, client: HubClient) -> None:
+        with client.scans.with_streaming_response.estimate() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            estimate = response.parse()
+            assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_estimate_with_all_params(self, client: HubClient) -> None:
+        estimate = client.scans.estimate(
+            knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            tags=["tag"],
+            probe_ids=["probe"],
+        )
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
 
 class TestAsyncScans:
     parametrize = pytest.mark.parametrize(
@@ -670,3 +709,41 @@ class TestAsyncScans:
             assert_matches_type(List[ScanAvailableProbe], probes, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_estimate(self, async_client: AsyncHubClient) -> None:
+        estimate = await async_client.scans.estimate()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_estimate(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.scans.with_raw_response.estimate()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        estimate = response.parse()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_estimate(self, async_client: AsyncHubClient) -> None:
+        async with async_client.scans.with_streaming_response.estimate() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            estimate = await response.parse()
+            assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_estimate_with_all_params(self, async_client: AsyncHubClient) -> None:
+        estimate = await async_client.scans.estimate(
+            knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            tags=["tag"],
+            probe_ids=["probe"],
+        )
+        assert_matches_type(CreditEstimate, estimate, path=["response"])

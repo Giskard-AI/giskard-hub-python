@@ -321,6 +321,7 @@ class TestScenarios:
         scenario = client.projects.scenarios.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
@@ -341,6 +342,7 @@ class TestScenarios:
         response = client.projects.scenarios.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -354,6 +356,7 @@ class TestScenarios:
         with client.projects.scenarios.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -373,6 +376,7 @@ class TestScenarios:
             client.projects.scenarios.with_raw_response.preview(
                 project_id="",
                 description="description",
+                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             )
 
 
@@ -685,6 +689,7 @@ class TestAsyncScenarios:
         scenario = await async_client.projects.scenarios.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(PromptPresetPreview, scenario, path=["response"])
 
@@ -705,6 +710,7 @@ class TestAsyncScenarios:
         response = await async_client.projects.scenarios.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -718,6 +724,7 @@ class TestAsyncScenarios:
         async with async_client.projects.scenarios.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -737,4 +744,5 @@ class TestAsyncScenarios:
             await async_client.projects.scenarios.with_raw_response.preview(
                 project_id="",
                 description="description",
+                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             )

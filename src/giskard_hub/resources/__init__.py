@@ -22,6 +22,22 @@ from .tasks import (
     TasksResourceWithStreamingResponse,
     AsyncTasksResourceWithStreamingResponse,
 )
+from .usage import (
+    UsageResource,
+    AsyncUsageResource,
+    UsageResourceWithRawResponse,
+    AsyncUsageResourceWithRawResponse,
+    UsageResourceWithStreamingResponse,
+    AsyncUsageResourceWithStreamingResponse,
+)
+from .users import (
+    UsersResource,
+    AsyncUsersResource,
+    UsersResourceWithRawResponse,
+    AsyncUsersResourceWithRawResponse,
+    UsersResourceWithStreamingResponse,
+    AsyncUsersResourceWithStreamingResponse,
+)
 from .agents import (
     AgentsResource,
     AsyncAgentsResource,
@@ -81,6 +97,14 @@ from .knowledge_bases import (
     AsyncKnowledgeBasesResourceWithRawResponse,
     KnowledgeBasesResourceWithStreamingResponse,
     AsyncKnowledgeBasesResourceWithStreamingResponse,
+)
+from .red_team_audits import (
+    RedTeamAuditsResource,
+    AsyncRedTeamAuditsResource,
+    RedTeamAuditsResourceWithRawResponse,
+    AsyncRedTeamAuditsResourceWithRawResponse,
+    RedTeamAuditsResourceWithStreamingResponse,
+    AsyncRedTeamAuditsResourceWithStreamingResponse,
 )
 from .playground_chats import (
     PlaygroundChatsResource,
@@ -174,4 +198,22 @@ __all__ = [
     "AsyncScheduledEvaluationsResourceWithStreamingResponse",
     "HelpersResource",
     "AsyncHelpersResource",
+    "UsageResource",
+    "AsyncUsageResource",
+    "UsageResourceWithRawResponse",
+    "AsyncUsageResourceWithRawResponse",
+    "UsageResourceWithStreamingResponse",
+    "AsyncUsageResourceWithStreamingResponse",
+    "UsersResource",
+    "AsyncUsersResource",
+    "UsersResourceWithRawResponse",
+    "AsyncUsersResourceWithRawResponse",
+    "UsersResourceWithStreamingResponse",
+    "AsyncUsersResourceWithStreamingResponse",
+    "RedTeamAuditsResource",
+    "AsyncRedTeamAuditsResource",
+    "RedTeamAuditsResourceWithRawResponse",
+    "AsyncRedTeamAuditsResourceWithRawResponse",
+    "RedTeamAuditsResourceWithStreamingResponse",
+    "AsyncRedTeamAuditsResourceWithStreamingResponse",
 ]

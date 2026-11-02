@@ -92,6 +92,7 @@ from giskard_hub.types import (
     Scenario,
     TestCase,
     TaskProgress,
+    CreditEstimate,
     APIPaginatedMetadata,
 )
 ```
@@ -108,6 +109,8 @@ Methods:
 - <code title="post /v2/datasets/generate-preset-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_preset_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code>
 - <code title="post /v2/datasets/generate-preset-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_scenario_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code> (deprecated alias of `generate_preset_based`)
 - <code title="post /v2/datasets/generate-document-based">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">generate_document_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">Dataset</a></code>
+- <code title="post /v2/datasets/generate-document-based/estimate">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">estimate_document_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
+- <code title="post /v2/datasets/generate-preset-based/estimate">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">estimate_preset_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 - <code title="get /v2/datasets/{dataset_id}/tags">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_tags</a>(dataset_id) -> List[str]</code>
 - <code title="get /v2/datasets/{dataset_id}/scenarios">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_scenarios</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
 - <code title="post /v2/datasets/{dataset_id}/scenarios/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">search_scenarios</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>] | Tuple[List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
@@ -130,6 +133,7 @@ from giskard_hub.types import (
     Metric,
     MinimalAgent,
     OutputAnnotation,
+    CreditEstimate,
 )
 ```
 
@@ -144,7 +148,10 @@ Methods:
 - <code title="post /v2/evaluations/create-local">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">create_local</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
 - <code title="post /v2/evaluations/upload">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">upload</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
 - <code title="post /v2/evaluations/{evaluation_id}/rerun-errored-results">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">rerun_errored_results</a>(evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">Evaluation</a></code>
+- <code title="post /v2/evaluations/estimate">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">estimate</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 - <code title="post /v2/evaluations/run-interaction-checks">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">run_single</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/check.py">CheckResult</a>]</code>
+- <code title="post /v2/evaluations/run-interaction-checks/estimate">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">estimate_run_interaction_checks</a>(\*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
+- <code title="post /v2/evaluations/{evaluation_id}/rerun-errored-results/estimate">client.evaluations.<a href="./src/giskard_hub/resources/evaluations/evaluations.py">estimate_rerun_errored_results</a>(evaluation_id) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 
 ## Helpers
 
@@ -190,6 +197,7 @@ from giskard_hub.types.evaluation import (
 )
 from giskard_hub.types import (
     Scenario,
+    CreditEstimate,
     APIPaginatedMetadata,
 )
 ```
@@ -200,6 +208,7 @@ Methods:
 - <code title="patch /v2/evaluations/{evaluation_id}/results/{result_id}">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">update</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
 - <code title="get /v2/evaluations/{evaluation_id}/results">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">list</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> List[<a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a>]</code>
 - <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_scenario</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
+- <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario/estimate">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">estimate_rerun_scenario</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 - <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">rerun_test_case</a>(result_id, \*, evaluation_id) -> <a href="./src/giskard_hub/types/evaluation.py">TestCaseEvaluation</a></code> (deprecated alias of `rerun_scenario`)
 - <code title="post /v2/evaluations/{evaluation_id}/results/{result_id}/submit-local-output">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">submit_local_output</a>(result_id, \*, evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>) -> <a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a></code>
 - <code title="post /v2/evaluations/{evaluation_id}/results/search">client.evaluations.results.<a href="./src/giskard_hub/resources/evaluations/results.py">search</a>(evaluation_id, \*\*<a href="src/giskard_hub/types/evaluation.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a>] | Tuple[List[<a href="./src/giskard_hub/types/evaluation.py">ScenarioEvaluation</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
@@ -236,6 +245,7 @@ Types:
 ```python
 from giskard_hub.types import (
     Project,
+    ProjectOnboarding,
 )
 ```
 
@@ -247,6 +257,9 @@ Methods:
 - <code title="get /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">list</a>() -> List[<a href="./src/giskard_hub/types/project.py">Project</a>]</code>
 - <code title="delete /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">delete</a>(project_id) -> None</code>
 - <code title="delete /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/project.py">params</a>) -> None</code>
+- <code title="get /v2/projects/{project_id}/onboarding">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">retrieve_onboarding</a>(project_id) -> <a href="./src/giskard_hub/types/project.py">ProjectOnboarding</a></code>
+- <code title="put /v2/projects/{project_id}/onboarding/dismissal">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">update_onboarding_dismissal</a>(project_id, \*\*<a href="src/giskard_hub/types/project.py">params</a>) -> <a href="./src/giskard_hub/types/project.py">ProjectOnboarding</a></code>
+- <code title="post /v2/projects/{project_id}/onboarding/restart">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">restart_onboarding</a>(project_id) -> <a href="./src/giskard_hub/types/project.py">ProjectOnboarding</a></code>
 
 ## Prompt Presets
 
@@ -303,6 +316,7 @@ from giskard_hub.types import (
     ScanAvailableProbe,
     ScanCategory,
     ScanProbe,
+    CreditEstimate,
 )
 ```
 
@@ -316,6 +330,7 @@ Methods:
 - <code title="get /v2/scan-categories">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_categories</a>() -> List[<a href="./src/giskard_hub/types/scan.py">ScanCategory</a>]</code>
 - <code title="get /v2/scans/{scan_id}/probes">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_probes</a>(scan_id) -> List[<a href="./src/giskard_hub/types/scan.py">ScanProbe</a>]</code>
 - <code title="get /v2/scan-available-probes">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">list_available_probes</a>() -> List[<a href="./src/giskard_hub/types/scan.py">ScanAvailableProbe</a>]</code>
+- <code title="post /v2/scans/estimate">client.scans.<a href="./src/giskard_hub/resources/scans/scans.py">estimate</a>(\*\*<a href="src/giskard_hub/types/scan.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 
 ## Probes
 
@@ -479,3 +494,47 @@ Methods:
 - <code title="get /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">retrieve</a>(chat_id, \*\*<a href="src/giskard_hub/types/playground_chat.py">params</a>) -> <a href="./src/giskard_hub/types/playground_chat.py">PlaygroundChat</a></code>
 - <code title="delete /v2/playground-chats/{chat_id}">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">delete</a>(chat_id) -> None</code>
 - <code title="delete /v2/playground-chats">client.playground_chats.<a href="./src/giskard_hub/resources/playground_chats.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/playground_chat.py">params</a>) -> None</code>
+
+# Red Team Audits
+
+Types:
+
+```python
+from giskard_hub.types import (
+    CreditEstimate,
+    RedTeamAuditCoverageMode,
+)
+```
+
+Methods:
+
+- <code title="post /v2/red-team-audits/estimate">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">estimate</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
+
+# Usage
+
+Types:
+
+```python
+from giskard_hub.types import (
+    CreditUsageSummary,
+)
+```
+
+Methods:
+
+- <code title="get /v2/usage/credits">client.usage.<a href="./src/giskard_hub/resources/usage.py">retrieve_credits</a>(\*\*<a href="src/giskard_hub/types/credit.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditUsageSummary</a></code>
+
+# Users
+
+Types:
+
+```python
+from giskard_hub.types import (
+    HubApiKey,
+)
+```
+
+Methods:
+
+- <code title="get /v2/users/current/api-key">client.users.<a href="./src/giskard_hub/resources/users.py">retrieve_api_key</a>() -> <a href="./src/giskard_hub/types/user.py">HubApiKey</a></code>
+- <code title="post /v2/users/current/api-key/rotate">client.users.<a href="./src/giskard_hub/resources/users.py">rotate_api_key</a>() -> <a href="./src/giskard_hub/types/user.py">HubApiKey</a></code>

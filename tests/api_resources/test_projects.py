@@ -9,7 +9,7 @@ import pytest
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
-from giskard_hub.types import Project
+from giskard_hub.types import Project, ProjectOnboarding
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -273,6 +273,145 @@ class TestProjects:
             assert_matches_type(None, project, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_retrieve_onboarding(self, client: HubClient) -> None:
+        onboarding = client.projects.retrieve_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_retrieve_onboarding(self, client: HubClient) -> None:
+        response = client.projects.with_raw_response.retrieve_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        onboarding = response.parse()
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_retrieve_onboarding(self, client: HubClient) -> None:
+        with client.projects.with_streaming_response.retrieve_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            onboarding = response.parse()
+            assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_path_params_retrieve_onboarding(self, client: HubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `project_id` but received ''",
+        ):
+            client.projects.with_raw_response.retrieve_onboarding(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_update_onboarding_dismissal(self, client: HubClient) -> None:
+        onboarding = client.projects.update_onboarding_dismissal(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dismissed=True,
+        )
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_update_onboarding_dismissal(self, client: HubClient) -> None:
+        response = client.projects.with_raw_response.update_onboarding_dismissal(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dismissed=True,
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        onboarding = response.parse()
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_update_onboarding_dismissal(self, client: HubClient) -> None:
+        with client.projects.with_streaming_response.update_onboarding_dismissal(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dismissed=True,
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            onboarding = response.parse()
+            assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_path_params_update_onboarding_dismissal(self, client: HubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `project_id` but received ''",
+        ):
+            client.projects.with_raw_response.update_onboarding_dismissal(
+                "",
+                dismissed=True,
+            )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_restart_onboarding(self, client: HubClient) -> None:
+        onboarding = client.projects.restart_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_restart_onboarding(self, client: HubClient) -> None:
+        response = client.projects.with_raw_response.restart_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        onboarding = response.parse()
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_restart_onboarding(self, client: HubClient) -> None:
+        with client.projects.with_streaming_response.restart_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            onboarding = response.parse()
+            assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_path_params_restart_onboarding(self, client: HubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `project_id` but received ''",
+        ):
+            client.projects.with_raw_response.restart_onboarding(
+                "",
+            )
 
 
 class TestAsyncProjects:
@@ -539,3 +678,142 @@ class TestAsyncProjects:
             assert_matches_type(None, project, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_retrieve_onboarding(self, async_client: AsyncHubClient) -> None:
+        onboarding = await async_client.projects.retrieve_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_retrieve_onboarding(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.projects.with_raw_response.retrieve_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        onboarding = response.parse()
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_retrieve_onboarding(self, async_client: AsyncHubClient) -> None:
+        async with async_client.projects.with_streaming_response.retrieve_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            onboarding = await response.parse()
+            assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_retrieve_onboarding(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `project_id` but received ''",
+        ):
+            await async_client.projects.with_raw_response.retrieve_onboarding(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_update_onboarding_dismissal(self, async_client: AsyncHubClient) -> None:
+        onboarding = await async_client.projects.update_onboarding_dismissal(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dismissed=True,
+        )
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_update_onboarding_dismissal(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.projects.with_raw_response.update_onboarding_dismissal(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dismissed=True,
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        onboarding = response.parse()
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_update_onboarding_dismissal(self, async_client: AsyncHubClient) -> None:
+        async with async_client.projects.with_streaming_response.update_onboarding_dismissal(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dismissed=True,
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            onboarding = await response.parse()
+            assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_update_onboarding_dismissal(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `project_id` but received ''",
+        ):
+            await async_client.projects.with_raw_response.update_onboarding_dismissal(
+                "",
+                dismissed=True,
+            )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_restart_onboarding(self, async_client: AsyncHubClient) -> None:
+        onboarding = await async_client.projects.restart_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_restart_onboarding(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.projects.with_raw_response.restart_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        onboarding = response.parse()
+        assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_restart_onboarding(self, async_client: AsyncHubClient) -> None:
+        async with async_client.projects.with_streaming_response.restart_onboarding(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            onboarding = await response.parse()
+            assert_matches_type(ProjectOnboarding, onboarding, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_restart_onboarding(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(
+            ValueError,
+            match=r"Expected a non-empty value for `project_id` but received ''",
+        ):
+            await async_client.projects.with_raw_response.restart_onboarding(
+                "",
+            )

@@ -19,7 +19,9 @@ Types are organized by domain into consolidated modules:
 - test_case: deprecated aliases of the scenario types
 - scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
 - playground_chat: PlaygroundChat and params
-- project: Project and params
+- project: Project, ProjectOnboarding and params
+- credit: CreditEstimate, CreditUsageSummary
+- red_team_audit: red team audit estimate params
 """
 
 # -- common ----------------------------------------------------------------
@@ -51,6 +53,7 @@ from .chat import (
 # -- user ------------------------------------------------------------------
 from .user import (
     GroupReference as GroupReference,
+    HubApiKey as HubApiKey,
     User as User,
     UserReference as UserReference,
 )
@@ -189,6 +192,8 @@ from .dataset import (
     DatasetBulkDeleteParams as DatasetBulkDeleteParams,
     DatasetCreateParams as DatasetCreateParams,
     DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams,
+    DatasetEstimateDocumentBasedParams as DatasetEstimateDocumentBasedParams,
+    DatasetEstimatePresetBasedParams as DatasetEstimatePresetBasedParams,
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
     DatasetGeneratePresetBasedParams as DatasetGeneratePresetBasedParams,
     DatasetImportParams as DatasetImportParams,
@@ -229,6 +234,8 @@ from .evaluation import (
     EvaluationBulkDeleteParams as EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams as EvaluationCreateLocalParams,
     EvaluationCreateParams as EvaluationCreateParams,
+    EvaluationEstimateParams as EvaluationEstimateParams,
+    EvaluationEstimateRunInteractionChecksParams as EvaluationEstimateRunInteractionChecksParams,
     EvaluationListParams as EvaluationListParams,
     EvaluationRetrieveParams as EvaluationRetrieveParams,
     EvaluationRunInteractionChecksParams as EvaluationRunInteractionChecksParams,
@@ -259,6 +266,7 @@ from .scan import (
     ScanCategory as ScanCategory,
     ScanAvailableProbe as ScanAvailableProbe,
     ScanCreateParams as ScanCreateParams,
+    ScanEstimateParams as ScanEstimateParams,
     ScanListParams as ScanListParams,
     ScanProbeAttempt as ScanProbeAttempt,
     ScanProbeAttemptReference as ScanProbeAttemptReference,
@@ -337,7 +345,23 @@ from .project import (
     Project as Project,
     ProjectBulkDeleteParams as ProjectBulkDeleteParams,
     ProjectCreateParams as ProjectCreateParams,
+    ProjectOnboarding as ProjectOnboarding,
+    ProjectOnboardingUpdateDismissalParams as ProjectOnboardingUpdateDismissalParams,
     ProjectUpdateParams as ProjectUpdateParams,
+)
+
+# -- credit ----------------------------------------------------------------
+from .credit import (
+    CreditEstimate as CreditEstimate,
+    CreditOperation as CreditOperation,
+    CreditUsageSummary as CreditUsageSummary,
+    UsageRetrieveCreditsParams as UsageRetrieveCreditsParams,
+)
+
+# -- red team audit --------------------------------------------------------
+from .red_team_audit import (
+    RedTeamAuditCoverageMode as RedTeamAuditCoverageMode,
+    RedTeamAuditEstimateParams as RedTeamAuditEstimateParams,
 )
 
 __all__ = [
@@ -363,6 +387,7 @@ __all__ = [
     "HeaderParam",
     # user
     "GroupReference",
+    "HubApiKey",
     "User",
     "UserReference",
     # execution
@@ -497,6 +522,8 @@ __all__ = [
     "DatasetGenerateAdversarialParams",
     "DatasetGenerateDocumentBasedParams",
     "DatasetGeneratePresetBasedParams",
+    "DatasetEstimateDocumentBasedParams",
+    "DatasetEstimatePresetBasedParams",
     # knowledge base
     "KnowledgeBase",
     "KnowledgeBaseReference",
@@ -520,6 +547,8 @@ __all__ = [
     "EvaluationUpdateParams",
     "EvaluationRetrieveParams",
     "EvaluationRunInteractionChecksParams",
+    "EvaluationEstimateParams",
+    "EvaluationEstimateRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
     "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
@@ -543,6 +572,7 @@ __all__ = [
     "ScanAvailableProbe",
     "ScanListParams",
     "ScanCreateParams",
+    "ScanEstimateParams",
     "ScanRetrieveParams",
     "ScanBulkDeleteParams",
     "Severity",
@@ -602,7 +632,17 @@ __all__ = [
     "PlaygroundChatBulkDeleteParams",
     # project
     "Project",
+    "ProjectOnboarding",
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
+    "ProjectOnboardingUpdateDismissalParams",
+    # credit
+    "CreditOperation",
+    "CreditEstimate",
+    "CreditUsageSummary",
+    "UsageRetrieveCreditsParams",
+    # red team audit
+    "RedTeamAuditCoverageMode",
+    "RedTeamAuditEstimateParams",
 ]

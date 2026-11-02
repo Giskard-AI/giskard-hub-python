@@ -30,6 +30,8 @@ __all__ = [
     "EvaluationUpdateParams",
     "EvaluationRetrieveParams",
     "EvaluationRunInteractionChecksParams",
+    "EvaluationEstimateParams",
+    "EvaluationEstimateRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
     "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
@@ -199,6 +201,21 @@ class EvaluationRunInteractionChecksParams(TypedDict, total=False):
     input_data: Required[Dict[str, Any]]
     model_output: Required[Dict[str, Any]]
     checks: Required[Iterable[FlatCheckSpecParam]]
+    metadata: Optional[Dict[str, Any]]
+    test_case_id: Optional[str]
+
+
+class EvaluationEstimateParams(TypedDict, total=False):
+    project_id: Required[str]
+    run_count: Optional[int]
+    criteria: Optional[DatasetSubsetParam]
+    old_evaluation_id: Optional[str]
+
+
+class EvaluationEstimateRunInteractionChecksParams(TypedDict, total=False):
+    project_id: Required[str]
+    checks: Required[Iterable[FlatCheckSpecParam]]
+    agent_id: Optional[str]
 
 
 class EvaluationCreateLocalParams(TypedDict, total=False):

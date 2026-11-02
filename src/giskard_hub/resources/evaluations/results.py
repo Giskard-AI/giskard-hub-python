@@ -19,6 +19,7 @@ from ..._response import (
 from ...types.agent import AgentOutputParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIPaginatedMetadata, APIPaginatedResponse, APIResponseWithIncluded
+from ...types.credit import CreditEstimate
 from ...types.scenario import Scenario
 from ...types.evaluation import (
     ResultFiltersParam,
@@ -264,6 +265,62 @@ class ResultsResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[ScenarioEvaluation],
+        )
+
+        return self._unwrap(response)
+
+    def estimate_rerun_scenario(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of rerunning a single scenario evaluation.
+
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result whose scenario would be rerun.
+        evaluation_id : str
+            The ID of the evaluation the result belongs to.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the scenario rerun.
+
+        Raises
+        ------
+        ValueError
+            If `evaluation_id` or `result_id` is empty.
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        response = self._post(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario/estimate",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
         )
 
         return self._unwrap(response)
@@ -826,6 +883,62 @@ class AsyncResultsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def estimate_rerun_scenario(
+        self,
+        result_id: str,
+        *,
+        evaluation_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of rerunning a single scenario evaluation.
+
+        Parameters
+        ----------
+        result_id : str
+            The ID of the result whose scenario would be rerun.
+        evaluation_id : str
+            The ID of the evaluation the result belongs to.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the scenario rerun.
+
+        Raises
+        ------
+        ValueError
+            If `evaluation_id` or `result_id` is empty.
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        if not result_id:
+            raise ValueError(f"Expected a non-empty value for `result_id` but received {result_id!r}")
+        response = await self._post(
+            f"/v2/evaluations/{evaluation_id}/results/{result_id}/rerun-scenario/estimate",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
     async def rerun_test_case(
         self,
         result_id: str,
@@ -1199,6 +1312,9 @@ class ResultsResourceWithRawResponse:
         self.rerun_scenario = to_raw_response_wrapper(
             results.rerun_scenario,
         )
+        self.estimate_rerun_scenario = to_raw_response_wrapper(
+            results.estimate_rerun_scenario,
+        )
         self.rerun_test_case = to_raw_response_wrapper(
             results.rerun_test_case,
         )
@@ -1228,6 +1344,9 @@ class AsyncResultsResourceWithRawResponse:
         )
         self.rerun_scenario = async_to_raw_response_wrapper(
             results.rerun_scenario,
+        )
+        self.estimate_rerun_scenario = async_to_raw_response_wrapper(
+            results.estimate_rerun_scenario,
         )
         self.rerun_test_case = async_to_raw_response_wrapper(
             results.rerun_test_case,
@@ -1259,6 +1378,9 @@ class ResultsResourceWithStreamingResponse:
         self.rerun_scenario = to_streamed_response_wrapper(
             results.rerun_scenario,
         )
+        self.estimate_rerun_scenario = to_streamed_response_wrapper(
+            results.estimate_rerun_scenario,
+        )
         self.rerun_test_case = to_streamed_response_wrapper(
             results.rerun_test_case,
         )
@@ -1288,6 +1410,9 @@ class AsyncResultsResourceWithStreamingResponse:
         )
         self.rerun_scenario = async_to_streamed_response_wrapper(
             results.rerun_scenario,
+        )
+        self.estimate_rerun_scenario = async_to_streamed_response_wrapper(
+            results.estimate_rerun_scenario,
         )
         self.rerun_test_case = async_to_streamed_response_wrapper(
             results.rerun_test_case,
