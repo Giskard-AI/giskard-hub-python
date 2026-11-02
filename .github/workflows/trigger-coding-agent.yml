@@ -19,7 +19,7 @@ jobs:
     name: Launch SDK code generation agent
     permissions:
       contents: read
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     environment: codegen
 
     steps:
