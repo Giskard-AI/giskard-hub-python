@@ -90,3 +90,4 @@ class AuditSearchParams(TypedDict, total=False):
     filters: Optional[AuditFiltersParam]
     limit: int
     offset: int
+    compact: bool

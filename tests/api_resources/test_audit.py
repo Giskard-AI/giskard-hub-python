@@ -30,6 +30,7 @@ class TestAuditLogs:
             filters={"action": {"selected_options": ["insert"], "match_logic": "any"}},
             limit=10,
             offset=0,
+            compact=True,
         )
         assert_matches_type(List[Audit], audit, path=["response"])
 
@@ -136,6 +137,7 @@ class TestAsyncAuditLogs:
             filters={"action": {"selected_options": ["insert"], "match_logic": "any"}},
             limit=10,
             offset=0,
+            compact=True,
         )
         assert_matches_type(List[Audit], audit, path=["response"])
 
