@@ -552,6 +552,7 @@ class TestEvaluations:
     def test_method_estimate(self, client: HubClient) -> None:
         estimate = client.evaluations.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(CreditEstimate, estimate, path=["response"])
 
@@ -560,6 +561,7 @@ class TestEvaluations:
     def test_raw_response_estimate(self, client: HubClient) -> None:
         response = client.evaluations.with_raw_response.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -572,6 +574,7 @@ class TestEvaluations:
     def test_streaming_response_estimate(self, client: HubClient) -> None:
         with client.evaluations.with_streaming_response.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -586,9 +589,9 @@ class TestEvaluations:
     def test_method_estimate_with_all_params(self, client: HubClient) -> None:
         estimate = client.evaluations.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            tags=["tag"],
             run_count=1,
-            criteria={"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
-            old_evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(CreditEstimate, estimate, path=["response"])
 
@@ -1237,6 +1240,7 @@ class TestAsyncEvaluations:
     async def test_method_estimate(self, async_client: AsyncHubClient) -> None:
         estimate = await async_client.evaluations.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(CreditEstimate, estimate, path=["response"])
 
@@ -1245,6 +1249,7 @@ class TestAsyncEvaluations:
     async def test_raw_response_estimate(self, async_client: AsyncHubClient) -> None:
         response = await async_client.evaluations.with_raw_response.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -1257,6 +1262,7 @@ class TestAsyncEvaluations:
     async def test_streaming_response_estimate(self, async_client: AsyncHubClient) -> None:
         async with async_client.evaluations.with_streaming_response.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -1271,9 +1277,9 @@ class TestAsyncEvaluations:
     async def test_method_estimate_with_all_params(self, async_client: AsyncHubClient) -> None:
         estimate = await async_client.evaluations.estimate(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            tags=["tag"],
             run_count=1,
-            criteria={"dataset_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
-            old_evaluation_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(CreditEstimate, estimate, path=["response"])
 

@@ -17,6 +17,8 @@ __all__ = [
     "RedTeamAuditLogStream",
     "RedTeamAuditImpactGrade",
     "RedTeamAuditRiskModelSurface",
+    "RedTeamAuditProgressPhase",
+    "RedTeamAuditProgress",
     "RedTeamAudit",
     "RedTeamAuditLogChunk",
     "RedTeamAuditLogs",
@@ -82,6 +84,18 @@ RedTeamAuditRiskModelSurface: TypeAlias = Literal[
 # Models
 # ---------------------------------------------------------------------------
 
+RedTeamAuditProgressPhase: TypeAlias = Literal["reconnaissance", "risk_model", "attacks", "report"]
+
+
+class RedTeamAuditProgress(BaseModel):
+    phase: RedTeamAuditProgressPhase
+    wave: Optional[int] = None
+    waves: Optional[int] = None
+    attackers_total: Optional[int] = None
+    attackers_done: Optional[int] = None
+    attackers_running: Optional[int] = None
+    findings: Optional[int] = None
+
 
 class RedTeamAudit(BaseModel):
     id: str
@@ -113,6 +127,7 @@ class RedTeamAudit(BaseModel):
     has_pdf: bool = False
     has_audit_content: bool = False
     has_intermediate_archive: bool = False
+    progress: Optional[RedTeamAuditProgress] = None
 
 
 class RedTeamAuditLogChunk(BaseModel):

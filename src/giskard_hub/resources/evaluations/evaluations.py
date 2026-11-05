@@ -39,7 +39,7 @@ from ..._response import (
 from ..._analytics import capture_event, make_distinct_id
 from ...types.chat import ChatMessageParam
 from ...types.agent import AgentOutputParam, MinimalAgentParam
-from ...types.check import CheckResult, CheckConfigParam, FlatCheckSpecParam
+from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
 from ...types.credit import CreditEstimate
@@ -79,6 +79,18 @@ def _validate_dataset_or_old_evaluation(
     """
     if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
         raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+
+def _criteria_from_dataset(
+    dataset_id: Optional[str] | Omit,
+    tags: Optional[SequenceNotStr[str]] | Omit,
+) -> DatasetSubsetParam | Omit:
+    if dataset_id is omit:
+        return omit
+    return DatasetSubsetParam(
+        dataset_id=cast(str, dataset_id),
+        tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
+    )
 
 
 def _normalize_agent_output(
@@ -184,13 +196,7 @@ class EvaluationsResource(SyncAPIResource):
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | Omit = omit
-
-        if dataset_id is not omit:
-            criteria = DatasetSubsetParam(
-                dataset_id=cast(str, dataset_id),
-                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
-            )
+        criteria = _criteria_from_dataset(dataset_id, tags)
 
         response = self._post(
             "/v2/evaluations",
@@ -814,9 +820,10 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        run_count: int | Omit = omit,
-        criteria: DatasetSubsetParam | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
         old_evaluation_id: Optional[str] | Omit = omit,
+        run_count: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -830,13 +837,19 @@ class EvaluationsResource(SyncAPIResource):
         ----------
         project_id : str
             The ID of the project the evaluation would run in.
+        dataset_id : str, optional
+            The ID of the dataset to draw scenarios from. Exactly one of
+            `dataset_id` or `old_evaluation_id` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to scenarios carrying those
+            tags. Only used when `dataset_id` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose scenarios would be reused.
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
+            provided.
         run_count : int | Omit
             The number of times each scenario would be run. Testing stops at
             the first failure.
-        criteria : DatasetSubsetParam | Omit
-            Dataset subset the evaluation would draw scenarios from.
-        old_evaluation_id : Optional[str] | Omit
-            ID of a previous evaluation whose scenarios would be reused.
 
         Other Parameters
         ----------------
@@ -853,14 +866,21 @@ class EvaluationsResource(SyncAPIResource):
         -------
         CreditEstimate
             Estimated credit cost of the evaluation.
+
+        Raises
+        ------
+        ValueError
+            If neither or both of `dataset_id` and `old_evaluation_id` are
+            provided.
         """
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         response = self._post(
             "/v2/evaluations/estimate",
             body=maybe_transform(
                 {
                     "project_id": project_id,
                     "run_count": run_count,
-                    "criteria": criteria,
+                    "criteria": _criteria_from_dataset(dataset_id, tags),
                     "old_evaluation_id": old_evaluation_id,
                 },
                 EvaluationEstimateParams,
@@ -880,7 +900,7 @@ class EvaluationsResource(SyncAPIResource):
         self,
         *,
         project_id: str,
-        checks: Iterable[FlatCheckSpecParam],
+        checks: Iterable[CheckConfigParam],
         agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -895,8 +915,9 @@ class EvaluationsResource(SyncAPIResource):
         ----------
         project_id : str
             Project ID the checks belong to.
-        checks : Iterable[FlatCheckSpecParam]
-            Checks that would be priced. Same shape as the run-interaction-checks payload.
+        checks : Iterable[CheckConfigParam]
+            Checks that would be priced. Same shape as the `checks` argument
+            of `run_single`.
         agent_id : Optional[str] | Omit
             Agent the checks would run against, when known.
 
@@ -921,7 +942,7 @@ class EvaluationsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "project_id": project_id,
-                    "checks": checks,
+                    "checks": flat_check_specs(list(checks)),
                     "agent_id": agent_id,
                 },
                 EvaluationEstimateRunInteractionChecksParams,
@@ -1084,13 +1105,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | Omit = omit
-
-        if dataset_id is not omit:
-            criteria = DatasetSubsetParam(
-                dataset_id=cast(str, dataset_id),
-                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
-            )
+        criteria = _criteria_from_dataset(dataset_id, tags)
 
         response = await self._post(
             "/v2/evaluations",
@@ -1714,9 +1729,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        run_count: int | Omit = omit,
-        criteria: DatasetSubsetParam | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
         old_evaluation_id: Optional[str] | Omit = omit,
+        run_count: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1730,13 +1746,19 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ----------
         project_id : str
             The ID of the project the evaluation would run in.
+        dataset_id : str, optional
+            The ID of the dataset to draw scenarios from. Exactly one of
+            `dataset_id` or `old_evaluation_id` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to scenarios carrying those
+            tags. Only used when `dataset_id` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose scenarios would be reused.
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
+            provided.
         run_count : int | Omit
             The number of times each scenario would be run. Testing stops at
             the first failure.
-        criteria : DatasetSubsetParam | Omit
-            Dataset subset the evaluation would draw scenarios from.
-        old_evaluation_id : Optional[str] | Omit
-            ID of a previous evaluation whose scenarios would be reused.
 
         Other Parameters
         ----------------
@@ -1753,14 +1775,21 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         -------
         CreditEstimate
             Estimated credit cost of the evaluation.
+
+        Raises
+        ------
+        ValueError
+            If neither or both of `dataset_id` and `old_evaluation_id` are
+            provided.
         """
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
         response = await self._post(
             "/v2/evaluations/estimate",
             body=await async_maybe_transform(
                 {
                     "project_id": project_id,
                     "run_count": run_count,
-                    "criteria": criteria,
+                    "criteria": _criteria_from_dataset(dataset_id, tags),
                     "old_evaluation_id": old_evaluation_id,
                 },
                 EvaluationEstimateParams,
@@ -1780,7 +1809,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         self,
         *,
         project_id: str,
-        checks: Iterable[FlatCheckSpecParam],
+        checks: Iterable[CheckConfigParam],
         agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1795,8 +1824,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         ----------
         project_id : str
             Project ID the checks belong to.
-        checks : Iterable[FlatCheckSpecParam]
-            Checks that would be priced. Same shape as the run-interaction-checks payload.
+        checks : Iterable[CheckConfigParam]
+            Checks that would be priced. Same shape as the `checks` argument
+            of `run_single`.
         agent_id : Optional[str] | Omit
             Agent the checks would run against, when known.
 
@@ -1821,7 +1851,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "project_id": project_id,
-                    "checks": checks,
+                    "checks": flat_check_specs(list(checks)),
                     "agent_id": agent_id,
                 },
                 EvaluationEstimateRunInteractionChecksParams,

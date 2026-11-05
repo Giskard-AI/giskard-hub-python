@@ -125,3 +125,25 @@ def test_retrieve_content_parses_risk_model(client: HubClient, respx_mock: MockR
     assert content.risk_model.supporting_assets[0].notes == ""
     assert content.coverage is not None
     assert content.coverage.uncovered_scenario_ids == []
+
+
+@pytest.mark.respx(base_url=base_url)
+def test_retrieve_parses_progress(client: HubClient, respx_mock: MockRouter) -> None:
+    respx_mock.get(f"/v2/red-team-audits/{AUDIT_ID}").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "data": {
+                    **AUDIT,
+                    "status": "running",
+                    "progress": {"phase": "attacks", "wave": 1, "waves": 3, "findings": 2},
+                }
+            },
+        ),
+    )
+
+    audit = client.red_team_audits.retrieve(AUDIT_ID)
+
+    assert audit.progress is not None
+    assert audit.progress.phase == "attacks"
+    assert audit.progress.attackers_total is None

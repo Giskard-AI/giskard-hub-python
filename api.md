@@ -502,6 +502,7 @@ from giskard_hub.types import (
     RedTeamAuditContent,
     RedTeamAuditCoverageMode,
     RedTeamAuditLogs,
+    RedTeamAuditProgress,
     RedTeamAuditScanType,
     RedTeamAuditStatus,
 )
