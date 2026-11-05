@@ -76,7 +76,7 @@ class ChecksResource(SyncAPIResource):
         project_id : str
             Project ID to create the check in.
         params : CheckTypeParam | Omit
-            Check-specific parameters (e.g. `{"reference": "..."}` for correctness).
+            Check-specific parameters (e.g. `{"type": "correctness", "reference": "..."}`).
             Cannot be combined with `spec`.
         spec : Dict[str, object] | Omit
             Raw check spec with a `kind` discriminator (e.g. `{"kind": "hub_correctness", "reference": "..."}`).
@@ -471,7 +471,7 @@ class AsyncChecksResource(AsyncAPIResource):
         project_id : str
             Project ID to create the check in.
         params : CheckTypeParam | Omit
-            Check-specific parameters (e.g. `{"reference": "..."}` for correctness).
+            Check-specific parameters (e.g. `{"type": "correctness", "reference": "..."}`).
             Cannot be combined with `spec`.
         spec : Dict[str, object] | Omit
             Raw check spec with a `kind` discriminator (e.g. `{"kind": "hub_correctness", "reference": "..."}`).
