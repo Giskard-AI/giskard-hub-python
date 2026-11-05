@@ -404,7 +404,7 @@ class DatasetsResource(SyncAPIResource):
         name : Optional[str]
             Name of the dataset to update.
         status : Optional[TaskProgressParam]
-            Status of the dataset to update.
+            Status of the dataset to update. When given, it must include `total`.
         input_schema : Dict[str, Any] | None | Omit
             Updated JSON schema describing the expected shape of scenario
             inputs.
@@ -1484,7 +1484,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         name : Optional[str]
             Name of the dataset to update.
         status : Optional[TaskProgressParam]
-            Status of the dataset to update.
+            Status of the dataset to update. When given, it must include `total`.
         input_schema : Dict[str, Any] | None | Omit
             Updated JSON schema describing the expected shape of scenario
             inputs.

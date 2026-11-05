@@ -104,6 +104,8 @@ class TaskProgress(BaseModel):
 
 
 class TaskProgressParam(TypedDict, total=False):
+    """Task progress sent to the API. The API requires `total` whenever this object is sent."""
+
     state: TaskState
     current: int
     total: int
