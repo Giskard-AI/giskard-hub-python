@@ -349,6 +349,19 @@ def test_create_rejects_neither(hub: HubClient) -> None:
         hub.checks.create(identifier="custom_correctness", name="n", project_id="p")
 
 
+@pytest.mark.parametrize("call", ["create", "update"])
+def test_params_without_type_raise_instead_of_sending_identifier_as_kind(
+    hub: HubClient, respx_mock: respx.MockRouter, call: str
+) -> None:
+    route = respx_mock.route(host="localhost")
+    with pytest.raises(ValueError, match="include 'type' in 'params'"):
+        if call == "create":
+            hub.checks.create(identifier="custom_x", name="n", project_id="p", params={"reference": "r"})
+        else:
+            hub.checks.update("1", identifier="custom_x", params={"reference": "r"})
+    assert not route.called
+
+
 def test_update_rejects_both_params_and_spec(hub: HubClient) -> None:
     with pytest.raises(ValueError, match="Cannot provide both 'params' and 'spec'"):
         hub.checks.update(

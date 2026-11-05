@@ -33,7 +33,8 @@ def check_param_to_spec(identifier: Optional[str], params: Any) -> Dict[str, Any
     kind = type_from_params or identifier or ""
     if not kind:
         raise ValueError(
-            "Cannot derive check kind: provide 'identifier' or include 'type' in 'params', "
+            "Cannot derive check kind: include 'type' in 'params' "
+            "(e.g. {'type': 'correctness', 'reference': '...'}), "
             "or pass 'spec' directly with an explicit 'kind'."
         )
     return {"kind": kind, **params_dict}
