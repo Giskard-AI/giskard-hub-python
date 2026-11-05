@@ -56,5 +56,4 @@ class PromptPresetUpdateParams(TypedDict, total=False):
 
 class PromptPresetPreviewParams(TypedDict, total=False):
     description: Required[str]
-    agent_id: Required[str]
     rules: SequenceNotStr[str]
