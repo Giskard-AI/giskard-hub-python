@@ -508,11 +508,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         response = self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=maybe_transform(
-                {
-                    "filters": omit if filters is None else filters,
-                    "order_by": omit if order_by is None else order_by,
-                    "search": query,
-                },
+                {"filters": filters, "order_by": order_by, "search": query},
                 KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(
@@ -1057,11 +1053,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         response = await self._post(
             f"/v2/knowledge-bases/{knowledge_base_id}/documents/search",
             body=await async_maybe_transform(
-                {
-                    "filters": omit if filters is None else filters,
-                    "order_by": omit if order_by is None else order_by,
-                    "search": query,
-                },
+                {"filters": filters, "order_by": order_by, "search": query},
                 KnowledgeBaseSearchDocumentsParams,
             ),
             options=make_request_options(

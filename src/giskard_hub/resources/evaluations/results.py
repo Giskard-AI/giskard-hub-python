@@ -586,14 +586,7 @@ class ResultsResource(SyncAPIResource):
 
         response = self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
-            body=maybe_transform(
-                {
-                    "filters": omit if filters is None else filters,
-                    "order_by": omit if order_by is None else order_by,
-                    "search": query,
-                },
-                ResultSearchParams,
-            ),
+            body=maybe_transform({"filters": filters, "order_by": order_by, "search": query}, ResultSearchParams),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -1208,12 +1201,7 @@ class AsyncResultsResource(AsyncAPIResource):
         response = await self._post(
             f"/v2/evaluations/{evaluation_id}/results/search",
             body=await async_maybe_transform(
-                {
-                    "filters": omit if filters is None else filters,
-                    "order_by": omit if order_by is None else order_by,
-                    "search": query,
-                },
-                ResultSearchParams,
+                {"filters": filters, "order_by": order_by, "search": query}, ResultSearchParams
             ),
             options=make_request_options(
                 extra_headers=extra_headers,
