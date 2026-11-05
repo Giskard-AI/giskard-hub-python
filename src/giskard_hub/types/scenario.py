@@ -62,9 +62,10 @@ def _first_interaction_messages(interactions: Optional[List[Interaction]]) -> Li
     accessor and `helpers._evaluate_local` (an internal consumer that needs the
     same view without tripping the deprecation).
     """
-    if not interactions:
+    first_input: object = interactions[0].input if interactions else None
+    if not isinstance(first_input, dict):
         return []
-    raw_messages = interactions[0].input.get("messages")
+    raw_messages = cast(Dict[str, Any], first_input).get("messages")
     if not isinstance(raw_messages, list):
         return []
     out: List[ChatMessage] = []

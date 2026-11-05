@@ -704,8 +704,9 @@ class InteractionResultData(BaseModel):
 
 class Interaction(BaseModel):
     position: int
-    input: Dict[str, Any]
-    output: Optional[Dict[str, Any]] = None
+    # Any JSON value (the API types these as JsonValue). Usually a dict such as {"messages": [...]}.
+    input: Any
+    output: Any = None
     simulator_config: Optional[Dict[str, Any]] = None
     metadata: Optional[Dict[str, Any]] = None
     created_at: Optional[datetime] = None
