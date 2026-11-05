@@ -2,7 +2,9 @@
 
 from typing import List, Union, Optional, TypeAlias, TypedDict
 from datetime import datetime
-from typing_extensions import Literal, Required
+from typing_extensions import Literal, Required, Annotated
+
+from pydantic import Field
 
 from .scan import ScanProbeAttemptReference
 from .user import User
@@ -13,6 +15,7 @@ from .evaluation import ScenarioEvaluationReference
 
 __all__ = [
     "Task",
+    "UnknownTaskReference",
     "TaskStatus",
     "TaskPriority",
     "TaskListParams",
@@ -35,6 +38,13 @@ TaskPriority: TypeAlias = Literal["low", "medium", "high"]
 # ---------------------------------------------------------------------------
 
 
+class UnknownTaskReference(BaseModel):
+    """A task reference whose `type` this SDK version does not know yet (e.g. added by a newer Hub)."""
+
+    id: str
+    type: str
+
+
 class Task(BaseModel):
     id: str
     project_id: str
@@ -43,7 +53,14 @@ class Task(BaseModel):
     description: str
     created_by: User
     assignees: List[User]
-    references: List[Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference]]
+    # The first model whose `type` matches wins. Payloads without `type` keep the previous behavior
+    # (ScenarioEvaluationReference). Unknown types fall back to UnknownTaskReference instead of failing.
+    references: List[
+        Annotated[
+            Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference, UnknownTaskReference],
+            Field(union_mode="left_to_right"),
+        ]
+    ]
     created_at: datetime
     updated_at: datetime
 

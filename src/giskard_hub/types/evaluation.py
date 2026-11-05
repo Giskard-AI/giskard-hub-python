@@ -131,6 +131,7 @@ class DivergenceWarning(BaseModel):
 
 class ScenarioEvaluationReference(BaseModel):
     id: str
+    type: Literal["test_case_evaluation"] = "test_case_evaluation"
 
 
 TestCaseEvaluationReference = ScenarioEvaluationReference

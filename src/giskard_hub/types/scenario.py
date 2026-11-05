@@ -47,6 +47,7 @@ class ScenarioComment(BaseModel):
 
 class ScenarioReference(BaseModel):
     id: str
+    type: Literal["test_case"] = "test_case"
 
 
 class ScenarioSchemaValidation(BaseModel):

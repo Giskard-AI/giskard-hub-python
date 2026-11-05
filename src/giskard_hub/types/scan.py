@@ -111,6 +111,7 @@ class ScanProbeAttemptError(BaseModel):
 
 class ScanProbeAttemptReference(BaseModel):
     id: str
+    type: Literal["probe_attempt"] = "probe_attempt"
 
 
 def _attempt_input_to_messages(value: Any) -> List[ChatMessage]:

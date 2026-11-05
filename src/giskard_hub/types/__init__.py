@@ -183,6 +183,7 @@ from .task import (
     TaskPriority as TaskPriority,
     TaskStatus as TaskStatus,
     TaskUpdateParams as TaskUpdateParams,
+    UnknownTaskReference as UnknownTaskReference,
 )
 
 # -- dataset ---------------------------------------------------------------
@@ -524,6 +525,7 @@ __all__ = [
     "AuditFiltersParam",
     # task
     "Task",
+    "UnknownTaskReference",
     "TaskStatus",
     "TaskPriority",
     "TaskListParams",
