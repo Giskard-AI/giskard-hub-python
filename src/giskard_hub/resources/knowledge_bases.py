@@ -139,7 +139,9 @@ class KnowledgeBasesResource(SyncAPIResource):
 
         result = self._unwrap(response)
         capture_event(
-            make_distinct_id(self._client.api_key), "knowledge_base_created", {"knowledge_base_id": result.id}
+            make_distinct_id(self._client.api_key),
+            "knowledge_base_created",
+            {"knowledge_base_id": getattr(result, "id", None)},
         )
         return result
 
@@ -684,7 +686,9 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
 
         result = self._unwrap(response)
         capture_event(
-            make_distinct_id(self._client.api_key), "knowledge_base_created", {"knowledge_base_id": result.id}
+            make_distinct_id(self._client.api_key),
+            "knowledge_base_created",
+            {"knowledge_base_id": getattr(result, "id", None)},
         )
         return result
 

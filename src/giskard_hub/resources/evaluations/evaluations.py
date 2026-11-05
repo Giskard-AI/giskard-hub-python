@@ -222,7 +222,9 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": getattr(result, "id", None)}
+        )
         return result
 
     def retrieve(
@@ -577,7 +579,11 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "local_evaluation_created",
+            {"evaluation_id": getattr(result, "id", None)},
+        )
         return result
 
     def upload(
@@ -1132,7 +1138,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": getattr(result, "id", None)}
+        )
         return result
 
     async def retrieve(
@@ -1487,7 +1495,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "local_evaluation_created",
+            {"evaluation_id": getattr(result, "id", None)},
+        )
         return result
 
     async def upload(

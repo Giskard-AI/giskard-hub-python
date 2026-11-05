@@ -120,7 +120,9 @@ class ProjectsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "project_created", {"project_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "project_created", {"project_id": getattr(result, "id", None)}
+        )
         return result
 
     def retrieve(
@@ -459,7 +461,9 @@ class AsyncProjectsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "project_created", {"project_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "project_created", {"project_id": getattr(result, "id", None)}
+        )
         return result
 
     async def retrieve(
