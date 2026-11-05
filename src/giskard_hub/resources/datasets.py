@@ -609,6 +609,7 @@ class DatasetsResource(SyncAPIResource):
         n_examples: int | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         dataset_name: Optional[str] | Omit = omit,
+        target_path: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -632,6 +633,9 @@ class DatasetsResource(SyncAPIResource):
             The ID of the dataset to use (required when dataset_name is not provided).
         dataset_name : Optional[str]
             Name for the generated dataset.
+        target_path : str | None | Omit
+            Optional JSON path of the output field to use as generation
+            target.
 
         Other Parameters
         ----------------
@@ -668,6 +672,7 @@ class DatasetsResource(SyncAPIResource):
                     "dataset_name": dataset_name,
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
+                    "target_path": target_path,
                 },
                 DatasetGeneratePresetBasedParams,
             ),
@@ -759,6 +764,7 @@ class DatasetsResource(SyncAPIResource):
         n_examples: int | Omit = omit,
         topic_ids: SequenceNotStr[str] | Omit = omit,
         target_path: Optional[str] | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -787,6 +793,9 @@ class DatasetsResource(SyncAPIResource):
         target_path : str | None | Omit
             Optional JSON path of the output field to use as generation
             target.
+        dataset_id : str | None | Omit
+            ID of an existing dataset to add the generated scenarios to.
+            When omitted, a new dataset is created.
 
         Other Parameters
         ----------------
@@ -816,6 +825,7 @@ class DatasetsResource(SyncAPIResource):
                     "n_examples": n_examples,
                     "topic_ids": topic_ids,
                     "target_path": target_path,
+                    "dataset_id": dataset_id,
                 },
                 DatasetGenerateDocumentBasedParams,
             ),
@@ -1679,6 +1689,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         n_examples: int | Omit = omit,
         dataset_id: Optional[str] | Omit = omit,
         dataset_name: Optional[str] | Omit = omit,
+        target_path: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1702,6 +1713,9 @@ class AsyncDatasetsResource(AsyncAPIResource):
             The ID of the dataset to use (required when dataset_name is not provided).
         dataset_name : Optional[str]
             Name for the generated dataset.
+        target_path : str | None | Omit
+            Optional JSON path of the output field to use as generation
+            target.
 
         Other Parameters
         ----------------
@@ -1738,6 +1752,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "dataset_name": dataset_name,
                     "num_examples": n_examples,
                     "dataset_id": dataset_id,
+                    "target_path": target_path,
                 },
                 DatasetGeneratePresetBasedParams,
             ),
@@ -1829,6 +1844,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
         n_examples: int | Omit = omit,
         topic_ids: SequenceNotStr[str] | Omit = omit,
         target_path: Optional[str] | Omit = omit,
+        dataset_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1857,6 +1873,9 @@ class AsyncDatasetsResource(AsyncAPIResource):
         target_path : str | None | Omit
             Optional JSON path of the output field to use as generation
             target.
+        dataset_id : str | None | Omit
+            ID of an existing dataset to add the generated scenarios to.
+            When omitted, a new dataset is created.
 
         Other Parameters
         ----------------
@@ -1886,6 +1905,7 @@ class AsyncDatasetsResource(AsyncAPIResource):
                     "n_examples": n_examples,
                     "topic_ids": topic_ids,
                     "target_path": target_path,
+                    "dataset_id": dataset_id,
                 },
                 DatasetGenerateDocumentBasedParams,
             ),

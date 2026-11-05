@@ -118,7 +118,7 @@ class DatasetBulkDeleteParams(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 
 ScenarioSortColumn = Literal["created_at", "id", "status", "updated_at"]
-ScenarioFilterColumn = Literal["metrics", "status", "tags"]
+ScenarioFilterColumn = Literal["metrics", "status", "tags", "schema_issues"]
 TestCaseSortColumn = ScenarioSortColumn
 TestCaseFilterColumn = ScenarioFilterColumn
 
