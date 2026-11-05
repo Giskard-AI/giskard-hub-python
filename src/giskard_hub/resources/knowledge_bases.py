@@ -224,7 +224,7 @@ class KnowledgeBasesResource(SyncAPIResource):
         project_id : Optional[str] | Omit
             Project ID to update the knowledge base in.
         status : Optional[TaskProgressParam] | Omit
-            Task progress status. When given, it must include `total`.
+            Task progress status.
 
         Other Parameters
         ----------------
@@ -771,7 +771,7 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         project_id : Optional[str] | Omit
             Project ID to update the knowledge base in.
         status : Optional[TaskProgressParam] | Omit
-            Task progress status. When given, it must include `total`.
+            Task progress status.
 
         Other Parameters
         ----------------
