@@ -19,7 +19,7 @@ Types are organized by domain into consolidated modules:
 - test_case: deprecated aliases of the scenario types
 - scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
 - playground_chat: PlaygroundChat and params
-- project: Project, ProjectOnboarding and params
+- project: Project and params
 - credit: CreditEstimate, CreditUsageSummary
 - red_team_audit: RedTeamAudit, RedTeamAuditContent, RedTeamAuditLogs and params
 """
@@ -53,7 +53,6 @@ from .chat import (
 # -- user ------------------------------------------------------------------
 from .user import (
     GroupReference as GroupReference,
-    HubApiKey as HubApiKey,
     User as User,
     UserReference as UserReference,
 )
@@ -345,8 +344,6 @@ from .project import (
     Project as Project,
     ProjectBulkDeleteParams as ProjectBulkDeleteParams,
     ProjectCreateParams as ProjectCreateParams,
-    ProjectOnboarding as ProjectOnboarding,
-    ProjectOnboardingUpdateDismissalParams as ProjectOnboardingUpdateDismissalParams,
     ProjectUpdateParams as ProjectUpdateParams,
 )
 
@@ -365,8 +362,6 @@ from .red_team_audit import (
     RedTeamAuditCoverage as RedTeamAuditCoverage,
     RedTeamAuditCoverageMode as RedTeamAuditCoverageMode,
     RedTeamAuditCreateParams as RedTeamAuditCreateParams,
-    RedTeamAuditDownloadParams as RedTeamAuditDownloadParams,
-    RedTeamAuditDownloadType as RedTeamAuditDownloadType,
     RedTeamAuditEstimateParams as RedTeamAuditEstimateParams,
     RedTeamAuditEvaluationUploadStatus as RedTeamAuditEvaluationUploadStatus,
     RedTeamAuditFinding as RedTeamAuditFinding,
@@ -418,7 +413,6 @@ __all__ = [
     "HeaderParam",
     # user
     "GroupReference",
-    "HubApiKey",
     "User",
     "UserReference",
     # execution
@@ -663,11 +657,9 @@ __all__ = [
     "PlaygroundChatBulkDeleteParams",
     # project
     "Project",
-    "ProjectOnboarding",
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
-    "ProjectOnboardingUpdateDismissalParams",
     # credit
     "CreditOperation",
     "CreditEstimate",
@@ -679,8 +671,6 @@ __all__ = [
     "RedTeamAuditCoverage",
     "RedTeamAuditCoverageMode",
     "RedTeamAuditCreateParams",
-    "RedTeamAuditDownloadParams",
-    "RedTeamAuditDownloadType",
     "RedTeamAuditEstimateParams",
     "RedTeamAuditEvaluationUploadStatus",
     "RedTeamAuditFinding",

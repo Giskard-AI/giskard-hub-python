@@ -9,18 +9,10 @@ from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_may
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
-    BinaryAPIResponse,
-    AsyncBinaryAPIResponse,
-    StreamedBinaryAPIResponse,
-    AsyncStreamedBinaryAPIResponse,
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
-    to_custom_raw_response_wrapper,
     async_to_streamed_response_wrapper,
-    to_custom_streamed_response_wrapper,
-    async_to_custom_raw_response_wrapper,
-    async_to_custom_streamed_response_wrapper,
 )
 from .._analytics import capture_event, make_distinct_id
 from .._base_client import make_request_options
@@ -34,9 +26,7 @@ from ..types.red_team_audit import (
     RedTeamAuditListParams,
     RedTeamAuditCoverageMode,
     RedTeamAuditCreateParams,
-    RedTeamAuditDownloadType,
     RedTeamAuditUploadParams,
-    RedTeamAuditDownloadParams,
     RedTeamAuditEstimateParams,
     RedTeamAuditRetrieveLogsParams,
 )
@@ -486,64 +476,6 @@ class RedTeamAuditsResource(SyncAPIResource):
         )
 
         return self._unwrap(response)
-
-    def download(
-        self,
-        audit_id: str,
-        *,
-        type: RedTeamAuditDownloadType | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> BinaryAPIResponse:
-        """Download a file of a red team audit.
-
-        Parameters
-        ----------
-        audit_id : str
-            Red team audit ID.
-        type : Literal["report", "logs", "run-archive"] | Omit
-            File to download. ``report`` is the PDF report, ``logs`` is a plain-text file
-            with all the execution logs, and ``run-archive`` is a ZIP archive of the
-            intermediate run files. Defaults to ``report`` on the server when omitted.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers | None
-            Send extra headers.
-        extra_query : Query | None
-            Add additional query parameters to the request.
-        extra_body : Body | None
-            Add additional JSON properties to the request.
-        timeout : float | httpx.Timeout | None | NotGiven
-            Override the client-level default timeout for this request, in seconds.
-
-        Returns
-        -------
-        BinaryAPIResponse
-            The file content. Use ``write_to_file()`` to save it to disk.
-
-        Raises
-        ------
-        ValueError
-            If `audit_id` is empty.
-        """
-        if not audit_id:
-            raise ValueError(f"Expected a non-empty value for `audit_id` but received {audit_id!r}")
-        return self._get(
-            f"/v2/red-team-audits/{audit_id}/download",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform({"type": type}, RedTeamAuditDownloadParams),
-            ),
-            cast_to=BinaryAPIResponse,
-        )
 
     def estimate(
         self,
@@ -1039,64 +971,6 @@ class AsyncRedTeamAuditsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
-    async def download(
-        self,
-        audit_id: str,
-        *,
-        type: RedTeamAuditDownloadType | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncBinaryAPIResponse:
-        """Download a file of a red team audit.
-
-        Parameters
-        ----------
-        audit_id : str
-            Red team audit ID.
-        type : Literal["report", "logs", "run-archive"] | Omit
-            File to download. ``report`` is the PDF report, ``logs`` is a plain-text file
-            with all the execution logs, and ``run-archive`` is a ZIP archive of the
-            intermediate run files. Defaults to ``report`` on the server when omitted.
-
-        Other Parameters
-        ----------------
-        extra_headers : Headers | None
-            Send extra headers.
-        extra_query : Query | None
-            Add additional query parameters to the request.
-        extra_body : Body | None
-            Add additional JSON properties to the request.
-        timeout : float | httpx.Timeout | None | NotGiven
-            Override the client-level default timeout for this request, in seconds.
-
-        Returns
-        -------
-        AsyncBinaryAPIResponse
-            The file content. Use ``await write_to_file()`` to save it to disk.
-
-        Raises
-        ------
-        ValueError
-            If `audit_id` is empty.
-        """
-        if not audit_id:
-            raise ValueError(f"Expected a non-empty value for `audit_id` but received {audit_id!r}")
-        return await self._get(
-            f"/v2/red-team-audits/{audit_id}/download",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform({"type": type}, RedTeamAuditDownloadParams),
-            ),
-            cast_to=AsyncBinaryAPIResponse,
-        )
-
     async def estimate(
         self,
         *,
@@ -1173,10 +1047,6 @@ class RedTeamAuditsResourceWithRawResponse:
         self.retrieve_logs = to_raw_response_wrapper(
             red_team_audits.retrieve_logs,
         )
-        self.download = to_custom_raw_response_wrapper(
-            red_team_audits.download,
-            BinaryAPIResponse,
-        )
         self.estimate = to_raw_response_wrapper(
             red_team_audits.estimate,
         )
@@ -1206,10 +1076,6 @@ class AsyncRedTeamAuditsResourceWithRawResponse:
         )
         self.retrieve_logs = async_to_raw_response_wrapper(
             red_team_audits.retrieve_logs,
-        )
-        self.download = async_to_custom_raw_response_wrapper(
-            red_team_audits.download,
-            AsyncBinaryAPIResponse,
         )
         self.estimate = async_to_raw_response_wrapper(
             red_team_audits.estimate,
@@ -1241,10 +1107,6 @@ class RedTeamAuditsResourceWithStreamingResponse:
         self.retrieve_logs = to_streamed_response_wrapper(
             red_team_audits.retrieve_logs,
         )
-        self.download = to_custom_streamed_response_wrapper(
-            red_team_audits.download,
-            StreamedBinaryAPIResponse,
-        )
         self.estimate = to_streamed_response_wrapper(
             red_team_audits.estimate,
         )
@@ -1274,10 +1136,6 @@ class AsyncRedTeamAuditsResourceWithStreamingResponse:
         )
         self.retrieve_logs = async_to_streamed_response_wrapper(
             red_team_audits.retrieve_logs,
-        )
-        self.download = async_to_custom_streamed_response_wrapper(
-            red_team_audits.download,
-            AsyncStreamedBinaryAPIResponse,
         )
         self.estimate = async_to_streamed_response_wrapper(
             red_team_audits.estimate,

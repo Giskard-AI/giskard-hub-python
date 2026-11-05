@@ -15,7 +15,6 @@ __all__ = [
     "RedTeamAuditScanType",
     "RedTeamAuditEvaluationUploadStatus",
     "RedTeamAuditLogStream",
-    "RedTeamAuditDownloadType",
     "RedTeamAuditImpactGrade",
     "RedTeamAuditRiskModelSurface",
     "RedTeamAudit",
@@ -41,7 +40,6 @@ __all__ = [
     "RedTeamAuditListParams",
     "RedTeamAuditUploadParams",
     "RedTeamAuditRetrieveLogsParams",
-    "RedTeamAuditDownloadParams",
     "RedTeamAuditEstimateParams",
 ]
 
@@ -67,8 +65,6 @@ RedTeamAuditScanType: TypeAlias = Literal["vulnerability", "garak", "deepteam", 
 RedTeamAuditEvaluationUploadStatus: TypeAlias = Literal["not_started", "uploaded", "skipped", "error"]
 
 RedTeamAuditLogStream: TypeAlias = Literal["stdout", "stderr", "system"]
-
-RedTeamAuditDownloadType: TypeAlias = Literal["report", "logs", "run-archive"]
 
 RedTeamAuditImpactGrade: TypeAlias = Literal["G1", "G2", "G3", "G4"]
 
@@ -296,10 +292,6 @@ class RedTeamAuditUploadParams(TypedDict, total=False):
 class RedTeamAuditRetrieveLogsParams(TypedDict, total=False):
     after: int
     limit: int
-
-
-class RedTeamAuditDownloadParams(TypedDict, total=False):
-    type: RedTeamAuditDownloadType
 
 
 class RedTeamAuditEstimateParams(TypedDict, total=False):

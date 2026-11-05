@@ -30,14 +30,6 @@ from .usage import (
     UsageResourceWithStreamingResponse,
     AsyncUsageResourceWithStreamingResponse,
 )
-from .users import (
-    UsersResource,
-    AsyncUsersResource,
-    UsersResourceWithRawResponse,
-    AsyncUsersResourceWithRawResponse,
-    UsersResourceWithStreamingResponse,
-    AsyncUsersResourceWithStreamingResponse,
-)
 from .agents import (
     AgentsResource,
     AsyncAgentsResource,
@@ -204,12 +196,6 @@ __all__ = [
     "AsyncUsageResourceWithRawResponse",
     "UsageResourceWithStreamingResponse",
     "AsyncUsageResourceWithStreamingResponse",
-    "UsersResource",
-    "AsyncUsersResource",
-    "UsersResourceWithRawResponse",
-    "AsyncUsersResourceWithRawResponse",
-    "UsersResourceWithStreamingResponse",
-    "AsyncUsersResourceWithStreamingResponse",
     "RedTeamAuditsResource",
     "AsyncRedTeamAuditsResource",
     "RedTeamAuditsResourceWithRawResponse",

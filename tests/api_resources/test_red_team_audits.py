@@ -5,9 +5,7 @@ from __future__ import annotations
 import os
 from typing import Any, List, cast
 
-import httpx
 import pytest
-from respx import MockRouter
 
 from giskard_hub import HubClient, AsyncHubClient
 from tests.utils import assert_matches_type
@@ -16,12 +14,6 @@ from giskard_hub.types import (
     CreditEstimate,
     RedTeamAuditLogs,
     RedTeamAuditContent,
-)
-from giskard_hub._response import (
-    BinaryAPIResponse,
-    AsyncBinaryAPIResponse,
-    StreamedBinaryAPIResponse,
-    AsyncStreamedBinaryAPIResponse,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -344,74 +336,6 @@ class TestRedTeamAudits:
     def test_path_params_retrieve_logs(self, client: HubClient) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
             client.red_team_audits.with_raw_response.retrieve_logs(
-                "",
-            )
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    def test_method_download(self, client: HubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get("/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download").mock(
-            return_value=httpx.Response(200, content=b"raw file contents")
-        )
-        red_team_audit = client.red_team_audits.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-        assert red_team_audit.is_closed
-        assert red_team_audit.read() == b"raw file contents"
-        assert isinstance(red_team_audit, BinaryAPIResponse)
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    def test_method_download_with_all_params(self, client: HubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get(
-            "/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download",
-            params={"type": "run-archive"},
-        ).mock(return_value=httpx.Response(200, content=b"raw file contents"))
-        red_team_audit = client.red_team_audits.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            type="run-archive",
-        )
-        assert red_team_audit.is_closed
-        assert red_team_audit.read() == b"raw file contents"
-        assert isinstance(red_team_audit, BinaryAPIResponse)
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    def test_raw_response_download(self, client: HubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get("/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download").mock(
-            return_value=httpx.Response(200, content=b"raw file contents")
-        )
-        red_team_audit = client.red_team_audits.with_raw_response.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-
-        assert red_team_audit.is_closed is True
-        assert red_team_audit.http_request.headers.get("X-Giskard-Lang") == "python"
-        assert red_team_audit.read() == b"raw file contents"
-        assert isinstance(red_team_audit, BinaryAPIResponse)
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    def test_streaming_response_download(self, client: HubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get("/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download").mock(
-            return_value=httpx.Response(200, content=b"raw file contents")
-        )
-        with client.red_team_audits.with_streaming_response.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        ) as red_team_audit:
-            assert not red_team_audit.is_closed
-            assert red_team_audit.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            assert red_team_audit.read() == b"raw file contents"
-            assert isinstance(red_team_audit, StreamedBinaryAPIResponse)
-
-        assert cast(Any, red_team_audit.is_closed) is True
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    def test_path_params_download(self, client: HubClient) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
-            client.red_team_audits.with_raw_response.download(
                 "",
             )
 
@@ -774,74 +698,6 @@ class TestAsyncRedTeamAudits:
     async def test_path_params_retrieve_logs(self, async_client: AsyncHubClient) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
             await async_client.red_team_audits.with_raw_response.retrieve_logs(
-                "",
-            )
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    async def test_method_download(self, async_client: AsyncHubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get("/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download").mock(
-            return_value=httpx.Response(200, content=b"raw file contents")
-        )
-        red_team_audit = await async_client.red_team_audits.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-        assert red_team_audit.is_closed
-        assert await red_team_audit.read() == b"raw file contents"
-        assert isinstance(red_team_audit, AsyncBinaryAPIResponse)
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    async def test_method_download_with_all_params(self, async_client: AsyncHubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get(
-            "/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download",
-            params={"type": "run-archive"},
-        ).mock(return_value=httpx.Response(200, content=b"raw file contents"))
-        red_team_audit = await async_client.red_team_audits.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            type="run-archive",
-        )
-        assert red_team_audit.is_closed
-        assert await red_team_audit.read() == b"raw file contents"
-        assert isinstance(red_team_audit, AsyncBinaryAPIResponse)
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    async def test_raw_response_download(self, async_client: AsyncHubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get("/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download").mock(
-            return_value=httpx.Response(200, content=b"raw file contents")
-        )
-        red_team_audit = await async_client.red_team_audits.with_raw_response.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        )
-
-        assert red_team_audit.is_closed is True
-        assert red_team_audit.http_request.headers.get("X-Giskard-Lang") == "python"
-        assert await red_team_audit.read() == b"raw file contents"
-        assert isinstance(red_team_audit, AsyncBinaryAPIResponse)
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    async def test_streaming_response_download(self, async_client: AsyncHubClient, respx_mock: MockRouter) -> None:
-        respx_mock.get("/v2/red-team-audits/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/download").mock(
-            return_value=httpx.Response(200, content=b"raw file contents")
-        )
-        async with async_client.red_team_audits.with_streaming_response.download(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-        ) as red_team_audit:
-            assert not red_team_audit.is_closed
-            assert red_team_audit.http_request.headers.get("X-Giskard-Lang") == "python"
-
-            assert await red_team_audit.read() == b"raw file contents"
-            assert isinstance(red_team_audit, AsyncStreamedBinaryAPIResponse)
-
-        assert cast(Any, red_team_audit.is_closed) is True
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    async def test_path_params_download(self, async_client: AsyncHubClient) -> None:
-        with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
-            await async_client.red_team_audits.with_raw_response.download(
                 "",
             )
 

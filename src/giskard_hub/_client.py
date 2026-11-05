@@ -23,7 +23,6 @@ from .resources import (
     audit,
     tasks,
     usage,
-    users,
     agents,
     checks,
     helpers,
@@ -82,7 +81,6 @@ class HubClient(SyncAPIClient):
     scheduled_evaluations: scheduled_evaluations.ScheduledEvaluationsResource
     tasks: tasks.TasksResource
     usage: usage.UsageResource
-    users: users.UsersResource
     red_team_audits: red_team_audits.RedTeamAuditsResource
     scenarios: scenarios.ScenariosResource
     test_cases: test_cases.TestCasesResource
@@ -166,7 +164,6 @@ class HubClient(SyncAPIClient):
         self.scheduled_evaluations = scheduled_evaluations.ScheduledEvaluationsResource(self)
         self.tasks = tasks.TasksResource(self)
         self.usage = usage.UsageResource(self)
-        self.users = users.UsersResource(self)
         self.red_team_audits = red_team_audits.RedTeamAuditsResource(self)
         self.scenarios = scenarios.ScenariosResource(self)
         self.test_cases = test_cases.TestCasesResource(self)
@@ -311,7 +308,6 @@ class AsyncHubClient(AsyncAPIClient):
     scheduled_evaluations: scheduled_evaluations.AsyncScheduledEvaluationsResource
     tasks: tasks.AsyncTasksResource
     usage: usage.AsyncUsageResource
-    users: users.AsyncUsersResource
     red_team_audits: red_team_audits.AsyncRedTeamAuditsResource
     scenarios: scenarios.AsyncScenariosResource
     test_cases: test_cases.AsyncTestCasesResource
@@ -395,7 +391,6 @@ class AsyncHubClient(AsyncAPIClient):
         self.scheduled_evaluations = scheduled_evaluations.AsyncScheduledEvaluationsResource(self)
         self.tasks = tasks.AsyncTasksResource(self)
         self.usage = usage.AsyncUsageResource(self)
-        self.users = users.AsyncUsersResource(self)
         self.red_team_audits = red_team_audits.AsyncRedTeamAuditsResource(self)
         self.scenarios = scenarios.AsyncScenariosResource(self)
         self.test_cases = test_cases.AsyncTestCasesResource(self)
@@ -544,7 +539,6 @@ class HubClientWithRawResponse:
         )
         self.tasks = tasks.TasksResourceWithRawResponse(client.tasks)
         self.usage = usage.UsageResourceWithRawResponse(client.usage)
-        self.users = users.UsersResourceWithRawResponse(client.users)
         self.red_team_audits = red_team_audits.RedTeamAuditsResourceWithRawResponse(client.red_team_audits)
         self.scenarios = scenarios.ScenariosResourceWithRawResponse(client.scenarios)
         self.test_cases = test_cases.TestCasesResourceWithRawResponse(client.test_cases)
@@ -567,7 +561,6 @@ class AsyncHubClientWithRawResponse:
         )
         self.tasks = tasks.AsyncTasksResourceWithRawResponse(client.tasks)
         self.usage = usage.AsyncUsageResourceWithRawResponse(client.usage)
-        self.users = users.AsyncUsersResourceWithRawResponse(client.users)
         self.red_team_audits = red_team_audits.AsyncRedTeamAuditsResourceWithRawResponse(client.red_team_audits)
         self.scenarios = scenarios.AsyncScenariosResourceWithRawResponse(client.scenarios)
         self.test_cases = test_cases.AsyncTestCasesResourceWithRawResponse(client.test_cases)
@@ -590,7 +583,6 @@ class HubClientWithStreamedResponse:
         )
         self.tasks = tasks.TasksResourceWithStreamingResponse(client.tasks)
         self.usage = usage.UsageResourceWithStreamingResponse(client.usage)
-        self.users = users.UsersResourceWithStreamingResponse(client.users)
         self.red_team_audits = red_team_audits.RedTeamAuditsResourceWithStreamingResponse(client.red_team_audits)
         self.scenarios = scenarios.ScenariosResourceWithStreamingResponse(client.scenarios)
         self.test_cases = test_cases.TestCasesResourceWithStreamingResponse(client.test_cases)
@@ -615,7 +607,6 @@ class AsyncHubClientWithStreamedResponse:
         )
         self.tasks = tasks.AsyncTasksResourceWithStreamingResponse(client.tasks)
         self.usage = usage.AsyncUsageResourceWithStreamingResponse(client.usage)
-        self.users = users.AsyncUsersResourceWithStreamingResponse(client.users)
         self.red_team_audits = red_team_audits.AsyncRedTeamAuditsResourceWithStreamingResponse(client.red_team_audits)
         self.scenarios = scenarios.AsyncScenariosResourceWithStreamingResponse(client.scenarios)
         self.test_cases = test_cases.AsyncTestCasesResourceWithStreamingResponse(client.test_cases)

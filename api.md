@@ -245,7 +245,6 @@ Types:
 ```python
 from giskard_hub.types import (
     Project,
-    ProjectOnboarding,
 )
 ```
 
@@ -257,9 +256,6 @@ Methods:
 - <code title="get /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">list</a>() -> List[<a href="./src/giskard_hub/types/project.py">Project</a>]</code>
 - <code title="delete /v2/projects/{project_id}">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">delete</a>(project_id) -> None</code>
 - <code title="delete /v2/projects">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">bulk_delete</a>(\*\*<a href="src/giskard_hub/types/project.py">params</a>) -> None</code>
-- <code title="get /v2/projects/{project_id}/onboarding">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">retrieve_onboarding</a>(project_id) -> <a href="./src/giskard_hub/types/project.py">ProjectOnboarding</a></code>
-- <code title="put /v2/projects/{project_id}/onboarding/dismissal">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">update_onboarding_dismissal</a>(project_id, \*\*<a href="src/giskard_hub/types/project.py">params</a>) -> <a href="./src/giskard_hub/types/project.py">ProjectOnboarding</a></code>
-- <code title="post /v2/projects/{project_id}/onboarding/restart">client.projects.<a href="./src/giskard_hub/resources/projects/projects.py">restart_onboarding</a>(project_id) -> <a href="./src/giskard_hub/types/project.py">ProjectOnboarding</a></code>
 
 ## Prompt Presets
 
@@ -505,7 +501,6 @@ from giskard_hub.types import (
     RedTeamAudit,
     RedTeamAuditContent,
     RedTeamAuditCoverageMode,
-    RedTeamAuditDownloadType,
     RedTeamAuditLogs,
     RedTeamAuditScanType,
     RedTeamAuditStatus,
@@ -521,7 +516,6 @@ Methods:
 - <code title="delete /v2/red-team-audits/{audit_id}">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">delete</a>(audit_id) -> None</code>
 - <code title="get /v2/red-team-audits/{audit_id}/content">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_content</a>(audit_id) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAuditContent</a></code>
 - <code title="get /v2/red-team-audits/{audit_id}/logs">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_logs</a>(audit_id, \*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAuditLogs</a></code>
-- <code title="get /v2/red-team-audits/{audit_id}/download">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">download</a>(audit_id, \*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> BinaryAPIResponse</code>
 - <code title="post /v2/red-team-audits/estimate">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">estimate</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 
 # Usage
@@ -537,18 +531,3 @@ from giskard_hub.types import (
 Methods:
 
 - <code title="get /v2/usage/credits">client.usage.<a href="./src/giskard_hub/resources/usage.py">retrieve_credits</a>(\*\*<a href="src/giskard_hub/types/credit.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditUsageSummary</a></code>
-
-# Users
-
-Types:
-
-```python
-from giskard_hub.types import (
-    HubApiKey,
-)
-```
-
-Methods:
-
-- <code title="get /v2/users/current/api-key">client.users.<a href="./src/giskard_hub/resources/users.py">retrieve_api_key</a>() -> <a href="./src/giskard_hub/types/user.py">HubApiKey</a></code>
-- <code title="post /v2/users/current/api-key/rotate">client.users.<a href="./src/giskard_hub/resources/users.py">rotate_api_key</a>() -> <a href="./src/giskard_hub/types/user.py">HubApiKey</a></code>
