@@ -43,11 +43,13 @@ from ..._analytics import capture_event, make_distinct_id
 from ...types.scan import (
     ScanListParams,
     ScanCreateParams,
+    ScanEstimateParams,
     ScanRetrieveParams,
     ScanBulkDeleteParams,
 )
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
+from ...types.credit import CreditEstimate
 
 __all__ = ["ScansResource", "AsyncScansResource"]
 
@@ -497,6 +499,64 @@ class ScansResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[List[ScanAvailableProbe]],
+        )
+
+        return self._unwrap(response)
+
+    def estimate(
+        self,
+        *,
+        knowledge_base_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        probe_ids: Optional[SequenceNotStr[str]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of a scan.
+
+        Parameters
+        ----------
+        knowledge_base_id : Optional[str] | Omit
+            Knowledge base the scan would use.
+        tags : SequenceNotStr[str] | Omit
+            Tags that would restrict the scan.
+        probe_ids : SequenceNotStr[str] | Omit
+            Probe identifiers that would be included.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the scan.
+        """
+        response = self._post(
+            "/v2/scans/estimate",
+            body=maybe_transform(
+                {
+                    "knowledge_base_id": knowledge_base_id,
+                    "tags": tags,
+                    "probe_ids": probe_ids,
+                },
+                ScanEstimateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
         )
 
         return self._unwrap(response)
@@ -952,6 +1012,64 @@ class AsyncScansResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def estimate(
+        self,
+        *,
+        knowledge_base_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        probe_ids: Optional[SequenceNotStr[str]] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of a scan.
+
+        Parameters
+        ----------
+        knowledge_base_id : Optional[str] | Omit
+            Knowledge base the scan would use.
+        tags : SequenceNotStr[str] | Omit
+            Tags that would restrict the scan.
+        probe_ids : SequenceNotStr[str] | Omit
+            Probe identifiers that would be included.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the scan.
+        """
+        response = await self._post(
+            "/v2/scans/estimate",
+            body=await async_maybe_transform(
+                {
+                    "knowledge_base_id": knowledge_base_id,
+                    "tags": tags,
+                    "probe_ids": probe_ids,
+                },
+                ScanEstimateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
 
 class ScansResourceWithRawResponse:
     def __init__(self, scans: ScansResource) -> None:
@@ -980,6 +1098,9 @@ class ScansResourceWithRawResponse:
         )
         self.list_available_probes = to_raw_response_wrapper(
             scans.list_available_probes,
+        )
+        self.estimate = to_raw_response_wrapper(
+            scans.estimate,
         )
 
     @cached_property
@@ -1019,6 +1140,9 @@ class AsyncScansResourceWithRawResponse:
         self.list_available_probes = async_to_raw_response_wrapper(
             scans.list_available_probes,
         )
+        self.estimate = async_to_raw_response_wrapper(
+            scans.estimate,
+        )
 
     @cached_property
     def probes(self) -> AsyncProbesResourceWithRawResponse:
@@ -1057,6 +1181,9 @@ class ScansResourceWithStreamingResponse:
         self.list_available_probes = to_streamed_response_wrapper(
             scans.list_available_probes,
         )
+        self.estimate = to_streamed_response_wrapper(
+            scans.estimate,
+        )
 
     @cached_property
     def probes(self) -> ProbesResourceWithStreamingResponse:
@@ -1094,6 +1221,9 @@ class AsyncScansResourceWithStreamingResponse:
         )
         self.list_available_probes = async_to_streamed_response_wrapper(
             scans.list_available_probes,
+        )
+        self.estimate = async_to_streamed_response_wrapper(
+            scans.estimate,
         )
 
     @cached_property

@@ -89,6 +89,7 @@ class Scenario(BaseModel):
     updated_at: datetime
     status: ScenarioStatus = "active"
     schema_validation: ScenarioSchemaValidation = Field(default_factory=ScenarioSchemaValidation)
+    annotations: Dict[str, Any] = Field(default_factory=dict)
 
     @property
     @deprecated("`.messages` is deprecated; read `interactions[i].input` instead.")

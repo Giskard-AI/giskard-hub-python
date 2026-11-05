@@ -27,6 +27,8 @@ __all__ = [
     "DatasetGenerateAdversarialParams",
     "DatasetGenerateDocumentBasedParams",
     "DatasetGeneratePresetBasedParams",
+    "DatasetEstimateDocumentBasedParams",
+    "DatasetEstimatePresetBasedParams",
 ]
 
 
@@ -174,3 +176,11 @@ class DatasetGeneratePresetBasedParams(TypedDict, total=False):
     prompt_preset_id: Required[str]
     dataset_name: Optional[str]
     n_examples: int
+
+
+class DatasetEstimateDocumentBasedParams(TypedDict, total=False):
+    n_examples: Required[int]
+
+
+class DatasetEstimatePresetBasedParams(TypedDict, total=False):
+    num_examples: Required[int]

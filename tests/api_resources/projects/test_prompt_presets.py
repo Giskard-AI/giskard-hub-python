@@ -319,6 +319,7 @@ class TestPromptPresets:
         prompt_preset = client.projects.prompt_presets.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(PromptPresetPreview, prompt_preset, path=["response"])
 
@@ -339,6 +340,7 @@ class TestPromptPresets:
         response = client.projects.prompt_presets.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -352,6 +354,7 @@ class TestPromptPresets:
         with client.projects.prompt_presets.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -371,6 +374,7 @@ class TestPromptPresets:
             client.projects.prompt_presets.with_raw_response.preview(
                 project_id="",
                 description="description",
+                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             )
 
 
@@ -683,6 +687,7 @@ class TestAsyncPromptPresets:
         prompt_preset = await async_client.projects.prompt_presets.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(PromptPresetPreview, prompt_preset, path=["response"])
 
@@ -703,6 +708,7 @@ class TestAsyncPromptPresets:
         response = await async_client.projects.prompt_presets.with_raw_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -716,6 +722,7 @@ class TestAsyncPromptPresets:
         async with async_client.projects.prompt_presets.with_streaming_response.preview(
             project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
+            agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Giskard-Lang") == "python"
@@ -735,4 +742,5 @@ class TestAsyncPromptPresets:
             await async_client.projects.prompt_presets.with_raw_response.preview(
                 project_id="",
                 description="description",
+                agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             )

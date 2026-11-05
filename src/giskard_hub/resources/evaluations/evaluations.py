@@ -42,6 +42,7 @@ from ...types.agent import AgentOutputParam, MinimalAgentParam
 from ...types.check import CheckResult, CheckConfigParam
 from ..._base_client import make_request_options
 from ...types.common import APIResponse, APIResponseWithIncluded
+from ...types.credit import CreditEstimate
 from ...types.dataset import DatasetSubsetParam
 from .._check_helpers import (
     flat_check_specs,
@@ -53,10 +54,12 @@ from ...types.evaluation import (
     EvaluationCreateParams,
     EvaluationUpdateParams,
     EvaluationUploadParams,
+    EvaluationEstimateParams,
     EvaluationRetrieveParams,
     EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams,
     EvaluationRunInteractionChecksParams,
+    EvaluationEstimateRunInteractionChecksParams,
 )
 
 __all__ = ["EvaluationsResource", "AsyncEvaluationsResource"]
@@ -76,6 +79,18 @@ def _validate_dataset_or_old_evaluation(
     """
     if (dataset_id is omit and old_evaluation_id is omit) or (dataset_id is not omit and old_evaluation_id is not omit):
         raise ValueError("Exactly one of `dataset_id` or `old_evaluation_id` must be provided")
+
+
+def _criteria_from_dataset(
+    dataset_id: Optional[str] | Omit,
+    tags: Optional[SequenceNotStr[str]] | Omit,
+) -> DatasetSubsetParam | Omit:
+    if dataset_id is omit:
+        return omit
+    return DatasetSubsetParam(
+        dataset_id=cast(str, dataset_id),
+        tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
+    )
 
 
 def _normalize_agent_output(
@@ -181,13 +196,7 @@ class EvaluationsResource(SyncAPIResource):
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | Omit = omit
-
-        if dataset_id is not omit:
-            criteria = DatasetSubsetParam(
-                dataset_id=cast(str, dataset_id),
-                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
-            )
+        criteria = _criteria_from_dataset(dataset_id, tags)
 
         response = self._post(
             "/v2/evaluations",
@@ -708,6 +717,8 @@ class EvaluationsResource(SyncAPIResource):
         input_data: Mapping[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         agent_description: str | Omit = omit,
+        metadata: Mapping[str, Any] | Omit = omit,
+        test_case_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -736,6 +747,10 @@ class EvaluationsResource(SyncAPIResource):
             `input_data={"messages": [...]}`. Pass `input_data` instead.
         agent_description : str | Omit
             (Deprecated) Ignored; the field was removed server-side.
+        metadata : Mapping[str, Any] | Omit
+            Interaction metadata to attach to the built trace, if known.
+        test_case_id : Optional[str] | Omit
+            Source test case, if any. Used to resolve trace annotations.
 
         Other Parameters
         ----------------
@@ -785,6 +800,8 @@ class EvaluationsResource(SyncAPIResource):
                     "input_data": resolved_input,
                     "model_output": model_output,
                     "checks": api_checks,
+                    "metadata": metadata,
+                    "test_case_id": test_case_id,
                 },
                 EvaluationRunInteractionChecksParams,
             ),
@@ -795,6 +812,202 @@ class EvaluationsResource(SyncAPIResource):
                 timeout=timeout,
             ),
             cast_to=APIResponse[List[CheckResult]],
+        )
+
+        return self._unwrap(response)
+
+    def estimate(
+        self,
+        *,
+        project_id: str,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        old_evaluation_id: Optional[str] | Omit = omit,
+        run_count: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of an evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project the evaluation would run in.
+        dataset_id : str, optional
+            The ID of the dataset to draw scenarios from. Exactly one of
+            `dataset_id` or `old_evaluation_id` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to scenarios carrying those
+            tags. Only used when `dataset_id` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose scenarios would be reused.
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
+            provided.
+        run_count : int | Omit
+            The number of times each scenario would be run. Testing stops at
+            the first failure.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the evaluation.
+
+        Raises
+        ------
+        ValueError
+            If neither or both of `dataset_id` and `old_evaluation_id` are
+            provided.
+        """
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
+        response = self._post(
+            "/v2/evaluations/estimate",
+            body=maybe_transform(
+                {
+                    "project_id": project_id,
+                    "run_count": run_count,
+                    "criteria": _criteria_from_dataset(dataset_id, tags),
+                    "old_evaluation_id": old_evaluation_id,
+                },
+                EvaluationEstimateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    def estimate_run_interaction_checks(
+        self,
+        *,
+        project_id: str,
+        checks: Iterable[CheckConfigParam],
+        agent_id: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of running interaction checks.
+
+        Parameters
+        ----------
+        project_id : str
+            Project ID the checks belong to.
+        checks : Iterable[CheckConfigParam]
+            Checks that would be priced. Same shape as the `checks` argument
+            of `run_single`.
+        agent_id : Optional[str] | Omit
+            Agent the checks would run against, when known.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the check run.
+        """
+        response = self._post(
+            "/v2/evaluations/run-interaction-checks/estimate",
+            body=maybe_transform(
+                {
+                    "project_id": project_id,
+                    "checks": flat_check_specs(list(checks)),
+                    "agent_id": agent_id,
+                },
+                EvaluationEstimateRunInteractionChecksParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    def estimate_rerun_errored_results(
+        self,
+        evaluation_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of rerunning errored evaluation results.
+
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation whose errored results would be rerun.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the rerun.
+
+        Raises
+        ------
+        ValueError
+            If `evaluation_id` is empty.
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        response = self._post(
+            f"/v2/evaluations/{evaluation_id}/rerun-errored-results/estimate",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[CreditEstimate],
         )
 
         return self._unwrap(response)
@@ -892,13 +1105,7 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         """
 
         _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
-        criteria: DatasetSubsetParam | Omit = omit
-
-        if dataset_id is not omit:
-            criteria = DatasetSubsetParam(
-                dataset_id=cast(str, dataset_id),
-                tags=(None if tags is omit else cast(Optional[SequenceNotStr[str]], tags)),
-            )
+        criteria = _criteria_from_dataset(dataset_id, tags)
 
         response = await self._post(
             "/v2/evaluations",
@@ -1419,6 +1626,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         input_data: Mapping[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         agent_description: str | Omit = omit,
+        metadata: Mapping[str, Any] | Omit = omit,
+        test_case_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1447,6 +1656,10 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             `input_data={"messages": [...]}`. Pass `input_data` instead.
         agent_description : str | Omit
             (Deprecated) Ignored; the field was removed server-side.
+        metadata : Mapping[str, Any] | Omit
+            Interaction metadata to attach to the built trace, if known.
+        test_case_id : Optional[str] | Omit
+            Source test case, if any. Used to resolve trace annotations.
 
         Other Parameters
         ----------------
@@ -1496,6 +1709,8 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     "input_data": resolved_input,
                     "model_output": model_output,
                     "checks": api_checks,
+                    "metadata": metadata,
+                    "test_case_id": test_case_id,
                 },
                 EvaluationRunInteractionChecksParams,
             ),
@@ -1506,6 +1721,202 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                 timeout=timeout,
             ),
             cast_to=APIResponse[List[CheckResult]],
+        )
+
+        return self._unwrap(response)
+
+    async def estimate(
+        self,
+        *,
+        project_id: str,
+        dataset_id: Optional[str] | Omit = omit,
+        tags: Optional[SequenceNotStr[str]] | Omit = omit,
+        old_evaluation_id: Optional[str] | Omit = omit,
+        run_count: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of an evaluation.
+
+        Parameters
+        ----------
+        project_id : str
+            The ID of the project the evaluation would run in.
+        dataset_id : str, optional
+            The ID of the dataset to draw scenarios from. Exactly one of
+            `dataset_id` or `old_evaluation_id` must be provided.
+        tags : sequence of str, optional
+            Optional tags to restrict the subset to scenarios carrying those
+            tags. Only used when `dataset_id` is provided.
+        old_evaluation_id : str, optional
+            The ID of a previous evaluation whose scenarios would be reused.
+            Exactly one of `old_evaluation_id` or `dataset_id` must be
+            provided.
+        run_count : int | Omit
+            The number of times each scenario would be run. Testing stops at
+            the first failure.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the evaluation.
+
+        Raises
+        ------
+        ValueError
+            If neither or both of `dataset_id` and `old_evaluation_id` are
+            provided.
+        """
+        _validate_dataset_or_old_evaluation(dataset_id, old_evaluation_id)
+        response = await self._post(
+            "/v2/evaluations/estimate",
+            body=await async_maybe_transform(
+                {
+                    "project_id": project_id,
+                    "run_count": run_count,
+                    "criteria": _criteria_from_dataset(dataset_id, tags),
+                    "old_evaluation_id": old_evaluation_id,
+                },
+                EvaluationEstimateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    async def estimate_run_interaction_checks(
+        self,
+        *,
+        project_id: str,
+        checks: Iterable[CheckConfigParam],
+        agent_id: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of running interaction checks.
+
+        Parameters
+        ----------
+        project_id : str
+            Project ID the checks belong to.
+        checks : Iterable[CheckConfigParam]
+            Checks that would be priced. Same shape as the `checks` argument
+            of `run_single`.
+        agent_id : Optional[str] | Omit
+            Agent the checks would run against, when known.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the check run.
+        """
+        response = await self._post(
+            "/v2/evaluations/run-interaction-checks/estimate",
+            body=await async_maybe_transform(
+                {
+                    "project_id": project_id,
+                    "checks": flat_check_specs(list(checks)),
+                    "agent_id": agent_id,
+                },
+                EvaluationEstimateRunInteractionChecksParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    async def estimate_rerun_errored_results(
+        self,
+        evaluation_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of rerunning errored evaluation results.
+
+        Parameters
+        ----------
+        evaluation_id : str
+            The ID of the evaluation whose errored results would be rerun.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the rerun.
+
+        Raises
+        ------
+        ValueError
+            If `evaluation_id` is empty.
+        """
+        if not evaluation_id:
+            raise ValueError(f"Expected a non-empty value for `evaluation_id` but received {evaluation_id!r}")
+        response = await self._post(
+            f"/v2/evaluations/{evaluation_id}/rerun-errored-results/estimate",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            ),
+            cast_to=APIResponse[CreditEstimate],
         )
 
         return self._unwrap(response)
@@ -1544,6 +1955,15 @@ class EvaluationsResourceWithRawResponse:
         )
         self.run_single = to_raw_response_wrapper(
             evaluations.run_single,
+        )
+        self.estimate = to_raw_response_wrapper(
+            evaluations.estimate,
+        )
+        self.estimate_run_interaction_checks = to_raw_response_wrapper(
+            evaluations.estimate_run_interaction_checks,
+        )
+        self.estimate_rerun_errored_results = to_raw_response_wrapper(
+            evaluations.estimate_rerun_errored_results,
         )
 
     @cached_property
@@ -1585,6 +2005,15 @@ class AsyncEvaluationsResourceWithRawResponse:
         self.run_single = async_to_raw_response_wrapper(
             evaluations.run_single,
         )
+        self.estimate = async_to_raw_response_wrapper(
+            evaluations.estimate,
+        )
+        self.estimate_run_interaction_checks = async_to_raw_response_wrapper(
+            evaluations.estimate_run_interaction_checks,
+        )
+        self.estimate_rerun_errored_results = async_to_raw_response_wrapper(
+            evaluations.estimate_rerun_errored_results,
+        )
 
     @cached_property
     def results(self) -> AsyncResultsResourceWithRawResponse:
@@ -1625,6 +2054,15 @@ class EvaluationsResourceWithStreamingResponse:
         self.run_single = to_streamed_response_wrapper(
             evaluations.run_single,
         )
+        self.estimate = to_streamed_response_wrapper(
+            evaluations.estimate,
+        )
+        self.estimate_run_interaction_checks = to_streamed_response_wrapper(
+            evaluations.estimate_run_interaction_checks,
+        )
+        self.estimate_rerun_errored_results = to_streamed_response_wrapper(
+            evaluations.estimate_rerun_errored_results,
+        )
 
     @cached_property
     def results(self) -> ResultsResourceWithStreamingResponse:
@@ -1664,6 +2102,15 @@ class AsyncEvaluationsResourceWithStreamingResponse:
         )
         self.run_single = async_to_streamed_response_wrapper(
             evaluations.run_single,
+        )
+        self.estimate = async_to_streamed_response_wrapper(
+            evaluations.estimate,
+        )
+        self.estimate_run_interaction_checks = async_to_streamed_response_wrapper(
+            evaluations.estimate_run_interaction_checks,
+        )
+        self.estimate_rerun_errored_results = async_to_streamed_response_wrapper(
+            evaluations.estimate_rerun_errored_results,
         )
 
     @cached_property

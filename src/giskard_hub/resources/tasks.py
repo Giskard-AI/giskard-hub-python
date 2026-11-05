@@ -288,7 +288,7 @@ class TasksResource(SyncAPIResource):
     def list(
         self,
         *,
-        project_id: Optional[str] | Omit = omit,
+        project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -301,7 +301,7 @@ class TasksResource(SyncAPIResource):
 
         Parameters
         ----------
-        project_id : Optional[str] | Omit
+        project_id : str
             Project ID to list tasks for.
 
         Other Parameters
@@ -694,7 +694,7 @@ class AsyncTasksResource(AsyncAPIResource):
     async def list(
         self,
         *,
-        project_id: Optional[str] | Omit = omit,
+        project_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -707,7 +707,7 @@ class AsyncTasksResource(AsyncAPIResource):
 
         Parameters
         ----------
-        project_id : Optional[str] | Omit
+        project_id : str
             Project ID to list tasks for.
 
         Other Parameters

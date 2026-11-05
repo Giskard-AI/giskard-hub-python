@@ -20,6 +20,8 @@ Types are organized by domain into consolidated modules:
 - scheduled_evaluation: ScheduledEvaluation, FrequencyOption and params
 - playground_chat: PlaygroundChat and params
 - project: Project and params
+- credit: CreditEstimate, CreditUsageSummary
+- red_team_audit: RedTeamAudit, RedTeamAuditContent, RedTeamAuditLogs and params
 """
 
 # -- common ----------------------------------------------------------------
@@ -189,6 +191,8 @@ from .dataset import (
     DatasetBulkDeleteParams as DatasetBulkDeleteParams,
     DatasetCreateParams as DatasetCreateParams,
     DatasetGenerateAdversarialParams as DatasetGenerateAdversarialParams,
+    DatasetEstimateDocumentBasedParams as DatasetEstimateDocumentBasedParams,
+    DatasetEstimatePresetBasedParams as DatasetEstimatePresetBasedParams,
     DatasetGenerateDocumentBasedParams as DatasetGenerateDocumentBasedParams,
     DatasetGeneratePresetBasedParams as DatasetGeneratePresetBasedParams,
     DatasetImportParams as DatasetImportParams,
@@ -229,6 +233,8 @@ from .evaluation import (
     EvaluationBulkDeleteParams as EvaluationBulkDeleteParams,
     EvaluationCreateLocalParams as EvaluationCreateLocalParams,
     EvaluationCreateParams as EvaluationCreateParams,
+    EvaluationEstimateParams as EvaluationEstimateParams,
+    EvaluationEstimateRunInteractionChecksParams as EvaluationEstimateRunInteractionChecksParams,
     EvaluationListParams as EvaluationListParams,
     EvaluationRetrieveParams as EvaluationRetrieveParams,
     EvaluationRunInteractionChecksParams as EvaluationRunInteractionChecksParams,
@@ -259,6 +265,7 @@ from .scan import (
     ScanCategory as ScanCategory,
     ScanAvailableProbe as ScanAvailableProbe,
     ScanCreateParams as ScanCreateParams,
+    ScanEstimateParams as ScanEstimateParams,
     ScanListParams as ScanListParams,
     ScanProbeAttempt as ScanProbeAttempt,
     ScanProbeAttemptReference as ScanProbeAttemptReference,
@@ -338,6 +345,51 @@ from .project import (
     ProjectBulkDeleteParams as ProjectBulkDeleteParams,
     ProjectCreateParams as ProjectCreateParams,
     ProjectUpdateParams as ProjectUpdateParams,
+)
+
+# -- credit ----------------------------------------------------------------
+from .credit import (
+    CreditEstimate as CreditEstimate,
+    CreditOperation as CreditOperation,
+    CreditUsageSummary as CreditUsageSummary,
+    UsageRetrieveCreditsParams as UsageRetrieveCreditsParams,
+)
+
+# -- red team audit --------------------------------------------------------
+from .red_team_audit import (
+    RedTeamAudit as RedTeamAudit,
+    RedTeamAuditContent as RedTeamAuditContent,
+    RedTeamAuditCoverage as RedTeamAuditCoverage,
+    RedTeamAuditCoverageMode as RedTeamAuditCoverageMode,
+    RedTeamAuditCreateParams as RedTeamAuditCreateParams,
+    RedTeamAuditEstimateParams as RedTeamAuditEstimateParams,
+    RedTeamAuditEvaluationUploadStatus as RedTeamAuditEvaluationUploadStatus,
+    RedTeamAuditFinding as RedTeamAuditFinding,
+    RedTeamAuditFindingEvidence as RedTeamAuditFindingEvidence,
+    RedTeamAuditImpactGrade as RedTeamAuditImpactGrade,
+    RedTeamAuditListParams as RedTeamAuditListParams,
+    RedTeamAuditLogChunk as RedTeamAuditLogChunk,
+    RedTeamAuditLogStream as RedTeamAuditLogStream,
+    RedTeamAuditLogs as RedTeamAuditLogs,
+    RedTeamAuditOverallAssessment as RedTeamAuditOverallAssessment,
+    RedTeamAuditProgress as RedTeamAuditProgress,
+    RedTeamAuditProgressPhase as RedTeamAuditProgressPhase,
+    RedTeamAuditRemediation as RedTeamAuditRemediation,
+    RedTeamAuditRetrieveLogsParams as RedTeamAuditRetrieveLogsParams,
+    RedTeamAuditRiskModel as RedTeamAuditRiskModel,
+    RedTeamAuditRiskModelAssumption as RedTeamAuditRiskModelAssumption,
+    RedTeamAuditRiskModelBusinessAsset as RedTeamAuditRiskModelBusinessAsset,
+    RedTeamAuditRiskModelFearedEvent as RedTeamAuditRiskModelFearedEvent,
+    RedTeamAuditRiskModelMeta as RedTeamAuditRiskModelMeta,
+    RedTeamAuditRiskModelMission as RedTeamAuditRiskModelMission,
+    RedTeamAuditRiskModelRiskOrigin as RedTeamAuditRiskModelRiskOrigin,
+    RedTeamAuditRiskModelScenario as RedTeamAuditRiskModelScenario,
+    RedTeamAuditRiskModelScope as RedTeamAuditRiskModelScope,
+    RedTeamAuditRiskModelSupportingAsset as RedTeamAuditRiskModelSupportingAsset,
+    RedTeamAuditRiskModelSurface as RedTeamAuditRiskModelSurface,
+    RedTeamAuditScanType as RedTeamAuditScanType,
+    RedTeamAuditStatus as RedTeamAuditStatus,
+    RedTeamAuditUploadParams as RedTeamAuditUploadParams,
 )
 
 __all__ = [
@@ -497,6 +549,8 @@ __all__ = [
     "DatasetGenerateAdversarialParams",
     "DatasetGenerateDocumentBasedParams",
     "DatasetGeneratePresetBasedParams",
+    "DatasetEstimateDocumentBasedParams",
+    "DatasetEstimatePresetBasedParams",
     # knowledge base
     "KnowledgeBase",
     "KnowledgeBaseReference",
@@ -520,6 +574,8 @@ __all__ = [
     "EvaluationUpdateParams",
     "EvaluationRetrieveParams",
     "EvaluationRunInteractionChecksParams",
+    "EvaluationEstimateParams",
+    "EvaluationEstimateRunInteractionChecksParams",
     "EvaluationCreateLocalParams",
     "EvaluationUploadParams",
     "EvaluationBulkDeleteParams",
@@ -543,6 +599,7 @@ __all__ = [
     "ScanAvailableProbe",
     "ScanListParams",
     "ScanCreateParams",
+    "ScanEstimateParams",
     "ScanRetrieveParams",
     "ScanBulkDeleteParams",
     "Severity",
@@ -605,4 +662,43 @@ __all__ = [
     "ProjectCreateParams",
     "ProjectUpdateParams",
     "ProjectBulkDeleteParams",
+    # credit
+    "CreditOperation",
+    "CreditEstimate",
+    "CreditUsageSummary",
+    "UsageRetrieveCreditsParams",
+    # red team audit
+    "RedTeamAudit",
+    "RedTeamAuditContent",
+    "RedTeamAuditCoverage",
+    "RedTeamAuditCoverageMode",
+    "RedTeamAuditCreateParams",
+    "RedTeamAuditEstimateParams",
+    "RedTeamAuditEvaluationUploadStatus",
+    "RedTeamAuditFinding",
+    "RedTeamAuditFindingEvidence",
+    "RedTeamAuditImpactGrade",
+    "RedTeamAuditListParams",
+    "RedTeamAuditLogChunk",
+    "RedTeamAuditLogStream",
+    "RedTeamAuditLogs",
+    "RedTeamAuditOverallAssessment",
+    "RedTeamAuditProgress",
+    "RedTeamAuditProgressPhase",
+    "RedTeamAuditRemediation",
+    "RedTeamAuditRetrieveLogsParams",
+    "RedTeamAuditRiskModel",
+    "RedTeamAuditRiskModelAssumption",
+    "RedTeamAuditRiskModelBusinessAsset",
+    "RedTeamAuditRiskModelFearedEvent",
+    "RedTeamAuditRiskModelMeta",
+    "RedTeamAuditRiskModelMission",
+    "RedTeamAuditRiskModelRiskOrigin",
+    "RedTeamAuditRiskModelScenario",
+    "RedTeamAuditRiskModelScope",
+    "RedTeamAuditRiskModelSupportingAsset",
+    "RedTeamAuditRiskModelSurface",
+    "RedTeamAuditScanType",
+    "RedTeamAuditStatus",
+    "RedTeamAuditUploadParams",
 ]

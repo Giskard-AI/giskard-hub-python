@@ -25,6 +25,7 @@ from .._response import (
 from .._analytics import capture_event, make_distinct_id
 from .._base_client import make_request_options
 from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
+from ..types.credit import CreditEstimate
 from ..types.dataset import (
     Dataset,
     DatasetListParams,
@@ -32,7 +33,9 @@ from ..types.dataset import (
     DatasetImportParams,
     DatasetUpdateParams,
     DatasetBulkDeleteParams,
+    DatasetEstimatePresetBasedParams,
     DatasetGeneratePresetBasedParams,
+    DatasetEstimateDocumentBasedParams,
     DatasetGenerateDocumentBasedParams,
 )
 from ..types.scenario import Scenario
@@ -820,6 +823,106 @@ class DatasetsResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=APIResponse[Dataset],
+        )
+
+        return self._unwrap(response)
+
+    def estimate_document_based(
+        self,
+        *,
+        n_examples: int,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of a document-based dataset generation.
+
+        Parameters
+        ----------
+        n_examples : int
+            Total number of examples to generate.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the generation.
+        """
+        response = self._post(
+            "/v2/datasets/generate-document-based/estimate",
+            body=maybe_transform(
+                {
+                    "n_examples": n_examples,
+                },
+                DatasetEstimateDocumentBasedParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    def estimate_preset_based(
+        self,
+        *,
+        num_examples: int,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of a preset-based dataset generation.
+
+        Parameters
+        ----------
+        num_examples : int
+            Number of scenarios to generate.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the generation.
+        """
+        response = self._post(
+            "/v2/datasets/generate-preset-based/estimate",
+            body=maybe_transform(
+                {
+                    "num_examples": num_examples,
+                },
+                DatasetEstimatePresetBasedParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
         )
 
         return self._unwrap(response)
@@ -1794,6 +1897,106 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def estimate_document_based(
+        self,
+        *,
+        n_examples: int,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of a document-based dataset generation.
+
+        Parameters
+        ----------
+        n_examples : int
+            Total number of examples to generate.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the generation.
+        """
+        response = await self._post(
+            "/v2/datasets/generate-document-based/estimate",
+            body=await async_maybe_transform(
+                {
+                    "n_examples": n_examples,
+                },
+                DatasetEstimateDocumentBasedParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    async def estimate_preset_based(
+        self,
+        *,
+        num_examples: int,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of a preset-based dataset generation.
+
+        Parameters
+        ----------
+        num_examples : int
+            Number of scenarios to generate.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of the generation.
+        """
+        response = await self._post(
+            "/v2/datasets/generate-preset-based/estimate",
+            body=await async_maybe_transform(
+                {
+                    "num_examples": num_examples,
+                },
+                DatasetEstimatePresetBasedParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
     async def list_tags(
         self,
         dataset_id: str,
@@ -2123,6 +2326,12 @@ class DatasetsResourceWithRawResponse:
         self.generate_document_based = to_raw_response_wrapper(
             datasets.generate_document_based,
         )
+        self.estimate_document_based = to_raw_response_wrapper(
+            datasets.estimate_document_based,
+        )
+        self.estimate_preset_based = to_raw_response_wrapper(
+            datasets.estimate_preset_based,
+        )
         self.list_tags = to_raw_response_wrapper(
             datasets.list_tags,
         )
@@ -2173,6 +2382,12 @@ class AsyncDatasetsResourceWithRawResponse:
         )
         self.generate_document_based = async_to_raw_response_wrapper(
             datasets.generate_document_based,
+        )
+        self.estimate_document_based = async_to_raw_response_wrapper(
+            datasets.estimate_document_based,
+        )
+        self.estimate_preset_based = async_to_raw_response_wrapper(
+            datasets.estimate_preset_based,
         )
         self.list_tags = async_to_raw_response_wrapper(
             datasets.list_tags,
@@ -2225,6 +2440,12 @@ class DatasetsResourceWithStreamingResponse:
         self.generate_document_based = to_streamed_response_wrapper(
             datasets.generate_document_based,
         )
+        self.estimate_document_based = to_streamed_response_wrapper(
+            datasets.estimate_document_based,
+        )
+        self.estimate_preset_based = to_streamed_response_wrapper(
+            datasets.estimate_preset_based,
+        )
         self.list_tags = to_streamed_response_wrapper(
             datasets.list_tags,
         )
@@ -2275,6 +2496,12 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.generate_document_based = async_to_streamed_response_wrapper(
             datasets.generate_document_based,
+        )
+        self.estimate_document_based = async_to_streamed_response_wrapper(
+            datasets.estimate_document_based,
+        )
+        self.estimate_preset_based = async_to_streamed_response_wrapper(
+            datasets.estimate_preset_based,
         )
         self.list_tags = async_to_streamed_response_wrapper(
             datasets.list_tags,

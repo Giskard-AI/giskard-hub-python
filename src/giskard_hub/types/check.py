@@ -699,6 +699,7 @@ class InteractionResultData(BaseModel):
     check_results: List[CheckResult] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     error: Optional[str] = None
     checks: Optional[List[InteractionCheckConfig]] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class Interaction(BaseModel):
@@ -706,6 +707,7 @@ class Interaction(BaseModel):
     input: Dict[str, Any]
     output: Optional[Dict[str, Any]] = None
     simulator_config: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     id: Optional[str] = None
@@ -717,3 +719,4 @@ class InteractionParam(TypedDict, total=False):
     input: Required[JsonValue]
     output: Optional[JsonValue]
     checks: Optional[Iterable[InteractionCheckConfigParam]]
+    metadata: Optional[Dict[str, Any]]

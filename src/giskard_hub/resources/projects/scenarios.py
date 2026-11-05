@@ -363,8 +363,8 @@ class ScenariosResource(SyncAPIResource):
         project_id: str,
         *,
         description: str,
+        agent_id: str,
         rules: SequenceNotStr[str] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -380,10 +380,10 @@ class ScenariosResource(SyncAPIResource):
             The ID of the project.
         description : str
             Description of the scenario.
+        agent_id : str
+            Agent ID to use for preview.
         rules : SequenceNotStr[str]
             Rules to use for preview.
-        agent_id : str or None
-            Agent ID to use for preview.
 
         Other Parameters
         ----------------
@@ -764,8 +764,8 @@ class AsyncScenariosResource(AsyncAPIResource):
         project_id: str,
         *,
         description: str,
+        agent_id: str,
         rules: SequenceNotStr[str] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -781,10 +781,10 @@ class AsyncScenariosResource(AsyncAPIResource):
             The ID of the project.
         description : str
             Description of the scenario.
+        agent_id : str
+            Agent ID to use for preview.
         rules : SequenceNotStr[str]
             Rules to use for preview.
-        agent_id : str or None
-            Agent ID to use for preview.
 
         Other Parameters
         ----------------
