@@ -733,8 +733,9 @@ class EvaluationsResource(SyncAPIResource):
         project_id : str
             Project ID the checks belong to.
         checks : Iterable[CheckConfigParam]
-            Checks to run. Each entry needs an `identifier` and may carry
-            `params` (which are sent as `override_spec`).
+            Checks to run. Each entry needs an `identifier` or a `check_id`.
+            `params` and `override_spec` are merged and sent as `override_spec`
+            (`params` wins on the same key). Checks with `enabled=False` are skipped.
         agent_output : AgentOutputParam | Mapping[str, Any] | str
             The output produced by the agent. A bare string is wrapped as
             `{"response": {"role": "assistant", "content": <string>}}`;
@@ -1642,8 +1643,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         project_id : str
             Project ID the checks belong to.
         checks : Iterable[CheckConfigParam]
-            Checks to run. Each entry needs an `identifier` and may carry
-            `params` (which are sent as `override_spec`).
+            Checks to run. Each entry needs an `identifier` or a `check_id`.
+            `params` and `override_spec` are merged and sent as `override_spec`
+            (`params` wins on the same key). Checks with `enabled=False` are skipped.
         agent_output : AgentOutputParam | Mapping[str, Any] | str
             The output produced by the agent. A bare string is wrapped as
             `{"response": {"role": "assistant", "content": <string>}}`;
