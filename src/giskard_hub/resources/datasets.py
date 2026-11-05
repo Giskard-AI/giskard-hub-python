@@ -1137,8 +1137,8 @@ class DatasetsResource(SyncAPIResource):
             f"/v2/datasets/{dataset_id}/scenarios/search",
             body=maybe_transform(
                 {
-                    "filters": filters,
-                    "order_by": order_by,
+                    "filters": omit if filters is None else filters,
+                    "order_by": omit if order_by is None else order_by,
                     "search": query,
                 },
                 DatasetSearchScenariosParams,
@@ -2207,8 +2207,8 @@ class AsyncDatasetsResource(AsyncAPIResource):
             f"/v2/datasets/{dataset_id}/scenarios/search",
             body=await async_maybe_transform(
                 {
-                    "filters": filters,
-                    "order_by": order_by,
+                    "filters": omit if filters is None else filters,
+                    "order_by": omit if order_by is None else order_by,
                     "search": query,
                 },
                 DatasetSearchScenariosParams,

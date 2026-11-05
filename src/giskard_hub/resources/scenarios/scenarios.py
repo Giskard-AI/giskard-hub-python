@@ -612,7 +612,7 @@ class ScenariosResource(SyncAPIResource):
                 {
                     "scenario_ids": scenario_ids,
                     "dataset_id": target_dataset_id,
-                    "duplicate": duplicate,
+                    "duplicate": omit if duplicate is None else duplicate,
                 },
                 BulkMoveScenariosParams,
             ),
@@ -1145,7 +1145,7 @@ class AsyncScenariosResource(AsyncAPIResource):
                 {
                     "scenario_ids": scenario_ids,
                     "dataset_id": target_dataset_id,
-                    "duplicate": duplicate,
+                    "duplicate": omit if duplicate is None else duplicate,
                 },
                 BulkMoveScenariosParams,
             ),

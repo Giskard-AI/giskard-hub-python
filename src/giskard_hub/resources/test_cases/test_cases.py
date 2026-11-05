@@ -623,7 +623,7 @@ class TestCasesResource(SyncAPIResource):
                 {
                     "scenario_ids": test_case_ids,
                     "dataset_id": target_dataset_id,
-                    "duplicate": duplicate,
+                    "duplicate": omit if duplicate is None else duplicate,
                 },
                 BulkMoveScenariosParams,
             ),
@@ -1163,7 +1163,7 @@ class AsyncTestCasesResource(AsyncAPIResource):
                 {
                     "scenario_ids": test_case_ids,
                     "dataset_id": target_dataset_id,
-                    "duplicate": duplicate,
+                    "duplicate": omit if duplicate is None else duplicate,
                 },
                 BulkMoveScenariosParams,
             ),
