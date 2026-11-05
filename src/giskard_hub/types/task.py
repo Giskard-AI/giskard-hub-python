@@ -2,9 +2,7 @@
 
 from typing import List, Union, Optional, TypeAlias, TypedDict
 from datetime import datetime
-from typing_extensions import Literal, Required, Annotated
-
-from pydantic import Field
+from typing_extensions import Literal, Required
 
 from .scan import ScanProbeAttemptReference
 from .user import User
@@ -52,15 +50,7 @@ class Task(BaseModel):
     created_by: User
     assignees: List[User]
     references: List[
-        Annotated[
-            Union[
-                ScenarioEvaluationReference,
-                ScanProbeAttemptReference,
-                ScenarioReference,
-                UnknownTaskReference,
-            ],
-            Field(union_mode="left_to_right"),
-        ]
+        Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference, UnknownTaskReference]
     ]
     created_at: datetime
     updated_at: datetime
