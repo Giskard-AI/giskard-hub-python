@@ -96,7 +96,6 @@ def flat_check_specs(checks: Iterable[CheckConfigParam]) -> List[Dict[str, Any]]
         identifier = check.get("identifier")
         check_id = check.get("check_id")
         params = check.get("params") or {}
-        # `type` is the SDK's kind discriminator, not a check parameter. The API rejects it.
         override_spec = {k: v for k, v in {**(check.get("override_spec") or {}), **params}.items() if k != "type"}
         entry: Dict[str, Any] = {}
         if identifier:

@@ -116,11 +116,15 @@ ToxicityCategory: TypeAlias = Literal["hate_speech", "harassment", "threats", "s
 class HubConformityParams(BaseModel):
     rule: Optional[str] = None
     rules: Optional[List[str]] = Field(
-        default=None, description="Deprecated: use `rule` instead.", json_schema_extra={"deprecated": True}
+        default=None,
+        description="Deprecated: use `rule` instead.",
+        json_schema_extra={"deprecated": True},
     )
     target_key: Optional[str] = None
     text_key: Optional[str] = Field(
-        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+        default=None,
+        description="Deprecated: use `target_key` instead.",
+        json_schema_extra={"deprecated": True},
     )
     type: Optional[Literal["hub_conformity", "conformity"]] = None
 
@@ -137,7 +141,9 @@ class HubGroundednessParams(BaseModel):
     context_key: Optional[str] = None
     target_key: Optional[str] = None
     text_key: Optional[str] = Field(
-        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+        default=None,
+        description="Deprecated: use `target_key` instead.",
+        json_schema_extra={"deprecated": True},
     )
     type: Optional[Literal["hub_groundedness", "groundedness"]] = None
 
@@ -157,11 +163,15 @@ class HubMetadataParams(BaseModel):
 class ConformityParams(BaseModel):
     rule: Optional[str] = None
     rules: Optional[List[str]] = Field(
-        default=None, description="Deprecated: use `rule` instead.", json_schema_extra={"deprecated": True}
+        default=None,
+        description="Deprecated: use `rule` instead.",
+        json_schema_extra={"deprecated": True},
     )
     target_key: Optional[str] = None
     text_key: Optional[str] = Field(
-        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+        default=None,
+        description="Deprecated: use `target_key` instead.",
+        json_schema_extra={"deprecated": True},
     )
     type: Optional[Literal["conformity"]] = None
 
@@ -170,7 +180,9 @@ class GroundednessParams(BaseModel):
     answer: Optional[str] = None
     target_key: Optional[str] = None
     text_key: Optional[str] = Field(
-        default=None, description="Deprecated: use `target_key` instead.", json_schema_extra={"deprecated": True}
+        default=None,
+        description="Deprecated: use `target_key` instead.",
+        json_schema_extra={"deprecated": True},
     )
     context: Optional[Union[str, List[str]]] = None
     context_key: Optional[str] = None
@@ -704,7 +716,6 @@ class InteractionResultData(BaseModel):
 
 class Interaction(BaseModel):
     position: int
-    # Any JSON value (the API types these as JsonValue). Usually a dict such as {"messages": [...]}.
     input: Any
     output: Any = None
     simulator_config: Optional[Dict[str, Any]] = None

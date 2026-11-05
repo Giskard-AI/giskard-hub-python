@@ -1,6 +1,16 @@
 """Common type definitions shared across resources."""
 
-from typing import Any, Dict, List, Union, Generic, Literal, TypeVar, Optional, TypeAlias
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Generic,
+    Literal,
+    TypeVar,
+    Optional,
+    TypeAlias,
+)
 from typing_extensions import Required, TypedDict, override
 
 from ..._models import BaseModel
@@ -104,8 +114,6 @@ class TaskProgress(BaseModel):
 
 
 class TaskProgressParam(TypedDict, total=False):
-    """Task progress sent to the API. The API requires `total` whenever this object is sent."""
-
     state: TaskState
     current: int
     total: int

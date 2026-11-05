@@ -39,8 +39,6 @@ TaskPriority: TypeAlias = Literal["low", "medium", "high"]
 
 
 class UnknownTaskReference(BaseModel):
-    """A task reference whose `type` this SDK version does not know yet (e.g. added by a newer Hub)."""
-
     id: str
     type: str
 
@@ -53,11 +51,14 @@ class Task(BaseModel):
     description: str
     created_by: User
     assignees: List[User]
-    # The first model whose `type` matches wins. Payloads without `type` keep the previous behavior
-    # (ScenarioEvaluationReference). Unknown types fall back to UnknownTaskReference instead of failing.
     references: List[
         Annotated[
-            Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference, UnknownTaskReference],
+            Union[
+                ScenarioEvaluationReference,
+                ScanProbeAttemptReference,
+                ScenarioReference,
+                UnknownTaskReference,
+            ],
             Field(union_mode="left_to_right"),
         ]
     ]
