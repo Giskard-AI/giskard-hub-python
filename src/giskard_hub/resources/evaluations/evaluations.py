@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, List, Tuple, Literal, Mapping, Iterable, Optional, cast
+from typing import Any, List, Literal, Mapping, Iterable, Optional, cast
 from operator import attrgetter
 from functools import partial
 
@@ -719,8 +719,6 @@ class EvaluationsResource(SyncAPIResource):
         agent_description: str | Omit = omit,
         metadata: Mapping[str, Any] | Omit = omit,
         test_case_id: Optional[str] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
-        interactions: Iterable[Tuple[Mapping[str, Any], Mapping[str, Any], Optional[Mapping[str, Any]]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -754,12 +752,6 @@ class EvaluationsResource(SyncAPIResource):
             Interaction metadata to attach to the built trace, if known.
         test_case_id : Optional[str] | Omit
             Source test case, if any. Used to resolve trace annotations.
-        agent_id : Optional[str] | Omit
-            Agent that produced the output. The API uses its input bindings
-            to build the trace.
-        interactions : Iterable[Tuple[Mapping, Mapping, Optional[Mapping]]] | Omit
-            Earlier turns of the conversation, as `(input, output, metadata)`
-            tuples. They are added to the trace before this interaction.
 
         Other Parameters
         ----------------
@@ -811,11 +803,6 @@ class EvaluationsResource(SyncAPIResource):
                     "checks": api_checks,
                     "metadata": metadata,
                     "test_case_id": test_case_id,
-                    "agent_id": agent_id,
-                    # dict() so any Mapping (e.g. MappingProxyType) is JSON-serializable
-                    "interactions": interactions
-                    if isinstance(interactions, Omit)
-                    else [[None if part is None else dict(part) for part in turn] for turn in interactions],
                 },
                 EvaluationRunInteractionChecksParams,
             ),
@@ -1642,8 +1629,6 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         agent_description: str | Omit = omit,
         metadata: Mapping[str, Any] | Omit = omit,
         test_case_id: Optional[str] | Omit = omit,
-        agent_id: Optional[str] | Omit = omit,
-        interactions: Iterable[Tuple[Mapping[str, Any], Mapping[str, Any], Optional[Mapping[str, Any]]]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1677,12 +1662,6 @@ class AsyncEvaluationsResource(AsyncAPIResource):
             Interaction metadata to attach to the built trace, if known.
         test_case_id : Optional[str] | Omit
             Source test case, if any. Used to resolve trace annotations.
-        agent_id : Optional[str] | Omit
-            Agent that produced the output. The API uses its input bindings
-            to build the trace.
-        interactions : Iterable[Tuple[Mapping, Mapping, Optional[Mapping]]] | Omit
-            Earlier turns of the conversation, as `(input, output, metadata)`
-            tuples. They are added to the trace before this interaction.
 
         Other Parameters
         ----------------
@@ -1734,11 +1713,6 @@ class AsyncEvaluationsResource(AsyncAPIResource):
                     "checks": api_checks,
                     "metadata": metadata,
                     "test_case_id": test_case_id,
-                    "agent_id": agent_id,
-                    # dict() so any Mapping (e.g. MappingProxyType) is JSON-serializable
-                    "interactions": interactions
-                    if isinstance(interactions, Omit)
-                    else [[None if part is None else dict(part) for part in turn] for turn in interactions],
                 },
                 EvaluationRunInteractionChecksParams,
             ),
