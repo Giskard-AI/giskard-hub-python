@@ -12,26 +12,12 @@ from giskard_hub.types.common import FilterValueParam
 from giskard_hub.types.evaluation import ResultFilterColumn, ResultFiltersParam
 from giskard_hub.resources._check_helpers import (
     flat_check_specs,
-    check_params_to_specs,
 )
 from giskard_hub.resources.evaluations.evaluations import (
     EvaluationsResource,
     AsyncEvaluationsResource,
     _normalize_agent_output,
 )
-
-
-def test_check_params_to_specs_emits_flat_shape() -> None:
-    api = check_params_to_specs([{"identifier": "hub_correctness", "params": {"reference": "x"}}], flat=True)
-    assert api == [{"identifier": "hub_correctness", "reference": "x"}]
-
-
-def test_check_params_to_specs_strips_redundant_type_when_flat() -> None:
-    api = check_params_to_specs(
-        [{"identifier": "string_matching", "params": {"type": "string_matching", "keyword": "k"}}],
-        flat=True,
-    )
-    assert api == [{"identifier": "string_matching", "keyword": "k"}]
 
 
 def test_normalize_agent_output_wraps_string() -> None:

@@ -8,7 +8,6 @@ from typing import (
     List,
     Mapping,
     Iterable,
-    Optional,
     cast,
 )
 
@@ -21,16 +20,15 @@ if TYPE_CHECKING:
     pass
 
 
-def check_param_to_spec(identifier: Optional[str], params: Any) -> Dict[str, Any]:
-    """Build a `spec` dict, deriving `kind` from `params["type"]` then `identifier`."""
+def check_param_to_spec(params: Any) -> Dict[str, Any]:
+    """Build a `spec` dict, taking `kind` from `params["type"]`."""
     if isinstance(params, BaseModel):
         params_dict: Dict[str, Any] = params.model_dump(exclude_none=True)
     elif isinstance(params, dict):
         params_dict = dict(cast(Dict[str, Any], params))
     else:
         params_dict = {}
-    type_from_params = params_dict.pop("type", None)
-    kind = type_from_params or identifier or ""
+    kind = params_dict.pop("type", None) or ""
     if not kind:
         raise ValueError(
             "Cannot derive check kind: include 'type' in 'params' "
@@ -106,40 +104,3 @@ def flat_check_specs(checks: Iterable[CheckConfigParam]) -> List[Dict[str, Any]]
             entry["override_spec"] = override_spec
         out.append(entry)
     return out
-
-
-def check_params_to_specs(
-    checks: Iterable[CheckConfigParam],
-    *,
-    flat: bool = False,
-) -> list[Dict[str, Any]]:
-    """Convert checks to the wire format.
-
-    `flat=False` (default) wraps params under a `spec` key:
-    `{identifier, enabled, spec: {kind, ...params}}`.
-
-    `flat=True` spreads params alongside `identifier`:
-    `{identifier, ...params}` (with the redundant `type` key stripped).
-    """
-    result: list[Dict[str, Any]] = []
-    for check in checks:
-        identifier = check.get("identifier")
-        if not identifier:
-            raise ValueError("Each check must include an 'identifier'")
-        params = check.get("params") or {}
-        if flat:
-            result.append(
-                {
-                    "identifier": identifier,
-                    **{k: v for k, v in params.items() if k != "type"},
-                }
-            )
-        else:
-            entry: Dict[str, Any] = {
-                "identifier": identifier,
-                "enabled": check.get("enabled", True),
-            }
-            if params:
-                entry["spec"] = check_param_to_spec(identifier, params)
-            result.append(entry)
-    return result

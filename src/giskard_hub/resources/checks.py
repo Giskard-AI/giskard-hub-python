@@ -113,7 +113,7 @@ class ChecksResource(SyncAPIResource):
         if not params_provided and not spec_provided:
             raise ValueError("Must provide either 'params' or 'spec'.")
 
-        api_spec = spec if spec_provided else check_param_to_spec(None, params)
+        api_spec = spec if spec_provided else check_param_to_spec(params)
         response = self._post(
             "/v2/checks",
             body=maybe_transform(
@@ -255,7 +255,7 @@ class ChecksResource(SyncAPIResource):
             if params is None:
                 api_spec = None
             else:
-                api_spec = check_param_to_spec(None, params)
+                api_spec = check_param_to_spec(params)
         else:
             api_spec = omit
         response = self._patch(
@@ -508,7 +508,7 @@ class AsyncChecksResource(AsyncAPIResource):
         if not params_provided and not spec_provided:
             raise ValueError("Must provide either 'params' or 'spec'.")
 
-        api_spec = spec if spec_provided else check_param_to_spec(None, params)
+        api_spec = spec if spec_provided else check_param_to_spec(params)
         response = await self._post(
             "/v2/checks",
             body=await async_maybe_transform(
@@ -650,7 +650,7 @@ class AsyncChecksResource(AsyncAPIResource):
             if params is None:
                 api_spec = None
             else:
-                api_spec = check_param_to_spec(None, params)
+                api_spec = check_param_to_spec(params)
         else:
             api_spec = omit
         response = await self._patch(

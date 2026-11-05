@@ -28,7 +28,6 @@ from giskard_hub._models import BaseModel
 from giskard_hub.types.check import _extract_check_params
 from giskard_hub.resources._check_helpers import (
     check_param_to_spec,
-    check_params_to_specs,
 )
 
 # ---------------------------------------------------------------------------
@@ -36,51 +35,23 @@ from giskard_hub.resources._check_helpers import (
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize(
-    "identifier",
-    [
-        "hub_conformity",
-        "hub_correctness",
-        "hub_groundedness",
-        "hub_metadata",
-        "correctness",
-        "metadata",
-        "conformity",
-        "groundedness",
-        "string_matching",
-        "regex_matching",
-        "llm_judge",
-        "equals",
-        "semantic_similarity",
-    ],
-)
-def test_check_param_to_spec_uses_identifier_as_kind(identifier: str) -> None:
-    spec = check_param_to_spec(identifier, {})
-    assert spec["kind"] == identifier
-
-
-def test_check_param_to_spec_prefers_params_type_over_identifier() -> None:
-    spec = check_param_to_spec("custom_name", {"type": "hub_conformity", "rules": ["r"]})
+def test_check_param_to_spec_takes_kind_from_params_type() -> None:
+    spec = check_param_to_spec({"type": "hub_conformity", "rules": ["r"]})
     assert spec == {"kind": "hub_conformity", "rules": ["r"]}
 
 
-def test_check_param_to_spec_falls_back_to_identifier() -> None:
-    spec = check_param_to_spec("hub_correctness", {"reference": "x"})
-    assert spec == {"kind": "hub_correctness", "reference": "x"}
-
-
 def test_check_param_to_spec_passes_through_unknown_kind() -> None:
-    spec = check_param_to_spec("future_kind", {"foo": 1})
+    spec = check_param_to_spec({"type": "future_kind", "foo": 1})
     assert spec == {"kind": "future_kind", "foo": 1}
 
 
 def test_check_param_to_spec_raises_when_no_kind_derivable() -> None:
     with pytest.raises(ValueError, match="Cannot derive check kind"):
-        check_param_to_spec(None, {"reference": "x"})
+        check_param_to_spec({"reference": "x"})
 
 
 def test_check_param_to_spec_accepts_basemodel() -> None:
-    spec = check_param_to_spec("hub_correctness", HubCorrectnessParams(reference="x"))
+    spec = check_param_to_spec(HubCorrectnessParams(type="hub_correctness", reference="x"))
     assert spec == {"kind": "hub_correctness", "reference": "x"}
 
 
@@ -140,7 +111,7 @@ CHECK_PARAMETER_CASES: list[tuple[type[BaseModel], CheckTypeParam]] = [
 def test_check_parameter_model_preserves_supplied_fields(model_type: type[BaseModel], params: CheckTypeParam) -> None:
     model = model_type.model_validate(params)
     assert model.model_dump(exclude_none=True) == params
-    assert check_param_to_spec("custom_example", model) == check_param_to_spec("custom_example", params)
+    assert check_param_to_spec(model) == check_param_to_spec(params)
 
 
 @pytest.mark.parametrize(
@@ -167,7 +138,7 @@ def check_params(request: pytest.FixtureRequest) -> CheckTypeParam:
 def test_create_and_update_preserve_check_params(
     hub: HubClient, respx_mock: respx.MockRouter, check_params: CheckTypeParam
 ) -> None:
-    spec = check_param_to_spec("custom_example", check_params)
+    spec = check_param_to_spec(check_params)
     response = httpx.Response(200, json={"data": _check_payload(spec=spec)})
     create = respx_mock.post("http://localhost/_api/v2/checks").mock(return_value=response)
     update = respx_mock.patch("http://localhost/_api/v2/checks/1").mock(return_value=response)
@@ -183,7 +154,7 @@ def test_create_and_update_preserve_check_params(
 async def test_async_create_and_update_preserve_check_params(
     async_hub: AsyncHubClient, respx_mock: respx.MockRouter, check_params: CheckTypeParam
 ) -> None:
-    spec = check_param_to_spec("custom_example", check_params)
+    spec = check_param_to_spec(check_params)
     response = httpx.Response(200, json={"data": _check_payload(spec=spec)})
     create = respx_mock.post("http://localhost/_api/v2/checks").mock(return_value=response)
     update = respx_mock.patch("http://localhost/_api/v2/checks/1").mock(return_value=response)
@@ -204,35 +175,6 @@ def test_extract_check_params_strips_kind() -> None:
 def test_extract_check_params_empty_when_no_spec() -> None:
     assert _extract_check_params({}) == {}
     assert _extract_check_params({"spec": None}) == {}
-
-
-def test_check_params_to_specs_emits_nested_with_kind() -> None:
-    api = check_params_to_specs([{"identifier": "hub_correctness", "params": {"reference": "x"}}])
-    assert api == [
-        {
-            "identifier": "hub_correctness",
-            "enabled": True,
-            "spec": {"kind": "hub_correctness", "reference": "x"},
-        }
-    ]
-
-
-def test_check_params_to_specs_omits_spec_when_no_params() -> None:
-    api = check_params_to_specs([{"identifier": "tone_pro_xyz"}])
-    assert api == [{"identifier": "tone_pro_xyz", "enabled": True}]
-
-
-def test_check_params_to_specs_strips_redundant_type() -> None:
-    api = check_params_to_specs(
-        [{"identifier": "string_matching", "params": {"type": "string_matching", "keyword": "k"}}]
-    )
-    assert api == [
-        {
-            "identifier": "string_matching",
-            "enabled": True,
-            "spec": {"kind": "string_matching", "keyword": "k"},
-        }
-    ]
 
 
 # ---------------------------------------------------------------------------
