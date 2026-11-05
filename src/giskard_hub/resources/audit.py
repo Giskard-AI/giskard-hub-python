@@ -58,6 +58,7 @@ class AuditLogsResource(SyncAPIResource):
         filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
+        compact: bool | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -74,6 +75,7 @@ class AuditLogsResource(SyncAPIResource):
         filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
+        compact: bool | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -89,6 +91,7 @@ class AuditLogsResource(SyncAPIResource):
         filters: AuditFiltersParam | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
+        compact: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -111,6 +114,8 @@ class AuditLogsResource(SyncAPIResource):
             Maximum number of results to return.
         offset : int | Omit
             Number of results to skip for pagination.
+        compact : bool | Omit
+            When `True`, request a compact representation of each audit log.
         include_metadata : bool
             If `True`, return a tuple of `(data, metadata)` with pagination info.
 
@@ -149,6 +154,7 @@ class AuditLogsResource(SyncAPIResource):
                     {
                         "limit": limit,
                         "offset": offset,
+                        "compact": compact,
                     },
                     AuditSearchParams,
                 ),
@@ -293,6 +299,7 @@ class AsyncAuditLogsResource(AsyncAPIResource):
         filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
+        compact: bool | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -309,6 +316,7 @@ class AsyncAuditLogsResource(AsyncAPIResource):
         filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
+        compact: bool | Omit = omit,
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
@@ -324,6 +332,7 @@ class AsyncAuditLogsResource(AsyncAPIResource):
         filters: Optional[AuditFiltersParam] | Omit = omit,
         limit: int | Omit = omit,
         offset: int | Omit = omit,
+        compact: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -346,6 +355,8 @@ class AsyncAuditLogsResource(AsyncAPIResource):
             Maximum number of results to return.
         offset : int | Omit
             Number of results to skip for pagination.
+        compact : bool | Omit
+            When `True`, request a compact representation of each audit log.
         include_metadata : bool
             If `True`, return a tuple of `(data, metadata)` with pagination info.
 
@@ -384,6 +395,7 @@ class AsyncAuditLogsResource(AsyncAPIResource):
                     {
                         "limit": limit,
                         "offset": offset,
+                        "compact": compact,
                     },
                     AuditSearchParams,
                 ),
