@@ -1,5 +1,7 @@
 """`Interaction.input` / `.output` accept any JSON value, like the API (`JsonValue`)."""
 
+# pyright: reportDeprecated=false
+
 import os
 import warnings
 from typing import Any, Dict, List

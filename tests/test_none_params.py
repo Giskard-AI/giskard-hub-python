@@ -1,8 +1,11 @@
 """An explicit `None` must be left out of the body for fields the API does not accept as null."""
 
+# The overloaded `with_raw_response.search` return types are not inferable inside lambdas.
+# pyright: reportUnknownLambdaType=false
+
 import os
 import json
-from typing import Any, Dict, Callable, Awaitable
+from typing import Any, Dict, List, Tuple, Callable, Awaitable
 
 import httpx
 import pytest
@@ -23,7 +26,14 @@ NOW = "2026-01-01T00:00:00Z"
 RESPONSE = {"data": {**AGENT_ARGS, "id": ID, "created_at": NOW, "updated_at": NOW}}
 
 # (case id, path, {field: non-null value}, sync call, async call)
-CASES: Any = [
+Case = Tuple[
+    str,
+    str,
+    Dict[str, Any],
+    Callable[[HubClient, Dict[str, Any]], Any],
+    Callable[[AsyncHubClient, Dict[str, Any]], Awaitable[Any]],
+]
+CASES: List[Case] = [
     (
         "audit_logs.search",
         "/v2/audit/search",
