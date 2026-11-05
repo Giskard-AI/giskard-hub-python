@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.1.0b2-79-g9ea6013c"
+    "version": "v3.1.0b2-89-gf0957793"
   },
   "paths": {
     "/v2/agents": {
@@ -1219,6 +1219,18 @@
           }
         ],
         "parameters": [
+          {
+            "name": "compact",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Trim each entry's data to its summary keys.",
+              "default": false,
+              "title": "Compact"
+            },
+            "description": "Trim each entry's data to its summary keys."
+          },
           {
             "name": "limit",
             "in": "query",
@@ -21806,6 +21818,16 @@
             "type": "boolean",
             "title": "Has Intermediate Archive",
             "default": false
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RedTeamAuditProgressAPIResource"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -22286,6 +22308,94 @@
           "body"
         ],
         "title": "RedTeamAuditOverallAssessmentAPIResource"
+      },
+      "RedTeamAuditProgressAPIResource": {
+        "properties": {
+          "phase": {
+            "$ref": "#/components/schemas/RedTeamAuditProgressPhase"
+          },
+          "wave": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wave"
+          },
+          "waves": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Waves"
+          },
+          "attackers_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attackers Total"
+          },
+          "attackers_done": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attackers Done"
+          },
+          "attackers_running": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attackers Running"
+          },
+          "findings": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Findings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phase"
+        ],
+        "title": "RedTeamAuditProgressAPIResource"
+      },
+      "RedTeamAuditProgressPhase": {
+        "type": "string",
+        "enum": [
+          "reconnaissance",
+          "risk_model",
+          "attacks",
+          "report"
+        ],
+        "title": "RedTeamAuditProgressPhase"
       },
       "RedTeamAuditRemediationAPIResource": {
         "properties": {
@@ -25360,25 +25470,19 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
-          "agent": {
+          "latest_runs": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
               },
               {
                 "type": "null"
               }
-            ]
-          },
-          "dataset": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            ],
+            "title": "Latest Runs"
           }
         },
         "type": "object",
@@ -25412,19 +25516,25 @@
       },
       "backend__http__responses__base__Included_list__3": {
         "properties": {
-          "latest_runs": {
+          "agent": {
             "anyOf": [
               {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
+                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
               },
               {
                 "type": "null"
               }
-            ],
-            "title": "Latest Runs"
+            ]
+          },
+          "dataset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
