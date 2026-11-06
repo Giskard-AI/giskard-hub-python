@@ -76,7 +76,7 @@ class ChecksResource(SyncAPIResource):
         project_id : str
             Project ID to create the check in.
         params : CheckTypeParam | Omit
-            Check-specific parameters (e.g. `{"reference": "..."}` for correctness).
+            Check-specific parameters (e.g. `{"type": "correctness", "reference": "..."}`).
             Cannot be combined with `spec`.
         spec : Dict[str, object] | Omit
             Raw check spec with a `kind` discriminator (e.g. `{"kind": "hub_correctness", "reference": "..."}`).
@@ -113,7 +113,7 @@ class ChecksResource(SyncAPIResource):
         if not params_provided and not spec_provided:
             raise ValueError("Must provide either 'params' or 'spec'.")
 
-        api_spec = spec if spec_provided else check_param_to_spec(identifier, params)
+        api_spec = spec if spec_provided else check_param_to_spec(params)
         response = self._post(
             "/v2/checks",
             body=maybe_transform(
@@ -255,8 +255,7 @@ class ChecksResource(SyncAPIResource):
             if params is None:
                 api_spec = None
             else:
-                type_or_id = identifier if isinstance(identifier, str) else None
-                api_spec = check_param_to_spec(type_or_id, params)
+                api_spec = check_param_to_spec(params)
         else:
             api_spec = omit
         response = self._patch(
@@ -472,7 +471,7 @@ class AsyncChecksResource(AsyncAPIResource):
         project_id : str
             Project ID to create the check in.
         params : CheckTypeParam | Omit
-            Check-specific parameters (e.g. `{"reference": "..."}` for correctness).
+            Check-specific parameters (e.g. `{"type": "correctness", "reference": "..."}`).
             Cannot be combined with `spec`.
         spec : Dict[str, object] | Omit
             Raw check spec with a `kind` discriminator (e.g. `{"kind": "hub_correctness", "reference": "..."}`).
@@ -509,7 +508,7 @@ class AsyncChecksResource(AsyncAPIResource):
         if not params_provided and not spec_provided:
             raise ValueError("Must provide either 'params' or 'spec'.")
 
-        api_spec = spec if spec_provided else check_param_to_spec(identifier, params)
+        api_spec = spec if spec_provided else check_param_to_spec(params)
         response = await self._post(
             "/v2/checks",
             body=await async_maybe_transform(
@@ -651,8 +650,7 @@ class AsyncChecksResource(AsyncAPIResource):
             if params is None:
                 api_spec = None
             else:
-                type_or_id = identifier if isinstance(identifier, str) else None
-                api_spec = check_param_to_spec(type_or_id, params)
+                api_spec = check_param_to_spec(params)
         else:
             api_spec = omit
         response = await self._patch(

@@ -236,7 +236,9 @@ class DatasetsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "dataset_created", {"dataset_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "dataset_created", {"dataset_id": getattr(result, "id", None)}
+        )
         return result
 
     def upload(
@@ -1309,7 +1311,9 @@ class AsyncDatasetsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "dataset_created", {"dataset_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "dataset_created", {"dataset_id": getattr(result, "id", None)}
+        )
         return result
 
     async def upload(

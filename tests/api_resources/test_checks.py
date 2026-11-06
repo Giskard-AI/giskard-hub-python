@@ -21,7 +21,7 @@ class TestChecks:
     @parametrize
     def test_method_create(self, client: HubClient) -> None:
         check = client.checks.create(
-            params={"reference": "reference"},
+            params={"type": "hub_correctness", "reference": "reference"},
             description="description",
             identifier="identifier",
             name="name",
@@ -33,7 +33,7 @@ class TestChecks:
     @parametrize
     def test_raw_response_create(self, client: HubClient) -> None:
         response = client.checks.with_raw_response.create(
-            params={"reference": "reference"},
+            params={"type": "hub_correctness", "reference": "reference"},
             description="description",
             identifier="identifier",
             name="name",
@@ -49,7 +49,7 @@ class TestChecks:
     @parametrize
     def test_streaming_response_create(self, client: HubClient) -> None:
         with client.checks.with_streaming_response.create(
-            params={"reference": "reference"},
+            params={"type": "hub_correctness", "reference": "reference"},
             description="description",
             identifier="identifier",
             name="name",
@@ -303,7 +303,7 @@ class TestAsyncChecks:
     @parametrize
     async def test_method_create(self, async_client: AsyncHubClient) -> None:
         check = await async_client.checks.create(
-            params={"reference": "reference"},
+            params={"type": "hub_correctness", "reference": "reference"},
             description="description",
             identifier="identifier",
             name="name",
@@ -315,7 +315,7 @@ class TestAsyncChecks:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncHubClient) -> None:
         response = await async_client.checks.with_raw_response.create(
-            params={"reference": "reference"},
+            params={"type": "hub_correctness", "reference": "reference"},
             description="description",
             identifier="identifier",
             name="name",
@@ -331,7 +331,7 @@ class TestAsyncChecks:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncHubClient) -> None:
         async with async_client.checks.with_streaming_response.create(
-            params={"reference": "reference"},
+            params={"type": "hub_correctness", "reference": "reference"},
             description="description",
             identifier="identifier",
             name="name",

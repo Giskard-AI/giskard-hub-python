@@ -12,26 +12,12 @@ from giskard_hub.types.common import FilterValueParam
 from giskard_hub.types.evaluation import ResultFilterColumn, ResultFiltersParam
 from giskard_hub.resources._check_helpers import (
     flat_check_specs,
-    check_params_to_specs,
 )
 from giskard_hub.resources.evaluations.evaluations import (
     EvaluationsResource,
     AsyncEvaluationsResource,
     _normalize_agent_output,
 )
-
-
-def test_check_params_to_specs_emits_flat_shape() -> None:
-    api = check_params_to_specs([{"identifier": "hub_correctness", "params": {"reference": "x"}}], flat=True)
-    assert api == [{"identifier": "hub_correctness", "reference": "x"}]
-
-
-def test_check_params_to_specs_strips_redundant_type_when_flat() -> None:
-    api = check_params_to_specs(
-        [{"identifier": "string_matching", "params": {"type": "string_matching", "keyword": "k"}}],
-        flat=True,
-    )
-    assert api == [{"identifier": "string_matching", "keyword": "k"}]
 
 
 def test_normalize_agent_output_wraps_string() -> None:
@@ -53,6 +39,29 @@ def test_flat_check_specs_passes_identifier_through() -> None:
 def test_flat_check_specs_passes_custom_identifier_through() -> None:
     out = flat_check_specs([{"identifier": "tone_pro", "params": {"reference": "x"}}])
     assert out == [{"identifier": "tone_pro", "override_spec": {"reference": "x"}}]
+
+
+def test_flat_check_specs_sends_check_id() -> None:
+    assert flat_check_specs([{"check_id": "c1"}]) == [{"check_id": "c1"}]
+
+
+def test_flat_check_specs_merges_override_spec_and_params() -> None:
+    out = flat_check_specs(
+        [{"identifier": "correctness", "override_spec": {"reference": "old", "a": 1}, "params": {"reference": "new"}}]
+    )
+    assert out == [{"identifier": "correctness", "override_spec": {"reference": "new", "a": 1}}]
+
+
+def test_flat_check_specs_strips_type_from_override_spec() -> None:
+    out = flat_check_specs([{"check_id": "c1", "override_spec": {"type": "string_matching", "keyword": "k"}}])
+    assert out == [{"check_id": "c1", "override_spec": {"keyword": "k"}}]
+
+
+def test_flat_check_specs_skips_disabled_checks() -> None:
+    out = flat_check_specs(
+        [{"identifier": "a", "enabled": False}, {"identifier": "b", "enabled": True}, {"identifier": "c"}]
+    )
+    assert out == [{"identifier": "b"}, {"identifier": "c"}]
 
 
 def test_retrieve_and_list_still_accept_include() -> None:

@@ -125,7 +125,9 @@ class RedTeamAuditsResource(SyncAPIResource):
 
         result = self._unwrap(response)
         capture_event(
-            make_distinct_id(self._client.api_key), "red_team_audit_created", {"red_team_audit_id": result.id}
+            make_distinct_id(self._client.api_key),
+            "red_team_audit_created",
+            {"red_team_audit_id": getattr(result, "id", None)},
         )
         return result
 
@@ -619,7 +621,9 @@ class AsyncRedTeamAuditsResource(AsyncAPIResource):
 
         result = self._unwrap(response)
         capture_event(
-            make_distinct_id(self._client.api_key), "red_team_audit_created", {"red_team_audit_id": result.id}
+            make_distinct_id(self._client.api_key),
+            "red_team_audit_created",
+            {"red_team_audit_id": getattr(result, "id", None)},
         )
         return result
 

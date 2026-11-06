@@ -152,7 +152,7 @@ class ScansResource(SyncAPIResource):
             make_distinct_id(self._client.api_key),
             "scan_created",
             {
-                "scan_id": result.id,
+                "scan_id": getattr(result, "id", None),
                 "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None,
             },
         )
@@ -660,7 +660,7 @@ class AsyncScansResource(AsyncAPIResource):
             make_distinct_id(self._client.api_key),
             "scan_created",
             {
-                "scan_id": result.id,
+                "scan_id": getattr(result, "id", None),
                 "has_knowledge_base": knowledge_base_id is not omit and knowledge_base_id is not None,
             },
         )

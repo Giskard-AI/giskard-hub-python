@@ -222,7 +222,9 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": getattr(result, "id", None)}
+        )
         return result
 
     def retrieve(
@@ -577,7 +579,11 @@ class EvaluationsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "local_evaluation_created",
+            {"evaluation_id": getattr(result, "id", None)},
+        )
         return result
 
     def upload(
@@ -733,8 +739,9 @@ class EvaluationsResource(SyncAPIResource):
         project_id : str
             Project ID the checks belong to.
         checks : Iterable[CheckConfigParam]
-            Checks to run. Each entry needs an `identifier` and may carry
-            `params` (which are sent as `override_spec`).
+            Checks to run. Each entry needs an `identifier` or a `check_id`.
+            `params` and `override_spec` are merged and sent as `override_spec`
+            (`params` wins on the same key). Checks with `enabled=False` are skipped.
         agent_output : AgentOutputParam | Mapping[str, Any] | str
             The output produced by the agent. A bare string is wrapped as
             `{"response": {"role": "assistant", "content": <string>}}`;
@@ -1131,7 +1138,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "evaluation_created", {"evaluation_id": getattr(result, "id", None)}
+        )
         return result
 
     async def retrieve(
@@ -1486,7 +1495,11 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "local_evaluation_created", {"evaluation_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "local_evaluation_created",
+            {"evaluation_id": getattr(result, "id", None)},
+        )
         return result
 
     async def upload(
@@ -1642,8 +1655,9 @@ class AsyncEvaluationsResource(AsyncAPIResource):
         project_id : str
             Project ID the checks belong to.
         checks : Iterable[CheckConfigParam]
-            Checks to run. Each entry needs an `identifier` and may carry
-            `params` (which are sent as `override_spec`).
+            Checks to run. Each entry needs an `identifier` or a `check_id`.
+            `params` and `override_spec` are merged and sent as `override_spec`
+            (`params` wins on the same key). Checks with `enabled=False` are skipped.
         agent_output : AgentOutputParam | Mapping[str, Any] | str
             The output produced by the agent. A bare string is wrapped as
             `{"response": {"role": "assistant", "content": <string>}}`;

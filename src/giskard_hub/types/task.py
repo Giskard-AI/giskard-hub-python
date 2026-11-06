@@ -13,6 +13,7 @@ from .evaluation import ScenarioEvaluationReference
 
 __all__ = [
     "Task",
+    "UnknownTaskReference",
     "TaskStatus",
     "TaskPriority",
     "TaskListParams",
@@ -35,6 +36,11 @@ TaskPriority: TypeAlias = Literal["low", "medium", "high"]
 # ---------------------------------------------------------------------------
 
 
+class UnknownTaskReference(BaseModel):
+    id: str
+    type: str
+
+
 class Task(BaseModel):
     id: str
     project_id: str
@@ -43,7 +49,9 @@ class Task(BaseModel):
     description: str
     created_by: User
     assignees: List[User]
-    references: List[Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference]]
+    references: List[
+        Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference, UnknownTaskReference]
+    ]
     created_at: datetime
     updated_at: datetime
 

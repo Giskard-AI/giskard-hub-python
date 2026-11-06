@@ -156,7 +156,9 @@ class AgentsResource(SyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "agent_created", {"agent_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "agent_created", {"agent_id": getattr(result, "id", None)}
+        )
         return result
 
     def retrieve(
@@ -762,7 +764,9 @@ class AsyncAgentsResource(AsyncAPIResource):
         )
 
         result = self._unwrap(response)
-        capture_event(make_distinct_id(self._client.api_key), "agent_created", {"agent_id": result.id})
+        capture_event(
+            make_distinct_id(self._client.api_key), "agent_created", {"agent_id": getattr(result, "id", None)}
+        )
         return result
 
     async def retrieve(

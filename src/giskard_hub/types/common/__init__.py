@@ -1,6 +1,16 @@
 """Common type definitions shared across resources."""
 
-from typing import Any, Dict, List, Union, Generic, Literal, TypeVar, Optional, TypeAlias
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+    Generic,
+    Literal,
+    TypeVar,
+    Optional,
+    TypeAlias,
+)
 from typing_extensions import Required, TypedDict, override
 
 from ..._models import BaseModel
