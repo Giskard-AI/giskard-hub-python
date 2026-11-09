@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.1.0b2-89-gf0957793"
+    "version": "v3.1.0-7-gb490c5c4"
   },
   "paths": {
     "/v2/agents": {
@@ -21828,6 +21828,17 @@
                 "type": "null"
               }
             ]
+          },
+          "agent_request_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Request Count"
           }
         },
         "type": "object",
@@ -21857,7 +21868,8 @@
           "evaluation_upload_error",
           "evaluation_uploaded_count",
           "trust_level",
-          "trust_level_grade"
+          "trust_level_grade",
+          "agent_request_count"
         ],
         "title": "RedTeamAuditAPIResource"
       },
@@ -25500,10 +25512,10 @@
               }
             ]
           },
-          "knowledge_base": {
+          "dataset": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/APIResponse_KnowledgeBaseAPIResource_"
+                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
               },
               {
                 "type": "null"
@@ -25520,16 +25532,6 @@
             "anyOf": [
               {
                 "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "dataset": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
               },
               {
                 "type": "null"
@@ -25566,6 +25568,16 @@
             "anyOf": [
               {
                 "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "knowledge_base": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_KnowledgeBaseAPIResource_"
               },
               {
                 "type": "null"
