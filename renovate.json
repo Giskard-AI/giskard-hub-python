@@ -1,16 +1,13 @@
 {
-   "schedule": [
-      "before 4am on Monday"
-   ],
-   "labels": [
-      "dependencies"
-   ],
    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
    "extends": [
-      "config:recommended",
-      "helpers:pinGitHubActionDigests",
+      "github>Giskard-AI/.github",
       ":pinOnlyDevDependencies"
    ],
+   "lockFileMaintenance": {
+      "description": "The update-lockfiles workflow already runs uv lock -U every week.",
+      "enabled": false
+   },
    "packageRules": [
       {
          "rangeStrategy": "widen",
