@@ -1,14 +1,7 @@
 {
-   "schedule": [
-      "before 4am on Monday"
-   ],
-   "labels": [
-      "dependencies"
-   ],
    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
    "extends": [
-      "config:recommended",
-      "helpers:pinGitHubActionDigests",
+      "github>Giskard-AI/.github",
       ":pinOnlyDevDependencies"
    ],
    "packageRules": [

@@ -59,6 +59,11 @@ dev = [
 requires = ["hatchling==1.33.0", "hatch-fancy-pypi-readme==25.1.0"]
 build-backend = "hatchling.build"
 
+[tool.uv]
+# Supply-chain cooldown: resolve only artifacts uploaded at least 7 days ago,
+# like Renovate's minimumReleaseAge for the other dependencies.
+exclude-newer = "7 days"
+
 [tool.hatch.build]
 include = [
   "src/*"
