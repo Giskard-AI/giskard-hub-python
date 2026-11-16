@@ -4,7 +4,7 @@ import os
 import inspect
 import traceback
 import contextlib
-from typing import Any, Literal, TypeVar, Iterator, Sequence, cast, get_args, get_origin
+from typing import Any, Literal, TypeVar, Sequence, Generator, cast, get_args, get_origin
 from datetime import date, datetime
 from typing_extensions import assert_type
 
@@ -145,7 +145,7 @@ def _assert_list_type(type_: type[object], value: object) -> None:
 
 
 @contextlib.contextmanager
-def update_env(**new_env: str | Omit) -> Iterator[None]:
+def update_env(**new_env: str | Omit) -> Generator[None, None, None]:
     old = os.environ.copy()
 
     try:
