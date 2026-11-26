@@ -98,7 +98,7 @@ def disable_telemetry() -> None:
 
 def make_distinct_id(api_key: str) -> str:
     # Truncated SHA-256 is a stable pseudonymous telemetry id, not password storage.
-    digest = hashlib.sha256(api_key.encode()).hexdigest()  # codeql[py/weak-sensitive-data-hashing]
+    digest = hashlib.sha256(api_key.encode()).hexdigest()  # lgtm[py/weak-sensitive-data-hashing]
     return "hub_" + digest[:16]
 
 
