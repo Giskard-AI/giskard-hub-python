@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.1.0b2-89-gf0957793"
+    "version": "v3.1.0-146-gd8a66cd6"
   },
   "paths": {
     "/v2/agents": {
@@ -496,7 +496,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -798,6 +798,146 @@
                 }
               }
             }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/red-team-audits/attestation-request/estimate": {
+      "post": {
+        "tags": [
+          "v2",
+          "red team audits"
+        ],
+        "summary": "Estimate Red Team Audit Attestation",
+        "operationId": "estimate_red_team_audit_attestation",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attestation letter requests are not enabled"
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/v2/red-team-audits/{audit_id}/attestation": {
+      "get": {
+        "tags": [
+          "v2",
+          "red team audits"
+        ],
+        "summary": "Get Red Team Audit Attestation",
+        "operationId": "get_red_team_audit_attestation",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "audit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Audit Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_AuditAttestationEligibilityAPIResource_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attestation letter requests are not enabled"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/red-team-audits/{audit_id}/attestation-request": {
+      "post": {
+        "tags": [
+          "v2",
+          "red team audits"
+        ],
+        "summary": "Request Red Team Audit Attestation",
+        "operationId": "request_red_team_audit_attestation",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "audit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Audit Id"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_AuditAttestationRequestAPIResource_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attestation letter requests are not enabled"
+          },
+          "409": {
+            "description": "The audit is not eligible for an attestation letter, or the agent already has an open attestation letter request."
+          },
+          "503": {
+            "description": "The request could not be created; nothing was charged and the customer can retry."
           },
           "422": {
             "description": "Validation Error",
@@ -1466,6 +1606,23 @@
               "format": "uuid",
               "title": "Check Id"
             }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Id"
+            }
           }
         ],
         "responses": {
@@ -2117,6 +2274,7 @@
           "datasets"
         ],
         "summary": "Export Dataset Scenarios",
+        "description": "Export all scenarios in a dataset as JSON.\n\nFor large datasets over MCP, prefer search_dataset_scenarios_by_filters with\npagination or call this endpoint directly via REST / SDK.",
         "operationId": "export_dataset_scenarios",
         "security": [
           {
@@ -2162,6 +2320,7 @@
           "datasets"
         ],
         "summary": "Export Selected Dataset Scenarios",
+        "description": "Export selected scenarios from a dataset as JSON.",
         "operationId": "export_selected_dataset_scenarios",
         "security": [
           {
@@ -2212,6 +2371,66 @@
         }
       }
     },
+    "/v2/datasets/{dataset_id}/scenarios/bulk": {
+      "post": {
+        "tags": [
+          "v2",
+          "datasets"
+        ],
+        "summary": "Bulk Create Dataset Scenarios",
+        "description": "Bulk-create up to 100 scenarios in an existing dataset atomically.\n\nValidates all scenarios against the dataset's input/output schema and check\nconfigurations before inserting. Scenarios with no enabled checks are saved\nas draft.",
+        "operationId": "bulk_create_dataset_scenarios",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Dataset Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateDatasetScenariosAPIRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_BulkCreateDatasetScenariosAPIResource_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2/datasets/{dataset_id}/scenarios/search": {
       "post": {
         "tags": [
@@ -2219,6 +2438,7 @@
           "datasets"
         ],
         "summary": "Search Dataset Scenarios By Filters",
+        "description": "Search and paginate scenarios in a dataset using optional filters and sorting.",
         "operationId": "search_dataset_scenarios_by_filters",
         "security": [
           {
@@ -2505,7 +2725,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -2552,7 +2772,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -2831,7 +3051,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -2884,14 +3104,7 @@
             }
           },
           "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
+            "description": "The selected dataset doesn't contain any scenarios."
           }
         },
         "security": [
@@ -3104,7 +3317,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -3359,7 +3572,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -3682,7 +3895,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -4544,6 +4757,54 @@
         }
       }
     },
+    "/v2/knowledge-bases/from-documents": {
+      "post": {
+        "tags": [
+          "v2",
+          "knowledge bases"
+        ],
+        "summary": "Create Knowledge Base From Documents",
+        "description": "Create a knowledge base directly from 1 to 500 JSON documents.\n\nEach call creates a new knowledge base; for corpora larger than 500\ndocuments, use the multipart upload endpoint (`POST /v2/knowledge-bases`)\nor the SDK. Every document must have non-blank `text`. Omit `topic` on all\ndocuments to auto-cluster topics; if only some documents have topics,\nunlabeled documents are assigned to `Others`. Embedding and clustering run\nasynchronously \u2014 poll `retrieve_knowledge_base` until\n`status.state == \"finished\"` before generating datasets.",
+        "operationId": "create_knowledge_base_from_documents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateKnowledgeBaseFromDocumentsAPIRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_KnowledgeBaseAPIResource_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
     "/v2/knowledge-bases/{knowledge_base_id}": {
       "get": {
         "tags": [
@@ -4763,6 +5024,7 @@
           "knowledge bases"
         ],
         "summary": "Search Knowledge Base Documents By Filters",
+        "description": "Search and paginate documents in a knowledge base using optional filters.",
         "operationId": "search_knowledge_base_documents_by_filters",
         "security": [
           {
@@ -4914,6 +5176,7 @@
           "knowledge bases"
         ],
         "summary": "Export Knowledge Base",
+        "description": "Export all documents in a knowledge base as JSON.\n\nFor large knowledge bases over MCP, prefer search_knowledge_base_documents_by_filters\nwith pagination or call this endpoint directly via REST / SDK.",
         "operationId": "export_knowledge_base",
         "security": [
           {
@@ -5908,7 +6171,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditEstimateResponse_"
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
                 }
               }
             }
@@ -8518,7 +8781,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponse_CreditUsageSummary_"
+                  "$ref": "#/components/schemas/APIResponse_CreditUsageSummaryAPIResource_"
                 }
               }
             }
@@ -8604,7 +8867,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponseWithIncluded_UserDetailAPIResource_Annotated_dict_UUID__Included_UserDetailAPIResource___WithJsonSchema__"
+                  "$ref": "#/components/schemas/APIResponse_CurrentUserAPIResource_"
                 }
               }
             }
@@ -15469,6 +15732,42 @@
         ],
         "title": "APIResponse[AgentAPIResource]"
       },
+      "APIResponse_AuditAttestationEligibilityAPIResource_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuditAttestationEligibilityAPIResource"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "APIResponse[AuditAttestationEligibilityAPIResource]"
+      },
+      "APIResponse_AuditAttestationRequestAPIResource_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuditAttestationRequestAPIResource"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "APIResponse[AuditAttestationRequestAPIResource]"
+      },
+      "APIResponse_BulkCreateDatasetScenariosAPIResource_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BulkCreateDatasetScenariosAPIResource"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "APIResponse[BulkCreateDatasetScenariosAPIResource]"
+      },
       "APIResponse_CheckAPIResource_": {
         "properties": {
           "data": {
@@ -15481,29 +15780,41 @@
         ],
         "title": "APIResponse[CheckAPIResource]"
       },
-      "APIResponse_CreditEstimateResponse_": {
+      "APIResponse_CreditEstimateAPIResource_": {
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/CreditEstimateResponse"
+            "$ref": "#/components/schemas/CreditEstimateAPIResource"
           }
         },
         "type": "object",
         "required": [
           "data"
         ],
-        "title": "APIResponse[CreditEstimateResponse]"
+        "title": "APIResponse[CreditEstimateAPIResource]"
       },
-      "APIResponse_CreditUsageSummary_": {
+      "APIResponse_CreditUsageSummaryAPIResource_": {
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/CreditUsageSummary"
+            "$ref": "#/components/schemas/CreditUsageSummaryAPIResource"
           }
         },
         "type": "object",
         "required": [
           "data"
         ],
-        "title": "APIResponse[CreditUsageSummary]"
+        "title": "APIResponse[CreditUsageSummaryAPIResource]"
+      },
+      "APIResponse_CurrentUserAPIResource_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CurrentUserAPIResource"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "APIResponse[CurrentUserAPIResource]"
       },
       "APIResponse_DatasetAPIResource_": {
         "properties": {
@@ -16539,6 +16850,169 @@
         ],
         "title": "AuditAPIResource"
       },
+      "AuditAttestationEligibilityAPIResource": {
+        "properties": {
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "eligible": {
+            "type": "boolean",
+            "title": "Eligible"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/AuditAttestationIneligibilityAPIResource"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "latest_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AuditAttestationRequestAPIResource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "audit_id",
+          "eligible",
+          "reasons",
+          "latest_request"
+        ],
+        "title": "AuditAttestationEligibilityAPIResource"
+      },
+      "AuditAttestationIneligibilityAPIResource": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/AuditAttestationIneligibilityCode"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "finding_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Finding Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "finding_ids"
+        ],
+        "title": "AuditAttestationIneligibilityAPIResource"
+      },
+      "AuditAttestationIneligibilityCode": {
+        "type": "string",
+        "enum": [
+          "audit_not_finished",
+          "not_full_audit",
+          "imported_audit",
+          "not_latest_full_audit",
+          "already_approved",
+          "open_request_exists",
+          "missing_retest"
+        ],
+        "title": "AuditAttestationIneligibilityCode"
+      },
+      "AuditAttestationRequestAPIResource": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "audit_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Audit Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AuditAttestationRequestStatus"
+          },
+          "requested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Requested At"
+          },
+          "requested_by_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requested By Email"
+          },
+          "retest_evaluation_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retest Evaluation Id"
+          },
+          "retest_evaluation_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Retest Evaluation Ids"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "audit_id",
+          "status",
+          "requested_at",
+          "requested_by_email",
+          "retest_evaluation_id",
+          "retest_evaluation_ids",
+          "decided_at"
+        ],
+        "title": "AuditAttestationRequestAPIResource",
+        "description": "What the customer sees of an Attestation request.\n\nStaff-only fields (``decided_by``, ``decision_note``, the credit key) stay\nout. Retest progress is not on the request: read the status of the\nAttestation retest evaluations (``retest_evaluation_ids``, oldest first, one\nper run; ``retest_evaluation_id`` is the latest, null when there was\nnothing to retest or the evaluation was deleted)."
+      },
+      "AuditAttestationRequestStatus": {
+        "type": "string",
+        "enum": [
+          "under_review",
+          "approved",
+          "rejected"
+        ],
+        "title": "AuditAttestationRequestStatus"
+      },
       "AuditDiffItem": {
         "properties": {
           "kind": {
@@ -16869,6 +17343,53 @@
         ],
         "title": "Body_preview_dataset_import"
       },
+      "BulkCreateDatasetScenariosAPIRequest": {
+        "properties": {
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/BulkScenarioInput"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Scenarios",
+            "description": "Scenarios to create in the dataset (1 to 100 per call)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "scenarios"
+        ],
+        "title": "BulkCreateDatasetScenariosAPIRequest"
+      },
+      "BulkCreateDatasetScenariosAPIResource": {
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Dataset Id"
+          },
+          "created_count": {
+            "type": "integer",
+            "title": "Created Count"
+          },
+          "scenario_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Scenario Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dataset_id",
+          "created_count",
+          "scenario_ids"
+        ],
+        "title": "BulkCreateDatasetScenariosAPIResource"
+      },
       "BulkMoveScenariosRequest": {
         "properties": {
           "scenario_ids": {
@@ -16877,8 +17398,10 @@
               "format": "uuid"
             },
             "type": "array",
+            "maxItems": 1000,
+            "minItems": 1,
             "title": "Scenario Ids",
-            "description": "IDs of scenarios to be moved or copied"
+            "description": "IDs of scenarios to be moved or copied (1 to 1000 per call)"
           },
           "dataset_id": {
             "type": "string",
@@ -16900,6 +17423,39 @@
         ],
         "title": "BulkMoveScenariosRequest",
         "description": "Request payload for bulk moving or copying scenarios between datasets."
+      },
+      "BulkScenarioInput": {
+        "properties": {
+          "tags": {
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Tags"
+          },
+          "interactions": {
+            "items": {
+              "$ref": "#/components/schemas/InteractionCreate"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Interactions"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TestCaseStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "BulkScenarioInput"
       },
       "ChatTestCaseReference": {
         "properties": {
@@ -17451,7 +18007,7 @@
           "hidden"
         ],
         "title": "ComparisonResultAPIResource",
-        "description": "A single evaluation result within a comparison row \u2014 includes the full scenario."
+        "description": "A single evaluation result within a comparison row (full or summary scenario)."
       },
       "ComparisonRowAPIResource": {
         "properties": {
@@ -17768,6 +18324,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 1,
             "title": "Name"
           },
           "permissions": {
@@ -17785,6 +18342,49 @@
           "permissions"
         ],
         "title": "CreateGroupRequest"
+      },
+      "CreateKnowledgeBaseFromDocumentsAPIRequest": {
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/KnowledgeBaseDocumentInput"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Documents",
+            "description": "Documents to ingest (1 to 500 documents per knowledge base, up to 5,000,000 UTF-8 bytes total; for larger corpora, use POST /v2/knowledge-bases or the SDK)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "project_id",
+          "name",
+          "documents"
+        ],
+        "title": "CreateKnowledgeBaseFromDocumentsAPIRequest"
       },
       "CreateLocalEvaluationAPIRequest": {
         "properties": {
@@ -17926,23 +18526,14 @@
             ],
             "title": "Name"
           },
-          "scan_types": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/RedTeamAuditScanType"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Scan Types"
-          },
           "mode": {
             "$ref": "#/components/schemas/RedTeamAuditCoverageMode",
             "default": "regular"
+          },
+          "run_pre_scan": {
+            "type": "boolean",
+            "title": "Run Pre Scan",
+            "default": true
           }
         },
         "type": "object",
@@ -18054,6 +18645,11 @@
               }
             ],
             "title": "Source Probe Attempt Id"
+          },
+          "annotations": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Annotations"
           }
         },
         "type": "object",
@@ -18165,13 +18761,6 @@
           },
           "entity_type": {
             "type": "string",
-            "enum": [
-              "datasetId",
-              "evaluationId",
-              "evaluations",
-              "scans",
-              "tasks"
-            ],
             "title": "Entity Type"
           },
           "state": {
@@ -18282,7 +18871,7 @@
         ],
         "title": "CreateTaskAPIRequest"
       },
-      "CreditEstimateResponse": {
+      "CreditEstimateAPIResource": {
         "properties": {
           "operation": {
             "$ref": "#/components/schemas/CreditOperation"
@@ -18299,9 +18888,7 @@
             "title": "Item Count"
           },
           "estimated_amount": {
-            "type": "integer",
-            "maximum": 9.223372036854776e+18,
-            "minimum": 0.0,
+            "type": "number",
             "title": "Estimated Amount"
           }
         },
@@ -18311,7 +18898,8 @@
           "item_count",
           "estimated_amount"
         ],
-        "title": "CreditEstimateResponse"
+        "title": "CreditEstimateAPIResource",
+        "description": "A credit estimate, in Displayed credits."
       },
       "CreditOperation": {
         "type": "string",
@@ -18321,34 +18909,36 @@
           "scan",
           "audit",
           "audit_light",
+          "audit_attestation",
+          "run_check",
           "playground"
         ],
         "title": "CreditOperation"
       },
-      "CreditUsageSummary": {
+      "CreditUsageSummaryAPIResource": {
         "properties": {
           "available_balance": {
-            "type": "integer",
+            "type": "number",
             "title": "Available Balance"
           },
           "reserved_amount": {
-            "type": "integer",
+            "type": "number",
             "title": "Reserved Amount"
           },
           "settled_consumption": {
-            "type": "integer",
+            "type": "number",
             "title": "Settled Consumption"
           },
           "debits": {
-            "type": "integer",
+            "type": "number",
             "title": "Debits"
           },
           "refunds": {
-            "type": "integer",
+            "type": "number",
             "title": "Refunds"
           },
           "net_movement": {
-            "type": "integer",
+            "type": "number",
             "title": "Net Movement"
           }
         },
@@ -18361,7 +18951,49 @@
           "refunds",
           "net_movement"
         ],
-        "title": "CreditUsageSummary"
+        "title": "CreditUsageSummaryAPIResource",
+        "description": "Credit usage totals, in Displayed credits."
+      },
+      "CurrentUserAPIResource": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Permissions"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupAPIReference"
+            },
+            "type": "array",
+            "title": "Groups"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "permissions",
+          "groups"
+        ],
+        "title": "CurrentUserAPIResource",
+        "description": "Current authenticated user resolved from a JWT token.\n\nJWT access tokens carry merged effective permissions only (direct + group),\nso `direct_permissions` and `group_permissions` are intentionally omitted\nrather than fabricated from effective claims."
       },
       "DatasetAPIReference": {
         "properties": {
@@ -19068,14 +19700,14 @@
           },
           "tags": {
             "items": {
-              "$ref": "#/components/schemas/Metric-Input"
+              "$ref": "#/components/schemas/Metric"
             },
             "type": "array",
             "title": "Tags"
           },
           "metrics": {
             "items": {
-              "$ref": "#/components/schemas/Metric-Input"
+              "$ref": "#/components/schemas/Metric"
             },
             "type": "array",
             "title": "Metrics"
@@ -19233,8 +19865,9 @@
               "format": "uuid"
             },
             "type": "array",
+            "maxItems": 10000,
             "title": "Ids",
-            "description": "IDs of scenarios to export"
+            "description": "IDs of scenarios to export (up to 10,000 per request)"
           }
         },
         "type": "object",
@@ -20415,6 +21048,34 @@
         "title": "KnowledgeBaseDocumentDetailAPIResource",
         "description": "Detail shape for KB documents (full content, no embeddings)."
       },
+      "KnowledgeBaseDocumentInput": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 100000,
+            "title": "Text",
+            "description": "Non-empty document content (up to 100,000 characters)."
+          },
+          "topic": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic",
+            "description": "Optional topic label. Omit on all documents to auto-cluster topics."
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "KnowledgeBaseDocumentInput"
+      },
       "KnowledgeBaseDocumentRowAPIResource": {
         "properties": {
           "id": {
@@ -20673,51 +21334,7 @@
         "type": "object",
         "title": "ListFilterValue[str]"
       },
-      "Metric-Input": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "display_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name"
-          },
-          "passed": {
-            "type": "integer",
-            "title": "Passed",
-            "default": 0
-          },
-          "failed": {
-            "type": "integer",
-            "title": "Failed",
-            "default": 0
-          },
-          "errored": {
-            "type": "integer",
-            "title": "Errored",
-            "default": 0
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total",
-            "default": 0
-          }
-        },
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "title": "Metric"
-      },
-      "Metric-Output": {
+      "Metric": {
         "properties": {
           "name": {
             "type": "string",
@@ -20884,13 +21501,18 @@
           "audit_runs": {
             "type": "boolean",
             "title": "Audit Runs"
+          },
+          "low_credit_balance": {
+            "type": "boolean",
+            "title": "Low Credit Balance"
           }
         },
         "type": "object",
         "required": [
           "scheduled_runs",
           "task_assignment",
-          "audit_runs"
+          "audit_runs",
+          "low_credit_balance"
         ],
         "title": "NotificationPreferencesAPIResource"
       },
@@ -21605,6 +22227,20 @@
             "type": "array",
             "title": "Input Evaluation Ids"
           },
+          "scan_types": {
+            "items": {
+              "$ref": "#/components/schemas/RedTeamAuditScanType"
+            },
+            "type": "array",
+            "title": "Scan Types"
+          },
+          "completed_scan_types": {
+            "items": {
+              "$ref": "#/components/schemas/RedTeamAuditScanType"
+            },
+            "type": "array",
+            "title": "Completed Scan Types"
+          },
           "output_evaluation_id": {
             "anyOf": [
               {
@@ -21828,6 +22464,17 @@
                 "type": "null"
               }
             ]
+          },
+          "agent_request_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Request Count"
           }
         },
         "type": "object",
@@ -21836,6 +22483,7 @@
           "project_id",
           "target_agent_id",
           "input_evaluation_ids",
+          "scan_types",
           "output_evaluation_id",
           "output_evaluation_name",
           "output_dataset_id",
@@ -21857,7 +22505,8 @@
           "evaluation_upload_error",
           "evaluation_uploaded_count",
           "trust_level",
-          "trust_level_grade"
+          "trust_level_grade",
+          "agent_request_count"
         ],
         "title": "RedTeamAuditAPIResource"
       },
@@ -22815,8 +23464,6 @@
         "type": "string",
         "enum": [
           "vulnerability",
-          "garak",
-          "deepteam",
           "lidar"
         ],
         "title": "RedTeamAuditScanType"
@@ -24024,6 +24671,101 @@
         ],
         "title": "SuccessExecutionStatus"
       },
+      "SuiteResultCheckItem": {
+        "properties": {
+          "metrics": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SuiteResultMetricItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metrics"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "title": "SuiteResultCheckItem",
+        "description": "A check object nested under a SuiteResult step (`step.results[]`)."
+      },
+      "SuiteResultMetricItem": {
+        "properties": {},
+        "additionalProperties": true,
+        "type": "object",
+        "title": "SuiteResultMetricItem",
+        "description": "A metric object nested under a SuiteResult check (`check.metrics[]`)."
+      },
+      "SuiteResultPayload": {
+        "properties": {
+          "results": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SuiteResultScenarioItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "title": "SuiteResultPayload",
+        "description": "Giskard OSS SuiteResult JSON. Extra fields are preserved for import."
+      },
+      "SuiteResultScenarioItem": {
+        "properties": {
+          "steps": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SuiteResultStepItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Steps"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "title": "SuiteResultScenarioItem",
+        "description": "A scenario object in a SuiteResult (`payload.results[]`)."
+      },
+      "SuiteResultStepItem": {
+        "properties": {
+          "results": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SuiteResultCheckItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "title": "SuiteResultStepItem",
+        "description": "A step object nested under a SuiteResult scenario (`scenario.steps[]`)."
+      },
       "TableViewAPIResource": {
         "properties": {
           "id": {
@@ -24107,11 +24849,11 @@
             "title": "Description"
           },
           "created_by": {
-            "$ref": "#/components/schemas/User"
+            "$ref": "#/components/schemas/TaskUserAPIResource"
           },
           "assignees": {
             "items": {
-              "$ref": "#/components/schemas/User"
+              "$ref": "#/components/schemas/TaskUserAPIResource"
             },
             "type": "array",
             "title": "Assignees"
@@ -24227,6 +24969,32 @@
           "resolved"
         ],
         "title": "TaskStatus"
+      },
+      "TaskUserAPIResource": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "TaskUserAPIResource"
       },
       "TestAgentConnectionAPIRequest": {
         "properties": {
@@ -24555,16 +25323,6 @@
             ],
             "title": "Description"
           },
-          "status": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/TaskProgress"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
           "input_schema": {
             "anyOf": [
               {
@@ -24667,18 +25425,6 @@
       },
       "UpdateKnowledgeBaseAPIRequest": {
         "properties": {
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Project Id"
-          },
           "name": {
             "anyOf": [
               {
@@ -24700,16 +25446,6 @@
               }
             ],
             "title": "Description"
-          },
-          "status": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/TaskProgress"
-              },
-              {
-                "type": "null"
-              }
-            ]
           }
         },
         "type": "object",
@@ -24728,13 +25464,18 @@
           "audit_runs": {
             "type": "boolean",
             "title": "Audit Runs"
+          },
+          "low_credit_balance": {
+            "type": "boolean",
+            "title": "Low Credit Balance"
           }
         },
         "type": "object",
         "required": [
           "scheduled_runs",
           "task_assignment",
-          "audit_runs"
+          "audit_runs",
+          "low_credit_balance"
         ],
         "title": "UpdateNotificationPreferencesRequest"
       },
@@ -25249,9 +25990,7 @@
             "title": "Project Id"
           },
           "payload": {
-            "additionalProperties": true,
-            "type": "object",
-            "title": "Payload"
+            "$ref": "#/components/schemas/SuiteResultPayload"
           },
           "agent_id": {
             "anyOf": [
@@ -25292,32 +26031,6 @@
         ],
         "title": "UploadEvaluationAPIRequest",
         "description": "Request to import a `SuiteResult` produced by Giskard OSS."
-      },
-      "User": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Id",
-            "description": "ID of the object"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "email": {
-            "type": "string",
-            "title": "Email"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "email"
-        ],
-        "title": "User",
-        "description": "Simple user to display with minimum information"
       },
       "UserAPIReference": {
         "properties": {
@@ -25392,6 +26105,20 @@
             "type": "array",
             "title": "Permissions"
           },
+          "direct_permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Direct Permissions"
+          },
+          "group_permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Group Permissions"
+          },
           "groups": {
             "items": {
               "$ref": "#/components/schemas/GroupAPIReference"
@@ -25406,6 +26133,8 @@
           "name",
           "email",
           "permissions",
+          "direct_permissions",
+          "group_permissions",
           "groups"
         ],
         "title": "UserDetailAPIResource"
@@ -25470,6 +26199,26 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
+          "evaluations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluations"
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__2": {
+        "properties": {
           "latest_runs": {
             "anyOf": [
               {
@@ -25488,7 +26237,23 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__2": {
+      "backend__http__responses__base__Included_list__3": {
+        "properties": {
+          "agent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__4": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -25514,7 +26279,7 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__3": {
+      "backend__http__responses__base__Included_list__5": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -25530,42 +26295,6 @@
             "anyOf": [
               {
                 "$ref": "#/components/schemas/APIResponse_DatasetAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__4": {
-        "properties": {
-          "evaluations": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Evaluations"
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__5": {
-        "properties": {
-          "agent": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
               },
               {
                 "type": "null"
