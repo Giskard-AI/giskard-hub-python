@@ -14,6 +14,7 @@ from giskard_hub.types import (
     TestCase,
     CreditEstimate,
     APIPaginatedMetadata,
+    BulkCreateDatasetScenarios,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -185,12 +186,6 @@ class TestDatasets:
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
             name="name",
-            status={
-                "total": 0,
-                "current": 0,
-                "error": "error",
-                "state": "skipped",
-            },
             input_schema={"foo": "bar"},
             output_schema={"foo": "bar"},
         )
@@ -694,6 +689,52 @@ class TestDatasets:
 
         assert cast(Any, response.is_closed) is True
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_bulk_create_scenarios(self, client: HubClient) -> None:
+        result = client.datasets.bulk_create_scenarios(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            scenarios=[{"tags": ["string"], "status": "active"}],
+        )
+        assert_matches_type(BulkCreateDatasetScenarios, result, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_bulk_create_scenarios(self, client: HubClient) -> None:
+        response = client.datasets.with_raw_response.bulk_create_scenarios(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            scenarios=[{"tags": ["string"]}],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        result = response.parse()
+        assert_matches_type(BulkCreateDatasetScenarios, result, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_bulk_create_scenarios(self, client: HubClient) -> None:
+        with client.datasets.with_streaming_response.bulk_create_scenarios(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            scenarios=[{"tags": ["string"]}],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            result = response.parse()
+            assert_matches_type(BulkCreateDatasetScenarios, result, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_path_params_bulk_create_scenarios(self, client: HubClient) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dataset_id` but received ''"):
+            client.datasets.with_raw_response.bulk_create_scenarios(
+                "",
+                scenarios=[{"tags": ["string"]}],
+            )
+
 
 class TestAsyncDatasets:
     parametrize = pytest.mark.parametrize(
@@ -860,12 +901,6 @@ class TestAsyncDatasets:
             dataset_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
             name="name",
-            status={
-                "total": 0,
-                "current": 0,
-                "error": "error",
-                "state": "skipped",
-            },
             input_schema={"foo": "bar"},
             output_schema={"foo": "bar"},
         )
@@ -1368,3 +1403,49 @@ class TestAsyncDatasets:
             assert_matches_type(CreditEstimate, estimate, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_bulk_create_scenarios(self, async_client: AsyncHubClient) -> None:
+        result = await async_client.datasets.bulk_create_scenarios(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            scenarios=[{"tags": ["string"], "status": "active"}],
+        )
+        assert_matches_type(BulkCreateDatasetScenarios, result, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_bulk_create_scenarios(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.datasets.with_raw_response.bulk_create_scenarios(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            scenarios=[{"tags": ["string"]}],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        result = await response.parse()
+        assert_matches_type(BulkCreateDatasetScenarios, result, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_bulk_create_scenarios(self, async_client: AsyncHubClient) -> None:
+        async with async_client.datasets.with_streaming_response.bulk_create_scenarios(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            scenarios=[{"tags": ["string"]}],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            result = await response.parse()
+            assert_matches_type(BulkCreateDatasetScenarios, result, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_bulk_create_scenarios(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dataset_id` but received ''"):
+            await async_client.datasets.with_raw_response.bulk_create_scenarios(
+                "",
+                scenarios=[{"tags": ["string"]}],
+            )

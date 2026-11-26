@@ -14,6 +14,8 @@ from giskard_hub.types import (
     CreditEstimate,
     RedTeamAuditLogs,
     RedTeamAuditContent,
+    AuditAttestationRequest,
+    AuditAttestationEligibility,
 )
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -39,7 +41,7 @@ class TestRedTeamAudits:
             target_agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             input_evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
             name="name",
-            scan_types=["vulnerability"],
+            run_pre_scan=False,
             mode="light",
         )
         assert_matches_type(RedTeamAudit, red_team_audit, path=["response"])
@@ -375,6 +377,118 @@ class TestRedTeamAudits:
 
         assert cast(Any, response.is_closed) is True
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_estimate_attestation(self, client: HubClient) -> None:
+        estimate = client.red_team_audits.estimate_attestation()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_estimate_attestation(self, client: HubClient) -> None:
+        response = client.red_team_audits.with_raw_response.estimate_attestation()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        estimate = response.parse()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_estimate_attestation(self, client: HubClient) -> None:
+        with client.red_team_audits.with_streaming_response.estimate_attestation() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            estimate = response.parse()
+            assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_retrieve_attestation(self, client: HubClient) -> None:
+        eligibility = client.red_team_audits.retrieve_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(AuditAttestationEligibility, eligibility, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_retrieve_attestation(self, client: HubClient) -> None:
+        response = client.red_team_audits.with_raw_response.retrieve_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        eligibility = response.parse()
+        assert_matches_type(AuditAttestationEligibility, eligibility, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_retrieve_attestation(self, client: HubClient) -> None:
+        with client.red_team_audits.with_streaming_response.retrieve_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            eligibility = response.parse()
+            assert_matches_type(AuditAttestationEligibility, eligibility, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_path_params_retrieve_attestation(self, client: HubClient) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
+            client.red_team_audits.with_raw_response.retrieve_attestation(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_request_attestation(self, client: HubClient) -> None:
+        request = client.red_team_audits.request_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(AuditAttestationRequest, request, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_request_attestation(self, client: HubClient) -> None:
+        response = client.red_team_audits.with_raw_response.request_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        request = response.parse()
+        assert_matches_type(AuditAttestationRequest, request, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_request_attestation(self, client: HubClient) -> None:
+        with client.red_team_audits.with_streaming_response.request_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            request = response.parse()
+            assert_matches_type(AuditAttestationRequest, request, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_path_params_request_attestation(self, client: HubClient) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
+            client.red_team_audits.with_raw_response.request_attestation(
+                "",
+            )
+
 
 class TestAsyncRedTeamAudits:
     parametrize = pytest.mark.parametrize(
@@ -401,7 +515,7 @@ class TestAsyncRedTeamAudits:
             target_agent_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             input_evaluation_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
             name="name",
-            scan_types=["vulnerability"],
+            run_pre_scan=False,
             mode="light",
         )
         assert_matches_type(RedTeamAudit, red_team_audit, path=["response"])
@@ -736,3 +850,115 @@ class TestAsyncRedTeamAudits:
             assert_matches_type(CreditEstimate, estimate, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_estimate_attestation(self, async_client: AsyncHubClient) -> None:
+        estimate = await async_client.red_team_audits.estimate_attestation()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_estimate_attestation(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.red_team_audits.with_raw_response.estimate_attestation()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        estimate = await response.parse()
+        assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_estimate_attestation(self, async_client: AsyncHubClient) -> None:
+        async with async_client.red_team_audits.with_streaming_response.estimate_attestation() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            estimate = await response.parse()
+            assert_matches_type(CreditEstimate, estimate, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_retrieve_attestation(self, async_client: AsyncHubClient) -> None:
+        eligibility = await async_client.red_team_audits.retrieve_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(AuditAttestationEligibility, eligibility, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_retrieve_attestation(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.red_team_audits.with_raw_response.retrieve_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        eligibility = await response.parse()
+        assert_matches_type(AuditAttestationEligibility, eligibility, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_retrieve_attestation(self, async_client: AsyncHubClient) -> None:
+        async with async_client.red_team_audits.with_streaming_response.retrieve_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            eligibility = await response.parse()
+            assert_matches_type(AuditAttestationEligibility, eligibility, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_retrieve_attestation(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
+            await async_client.red_team_audits.with_raw_response.retrieve_attestation(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_request_attestation(self, async_client: AsyncHubClient) -> None:
+        request = await async_client.red_team_audits.request_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(AuditAttestationRequest, request, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_request_attestation(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.red_team_audits.with_raw_response.request_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        request = await response.parse()
+        assert_matches_type(AuditAttestationRequest, request, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_request_attestation(self, async_client: AsyncHubClient) -> None:
+        async with async_client.red_team_audits.with_streaming_response.request_attestation(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            request = await response.parse()
+            assert_matches_type(AuditAttestationRequest, request, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_path_params_request_attestation(self, async_client: AsyncHubClient) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `audit_id` but received ''"):
+            await async_client.red_team_audits.with_raw_response.request_attestation(
+                "",
+            )

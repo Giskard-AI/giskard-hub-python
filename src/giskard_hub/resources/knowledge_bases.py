@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, List, Tuple, Literal, Mapping, Optional, cast, overload
+from typing import Any, List, Tuple, Literal, Mapping, Iterable, Optional, cast, overload
 from pathlib import Path
 
 import httpx
@@ -25,14 +25,16 @@ from .._response import (
 )
 from .._analytics import capture_event, make_distinct_id
 from .._base_client import make_request_options
-from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata
+from ..types.common import APIResponse, APIPaginatedMetadata
 from ..types.knowledge_base import (
     KnowledgeBase,
     KnowledgeBaseListParams,
     KnowledgeBaseCreateParams,
     KnowledgeBaseUpdateParams,
+    KnowledgeBaseDocumentInput,
     KnowledgeBaseDocumentDetail,
     KnowledgeBaseBulkDeleteParams,
+    KnowledgeBaseCreateFromDocumentsParams,
 )
 
 __all__ = ["KnowledgeBasesResource", "AsyncKnowledgeBasesResource"]
@@ -145,6 +147,76 @@ class KnowledgeBasesResource(SyncAPIResource):
         )
         return result
 
+    def create_from_documents(
+        self,
+        *,
+        project_id: str,
+        name: str,
+        documents: Iterable[KnowledgeBaseDocumentInput],
+        description: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> KnowledgeBase:
+        """Create a knowledge base from a list of document texts.
+
+        Parameters
+        ----------
+        project_id : str
+            Project ID to create the knowledge base in.
+        name : str
+            Name of the knowledge base.
+        documents : Iterable[KnowledgeBaseDocumentInput]
+            Documents to ingest (1 to 500). Each item needs a non-empty ``text``
+            and may include a ``topic``. Omit ``topic`` on every document to
+            auto-cluster topics.
+        description : Optional[str] | Omit
+            Description of the knowledge base.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        KnowledgeBase
+            The created knowledge base.
+        """
+        response = self._post(
+            "/v2/knowledge-bases/from-documents",
+            body=maybe_transform(
+                {
+                    "project_id": project_id,
+                    "name": name,
+                    "description": description,
+                    "documents": documents,
+                },
+                KnowledgeBaseCreateFromDocumentsParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[KnowledgeBase],
+        )
+
+        result = self._unwrap(response)
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "knowledge_base_created",
+            {"knowledge_base_id": getattr(result, "id", None)},
+        )
+        return result
+
     def retrieve(
         self,
         knowledge_base_id: str,
@@ -202,8 +274,6 @@ class KnowledgeBasesResource(SyncAPIResource):
         *,
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
-        project_id: Optional[str] | Omit = omit,
-        status: Optional[TaskProgressParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -221,10 +291,6 @@ class KnowledgeBasesResource(SyncAPIResource):
             Description of the knowledge base.
         name : Optional[str] | Omit
             Name of the knowledge base.
-        project_id : Optional[str] | Omit
-            Project ID to update the knowledge base in.
-        status : Optional[TaskProgressParam] | Omit
-            Task progress status.
 
         Other Parameters
         ----------------
@@ -255,8 +321,6 @@ class KnowledgeBasesResource(SyncAPIResource):
                 {
                     "description": description,
                     "name": name,
-                    "project_id": project_id,
-                    "status": status,
                 },
                 KnowledgeBaseUpdateParams,
             ),
@@ -692,6 +756,76 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         )
         return result
 
+    async def create_from_documents(
+        self,
+        *,
+        project_id: str,
+        name: str,
+        documents: Iterable[KnowledgeBaseDocumentInput],
+        description: Optional[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> KnowledgeBase:
+        """Create a knowledge base from a list of document texts.
+
+        Parameters
+        ----------
+        project_id : str
+            Project ID to create the knowledge base in.
+        name : str
+            Name of the knowledge base.
+        documents : Iterable[KnowledgeBaseDocumentInput]
+            Documents to ingest (1 to 500). Each item needs a non-empty ``text``
+            and may include a ``topic``. Omit ``topic`` on every document to
+            auto-cluster topics.
+        description : Optional[str] | Omit
+            Description of the knowledge base.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        KnowledgeBase
+            The created knowledge base.
+        """
+        response = await self._post(
+            "/v2/knowledge-bases/from-documents",
+            body=await async_maybe_transform(
+                {
+                    "project_id": project_id,
+                    "name": name,
+                    "description": description,
+                    "documents": documents,
+                },
+                KnowledgeBaseCreateFromDocumentsParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[KnowledgeBase],
+        )
+
+        result = self._unwrap(response)
+        capture_event(
+            make_distinct_id(self._client.api_key),
+            "knowledge_base_created",
+            {"knowledge_base_id": getattr(result, "id", None)},
+        )
+        return result
+
     async def retrieve(
         self,
         knowledge_base_id: str,
@@ -749,8 +883,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
         *,
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
-        project_id: Optional[str] | Omit = omit,
-        status: Optional[TaskProgressParam] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -768,10 +900,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
             Description of the knowledge base.
         name : Optional[str] | Omit
             Name of the knowledge base.
-        project_id : Optional[str] | Omit
-            Project ID to update the knowledge base in.
-        status : Optional[TaskProgressParam] | Omit
-            Task progress status.
 
         Other Parameters
         ----------------
@@ -802,8 +930,6 @@ class AsyncKnowledgeBasesResource(AsyncAPIResource):
                 {
                     "description": description,
                     "name": name,
-                    "project_id": project_id,
-                    "status": status,
                 },
                 KnowledgeBaseUpdateParams,
             ),
@@ -1139,6 +1265,9 @@ class KnowledgeBasesResourceWithRawResponse:
         self.create = to_raw_response_wrapper(
             knowledge_bases.create,
         )
+        self.create_from_documents = to_raw_response_wrapper(
+            knowledge_bases.create_from_documents,
+        )
         self.retrieve = to_raw_response_wrapper(
             knowledge_bases.retrieve,
         )
@@ -1168,6 +1297,9 @@ class AsyncKnowledgeBasesResourceWithRawResponse:
 
         self.create = async_to_raw_response_wrapper(
             knowledge_bases.create,
+        )
+        self.create_from_documents = async_to_raw_response_wrapper(
+            knowledge_bases.create_from_documents,
         )
         self.retrieve = async_to_raw_response_wrapper(
             knowledge_bases.retrieve,
@@ -1199,6 +1331,9 @@ class KnowledgeBasesResourceWithStreamingResponse:
         self.create = to_streamed_response_wrapper(
             knowledge_bases.create,
         )
+        self.create_from_documents = to_streamed_response_wrapper(
+            knowledge_bases.create_from_documents,
+        )
         self.retrieve = to_streamed_response_wrapper(
             knowledge_bases.retrieve,
         )
@@ -1228,6 +1363,9 @@ class AsyncKnowledgeBasesResourceWithStreamingResponse:
 
         self.create = async_to_streamed_response_wrapper(
             knowledge_bases.create,
+        )
+        self.create_from_documents = async_to_streamed_response_wrapper(
+            knowledge_bases.create_from_documents,
         )
         self.retrieve = async_to_streamed_response_wrapper(
             knowledge_bases.retrieve,

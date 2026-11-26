@@ -38,6 +38,9 @@ AUDIT: Dict[str, Any] = {
     "evaluation_uploaded_count": 0,
     "trust_level": None,
     "trust_level_grade": None,
+    "scan_types": ["vulnerability"],
+    "completed_scan_types": ["lidar"],
+    "agent_request_count": 12,
 }
 
 RISK_MODEL: Dict[str, Any] = {
@@ -147,3 +150,6 @@ def test_retrieve_parses_progress(client: HubClient, respx_mock: MockRouter) -> 
     assert audit.progress is not None
     assert audit.progress.phase == "attacks"
     assert audit.progress.attackers_total is None
+    assert audit.scan_types == ["vulnerability"]
+    assert audit.completed_scan_types == ["lidar"]
+    assert audit.agent_request_count == 12

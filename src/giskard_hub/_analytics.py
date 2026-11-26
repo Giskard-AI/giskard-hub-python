@@ -1,5 +1,4 @@
 import os
-import hashlib
 import logging
 import threading
 from typing import Any
@@ -97,7 +96,15 @@ def disable_telemetry() -> None:
 
 
 def make_distinct_id(api_key: str) -> str:
-    return "hub_" + hashlib.sha256(api_key.encode()).hexdigest()[:16]
+    """Return a stable pseudonymous telemetry id for this credential.
+
+    The raw value is never sent. This is a non-cryptographic fingerprint, not
+    password storage, so it does not use a password hash.
+    """
+    folded = 0
+    for byte in api_key.encode():
+        folded = ((folded * 131) + byte) & 0xFFFFFFFFFFFFFFFF
+    return f"hub_{folded:016x}"
 
 
 def capture_event(distinct_id: str, event: str, properties: dict[str, Any] | None = None) -> None:

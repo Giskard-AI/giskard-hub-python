@@ -111,6 +111,7 @@ class ScenarioCreateParams(TypedDict, total=False):
     status: Optional[ScenarioStatus]
     tags: SequenceNotStr[str]
     source_probe_attempt_id: Optional[str]
+    annotations: Dict[str, Any]
 
 
 class ScenarioUpdateParams(TypedDict, total=False):

@@ -76,7 +76,7 @@ from giskard_hub.types import (
 Methods:
 
 - <code title="post /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">create</a>(\*\*<a href="src/giskard_hub/types/check.py">params</a>) -> <a href="./src/giskard_hub/types/check.py">Check</a></code>
-- <code title="get /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">retrieve</a>(check_id) -> <a href="./src/giskard_hub/types/check.py">Check</a></code>
+- <code title="get /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">retrieve</a>(check_id, \*\*<a href="src/giskard_hub/types/check.py">params</a>) -> <a href="./src/giskard_hub/types/check.py">Check</a></code>
 - <code title="patch /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">update</a>(check_id, \*\*<a href="src/giskard_hub/types/check.py">params</a>) -> <a href="./src/giskard_hub/types/check.py">Check</a></code>
 - <code title="get /v2/checks">client.checks.<a href="./src/giskard_hub/resources/checks.py">list</a>(\*\*<a href="src/giskard_hub/types/check.py">params</a>) -> List[<a href="./src/giskard_hub/types/check.py">Check</a>]</code>
 - <code title="delete /v2/checks/{check_id}">client.checks.<a href="./src/giskard_hub/resources/checks.py">delete</a>(check_id) -> None</code>
@@ -88,6 +88,7 @@ Types:
 
 ```python
 from giskard_hub.types import (
+    BulkCreateDatasetScenarios,
     Dataset,
     Scenario,
     TestCase,
@@ -112,6 +113,7 @@ Methods:
 - <code title="post /v2/datasets/generate-document-based/estimate">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">estimate_document_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 - <code title="post /v2/datasets/generate-preset-based/estimate">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">estimate_preset_based</a>(\*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
 - <code title="get /v2/datasets/{dataset_id}/tags">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_tags</a>(dataset_id) -> List[str]</code>
+- <code title="post /v2/datasets/{dataset_id}/scenarios/bulk">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">bulk_create_scenarios</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset.py">params</a>) -> <a href="./src/giskard_hub/types/dataset.py">BulkCreateDatasetScenarios</a></code>
 - <code title="post /v2/datasets/{dataset_id}/scenarios/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_scenarios</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>]</code>
 - <code title="post /v2/datasets/{dataset_id}/scenarios/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">search_scenarios</a>(dataset_id, \*\*<a href="src/giskard_hub/types/dataset.py">params</a>, include_metadata: bool = False) -> List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>] | Tuple[List[<a href="./src/giskard_hub/types/scenario.py">Scenario</a>], <a href="./src/giskard_hub/types/common/__init__.py">APIPaginatedMetadata</a>]</code>
 - <code title="post /v2/datasets/{dataset_id}/scenarios/search">client.datasets.<a href="./src/giskard_hub/resources/datasets.py">list_test_cases</a>(dataset_id) -> List[<a href="./src/giskard_hub/types/test_case.py">TestCase</a>]</code> (deprecated alias of `list_scenarios`)
@@ -230,6 +232,7 @@ from giskard_hub.types import (
 Methods:
 
 - <code title="post /v2/knowledge-bases">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">create</a>(\*\*<a href="src/giskard_hub/types/knowledge_base.py">params</a>) -> <a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBase</a></code>
+- <code title="post /v2/knowledge-bases/from-documents">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">create_from_documents</a>(\*\*<a href="src/giskard_hub/types/knowledge_base.py">params</a>) -> <a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBase</a></code>
 - <code title="get /v2/knowledge-bases/{knowledge_base_id}">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">retrieve</a>(knowledge_base_id) -> <a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBase</a></code>
 - <code title="patch /v2/knowledge-bases/{knowledge_base_id}">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">update</a>(knowledge_base_id, \*\*<a href="src/giskard_hub/types/knowledge_base.py">params</a>) -> <a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBase</a></code>
 - <code title="get /v2/knowledge-bases">client.knowledge_bases.<a href="./src/giskard_hub/resources/knowledge_bases.py">list</a>(\*\*<a href="src/giskard_hub/types/knowledge_base.py">params</a>) -> List[<a href="./src/giskard_hub/types/knowledge_base.py">KnowledgeBase</a>]</code>
@@ -497,6 +500,8 @@ Types:
 
 ```python
 from giskard_hub.types import (
+    AuditAttestationEligibility,
+    AuditAttestationRequest,
     CreditEstimate,
     RedTeamAudit,
     RedTeamAuditContent,
@@ -518,6 +523,9 @@ Methods:
 - <code title="get /v2/red-team-audits/{audit_id}/content">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_content</a>(audit_id) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAuditContent</a></code>
 - <code title="get /v2/red-team-audits/{audit_id}/logs">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_logs</a>(audit_id, \*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/red_team_audit.py">RedTeamAuditLogs</a></code>
 - <code title="post /v2/red-team-audits/estimate">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">estimate</a>(\*\*<a href="src/giskard_hub/types/red_team_audit.py">params</a>) -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
+- <code title="post /v2/red-team-audits/attestation-request/estimate">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">estimate_attestation</a>() -> <a href="./src/giskard_hub/types/credit.py">CreditEstimate</a></code>
+- <code title="get /v2/red-team-audits/{audit_id}/attestation">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">retrieve_attestation</a>(audit_id) -> <a href="./src/giskard_hub/types/red_team_audit.py">AuditAttestationEligibility</a></code>
+- <code title="post /v2/red-team-audits/{audit_id}/attestation-request">client.red_team_audits.<a href="./src/giskard_hub/resources/red_team_audits.py">request_attestation</a>(audit_id) -> <a href="./src/giskard_hub/types/red_team_audit.py">AuditAttestationRequest</a></code>
 
 # Usage
 
