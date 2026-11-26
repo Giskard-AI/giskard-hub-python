@@ -136,13 +136,6 @@ class TestKnowledgeBases:
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
             name="name",
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            status={
-                "total": 0,
-                "current": 0,
-                "error": "error",
-                "state": "skipped",
-            },
         )
         assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
 
@@ -424,6 +417,57 @@ class TestKnowledgeBases:
                 document_id="",
             )
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_create_from_documents(self, client: HubClient) -> None:
+        knowledge_base = client.knowledge_bases.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text"}],
+        )
+        assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_create_from_documents_with_all_params(self, client: HubClient) -> None:
+        knowledge_base = client.knowledge_bases.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text", "topic": "topic"}],
+            description="description",
+        )
+        assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_create_from_documents(self, client: HubClient) -> None:
+        response = client.knowledge_bases.with_raw_response.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text"}],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        knowledge_base = response.parse()
+        assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_create_from_documents(self, client: HubClient) -> None:
+        with client.knowledge_bases.with_streaming_response.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text"}],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            knowledge_base = response.parse()
+            assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
 
 class TestAsyncKnowledgeBases:
     parametrize = pytest.mark.parametrize(
@@ -546,13 +590,6 @@ class TestAsyncKnowledgeBases:
             knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             description="description",
             name="name",
-            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-            status={
-                "total": 0,
-                "current": 0,
-                "error": "error",
-                "state": "skipped",
-            },
         )
         assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
 
@@ -832,3 +869,54 @@ class TestAsyncKnowledgeBases:
                 knowledge_base_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 document_id="",
             )
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_create_from_documents(self, async_client: AsyncHubClient) -> None:
+        knowledge_base = await async_client.knowledge_bases.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text"}],
+        )
+        assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_create_from_documents_with_all_params(self, async_client: AsyncHubClient) -> None:
+        knowledge_base = await async_client.knowledge_bases.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text", "topic": "topic"}],
+            description="description",
+        )
+        assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_create_from_documents(self, async_client: AsyncHubClient) -> None:
+        response = await async_client.knowledge_bases.with_raw_response.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text"}],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+        knowledge_base = await response.parse()
+        assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_create_from_documents(self, async_client: AsyncHubClient) -> None:
+        async with async_client.knowledge_bases.with_streaming_response.create_from_documents(
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            name="name",
+            documents=[{"text": "text"}],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Giskard-Lang") == "python"
+
+            knowledge_base = await response.parse()
+            assert_matches_type(KnowledgeBase, knowledge_base, path=["response"])
+
+        assert cast(Any, response.is_closed) is True

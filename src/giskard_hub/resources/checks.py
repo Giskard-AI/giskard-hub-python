@@ -20,6 +20,7 @@ from ..types.check import (
     CheckListParams,
     CheckCreateParams,
     CheckUpdateParams,
+    CheckRetrieveParams,
     CheckBulkDeleteParams,
 )
 from .._base_client import make_request_options
@@ -138,6 +139,7 @@ class ChecksResource(SyncAPIResource):
         self,
         check_id: str,
         *,
+        project_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -151,6 +153,9 @@ class ChecksResource(SyncAPIResource):
         ----------
         check_id : str
             ID of the check to retrieve.
+        project_id : str | None | Omit
+            Project that owns the check. Pass it when the same check id can
+            exist in more than one project.
 
         Other Parameters
         ----------------
@@ -178,7 +183,11 @@ class ChecksResource(SyncAPIResource):
         response = self._get(
             f"/v2/checks/{check_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"project_id": project_id}, CheckRetrieveParams),
             ),
             cast_to=APIResponse[Check],
         )
@@ -533,6 +542,7 @@ class AsyncChecksResource(AsyncAPIResource):
         self,
         check_id: str,
         *,
+        project_id: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -546,6 +556,9 @@ class AsyncChecksResource(AsyncAPIResource):
         ----------
         check_id : str
             ID of the check to retrieve.
+        project_id : str | None | Omit
+            Project that owns the check. Pass it when the same check id can
+            exist in more than one project.
 
         Other Parameters
         ----------------
@@ -573,7 +586,11 @@ class AsyncChecksResource(AsyncAPIResource):
         response = await self._get(
             f"/v2/checks/{check_id}",
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform({"project_id": project_id}, CheckRetrieveParams),
             ),
             cast_to=APIResponse[Check],
         )

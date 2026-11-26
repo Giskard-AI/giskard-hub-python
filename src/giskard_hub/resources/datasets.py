@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import Any, Dict, List, Tuple, Literal, Mapping, Optional, cast, overload
+from typing import Any, Dict, List, Tuple, Literal, Mapping, Iterable, Optional, cast, overload
 from pathlib import Path
 
 import httpx
@@ -24,15 +24,18 @@ from .._response import (
 )
 from .._analytics import capture_event, make_distinct_id
 from .._base_client import make_request_options
-from ..types.common import APIResponse, TaskProgressParam, APIPaginatedMetadata, APIPaginatedResponse
+from ..types.common import APIResponse, APIPaginatedMetadata, APIPaginatedResponse
 from ..types.credit import CreditEstimate
 from ..types.dataset import (
     Dataset,
+    BulkScenarioInput,
     DatasetListParams,
     DatasetCreateParams,
     DatasetImportParams,
     DatasetUpdateParams,
     DatasetBulkDeleteParams,
+    BulkCreateDatasetScenarios,
+    BulkCreateDatasetScenariosParams,
     DatasetEstimatePresetBasedParams,
     DatasetGeneratePresetBasedParams,
     DatasetEstimateDocumentBasedParams,
@@ -385,7 +388,6 @@ class DatasetsResource(SyncAPIResource):
         *,
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
-        status: Optional[TaskProgressParam] | Omit = omit,
         input_schema: Optional[Dict[str, Any]] | Omit = omit,
         output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -405,8 +407,6 @@ class DatasetsResource(SyncAPIResource):
             Description of the dataset to update.
         name : Optional[str]
             Name of the dataset to update.
-        status : Optional[TaskProgressParam]
-            Status of the dataset to update.
         input_schema : Dict[str, Any] | None | Omit
             Updated JSON schema describing the expected shape of scenario
             inputs.
@@ -443,7 +443,6 @@ class DatasetsResource(SyncAPIResource):
                 {
                     "description": description,
                     "name": name,
-                    "status": status,
                     "input_schema": input_schema,
                     "output_schema": output_schema,
                 },
@@ -980,6 +979,65 @@ class DatasetsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    def bulk_create_scenarios(
+        self,
+        dataset_id: str,
+        *,
+        scenarios: Iterable[BulkScenarioInput],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> BulkCreateDatasetScenarios:
+        """Create up to 100 scenarios in a dataset in one request.
+
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to add scenarios to.
+        scenarios : Iterable[BulkScenarioInput]
+            Scenarios to create. The API accepts 1 to 100 scenarios per call.
+            Each item may include ``tags``, ``interactions``, and ``status``.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        BulkCreateDatasetScenarios
+            The dataset id, how many scenarios were created, and their ids.
+
+        Raises
+        ------
+        ValueError
+            If `dataset_id` is empty.
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        response = self._post(
+            f"/v2/datasets/{dataset_id}/scenarios/bulk",
+            body=maybe_transform(
+                {"scenarios": scenarios},
+                BulkCreateDatasetScenariosParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[BulkCreateDatasetScenarios],
+        )
+
+        return self._unwrap(response)
+
     def list_scenarios(
         self,
         dataset_id: str,
@@ -1457,7 +1515,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
         *,
         description: Optional[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
-        status: Optional[TaskProgressParam] | Omit = omit,
         input_schema: Optional[Dict[str, Any]] | Omit = omit,
         output_schema: Optional[Dict[str, Any]] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1477,8 +1534,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
             Description of the dataset to update.
         name : Optional[str]
             Name of the dataset to update.
-        status : Optional[TaskProgressParam]
-            Status of the dataset to update.
         input_schema : Dict[str, Any] | None | Omit
             Updated JSON schema describing the expected shape of scenario
             inputs.
@@ -1515,7 +1570,6 @@ class AsyncDatasetsResource(AsyncAPIResource):
                 {
                     "description": description,
                     "name": name,
-                    "status": status,
                     "input_schema": input_schema,
                     "output_schema": output_schema,
                 },
@@ -2052,6 +2106,65 @@ class AsyncDatasetsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def bulk_create_scenarios(
+        self,
+        dataset_id: str,
+        *,
+        scenarios: Iterable[BulkScenarioInput],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> BulkCreateDatasetScenarios:
+        """Create up to 100 scenarios in a dataset in one request.
+
+        Parameters
+        ----------
+        dataset_id : str
+            ID of the dataset to add scenarios to.
+        scenarios : Iterable[BulkScenarioInput]
+            Scenarios to create. The API accepts 1 to 100 scenarios per call.
+            Each item may include ``tags``, ``interactions``, and ``status``.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        BulkCreateDatasetScenarios
+            The dataset id, how many scenarios were created, and their ids.
+
+        Raises
+        ------
+        ValueError
+            If `dataset_id` is empty.
+        """
+        if not dataset_id:
+            raise ValueError(f"Expected a non-empty value for `dataset_id` but received {dataset_id!r}")
+        response = await self._post(
+            f"/v2/datasets/{dataset_id}/scenarios/bulk",
+            body=await async_maybe_transform(
+                {"scenarios": scenarios},
+                BulkCreateDatasetScenariosParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[BulkCreateDatasetScenarios],
+        )
+
+        return self._unwrap(response)
+
     async def list_scenarios(
         self,
         dataset_id: str,
@@ -2339,6 +2452,9 @@ class DatasetsResourceWithRawResponse:
         self.list_tags = to_raw_response_wrapper(
             datasets.list_tags,
         )
+        self.bulk_create_scenarios = to_raw_response_wrapper(
+            datasets.bulk_create_scenarios,
+        )
         self.list_scenarios = to_raw_response_wrapper(
             datasets.list_scenarios,
         )
@@ -2395,6 +2511,9 @@ class AsyncDatasetsResourceWithRawResponse:
         )
         self.list_tags = async_to_raw_response_wrapper(
             datasets.list_tags,
+        )
+        self.bulk_create_scenarios = async_to_raw_response_wrapper(
+            datasets.bulk_create_scenarios,
         )
         self.list_scenarios = async_to_raw_response_wrapper(
             datasets.list_scenarios,
@@ -2453,6 +2572,9 @@ class DatasetsResourceWithStreamingResponse:
         self.list_tags = to_streamed_response_wrapper(
             datasets.list_tags,
         )
+        self.bulk_create_scenarios = to_streamed_response_wrapper(
+            datasets.bulk_create_scenarios,
+        )
         self.list_scenarios = to_streamed_response_wrapper(
             datasets.list_scenarios,
         )
@@ -2509,6 +2631,9 @@ class AsyncDatasetsResourceWithStreamingResponse:
         )
         self.list_tags = async_to_streamed_response_wrapper(
             datasets.list_tags,
+        )
+        self.bulk_create_scenarios = async_to_streamed_response_wrapper(
+            datasets.bulk_create_scenarios,
         )
         self.list_scenarios = async_to_streamed_response_wrapper(
             datasets.list_scenarios,

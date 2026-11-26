@@ -1,12 +1,12 @@
 """Knowledge base domain types."""
 
-from typing import Dict, List, Literal, Optional, TypedDict
+from typing import Dict, List, Literal, Iterable, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
 from pydantic import computed_field
 
-from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam, TaskProgressParam
+from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import FileTypes, SequenceNotStr
 from .._models import BaseModel
 
@@ -18,6 +18,8 @@ __all__ = [
     "KnowledgeBaseDocumentDetail",
     "KnowledgeBaseListParams",
     "KnowledgeBaseCreateParams",
+    "KnowledgeBaseCreateFromDocumentsParams",
+    "KnowledgeBaseDocumentInput",
     "KnowledgeBaseUpdateParams",
     "KnowledgeBaseBulkDeleteParams",
     "KnowledgeBaseSearchDocumentsParams",
@@ -104,11 +106,21 @@ class KnowledgeBaseCreateParams(TypedDict, total=False):
     file: Required[FileTypes]
 
 
+class KnowledgeBaseDocumentInput(TypedDict, total=False):
+    text: Required[str]
+    topic: Optional[str]
+
+
+class KnowledgeBaseCreateFromDocumentsParams(TypedDict, total=False):
+    project_id: Required[str]
+    name: Required[str]
+    description: Optional[str]
+    documents: Required[Iterable[KnowledgeBaseDocumentInput]]
+
+
 class KnowledgeBaseUpdateParams(TypedDict, total=False):
     description: Optional[str]
     name: Optional[str]
-    project_id: Optional[str]
-    status: Optional[TaskProgressParam]
 
 
 class KnowledgeBaseBulkDeleteParams(TypedDict, total=False):

@@ -4,9 +4,11 @@ from typing import Any, Dict, List, Literal, Iterable, Optional, TypedDict
 from datetime import datetime
 from typing_extensions import Required
 
-from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam, TaskProgressParam
+from .check import InteractionParam
+from .common import TaskState, OrderByParam, TaskProgress, FilterValueParam
 from .._types import FileTypes, SequenceNotStr
 from .._models import BaseModel
+from .scenario import ScenarioStatus
 
 __all__ = [
     "Dataset",
@@ -18,6 +20,9 @@ __all__ = [
     "DatasetImportParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
+    "BulkScenarioInput",
+    "BulkCreateDatasetScenariosParams",
+    "BulkCreateDatasetScenarios",
     "DatasetSearchScenariosParams",
     "DatasetSearchTestCasesParams",
     "ScenarioOrderByParam",
@@ -104,9 +109,24 @@ class DatasetImportParams(TypedDict, total=False):
 class DatasetUpdateParams(TypedDict, total=False):
     description: Optional[str]
     name: Optional[str]
-    status: Optional[TaskProgressParam]
     input_schema: Optional[Dict[str, Any]]
     output_schema: Optional[Dict[str, Any]]
+
+
+class BulkScenarioInput(TypedDict, total=False):
+    tags: SequenceNotStr[str]
+    interactions: Iterable[InteractionParam]
+    status: Optional[ScenarioStatus]
+
+
+class BulkCreateDatasetScenariosParams(TypedDict, total=False):
+    scenarios: Required[Iterable[BulkScenarioInput]]
+
+
+class BulkCreateDatasetScenarios(BaseModel):
+    dataset_id: str
+    created_count: int
+    scenario_ids: List[str]
 
 
 class DatasetBulkDeleteParams(TypedDict, total=False):

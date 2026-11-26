@@ -22,12 +22,13 @@ from ..types.red_team_audit import (
     RedTeamAudit,
     RedTeamAuditLogs,
     RedTeamAuditContent,
-    RedTeamAuditScanType,
     RedTeamAuditListParams,
+    AuditAttestationRequest,
     RedTeamAuditCoverageMode,
     RedTeamAuditCreateParams,
     RedTeamAuditUploadParams,
     RedTeamAuditEstimateParams,
+    AuditAttestationEligibility,
     RedTeamAuditRetrieveLogsParams,
 )
 
@@ -61,7 +62,7 @@ class RedTeamAuditsResource(SyncAPIResource):
         target_agent_id: str,
         input_evaluation_ids: SequenceNotStr[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
-        scan_types: Optional[List[RedTeamAuditScanType]] | Omit = omit,
+        run_pre_scan: bool | Omit = omit,
         mode: RedTeamAuditCoverageMode | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -82,9 +83,9 @@ class RedTeamAuditsResource(SyncAPIResource):
             IDs of existing evaluations of the same project to use as input for the audit.
         name : str | None | Omit
             Name of the audit.
-        scan_types : List[Literal["vulnerability", "garak", "deepteam", "lidar"]] | None | Omit
-            Scan suites to run during the audit. When omitted, the server runs its default
-            scan suites if no ``input_evaluation_ids`` are given, and no scan suite otherwise.
+        run_pre_scan : bool | Omit
+            Whether to run a pre-scan before the audit. Defaults to true on the
+            server when omitted.
         mode : Literal["regular", "light"] | Omit
             Coverage mode of the audit. Defaults to ``regular`` on the server when omitted.
 
@@ -112,7 +113,7 @@ class RedTeamAuditsResource(SyncAPIResource):
                     "target_agent_id": target_agent_id,
                     "input_evaluation_ids": input_evaluation_ids,
                     "name": name,
-                    "scan_types": scan_types,
+                    "run_pre_scan": run_pre_scan,
                     "mode": mode,
                 },
                 RedTeamAuditCreateParams,
@@ -529,6 +530,146 @@ class RedTeamAuditsResource(SyncAPIResource):
 
         return self._unwrap(response)
 
+    def estimate_attestation(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of requesting an audit attestation.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of an attestation request.
+        """
+        response = self._post(
+            "/v2/red-team-audits/attestation-request/estimate",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    def retrieve_attestation(
+        self,
+        audit_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AuditAttestationEligibility:
+        """Check whether a red team audit can be submitted for attestation.
+
+        Parameters
+        ----------
+        audit_id : str
+            ID of the audit to check.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        AuditAttestationEligibility
+            Whether the audit is eligible, and why it is not when it isn't.
+
+        Raises
+        ------
+        ValueError
+            If `audit_id` is empty.
+        """
+        if not audit_id:
+            raise ValueError(f"Expected a non-empty value for `audit_id` but received {audit_id!r}")
+        response = self._get(
+            f"/v2/red-team-audits/{audit_id}/attestation",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[AuditAttestationEligibility],
+        )
+
+        return self._unwrap(response)
+
+    def request_attestation(
+        self,
+        audit_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AuditAttestationRequest:
+        """Request attestation for a finished red team audit.
+
+        Parameters
+        ----------
+        audit_id : str
+            ID of the audit to attest.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        AuditAttestationRequest
+            The attestation request as shown to the customer.
+
+        Raises
+        ------
+        ValueError
+            If `audit_id` is empty.
+        """
+        if not audit_id:
+            raise ValueError(f"Expected a non-empty value for `audit_id` but received {audit_id!r}")
+        response = self._post(
+            f"/v2/red-team-audits/{audit_id}/attestation-request",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[AuditAttestationRequest],
+        )
+
+        return self._unwrap(response)
+
 
 class AsyncRedTeamAuditsResource(AsyncAPIResource):
     @cached_property
@@ -557,7 +698,7 @@ class AsyncRedTeamAuditsResource(AsyncAPIResource):
         target_agent_id: str,
         input_evaluation_ids: SequenceNotStr[str] | Omit = omit,
         name: Optional[str] | Omit = omit,
-        scan_types: Optional[List[RedTeamAuditScanType]] | Omit = omit,
+        run_pre_scan: bool | Omit = omit,
         mode: RedTeamAuditCoverageMode | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -578,9 +719,9 @@ class AsyncRedTeamAuditsResource(AsyncAPIResource):
             IDs of existing evaluations of the same project to use as input for the audit.
         name : str | None | Omit
             Name of the audit.
-        scan_types : List[Literal["vulnerability", "garak", "deepteam", "lidar"]] | None | Omit
-            Scan suites to run during the audit. When omitted, the server runs its default
-            scan suites if no ``input_evaluation_ids`` are given, and no scan suite otherwise.
+        run_pre_scan : bool | Omit
+            Whether to run a pre-scan before the audit. Defaults to true on the
+            server when omitted.
         mode : Literal["regular", "light"] | Omit
             Coverage mode of the audit. Defaults to ``regular`` on the server when omitted.
 
@@ -608,7 +749,7 @@ class AsyncRedTeamAuditsResource(AsyncAPIResource):
                     "target_agent_id": target_agent_id,
                     "input_evaluation_ids": input_evaluation_ids,
                     "name": name,
-                    "scan_types": scan_types,
+                    "run_pre_scan": run_pre_scan,
                     "mode": mode,
                 },
                 RedTeamAuditCreateParams,
@@ -1025,6 +1166,146 @@ class AsyncRedTeamAuditsResource(AsyncAPIResource):
 
         return self._unwrap(response)
 
+    async def estimate_attestation(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CreditEstimate:
+        """Estimate the credit cost of requesting an audit attestation.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        CreditEstimate
+            Estimated credit cost of an attestation request.
+        """
+        response = await self._post(
+            "/v2/red-team-audits/attestation-request/estimate",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[CreditEstimate],
+        )
+
+        return self._unwrap(response)
+
+    async def retrieve_attestation(
+        self,
+        audit_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AuditAttestationEligibility:
+        """Check whether a red team audit can be submitted for attestation.
+
+        Parameters
+        ----------
+        audit_id : str
+            ID of the audit to check.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        AuditAttestationEligibility
+            Whether the audit is eligible, and why it is not when it isn't.
+
+        Raises
+        ------
+        ValueError
+            If `audit_id` is empty.
+        """
+        if not audit_id:
+            raise ValueError(f"Expected a non-empty value for `audit_id` but received {audit_id!r}")
+        response = await self._get(
+            f"/v2/red-team-audits/{audit_id}/attestation",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[AuditAttestationEligibility],
+        )
+
+        return self._unwrap(response)
+
+    async def request_attestation(
+        self,
+        audit_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AuditAttestationRequest:
+        """Request attestation for a finished red team audit.
+
+        Parameters
+        ----------
+        audit_id : str
+            ID of the audit to attest.
+
+        Other Parameters
+        ----------------
+        extra_headers : Headers | None
+            Send extra headers.
+        extra_query : Query | None
+            Add additional query parameters to the request.
+        extra_body : Body | None
+            Add additional JSON properties to the request.
+        timeout : float | httpx.Timeout | None | NotGiven
+            Override the client-level default timeout for this request, in seconds.
+
+        Returns
+        -------
+        AuditAttestationRequest
+            The attestation request as shown to the customer.
+
+        Raises
+        ------
+        ValueError
+            If `audit_id` is empty.
+        """
+        if not audit_id:
+            raise ValueError(f"Expected a non-empty value for `audit_id` but received {audit_id!r}")
+        response = await self._post(
+            f"/v2/red-team-audits/{audit_id}/attestation-request",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIResponse[AuditAttestationRequest],
+        )
+
+        return self._unwrap(response)
+
 
 class RedTeamAuditsResourceWithRawResponse:
     def __init__(self, red_team_audits: RedTeamAuditsResource) -> None:
@@ -1053,6 +1334,15 @@ class RedTeamAuditsResourceWithRawResponse:
         )
         self.estimate = to_raw_response_wrapper(
             red_team_audits.estimate,
+        )
+        self.estimate_attestation = to_raw_response_wrapper(
+            red_team_audits.estimate_attestation,
+        )
+        self.retrieve_attestation = to_raw_response_wrapper(
+            red_team_audits.retrieve_attestation,
+        )
+        self.request_attestation = to_raw_response_wrapper(
+            red_team_audits.request_attestation,
         )
 
 
@@ -1084,6 +1374,15 @@ class AsyncRedTeamAuditsResourceWithRawResponse:
         self.estimate = async_to_raw_response_wrapper(
             red_team_audits.estimate,
         )
+        self.estimate_attestation = async_to_raw_response_wrapper(
+            red_team_audits.estimate_attestation,
+        )
+        self.retrieve_attestation = async_to_raw_response_wrapper(
+            red_team_audits.retrieve_attestation,
+        )
+        self.request_attestation = async_to_raw_response_wrapper(
+            red_team_audits.request_attestation,
+        )
 
 
 class RedTeamAuditsResourceWithStreamingResponse:
@@ -1114,6 +1413,15 @@ class RedTeamAuditsResourceWithStreamingResponse:
         self.estimate = to_streamed_response_wrapper(
             red_team_audits.estimate,
         )
+        self.estimate_attestation = to_streamed_response_wrapper(
+            red_team_audits.estimate_attestation,
+        )
+        self.retrieve_attestation = to_streamed_response_wrapper(
+            red_team_audits.retrieve_attestation,
+        )
+        self.request_attestation = to_streamed_response_wrapper(
+            red_team_audits.request_attestation,
+        )
 
 
 class AsyncRedTeamAuditsResourceWithStreamingResponse:
@@ -1143,4 +1451,13 @@ class AsyncRedTeamAuditsResourceWithStreamingResponse:
         )
         self.estimate = async_to_streamed_response_wrapper(
             red_team_audits.estimate,
+        )
+        self.estimate_attestation = async_to_streamed_response_wrapper(
+            red_team_audits.estimate_attestation,
+        )
+        self.retrieve_attestation = async_to_streamed_response_wrapper(
+            red_team_audits.retrieve_attestation,
+        )
+        self.request_attestation = async_to_streamed_response_wrapper(
+            red_team_audits.request_attestation,
         )

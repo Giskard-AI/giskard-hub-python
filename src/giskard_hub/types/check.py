@@ -80,6 +80,7 @@ __all__ = [
     "ScenarioCheckConfigParam",
     "TestCaseCheckConfigParam",
     "CheckListParams",
+    "CheckRetrieveParams",
     "CheckCreateParams",
     "CheckUpdateParams",
     "CheckBulkDeleteParams",
@@ -644,6 +645,10 @@ class CheckConfigParam(TypedDict, total=False):
 class CheckListParams(TypedDict, total=False):
     project_id: Required[str]
     filter_builtin: bool
+
+
+class CheckRetrieveParams(TypedDict, total=False):
+    project_id: Optional[str]
 
 
 class CheckCreateParams(TypedDict, total=False):

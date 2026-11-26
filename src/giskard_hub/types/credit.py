@@ -18,6 +18,8 @@ CreditOperation: TypeAlias = Literal[
     "scan",
     "audit",
     "audit_light",
+    "audit_attestation",
+    "run_check",
     "playground",
 ]
 

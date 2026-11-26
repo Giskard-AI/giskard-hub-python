@@ -38,6 +38,11 @@ __all__ = [
     "RedTeamAuditRiskModelScenario",
     "RedTeamAuditRiskModel",
     "RedTeamAuditContent",
+    "AuditAttestationIneligibilityCode",
+    "AuditAttestationRequestStatus",
+    "AuditAttestationRequest",
+    "AuditAttestationIneligibility",
+    "AuditAttestationEligibility",
     "RedTeamAuditCreateParams",
     "RedTeamAuditListParams",
     "RedTeamAuditUploadParams",
@@ -62,7 +67,7 @@ RedTeamAuditStatus: TypeAlias = Literal[
     "timed_out",
 ]
 
-RedTeamAuditScanType: TypeAlias = Literal["vulnerability", "garak", "deepteam", "lidar"]
+RedTeamAuditScanType: TypeAlias = Literal["vulnerability", "lidar"]
 
 RedTeamAuditEvaluationUploadStatus: TypeAlias = Literal["not_started", "uploaded", "skipped", "error"]
 
@@ -102,6 +107,8 @@ class RedTeamAudit(BaseModel):
     project_id: str
     target_agent_id: str
     input_evaluation_ids: List[str]
+    scan_types: List[RedTeamAuditScanType] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    completed_scan_types: List[RedTeamAuditScanType] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     output_evaluation_id: Optional[str] = None
     output_evaluation_name: Optional[str] = None
     output_dataset_id: Optional[str] = None
@@ -128,6 +135,7 @@ class RedTeamAudit(BaseModel):
     has_audit_content: bool = False
     has_intermediate_archive: bool = False
     progress: Optional[RedTeamAuditProgress] = None
+    agent_request_count: Optional[int] = None
 
 
 class RedTeamAuditLogChunk(BaseModel):
@@ -277,6 +285,50 @@ class RedTeamAuditContent(BaseModel):
     remediations: List[RedTeamAuditRemediation]
 
 
+AuditAttestationIneligibilityCode: TypeAlias = Literal[
+    "audit_not_finished",
+    "not_full_audit",
+    "imported_audit",
+    "not_latest_full_audit",
+    "already_approved",
+    "open_request_exists",
+    "missing_retest",
+]
+
+AuditAttestationRequestStatus: TypeAlias = Literal["under_review", "approved", "rejected"]
+
+
+class AuditAttestationRequest(BaseModel):
+    """Customer-visible attestation request.
+
+    Retest progress lives on the evaluations in ``retest_evaluation_ids``
+    (oldest first, one per run). ``retest_evaluation_id`` is the latest, and
+    is null when there was nothing to retest or the evaluation was deleted.
+    """
+
+    id: str
+    audit_id: str
+    status: AuditAttestationRequestStatus
+    requested_at: datetime
+    requested_by_email: Optional[str] = None
+    retest_evaluation_id: Optional[str] = None
+    retest_evaluation_ids: List[str] = Field(default_factory=list)
+    decided_at: Optional[datetime] = None
+
+
+class AuditAttestationIneligibility(BaseModel):
+    code: AuditAttestationIneligibilityCode
+    message: str
+    finding_ids: List[str] = Field(default_factory=list)
+
+
+class AuditAttestationEligibility(BaseModel):
+    audit_id: str
+    eligible: bool
+    reasons: List[AuditAttestationIneligibility] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    latest_request: Optional[AuditAttestationRequest] = None
+
+
 # ---------------------------------------------------------------------------
 # Params
 # ---------------------------------------------------------------------------
@@ -287,7 +339,7 @@ class RedTeamAuditCreateParams(TypedDict, total=False):
     target_agent_id: Required[str]
     input_evaluation_ids: SequenceNotStr[str]
     name: Optional[str]
-    scan_types: Optional[List[RedTeamAuditScanType]]
+    run_pre_scan: bool
     mode: RedTeamAuditCoverageMode
 
 

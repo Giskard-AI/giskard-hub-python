@@ -59,6 +59,7 @@ class TestTestCases:
             status="active",
             tags=["string"],
             source_probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            annotations={"source": "import"},
         )
         assert_matches_type(TestCase, test_case, path=["response"])
 
@@ -434,6 +435,7 @@ class TestAsyncTestCases:
             status="active",
             tags=["string"],
             source_probe_attempt_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            annotations={"source": "import"},
         )
         assert_matches_type(TestCase, test_case, path=["response"])
 

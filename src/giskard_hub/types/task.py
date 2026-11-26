@@ -5,7 +5,7 @@ from datetime import datetime
 from typing_extensions import Literal, Required
 
 from .scan import ScanProbeAttemptReference
-from .user import User
+from .user import TaskUser
 from .._types import SequenceNotStr
 from .._models import BaseModel
 from .scenario import ScenarioReference
@@ -47,8 +47,8 @@ class Task(BaseModel):
     priority: Optional[TaskPriority] = None
     status: TaskStatus
     description: str
-    created_by: User
-    assignees: List[User]
+    created_by: TaskUser
+    assignees: List[TaskUser]
     references: List[
         Union[ScenarioEvaluationReference, ScanProbeAttemptReference, ScenarioReference, UnknownTaskReference]
     ]

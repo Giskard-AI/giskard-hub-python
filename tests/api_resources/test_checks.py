@@ -73,6 +73,15 @@ class TestChecks:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
+    def test_method_retrieve_with_all_params(self, client: HubClient) -> None:
+        check = client.checks.retrieve(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(Check, check, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
     def test_raw_response_retrieve(self, client: HubClient) -> None:
         response = client.checks.with_raw_response.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -350,6 +359,15 @@ class TestAsyncChecks:
     async def test_method_retrieve(self, async_client: AsyncHubClient) -> None:
         check = await async_client.checks.retrieve(
             "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(Check, check, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_retrieve_with_all_params(self, async_client: AsyncHubClient) -> None:
+        check = await async_client.checks.retrieve(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            project_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(Check, check, path=["response"])
 

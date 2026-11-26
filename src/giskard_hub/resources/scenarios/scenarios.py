@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import List, Literal, Iterable, Optional, cast
+from typing import Any, Dict, List, Literal, Iterable, Optional, cast
 
 import httpx
 
@@ -127,6 +127,7 @@ class ScenariosResource(SyncAPIResource):
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         source_probe_attempt_id: Optional[str] | Omit = omit,
+        annotations: Dict[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
@@ -155,6 +156,8 @@ class ScenariosResource(SyncAPIResource):
         source_probe_attempt_id : str | None | Omit
             ID of the scan probe attempt this scenario was created from, if
             any.
+        annotations : Dict[str, Any] | Omit
+            Free-form annotations stored on the scenario.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Translated into a single
             interaction against the dataset's default role with
@@ -215,6 +218,7 @@ class ScenariosResource(SyncAPIResource):
                     "status": status,
                     "tags": tags,
                     "source_probe_attempt_id": source_probe_attempt_id,
+                    "annotations": annotations,
                 },
                 ScenarioCreateParams,
             ),
@@ -660,6 +664,7 @@ class AsyncScenariosResource(AsyncAPIResource):
         status: Optional[Literal["active", "draft"]] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         source_probe_attempt_id: Optional[str] | Omit = omit,
+        annotations: Dict[str, Any] | Omit = omit,
         messages: Iterable[ChatMessageParam] | Omit = omit,
         checks: Iterable[CheckConfigParam] | Omit = omit,
         demo_output: Optional[DemoOutput] | Omit = omit,
@@ -688,6 +693,8 @@ class AsyncScenariosResource(AsyncAPIResource):
         source_probe_attempt_id : str | None | Omit
             ID of the scan probe attempt this scenario was created from, if
             any.
+        annotations : Dict[str, Any] | Omit
+            Free-form annotations stored on the scenario.
         messages : Iterable[ChatMessageParam] | Omit
             (Deprecated) Conversation messages. Translated into a single
             interaction against the dataset's default role with
@@ -748,6 +755,7 @@ class AsyncScenariosResource(AsyncAPIResource):
                     "status": status,
                     "tags": tags,
                     "source_probe_attempt_id": source_probe_attempt_id,
+                    "annotations": annotations,
                 },
                 ScenarioCreateParams,
             ),

@@ -4,7 +4,7 @@ Types are organized by domain into consolidated modules:
 
 - common: Generic response wrappers, filter/order helpers, TaskState, TaskProgress
 - chat: ChatMessage, Header and their param variants
-- user: User, UserReference
+- user: User, TaskUser, UserReference
 - execution: ExecutionError, execution status types
 - agent: Agent, AgentOutput, MinimalAgent and params
 - check: Check, spec, annotations and params
@@ -53,6 +53,7 @@ from .chat import (
 # -- user ------------------------------------------------------------------
 from .user import (
     GroupReference as GroupReference,
+    TaskUser as TaskUser,
     User as User,
     UserReference as UserReference,
 )
@@ -101,6 +102,7 @@ from .check import (
     CheckConfigParam as CheckConfigParam,
     CheckCreateParams as CheckCreateParams,
     CheckListParams as CheckListParams,
+    CheckRetrieveParams as CheckRetrieveParams,
     CheckResult as CheckResult,
     CheckSource as CheckSource,
     CheckType as CheckType,
@@ -206,6 +208,9 @@ from .dataset import (
     DatasetSubset as DatasetSubset,
     DatasetSubsetParam as DatasetSubsetParam,
     DatasetUpdateParams as DatasetUpdateParams,
+    BulkScenarioInput as BulkScenarioInput,
+    BulkCreateDatasetScenariosParams as BulkCreateDatasetScenariosParams,
+    BulkCreateDatasetScenarios as BulkCreateDatasetScenarios,
     TestCaseFiltersParam as TestCaseFiltersParam,
     TestCaseOrderByParam as TestCaseOrderByParam,
 )
@@ -216,6 +221,8 @@ from .knowledge_base import (
     KnowledgeBaseReference as KnowledgeBaseReference,
     KnowledgeBaseBulkDeleteParams as KnowledgeBaseBulkDeleteParams,
     KnowledgeBaseCreateParams as KnowledgeBaseCreateParams,
+    KnowledgeBaseCreateFromDocumentsParams as KnowledgeBaseCreateFromDocumentsParams,
+    KnowledgeBaseDocumentInput as KnowledgeBaseDocumentInput,
     KnowledgeBaseDocumentDetail as KnowledgeBaseDocumentDetail,
     KnowledgeBaseDocumentFiltersParam as KnowledgeBaseDocumentFiltersParam,
     KnowledgeBaseDocumentOrderByParam as KnowledgeBaseDocumentOrderByParam,
@@ -358,6 +365,11 @@ from .credit import (
 
 # -- red team audit --------------------------------------------------------
 from .red_team_audit import (
+    AuditAttestationEligibility as AuditAttestationEligibility,
+    AuditAttestationIneligibility as AuditAttestationIneligibility,
+    AuditAttestationIneligibilityCode as AuditAttestationIneligibilityCode,
+    AuditAttestationRequest as AuditAttestationRequest,
+    AuditAttestationRequestStatus as AuditAttestationRequestStatus,
     RedTeamAudit as RedTeamAudit,
     RedTeamAuditContent as RedTeamAuditContent,
     RedTeamAuditCoverage as RedTeamAuditCoverage,
@@ -416,6 +428,7 @@ __all__ = [
     "HeaderParam",
     # user
     "GroupReference",
+    "TaskUser",
     "User",
     "UserReference",
     # execution
@@ -512,6 +525,7 @@ __all__ = [
     "ScenarioCheckConfigParam",
     "TestCaseCheckConfigParam",
     "CheckListParams",
+    "CheckRetrieveParams",
     "CheckCreateParams",
     "CheckUpdateParams",
     "CheckBulkDeleteParams",
@@ -542,6 +556,9 @@ __all__ = [
     "DatasetImportParams",
     "DatasetUpdateParams",
     "DatasetBulkDeleteParams",
+    "BulkScenarioInput",
+    "BulkCreateDatasetScenariosParams",
+    "BulkCreateDatasetScenarios",
     "DatasetSearchScenariosParams",
     "DatasetSearchTestCasesParams",
     "ScenarioFiltersParam",
@@ -561,6 +578,8 @@ __all__ = [
     "KnowledgeBaseDocumentDetail",
     "KnowledgeBaseListParams",
     "KnowledgeBaseCreateParams",
+    "KnowledgeBaseCreateFromDocumentsParams",
+    "KnowledgeBaseDocumentInput",
     "KnowledgeBaseUpdateParams",
     "KnowledgeBaseBulkDeleteParams",
     "KnowledgeBaseSearchDocumentsParams",
@@ -670,6 +689,11 @@ __all__ = [
     "CreditUsageSummary",
     "UsageRetrieveCreditsParams",
     # red team audit
+    "AuditAttestationEligibility",
+    "AuditAttestationIneligibility",
+    "AuditAttestationIneligibilityCode",
+    "AuditAttestationRequest",
+    "AuditAttestationRequestStatus",
     "RedTeamAudit",
     "RedTeamAuditContent",
     "RedTeamAuditCoverage",
