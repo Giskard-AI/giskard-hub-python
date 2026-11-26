@@ -49,3 +49,23 @@ def test_estimate_run_interaction_checks_converts_checks_like_run_single(
     assert json.loads(route.calls.last.request.read())["checks"] == [
         {"identifier": "correctness", "override_spec": {"reference": "r"}}
     ]
+
+
+@pytest.mark.respx(base_url=base_url)
+def test_retrieve_credits_accepts_fractional_amounts(client: HubClient, respx_mock: MockRouter) -> None:
+    payload = {
+        "data": {
+            "available_balance": 1699.9,
+            "reserved_amount": 0.1,
+            "settled_consumption": 12.5,
+            "debits": 12.5,
+            "refunds": 0,
+            "net_movement": -12.5,
+        }
+    }
+    respx_mock.get("/v2/usage/credits").mock(return_value=httpx.Response(200, json=payload))
+
+    usage = client.usage.retrieve_credits()
+
+    assert usage.available_balance == 1699.9
+    assert usage.reserved_amount == 0.1

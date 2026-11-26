@@ -25,16 +25,16 @@ CreditOperation: TypeAlias = Literal[
 class CreditEstimate(BaseModel):
     operation: CreditOperation
     item_count: Optional[int]
-    estimated_amount: int
+    estimated_amount: float
 
 
 class CreditUsageSummary(BaseModel):
-    available_balance: int
-    reserved_amount: int
-    settled_consumption: int
-    debits: int
-    refunds: int
-    net_movement: int
+    available_balance: float
+    reserved_amount: float
+    settled_consumption: float
+    debits: float
+    refunds: float
+    net_movement: float
 
 
 class UsageRetrieveCreditsParams(TypedDict, total=False):
