@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Giskard Hub",
-    "version": "v3.1.0-146-gd8a66cd6"
+    "version": "v3.2.0rc1-4-g39c62364"
   },
   "paths": {
     "/v2/agents": {
@@ -4755,6 +4755,33 @@
             }
           }
         }
+      }
+    },
+    "/v2/knowledge-bases/estimate": {
+      "post": {
+        "tags": [
+          "v2",
+          "knowledge bases"
+        ],
+        "summary": "Estimate Knowledge Base",
+        "operationId": "estimate_knowledge_base",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_CreditEstimateAPIResource_"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
       }
     },
     "/v2/knowledge-bases/from-documents": {
@@ -18530,6 +18557,11 @@
             "$ref": "#/components/schemas/RedTeamAuditCoverageMode",
             "default": "regular"
           },
+          "report_language": {
+            "type": "string",
+            "title": "Report Language",
+            "default": "en"
+          },
           "run_pre_scan": {
             "type": "boolean",
             "title": "Run Pre Scan",
@@ -18911,7 +18943,8 @@
           "audit_light",
           "audit_attestation",
           "run_check",
-          "playground"
+          "playground",
+          "knowledge_base"
         ],
         "title": "CreditOperation"
       },
@@ -18940,6 +18973,17 @@
           "net_movement": {
             "type": "number",
             "title": "Net Movement"
+          },
+          "low_balance_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low Balance Threshold"
           }
         },
         "type": "object",
@@ -22301,6 +22345,10 @@
           "mode": {
             "$ref": "#/components/schemas/RedTeamAuditCoverageMode"
           },
+          "report_language": {
+            "type": "string",
+            "title": "Report Language"
+          },
           "status": {
             "$ref": "#/components/schemas/RedTeamAuditStatus"
           },
@@ -22490,6 +22538,7 @@
           "output_dataset_name",
           "name",
           "mode",
+          "report_language",
           "status",
           "created_at",
           "updated_at",
@@ -26199,62 +26248,6 @@
       },
       "backend__http__responses__base__Included_list__1": {
         "properties": {
-          "evaluations": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Evaluations"
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__2": {
-        "properties": {
-          "latest_runs": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Latest Runs"
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__3": {
-        "properties": {
-          "agent": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "title": "Included_list"
-      },
-      "backend__http__responses__base__Included_list__4": {
-        "properties": {
           "agent": {
             "anyOf": [
               {
@@ -26279,7 +26272,43 @@
         "type": "object",
         "title": "Included_list"
       },
-      "backend__http__responses__base__Included_list__5": {
+      "backend__http__responses__base__Included_list__2": {
+        "properties": {
+          "agent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIResponse_AgentAPIResource_"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__3": {
+        "properties": {
+          "evaluations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluations"
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__4": {
         "properties": {
           "agent": {
             "anyOf": [
@@ -26300,6 +26329,26 @@
                 "type": "null"
               }
             ]
+          }
+        },
+        "type": "object",
+        "title": "Included_list"
+      },
+      "backend__http__responses__base__Included_list__5": {
+        "properties": {
+          "latest_runs": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/APIResponse_EvaluationAPIResource_"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Runs"
           }
         },
         "type": "object",
